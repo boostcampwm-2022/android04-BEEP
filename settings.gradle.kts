@@ -13,7 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "BEEP"
-include ':app'
-include ':data'
-include ':presentation'
-include ':domain'
+
+include("app", "data", "presentation", "domain")
