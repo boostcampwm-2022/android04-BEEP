@@ -34,11 +34,6 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    implementation(Libraries.CORE)
-    implementation(Libraries.APP_COMPAT)
-    implementation(Libraries.MATERIAL)
-
-    testImplementation(TestImpl.JUNIT4)
-    androidTestImplementation(AndroidTestImpl.ANDROID_JUNIT)
-    androidTestImplementation(AndroidTestImpl.ESPRESSO)
+    implementation(TestImpl.TEST_LIBRARIES)
+    androidTestImplementation(AndroidTestImpl.ANDROID_LIBRARIES)
 }

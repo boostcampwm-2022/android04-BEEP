@@ -38,13 +38,7 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    implementation(Libraries.CORE)
-    implementation(Libraries.APP_COMPAT)
-    implementation(Libraries.MATERIAL)
-    implementation(Libraries.CONSTRAINT_LAYOUT)
-    implementation(Libraries.NAVIGATION_FRAGMENT_KTX)
-    implementation(Libraries.NAVIGATION_UI_KTX)
-    testImplementation(TestImpl.JUNIT4)
-    androidTestImplementation(AndroidTestImpl.ANDROID_JUNIT)
-    androidTestImplementation(AndroidTestImpl.ESPRESSO)
+    implementation(Libraries.VIEW_LIBRARIES)
+    implementation(TestImpl.TEST_LIBRARIES)
+    androidTestImplementation(AndroidTestImpl.ANDROID_LIBRARIES)
 }

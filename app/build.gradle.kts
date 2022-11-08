@@ -39,6 +39,4 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
-
-    implementation(Libraries.CORE)
 }
