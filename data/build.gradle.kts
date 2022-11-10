@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    kotlin("kapt")
 }
 
 android {
@@ -35,9 +35,13 @@ android {
 dependencies {
     implementation(project(":domain"))
 
+    implementation(platform(Libraries.FIREBASE_BOM))
+
     implementation(TestImpl.TEST_LIBRARIES)
     implementation(Libraries.DATA_LIBRARIES)
     annotationProcessor(AnnotationProcessors.DATA_LIBRARIES)
-    androidTestImplementation(AndroidTestImpl.ANDROID_LIBRARIES)
     kapt(Kapt.DATA_LIBRARIES)
+}
+kapt {
+    correctErrorTypes = true
 }
