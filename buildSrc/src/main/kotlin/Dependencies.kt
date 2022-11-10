@@ -124,6 +124,13 @@ object Libraries {
         PAGING_COMMON_KTX,
         ROOM_COMMON
     )
+    val APP_LIBRARIES = arrayListOf(
+        HILT,
+        RETROFIT,
+        MOSHI_KOTLIN,
+        MOSHI_ADAPTERS,
+        CONVERTER_MOSHI
+    )
 }
 
 object TestImpl {
@@ -173,6 +180,12 @@ object Kapt {
     )
 
     val DATA_LIBRARIES = arrayListOf(
+        ROOM_COMPILER,
+        MOSHI_KOTLIN_CODEGEN
+    )
+
+    val APP_LIBRARIES = arrayListOf(
+        HILT,
         ROOM_COMPILER,
         MOSHI_KOTLIN_CODEGEN
     )
