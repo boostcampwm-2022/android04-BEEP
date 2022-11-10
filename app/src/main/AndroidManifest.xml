@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="com.lighthouse.BeepApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,6 +21,6 @@
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="${naver_map_api_id}"/>
+            android:value="${naver_map_api_id}" />
     </application>
 </manifest>
