@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
+    kotlin("kapt")
 }
 
 java {
@@ -10,4 +11,7 @@ java {
 
 dependencies {
     implementation(Libraries.DOMAIN_LIBRARIES)
+}
+kapt {
+    correctErrorTypes = true
 }

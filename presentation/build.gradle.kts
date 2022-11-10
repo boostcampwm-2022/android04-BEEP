@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -29,7 +31,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
     buildFeatures {
         dataBinding = true
     }
@@ -38,7 +39,14 @@ android {
 dependencies {
     implementation(project(":domain"))
 
+//    implementation(platform(Libraries.FIREBASE_BOM))
+
     implementation(Libraries.VIEW_LIBRARIES)
-    implementation(TestImpl.TEST_LIBRARIES)
-    androidTestImplementation(AndroidTestImpl.ANDROID_LIBRARIES)
+    testImplementation(TestImpl.TEST_LIBRARIES)
+    kapt(Kapt.VIEW_LIBRARIES)
+    androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
+    annotationProcessor(AnnotationProcessors.VIEW_LIBRARIES)
+}
+kapt {
+    correctErrorTypes = true
 }
