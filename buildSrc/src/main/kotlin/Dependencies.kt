@@ -10,6 +10,7 @@ object Versions {
     const val ESPRESSO = "3.4.0"
     const val MATERIAL = "1.7.0"
     const val ROOM = "2.4.3"
+    const val COROUTINE = "1.5.1"
 }
 
 object Libraries {
@@ -23,6 +24,8 @@ object Libraries {
     private const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM}"
     private const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
     private const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
+    private const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINE}"
+    private const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -35,6 +38,10 @@ object Libraries {
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
         ROOM_KTX
+    )
+    val DOMAIN_LIBRARIES = arrayListOf(
+        COROUTINE_CORE,
+        COROUTINE_ANDROID
     )
 }
 
