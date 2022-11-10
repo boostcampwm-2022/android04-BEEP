@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">BEEP</string>
+
+    <string name="all_cash_unit">원</string>
+    <string name="all_d_day">D-%1$d</string>
+
+    <string name="main_menu_list">목록</string>
+    <string name="main_menu_home">홈</string>
+    <string name="main_menu_setting">설정</string>
+
+    <string name="main_order_recent">최신순</string>
+    <string name="main_order_d_day">디데이순</string>
+    <string name="main_filter_all">전체</string>
+
+    <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
 </resources>
