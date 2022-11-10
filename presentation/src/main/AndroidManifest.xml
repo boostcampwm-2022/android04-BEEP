@@ -3,9 +3,15 @@
 
     <application>
         <activity
+            android:name=".ui.signin.SignInActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -16,11 +22,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity android:name=".ui.addgifticon.AddGifticonActivity" />
-
         <activity android:name=".ui.cropgifticon.CropGifticonActivity" />
-
         <activity android:name=".ui.gallery.GalleryActivity" />
     </application>
+
 </manifest>
