@@ -167,6 +167,10 @@ object AnnotationProcessors {
     val DATA_LIBRARIES = arrayListOf(
         ROOM_COMPILER
     )
+
+    val APP_LIBRARIES = arrayListOf(
+        ROOM_COMPILER
+    )
 }
 
 object Kapt {
