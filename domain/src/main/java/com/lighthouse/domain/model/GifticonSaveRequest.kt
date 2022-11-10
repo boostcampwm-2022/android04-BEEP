@@ -1,6 +1,5 @@
 package com.lighthouse.domain.model
 
-import com.sun.jndi.toolkit.url.Uri
 import java.util.Date
 
 data class GifticonSaveRequest(
@@ -12,7 +11,7 @@ data class GifticonSaveRequest(
     val isCashCard: Boolean,
     val balance: Int,
     val memo: String,
-    val thumbnailUri: Uri,
-    val originUri: Uri,
-    val brandUri: Uri
+    val thumbnailUri: String,
+    val originUri: String,
+    val brandUri: String
 )
