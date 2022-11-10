@@ -19,8 +19,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "naver_map_api_id", getApiKey("naver_map_api_id"))
-        buildConfigField("String", "kakao_search_id", getApiKey("kakao_search_id"))
+        buildConfigField("String", "kakaoSearchId", getApiKey("kakao_search_id"))
+        manifestPlaceholders["naver_map_api_id"] = getApiKey("naver_map_api_id")
     }
 
     buildTypes {
