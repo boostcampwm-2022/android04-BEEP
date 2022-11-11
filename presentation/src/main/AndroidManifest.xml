@@ -22,5 +22,9 @@
         <activity android:name=".ui.cropgifticon.CropGifticonActivity" />
 
         <activity android:name=".ui.gallery.GalleryActivity" />
+
+        <activity
+            android:name=".ui.map.MapActivity"
+            android:exported="true" />
     </application>
 </manifest>

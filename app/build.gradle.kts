@@ -3,6 +3,8 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -47,6 +49,10 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
+
+    kapt(Kapt.APP_LIBRARIES)
+    implementation(Libraries.APP_LIBRARIES)
+    annotationProcessor(AnnotationProcessors.APP_LIBRARIES)
 }
 
 fun getApiKey(propertyKey: String): String {

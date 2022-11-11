@@ -1,10 +1,20 @@
 package com.lighthouse.domain.usecase
 
 import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.domain.repository.BrandRepository
+import javax.inject.Inject
 
-class GetBrandPlaceInfosUseCase {
+class GetBrandPlaceInfosUseCase @Inject constructor(
+    private val brandRepository: BrandRepository
+) {
 
-    operator fun invoke(brandName: String, x: Int, y: Int, rect: Int, size: Int): List<BrandPlaceInfo> {
-        return emptyList()
+    suspend operator fun invoke(
+        brandName: String,
+        x: String,
+        y: String,
+        rect: String,
+        size: Int
+    ): Result<List<BrandPlaceInfo>> {
+        return brandRepository.getBrandPlaceInfo(brandName, x, y, rect, size)
     }
 }
