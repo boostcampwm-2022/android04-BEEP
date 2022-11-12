@@ -5,9 +5,6 @@
 
     <data>
 
-        <variable
-            name="vm"
-            type="com.lighthouse.presentation.ui.signin.SignInViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

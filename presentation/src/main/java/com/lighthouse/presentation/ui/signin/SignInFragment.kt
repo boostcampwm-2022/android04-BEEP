@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -25,7 +24,6 @@ import com.lighthouse.presentation.ui.common.viewBindings
 class SignInFragment : Fragment() {
 
     private val binding by viewBindings(FragmentSignInBinding::bind)
-    private val viewModel: SignInViewModel by viewModels()
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private val activityLauncher: ActivityResultLauncher<Intent> =
