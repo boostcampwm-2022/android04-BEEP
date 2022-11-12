@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.lighthouse.presentation.ui.signin.SignInViewModel" />
@@ -11,9 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.signin.SignInFragment"
-        >
-
+        tools:context=".ui.signin.SignInFragment">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
