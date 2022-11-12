@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="dm"
-            type="com.lighthouse.presentation.ui.addgifticon.adapter.AddCandidateGifticonDisplayModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="48dp"
         android:layout_height="48dp">
@@ -29,8 +22,7 @@
             android:src="@drawable/ic_add_delete_gifticon"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{dm.closeVisibility}" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:id="@+id/view_warning_badge"
@@ -41,7 +33,6 @@
             android:background="@drawable/ic_add_warning_badge"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{dm.badgeVisibility}" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
