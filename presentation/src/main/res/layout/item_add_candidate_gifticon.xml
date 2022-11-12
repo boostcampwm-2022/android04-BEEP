@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/iv_candidate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/surface_1"
+            android:contentDescription="@string/add_gifticon_goto_gallery_description"
+            android:src="@drawable/ic_add_default_gifticon" />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:contentDescription="@string/add_gifticon_delete_description"
+            android:src="@drawable/ic_add_delete_gifticon"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view_warning_badge"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:background="@drawable/ic_add_warning_badge"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#8C8C8C</color>
+
+    <color name="error">#E93B14</color>
+    <color name="surface_1">#F5F5F5</color>
 </resources>

@@ -14,6 +14,40 @@
 
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
 
+    <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
+    <string name="add_gifticon_title">기프티콘 추가</string>
+    <string name="add_gifticon_empty">없음</string>
+    <string name="add_gifticon_registered">개 등록됨</string>
+    <string name="add_gifticon_goto_gallery_description">갤러리 이동하기 버튼</string>
+    <string name="add_gifticon_delete_description">등록된 이미지 삭제 버튼</string>
+    <string name="add_gifticon_candidate_description">기프티콘 후보 버튼</string>
+    <string name="add_gifticon_image_description">선택된 기프티콘 이미지</string>
+    <string name="add_gifticon_edit_image">편집하기</string>
+    <string name="add_gifticon_confirm_origin_image">원본이미지 확인</string>
+    <string name="add_gifticon_cash_card">금액권</string>
+    <string name="add_gifticon_delete_mode">삭제하기</string>
+    <string name="add_gifticon_edit_mode">편집하기</string>
+    <string name="add_gifticon_brand_description">기프티콘 브랜드 이미지</string>
+    <string name="add_gifticon_name_label">이름</string>
+    <string name="add_gifticon_name_hint">쿠폰 이름을 입력하세요.</string>
+    <string name="add_gifticon_brand_label">브랜드</string>
+    <string name="add_gifticon_brand_hint">브랜드명을 입력하세요.</string>
+    <string name="add_gifticon_expire_date_label">유효기간</string>
+    <string name="add_gifticon_expire_date_hint">유효기간을 선택하세요.</string>
+    <string name="add_gifticon_balance_label">잔액</string>
+    <string name="add_gifticon_balance_hint">잔액을 입력하세요.</string>
+    <string name="add_gifticon_memo_label">메모</string>
+    <string name="add_gifticon_memo_hint">메모를 남겨주세요.</string>
+    <string name="add_gifticon_cancel">취소</string>
+    <string name="add_gifticon_register">등록하기</string>
+
+    <string name="gallery_back_description">뒤로가기 버튼</string>
+    <string name="gallery_image_description">갤러리 이미지</string>
+    <string name="gallery_title">이미지 선택</string>
+    <string name="gallery_cancel">완료</string>
+
+    <string name="crop_gifticon_complete">완료</string>
+
     <string name="signin_google_fail">구글 로그인 실패</string>
     <string name="signin_google_connect_fail">구글 연결 실패</string>
     <string name="signin_success">로그인 성공</string>
