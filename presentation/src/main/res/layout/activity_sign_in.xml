@@ -12,10 +12,8 @@
         android:layout_height="match_parent"
         tools:context=".ui.signin.SignInActivity">
 
-
-
-        <FrameLayout
-            android:id="@+id/fl_signin"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcv_signin"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
