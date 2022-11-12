@@ -13,4 +13,9 @@
     <string name="main_filter_all">전체</string>
 
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
+
+    <string name="signin_google_fail">구글 로그인 실패</string>
+    <string name="signin_google_connect_fail">구글 연결 실패</string>
+    <string name="signin_success">로그인 성공</string>
+    <string name="signin_fail">로그인 실패</string>
 </resources>
