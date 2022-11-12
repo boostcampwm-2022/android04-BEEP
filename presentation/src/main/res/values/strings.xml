@@ -7,9 +7,11 @@
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
     <string name="main_menu_setting">설정</string>
+
     <string name="main_order_recent">최신순</string>
     <string name="main_order_d_day">디데이순</string>
     <string name="main_filter_all">전체</string>
+
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
@@ -45,4 +47,9 @@
     <string name="gallery_cancel">완료</string>
 
     <string name="crop_gifticon_complete">완료</string>
+
+    <string name="signin_google_fail">구글 로그인 실패</string>
+    <string name="signin_google_connect_fail">구글 연결 실패</string>
+    <string name="signin_success">로그인 성공</string>
+    <string name="signin_fail">로그인 실패</string>
 </resources>
