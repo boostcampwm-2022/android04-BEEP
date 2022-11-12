@@ -32,9 +32,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Unzip secrets.tar
-        run: tar xvf secrets.tar
-
       - name: Run ktlint
         run: ./gradlew ktlintCheck
 
