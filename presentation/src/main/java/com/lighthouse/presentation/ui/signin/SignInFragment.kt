@@ -14,18 +14,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSignInBinding
 import com.lighthouse.presentation.ui.common.viewBindings
+import com.lighthouse.presentation.ui.main.MainActivity
 
 class SignInFragment : Fragment() {
 
     private val binding by viewBindings(FragmentSignInBinding::bind)
 
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val auth: FirebaseAuth = Firebase.auth
     private val activityLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -48,7 +51,7 @@ class SignInFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initGoogleLogin()
+        auth.currentUser?.let { gotoMain() } ?: initGoogleLogin()
     }
 
     private fun initGoogleLogin() {
@@ -66,12 +69,18 @@ class SignInFragment : Fragment() {
 
     private fun signInWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        Firebase.auth.signInWithCredential(credential).addOnCompleteListener { task ->
+        auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
+                gotoMain()
             } else {
                 Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun gotoMain() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        startActivity(intent)
     }
 }
