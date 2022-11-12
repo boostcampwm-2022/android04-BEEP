@@ -29,7 +29,7 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="@string/main_add_gifticon_description"
             android:onClickListener="@{() -> vm.gotoAddGifticon()}"
-            android:src="@drawable/ic_main_floating_add"
+            android:src="@drawable/btn_main_floating_add"
             app:layout_constraintBottom_toTopOf="@id/bnv"
             app:layout_constraintEnd_toEndOf="parent" />
 
