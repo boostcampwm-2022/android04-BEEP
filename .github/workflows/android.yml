@@ -32,21 +32,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run ktlint
-        run: ./gradlew ktlintCheck
-
-      - name: Run detekt
-        run: ./gradlew detekt
-
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
-
-      - name: Build assemble release apk
-        run: ./gradlew assembleRelease
 
       - name: Create android test report
         uses: asadmansr/android-test-report-action@v1.2.0
         if: ${{ always() }}
-
-      - name: Build assemble release apk
-        run: ./gradlew assembleRelease
