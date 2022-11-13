@@ -54,7 +54,7 @@ class GetBrandPlaceInfosUseCaseTest {
 
     companion object {
         private val brandKeyword: List<String> = listOf("스타벅스", "베스킨라빈스", "BBQ")
-        private val brandPlaceInfo: List<BrandPlaceInfo> = listOf(BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""),)
+        private val brandPlaceInfo: List<BrandPlaceInfo> = listOf(BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""))
         private val brandPlaceInfoResults: List<BrandPlaceInfo> = listOf(
             BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""),
             BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""),
