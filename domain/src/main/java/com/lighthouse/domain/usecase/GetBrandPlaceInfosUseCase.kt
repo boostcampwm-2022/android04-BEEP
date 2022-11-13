@@ -10,13 +10,18 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        brandName: String,
+        brandNames: List<String>,
         x: String,
         y: String,
         rect: String,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
-        val brandPlaceInfos = brandRepository.getBrandPlaceInfo(brandName, x, y, rect, size).getOrThrow()
+        val brandPlaceInfos = mutableListOf<BrandPlaceInfo>()
+
+        for (brandName in brandNames) {
+            val brandSearchResults = brandRepository.getBrandPlaceInfo(brandName, x, y, rect, size).getOrThrow()
+            if (brandSearchResults.isNotEmpty()) brandPlaceInfos.addAll(brandSearchResults)
+        }
 
         return if (brandPlaceInfos.isNotEmpty()) {
             Result.success(brandPlaceInfos)
