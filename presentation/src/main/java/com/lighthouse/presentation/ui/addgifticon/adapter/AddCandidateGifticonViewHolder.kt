@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ItemAddCandidateGifticonBinding
+import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddCandidateGifticonViewHolder(
     parent: ViewGroup,
@@ -16,6 +17,5 @@ class AddCandidateGifticonViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: AddGifticonUIModel.Gifticon) {
-        binding.dm = AddCandidateGifticonDisplayModel(item, onClick, onDelete)
     }
 }

@@ -1,11 +1,11 @@
-package com.lighthouse.presentation.ui.addgifticon.adapter
+package com.lighthouse.presentation.model
 
 import android.net.Uri
 
 sealed class AddGifticonUIModel {
     object Gallery : AddGifticonUIModel()
     data class Gifticon(
-        val index: Int,
+        val id: Int,
         val uri: Uri?,
         val invalid: Boolean,
         val isDelete: Boolean

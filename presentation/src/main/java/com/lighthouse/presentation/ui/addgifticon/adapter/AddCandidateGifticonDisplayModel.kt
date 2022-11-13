@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.addgifticon.adapter
 
 import android.view.View
+import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddCandidateGifticonDisplayModel(
     val item: AddGifticonUIModel.Gifticon,
