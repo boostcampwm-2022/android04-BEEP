@@ -8,11 +8,15 @@
 
         <ImageView
             android:id="@+id/iv_candidate"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@color/surface_1"
             android:contentDescription="@string/add_gifticon_goto_gallery_description"
-            android:src="@drawable/ic_add_default_gifticon" />
+            android:src="@drawable/ic_add_default_gifticon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_delete"
