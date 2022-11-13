@@ -59,8 +59,8 @@ dependencies {
     kapt(Kapt.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
     annotationProcessor(AnnotationProcessors.VIEW_LIBRARIES)
-
 }
+
 kapt {
     correctErrorTypes = true
 }
