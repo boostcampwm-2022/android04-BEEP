@@ -37,6 +37,10 @@ object Versions {
     const val JUNIT = "4.13.2"
     const val ANDROID_JUNIT = "1.1.3"
     const val ESPRESSO = "3.4.0"
+    const val JUNIT5 = "5.8.2"
+    const val MOCK = "1.12.0"
+    const val GOOGLE_TRUTH = "1.1.3"
+    const val COROUTINES_TEST = "1.6.0"
 }
 
 object Libraries {
@@ -137,12 +141,12 @@ object TestImpl {
     private const val JUNIT4 = "junit:junit:${Versions.JUNIT}"
     private const val PAGING_COMMON = "androidx.paging:paging-common:${Versions.PAGING_KTX}"
 
-    private const val JUNIT_JUPITER_PARAMS = "org.junit.jupiter:junit-jupiter-params:5.8.2"
-    private const val JUNIT_JUPITER_ENGINE = "org.junit.jupiter:junit-jupiter-engine:5.8.2"
-    private const val JUNIT_VINTAGE_ENGINE = "org.junit.vintage:junit-vintage-engine:5.8.2"
-    private const val MOCK = "io.mockk:mockk:1.12.0"
-    private const val GOOGLE_TRUTH = "com.google.truth:truth:1.1.3"
-    private const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
+    private const val JUNIT_JUPITER_PARAMS = "org.junit.jupiter:junit-jupiter-params:${Versions.JUNIT5}"
+    private const val JUNIT_JUPITER_ENGINE = "org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT5}"
+    private const val JUNIT_VINTAGE_ENGINE = "org.junit.vintage:junit-vintage-engine:${Versions.JUNIT5}"
+    private const val MOCK = "io.mockk:mockk:${Versions.MOCK}"
+    private const val GOOGLE_TRUTH = "com.google.truth:truth:${Versions.GOOGLE_TRUTH}"
+    private const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES_TEST}"
 
     val TEST_LIBRARIES = arrayListOf(
         JUNIT4,
