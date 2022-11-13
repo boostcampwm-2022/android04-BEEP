@@ -11,6 +11,7 @@ java {
 
 dependencies {
     implementation(Libraries.DOMAIN_LIBRARIES)
+    testImplementation(TestImpl.TEST_LIBRARIES)
 }
 kapt {
     correctErrorTypes = true
