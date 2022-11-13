@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
-import androidx.core.content.ContentResolverCompat
 import com.lighthouse.domain.model.GalleryImage
 import java.util.Date
 import javax.inject.Inject
