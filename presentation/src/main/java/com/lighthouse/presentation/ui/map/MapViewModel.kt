@@ -20,8 +20,8 @@ class MapViewModel @Inject constructor(
 
     private val brandList = arrayListOf("스타벅스", "베스킨라빈스", "BHC", "BBQ")
 
-    private val _state: MutableStateFlow<MapState> = MutableStateFlow(MapState.Loading)
-    val state: StateFlow<MapState> = _state.asStateFlow()
+    var state: MutableStateFlow<MapState> = MutableStateFlow(MapState.Loading)
+        private set
 
     init {
         getBrandPlaceInfos(brandList)
@@ -33,14 +33,14 @@ class MapViewModel @Inject constructor(
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brandPlaceInfos ->
                     Log.d("TAG", "success -> $brandPlaceInfos")
-                    _state.value = MapState.Success(brandPlaceInfos)
+                    state.value = MapState.Success(brandPlaceInfos)
                 }
                 .onFailure { throwable ->
                     Log.d("TAG", "throwable -> $throwable")
                     when (throwable) {
-                        CustomError.NetworkFailure -> _state.value = MapState.NetworkFailure
-                        CustomError.NotFoundBrandPlaceInfos -> _state.value = MapState.NotFoundSearchResults
-                        else -> _state.value = MapState.Failure
+                        CustomError.NetworkFailure -> state.value = MapState.NetworkFailure
+                        CustomError.NotFoundBrandPlaceInfos -> state.value = MapState.NotFoundSearchResults
+                        else -> state.value = MapState.Failure
                     }
                 }
         }
