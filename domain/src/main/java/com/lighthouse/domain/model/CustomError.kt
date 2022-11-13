@@ -6,4 +6,5 @@ sealed class CustomError(
 ) : Exception(message, cause) {
 
     object NetworkFailure : CustomError()
+    object NotFoundBrandPlaceInfos : CustomError()
 }
