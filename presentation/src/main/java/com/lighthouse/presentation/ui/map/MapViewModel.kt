@@ -14,13 +14,7 @@ class MapViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
-    // TODO 임시 데이터 변경 필요
-    private val brandList = arrayListOf<String>().apply {
-        add("스타벅스")
-        add("베스킨라빈스")
-        add("BHC")
-        add("BBQ")
-    }
+    private val brandList = arrayListOf("스타벅스", "베스킨라빈스", "BHC", "BBQ")
 
     init {
         viewModelScope.launch {
