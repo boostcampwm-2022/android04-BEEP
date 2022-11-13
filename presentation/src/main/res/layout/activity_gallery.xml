@@ -48,7 +48,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_back"
             app:spanCount="4"
-            app:items="@{vm.list}"
+            app:setItems="@{vm.list}"
             tools:listitem="@layout/item_gallery"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
