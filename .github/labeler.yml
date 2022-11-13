@@ -1,8 +1,8 @@
 test:
-  - app/src/test/**/*
-  - app/src/androidTest/**/*
-  - library/src/test/**/*
-  - library/src/androidTest/**/*
+  - domain/src/test/**/*
+  - presentation/src/test/**/*
+  - presentation/src/androidTest/**/*
+  - data/src/test/**/*
 
 chore:
   - app/*.gradle

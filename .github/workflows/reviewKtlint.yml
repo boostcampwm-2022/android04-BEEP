@@ -19,4 +19,7 @@ jobs:
               uses: ScaCap/action-ktlint@master
               with:
                   github_token: ${{ secrets.github_token }}
-                  reporter: github-pr-check # Change reporter
+                  reporter: github-pr-review
+                  android: true
+                  fail_on_error: true
+                  level: warning
