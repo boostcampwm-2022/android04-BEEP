@@ -1,7 +1,5 @@
 package com.lighthouse.di
 
-import android.content.ContentResolver
-import android.content.Context
 import com.lighthouse.datasource.BrandRemoteSource
 import com.lighthouse.datasource.BrandRemoteSourceImpl
 import com.lighthouse.datasource.GalleryImageLocalSource
@@ -12,9 +10,7 @@ import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
