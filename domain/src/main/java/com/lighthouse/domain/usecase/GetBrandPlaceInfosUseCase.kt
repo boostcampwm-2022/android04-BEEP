@@ -1,6 +1,7 @@
 package com.lighthouse.domain.usecase
 
 import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.repository.BrandRepository
 import javax.inject.Inject
 
@@ -9,12 +10,23 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        brandName: String,
+        brandNames: List<String>,
         x: String,
         y: String,
         rect: String,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
-        return brandRepository.getBrandPlaceInfo(brandName, x, y, rect, size)
+        val brandPlaceInfos = mutableListOf<BrandPlaceInfo>()
+
+        for (brandName in brandNames) {
+            val brandSearchResults = brandRepository.getBrandPlaceInfo(brandName, x, y, rect, size).getOrThrow()
+            if (brandSearchResults.isNotEmpty()) brandPlaceInfos.addAll(brandSearchResults)
+        }
+
+        return if (brandPlaceInfos.isNotEmpty()) {
+            Result.success(brandPlaceInfos)
+        } else {
+            Result.failure(CustomError.NotFoundBrandPlaceInfos)
+        }
     }
 }

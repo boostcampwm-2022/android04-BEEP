@@ -4,9 +4,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MapActivity : AppCompatActivity() {
@@ -17,6 +22,24 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map)
-        viewModel // by ViewModels는 lazy라서 실행 확인을 위한 코드
+
+        setObserveSearchData()
+    }
+
+    private fun setObserveSearchData() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    // TODO 지도에 그려줄 때 처리할 로직들
+                    when (state) {
+                        is MapState.Success -> {}
+                        is MapState.Failure -> {}
+                        is MapState.NetworkFailure -> {}
+                        is MapState.NotFoundSearchResults -> {}
+                        is MapState.Loading -> {}
+                    }
+                }
+            }
+        }
     }
 }
