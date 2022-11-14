@@ -3,6 +3,7 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 object Versions {
     const val APP_COMPAT = "1.5.1"
     const val CORE = "1.9.0"
+    const val CORE_SPLASH = "1.0.0"
     const val CONSTRAINT_LAYOUT = "2.1.4"
     const val MATERIAL = "1.7.0"
     const val VIEWMODEL_KTX = "2.5.1"
@@ -47,6 +48,7 @@ object Versions {
 object Libraries {
     // androidX + KTX
     private const val CORE = "androidx.core:core-ktx:${Versions.CORE}"
+    private const val CORE_SPLASH = "androidx.core:core-splashscreen:${Versions.CORE_SPLASH}"
     private const val APP_COMPAT = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     private const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINT_LAYOUT}"
     private const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
@@ -95,6 +97,7 @@ object Libraries {
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
+        CORE_SPLASH,
         APP_COMPAT,
         CONSTRAINT_LAYOUT,
         MATERIAL,
