@@ -37,6 +37,10 @@ object Versions {
     const val JUNIT = "4.13.2"
     const val ANDROID_JUNIT = "1.1.3"
     const val ESPRESSO = "3.4.0"
+    const val JUNIT5 = "5.8.2"
+    const val MOCK = "1.12.0"
+    const val GOOGLE_TRUTH = "1.1.3"
+    const val COROUTINES_TEST = "1.6.0"
 }
 
 object Libraries {
@@ -134,18 +138,33 @@ object Libraries {
 }
 
 object TestImpl {
-    private const val JUNIT4 = "junit:junit:${Versions.JUNIT}" // TODO 5 쓰는 쪽으로 바꿔야함
+    private const val JUNIT4 = "junit:junit:${Versions.JUNIT}"
     private const val PAGING_COMMON = "androidx.paging:paging-common:${Versions.PAGING_KTX}"
+
+    private const val JUNIT_JUPITER_PARAMS = "org.junit.jupiter:junit-jupiter-params:${Versions.JUNIT5}"
+    private const val JUNIT_JUPITER_ENGINE = "org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT5}"
+    private const val JUNIT_VINTAGE_ENGINE = "org.junit.vintage:junit-vintage-engine:${Versions.JUNIT5}"
+    private const val MOCK = "io.mockk:mockk:${Versions.MOCK}"
+    private const val GOOGLE_TRUTH = "com.google.truth:truth:${Versions.GOOGLE_TRUTH}"
+    private const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES_TEST}"
 
     val TEST_LIBRARIES = arrayListOf(
         JUNIT4,
-        PAGING_COMMON
+        PAGING_COMMON,
+        JUNIT_JUPITER_PARAMS,
+        JUNIT_JUPITER_ENGINE,
+        JUNIT_VINTAGE_ENGINE,
+        MOCK,
+        GOOGLE_TRUTH,
+        COROUTINES_TEST
     )
 }
 
 object AndroidTestImpl {
     private const val ANDROID_JUNIT = "androidx.test.ext:junit:${Versions.ANDROID_JUNIT}"
     private const val ESPRESSO = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO}"
+    private const val MOCKITO_CORE = "org.mockito:mockito-core:2.28.2"
+    private const val MOCKITO_ANDROID = "org.mockito:mockito-android:2.28.2"
 
     private const val WORK_MANAGER = "androidx.work:work-testing:${Versions.WORK_MANAGER}"
 
@@ -153,6 +172,11 @@ object AndroidTestImpl {
         ANDROID_JUNIT,
         ESPRESSO,
         WORK_MANAGER
+    )
+
+    val DATA_LIBRARIES = arrayListOf(
+        MOCKITO_CORE,
+        MOCKITO_ANDROID
     )
 }
 
