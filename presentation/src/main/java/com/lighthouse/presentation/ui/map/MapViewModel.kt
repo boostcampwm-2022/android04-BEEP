@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.presentation.mapper.toPresentation
+import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -19,6 +20,8 @@ class MapViewModel @Inject constructor(
 
     var state: MutableStateFlow<MapState> = MutableStateFlow(MapState.Loading)
         private set
+    var brandPlaceSearchResults = listOf<BrandPlaceInfoUiModel>()
+        private set
 
     init {
         getBrandPlaceInfos(brandList)
@@ -26,10 +29,11 @@ class MapViewModel @Inject constructor(
 
     fun getBrandPlaceInfos(brandList: List<String>) {
         viewModelScope.launch {
-            getBrandPlaceInfosUseCase(brandList, "37.2840", "127.1071", "500", 5)
+            getBrandPlaceInfosUseCase(brandList, "127.110515", "37.282778", "1000", 5)
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brandPlaceInfos ->
-                    state.value = MapState.Success(brandPlaceInfos)
+                    brandPlaceSearchResults = brandPlaceInfos
+                    state.value = MapState.Success
                 }
                 .onFailure { throwable ->
                     when (throwable) {

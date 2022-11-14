@@ -12,6 +12,6 @@ interface NetworkApiService {
         @Query("x") x: String,
         @Query("y") y: String,
         @Query("rect") rect: String,
-        @Query("radius") radius: Int
+        @Query("size") size: Int
     ): BrandPlaceInfoDataContainer
 }
