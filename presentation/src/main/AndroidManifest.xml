@@ -3,6 +3,7 @@
     <application>
         <activity
             android:name=".ui.signin.SignInActivity"
+            android:theme="@style/Theme.BEEP.Splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
