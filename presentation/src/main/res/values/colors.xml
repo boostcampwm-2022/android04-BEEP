@@ -6,4 +6,6 @@
 
     <color name="error">#E93B14</color>
     <color name="surface_1">#F5F5F5</color>
+
+    <color name="beep_pink">#FF2869</color>
 </resources>
