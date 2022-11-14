@@ -2,6 +2,8 @@ package com.lighthouse.datasource
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.lighthouse.domain.model.GalleryImage
@@ -12,7 +14,7 @@ class GalleryImageLocalSourceImpl @Inject constructor(
     private val contentResolver: ContentResolver
 ) : GalleryImageLocalSource {
 
-    override suspend fun getImages(): List<GalleryImage> {
+    override suspend fun getImages(page: Int, limit: Int): List<GalleryImage> {
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATE_ADDED
@@ -23,15 +25,32 @@ class GalleryImageLocalSourceImpl @Inject constructor(
             mimeTypeMap.getMimeTypeFromExtension("png"),
             mimeTypeMap.getMimeTypeFromExtension("jpg")
         )
-        val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
-
-        val cursor = contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            selection,
-            selectionArg,
-            sortOrder
-        )
+        val offset = page * limit
+        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val queryArgs = Bundle().apply {
+                putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
+                putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArg)
+                putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(MediaStore.Images.Media.DATE_ADDED))
+                putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION, ContentResolver.QUERY_SORT_DIRECTION_DESCENDING)
+                putInt(ContentResolver.QUERY_ARG_OFFSET, offset)
+                putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
+            }
+            contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                queryArgs,
+                null
+            )
+        } else {
+            val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC OFFSET $offset LIMIT $limit "
+            contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                selectionArg,
+                sortOrder
+            )
+        }
 
         val list = ArrayList<GalleryImage>()
         cursor?.use {
@@ -42,7 +61,7 @@ class GalleryImageLocalSourceImpl @Inject constructor(
                 val id = it.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                 val dateAdded = it.getLong(dateAddedColumn)
-                val date = Date(dateAdded)
+                val date = Date(dateAdded * 1000)
                 list.add(GalleryImage(id, contentUri.toString(), date))
             }
         }

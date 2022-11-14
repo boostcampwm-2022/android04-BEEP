@@ -33,7 +33,7 @@
             android:onClickListener="@{() -> vm.gotoAddGifticon()}"
             android:src="@drawable/btn_main_floating_add"
             app:layout_constraintBottom_toTopOf="@id/bnv"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bnv"
