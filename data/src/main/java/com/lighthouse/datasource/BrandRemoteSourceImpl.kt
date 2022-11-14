@@ -14,10 +14,10 @@ class BrandRemoteSourceImpl @Inject constructor(
         brandName: String,
         x: String,
         y: String,
-        rect: String,
+        radius: String,
         size: Int
     ): Result<BrandPlaceInfoDataContainer> {
-        val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, x, y, rect, size) }
+        val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, x, y, radius, size) }
 
         return when (val exception = result.exceptionOrNull()) {
             null -> result
