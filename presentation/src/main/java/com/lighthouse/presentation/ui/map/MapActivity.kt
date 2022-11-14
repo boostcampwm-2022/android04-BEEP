@@ -8,9 +8,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
+import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
@@ -22,6 +24,8 @@ import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
 
 @AndroidEntryPoint
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickListener, OnLocationUpdateListener {
@@ -32,6 +36,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     private lateinit var fusedLocationProviderClient: FusedLocationProvider
     private lateinit var locationSource: FusedLocationSource
     private val viewModel: MapViewModel by viewModels()
+    private val adapter = MapGifticonAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +46,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
             getMapAsync(this@MapActivity)
         }
 
+        setGifticonAdapter()
         setObserveSearchData()
         setFusedLocationProvider()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
     }
 
     private fun setObserveSearchData() {
@@ -94,6 +105,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     private fun setNaverMapZoom() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
+    }
+
+    private fun setGifticonAdapter() {
+        val gifticonTestData = listOf(
+            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(120, 20, 20), "bar", true, 1, "memo", true),
+            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(122, 11, 15), "bar", true, 1, "memo", true),
+            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(122, 5, 10), "bar", true, 1, "memo", true),
+            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(150, 10, 20), "bar", true, 1, "memo", true),
+            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(160, 10, 20), "bar", true, 1, "memo", true)
+        )
+        adapter.submitList(gifticonTestData)
+        binding.viewPagerGifticon.adapter = adapter
     }
 
     override fun onClick(overlay: Overlay): Boolean {
