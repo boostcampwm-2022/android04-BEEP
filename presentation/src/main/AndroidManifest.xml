@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application>
         <activity
             android:name=".ui.signin.SignInActivity"
@@ -21,6 +22,7 @@
         <activity android:name=".ui.addgifticon.AddGifticonActivity" />
         <activity android:name=".ui.cropgifticon.CropGifticonActivity" />
         <activity android:name=".ui.gallery.GalleryActivity" />
+        <activity android:name=".ui.detailgifticon.GifticonDetailActivity" />
 
         <activity
             android:name=".ui.map.MapActivity"
