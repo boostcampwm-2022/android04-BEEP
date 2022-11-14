@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application>
         <activity
+            android:name=".ui.security.SecurityActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.signin.SignInActivity"
-            android:theme="@style/Theme.BEEP.Splash"
+            android:exported="true"
             android:noHistory="true"
-            android:exported="true">
+            android:theme="@style/Theme.BEEP.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -15,7 +23,6 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -23,9 +30,9 @@
         <activity android:name=".ui.addgifticon.AddGifticonActivity" />
         <activity android:name=".ui.cropgifticon.CropGifticonActivity" />
         <activity android:name=".ui.gallery.GalleryActivity" />
-
         <activity
             android:name=".ui.map.MapActivity"
             android:exported="true" />
     </application>
+
 </manifest>
