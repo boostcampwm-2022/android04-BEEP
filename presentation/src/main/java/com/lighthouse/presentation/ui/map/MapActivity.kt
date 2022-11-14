@@ -2,14 +2,12 @@ package com.lighthouse.presentation.ui.map
 
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
@@ -91,17 +89,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
         locationSource = FusedLocationSource(this, 1000)
         naverMap.locationSource = locationSource
         setNaverMapZoom()
-        moveMapCamera(naverMap)
     }
 
     private fun setNaverMapZoom() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
-    }
-
-    private fun moveMapCamera(naverMap: NaverMap) {
-        val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.2840, 127.1071))
-        naverMap.moveCamera(cameraUpdate)
     }
 
     override fun onClick(overlay: Overlay): Boolean {
@@ -110,6 +102,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
 
     override fun onLocationUpdated(location: Location) {
         viewModel.getBrandPlaceInfos(location.longitude, location.latitude)
+        moveMapCamera(location.longitude, location.latitude)
+    }
+
+    private fun moveMapCamera(longitude: Double, latitude: Double) {
+        val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
+        naverMap.moveCamera(cameraUpdate)
     }
 
     override fun onResume() {
