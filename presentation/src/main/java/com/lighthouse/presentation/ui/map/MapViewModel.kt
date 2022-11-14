@@ -16,20 +16,16 @@ class MapViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
-    private val brandList = arrayListOf("스타벅스", "베스킨라빈스", "BHC", "BBQ")
+    private val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ")
 
     var state: MutableStateFlow<MapState> = MutableStateFlow(MapState.Loading)
         private set
     var brandPlaceSearchResults = listOf<BrandPlaceInfoUiModel>()
         private set
 
-    init {
-        getBrandPlaceInfos(brandList)
-    }
-
-    fun getBrandPlaceInfos(brandList: List<String>) {
+    fun getBrandPlaceInfos(x: Double, y: Double) {
         viewModelScope.launch {
-            getBrandPlaceInfosUseCase(brandList, "127.110515", "37.282778", "1000", 5)
+            getBrandPlaceInfosUseCase(brandList, x.toString(), y.toString(), "1000", 5)
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brandPlaceInfos ->
                     brandPlaceSearchResults = brandPlaceInfos
