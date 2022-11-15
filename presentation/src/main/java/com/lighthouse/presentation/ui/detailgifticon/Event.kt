@@ -5,4 +5,5 @@ sealed class Event {
     object ShareButtonClicked : Event()
     object EditButtonClicked : Event()
     object ShowAllUsedInfoButtonClicked : Event()
+    object UseGifticonButtonClicked : Event()
 }

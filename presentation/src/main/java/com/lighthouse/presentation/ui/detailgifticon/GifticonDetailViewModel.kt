@@ -4,14 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.util.UUID
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
+import javax.inject.Inject
 
-class GifticonDetailViewModel : ViewModel() {
+@HiltViewModel
+class GifticonDetailViewModel @Inject constructor() : ViewModel() {
     private val _gifticon = MutableStateFlow(
         Gifticon(
             id = UUID.generate(),
@@ -44,6 +47,10 @@ class GifticonDetailViewModel : ViewModel() {
 
     fun showAllUsedInfoButtonClicked() {
         event(Event.ShowAllUsedInfoButtonClicked)
+    }
+
+    fun UseGifticonButtonClicked() {
+        event(Event.UseGifticonButtonClicked)
     }
 
     private fun event(event: Event) {
