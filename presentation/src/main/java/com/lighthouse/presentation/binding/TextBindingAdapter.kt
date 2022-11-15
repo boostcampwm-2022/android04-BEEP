@@ -3,12 +3,12 @@ package com.lighthouse.presentation.binding
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toMonth
+import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.TimeCalculator.MAX_DAY
 import com.lighthouse.presentation.util.TimeCalculator.MIN_DAY
-import com.lighthouse.presentation.utils.extention.toDate
-import com.lighthouse.presentation.utils.extention.toMonth
-import com.lighthouse.presentation.utils.extention.toYear
 import java.util.Date
 
 @BindingAdapter("setExportedDate")

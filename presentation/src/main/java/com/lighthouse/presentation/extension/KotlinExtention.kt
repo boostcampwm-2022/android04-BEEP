@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.utils.extention
+package com.lighthouse.presentation.extension
 
 import android.content.res.Resources
 import android.util.TypedValue
