@@ -1,14 +1,14 @@
 package com.lighthouse.presentation.ui.gallery.adapter
 
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lighthouse.presentation.adapter.BindablePagingAdapter
 import com.lighthouse.presentation.model.GalleryUIModel
 
 class GalleryAdapter(
     private val onClickGallery: (GalleryUIModel.Gallery) -> Unit
-) : BindablePagingAdapter<GalleryUIModel, RecyclerView.ViewHolder>(Diff) {
+) : PagingDataAdapter<GalleryUIModel, RecyclerView.ViewHolder>(Diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {

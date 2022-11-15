@@ -14,12 +14,12 @@ class GalleryImagePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GalleryImage> {
         val current = params.key ?: page
-        val results = localSource.getImages(current, limit)
+        val results = localSource.getImages(current, params.loadSize)
         return try {
             LoadResult.Page(
                 data = results,
                 prevKey = null,
-                nextKey = if (results.size < params.loadSize) null else current + 1
+                nextKey = if (results.size < params.loadSize) null else current + (params.loadSize / limit)
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
