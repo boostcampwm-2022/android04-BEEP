@@ -7,7 +7,7 @@ object Versions {
     const val MATERIAL = "1.7.0"
     const val VIEWMODEL_KTX = "2.5.1"
     const val FRAGMENT_KTX = "1.5.4"
-    const val COROUTINE = "1.5.1"
+    const val COROUTINE = "1.6.4"
 
     const val ROOM = "2.4.3"
     const val PAGING_KTX = "3.1.1"
