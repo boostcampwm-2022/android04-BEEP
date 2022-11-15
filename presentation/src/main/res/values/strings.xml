@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">BEEP</string>
 
-    <string name="all_cash_unit">원</string>
+    <string name="all_cash_unit">%s원</string>
     <string name="all_d_day">D-%1$d</string>
     <string name="all_date">%4d.%2d.%2d</string>
+    <string name="all_concurrency_format">#,###</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
@@ -70,4 +71,11 @@
     <string name="gifticon_detail_balance_label">남은 금액</string>
     <string name="gifticon_detail_cash_type_balance_label">남은 금액</string>
     <string name="gifticon_detail_scroll_down_for_use_button_text">사용하기</string>
+
+    <string name="use_gifticon_dialog_barcode_description">기프티콘 바코드</string>
+    <string name="use_gifticon_dialog_complete_button_text">사용 완료</string>
+    <string name="use_gifticon_dialog_chip_total_amount">전액</string>
+    <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
+    <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
+    <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
 </resources>
