@@ -34,6 +34,7 @@ object Versions {
     const val PLAY_SERVICES_LOCATION = "21.0.1"
 
     const val GLIDE = "4.14.2"
+    const val VIEW_PAGER2 = "2:1.0.0"
 
     const val JUNIT = "4.13.2"
     const val ANDROID_JUNIT = "1.1.3"
@@ -92,6 +93,8 @@ object Libraries {
 
     private const val GLIDE = "com.github.bumptech.glide:glide:${Versions.GLIDE}"
 
+    private const val VIEW_PAGER2 = "androidx.viewpager2:viewpager${Versions.VIEW_PAGER2}"
+
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
         CORE_SPLASH,
@@ -110,7 +113,8 @@ object Libraries {
         BIOMETRIC,
         NAVER_MAP,
         PLAY_SERVICES_LOCATION,
-        GLIDE
+        GLIDE,
+        VIEW_PAGER2
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,

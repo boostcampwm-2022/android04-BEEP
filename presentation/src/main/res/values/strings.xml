@@ -3,6 +3,10 @@
 
     <string name="all_cash_unit">원</string>
     <string name="all_d_day">D-%1$d</string>
+    <string name="all_d_day_more_than_year">D-365+</string>
+    <string name="all_d_day_expired">만료</string>
+    <string name="all_expired_date">~ %4d.%02d.%02d</string>
+    <string name="all_date">%4d.%02d.%02d</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
@@ -53,4 +57,21 @@
     <string name="signin_google_connect_fail">구글 연결 실패</string>
     <string name="signin_success">로그인 성공</string>
     <string name="signin_fail">로그인 실패</string>
+
+    <string name="gifticon_detail_product_image_description">상품 사진</string>
+    <string name="gifticon_detail_gifticon_detail_title">상세 정보</string>
+    <string name="gifticon_detail_product_name_label">상품명</string>
+    <string name="gifticon_detail_share_gifticon_button_description">기프티콘 공유하기</string>
+    <string name="gifticon_detail_edit_gifticon_button_description">기프티콘 정보 수정하기 버튼</string>
+    <string name="gifticon_detail_product_brand_label">브랜드</string>
+    <string name="gifticon_detail_product_expire_date_label">유효기간</string>
+    <string name="gifticon_detail_memo_description">메모</string>
+    <string name="gifticon_detail_use_gifticon_button_text">기프티콘 사용</string>
+    <string name="gifticon_detail_shared_alert">ⓘ %4d년 %d월 %d일에 공유된 기프티콘 입니다.</string>
+    <string name="gifticon_detail_used_address_label">사용위치</string>
+    <string name="gifticon_detail_show_all_used_info_button_description">전체 사용 정보 확인 버튼</string>
+    <string name="gifticon_detail_used_date_label">사용일자</string>
+    <string name="gifticon_detail_balance_label">남은 금액</string>
+    <string name="gifticon_detail_cash_type_balance_label">남은 금액</string>
+    <string name="gifticon_detail_scroll_down_for_use_button_text">사용하기</string>
 </resources>
