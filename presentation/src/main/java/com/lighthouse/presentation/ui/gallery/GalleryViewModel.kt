@@ -54,6 +54,10 @@ class GalleryViewModel @Inject constructor(
 
     private val _selectedSize = MutableStateFlow(0)
 
+    val isSelected = _selectedSize.map { size ->
+        size > 0
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     val selectedSize = _selectedSize.map { size ->
         if (size == 0) "" else "$size"
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")

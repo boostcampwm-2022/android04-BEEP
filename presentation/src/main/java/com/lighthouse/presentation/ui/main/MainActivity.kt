@@ -9,17 +9,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
 import com.lighthouse.presentation.ui.main.event.MainDirections
 import com.lighthouse.presentation.ui.setting.SettingFragment
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,11 +47,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpDirections() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.directionsFlow.collect { directions ->
-                    navigate(directions)
-                }
+        repeatOnStarted {
+            viewModel.directionsFlow.collect { directions ->
+                navigate(directions)
             }
         }
     }

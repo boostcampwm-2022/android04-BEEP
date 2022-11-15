@@ -7,22 +7,19 @@ import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGalleryBinding
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.getParcelableArrayList
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.adapter.GalleryAdapter
 import com.lighthouse.presentation.ui.gallery.adapter.GallerySelection
 import com.lighthouse.presentation.ui.gallery.event.GalleryEvents
-import com.lighthouse.presentation.utils.extention.dp
-import com.lighthouse.presentation.utils.recycler.SectionSpaceGridDivider
+import com.lighthouse.presentation.util.recycler.SectionSpaceGridDivider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GalleryActivity : AppCompatActivity() {
@@ -80,23 +77,19 @@ class GalleryActivity : AppCompatActivity() {
     }
 
     private fun collectPagingData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.list.collect {
-                    galleryAdapter.submitData(it)
-                }
+        repeatOnStarted {
+            viewModel.list.collect {
+                galleryAdapter.submitData(it)
             }
         }
     }
 
     private fun collectEvent() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.eventsFlow.collect { events ->
-                    when (events) {
-                        GalleryEvents.COMPLETE -> completePhotoSelection()
-                        GalleryEvents.CANCEL -> cancelPhotoSelection()
-                    }
+        repeatOnStarted {
+            viewModel.eventsFlow.collect { events ->
+                when (events) {
+                    GalleryEvents.COMPLETE -> completePhotoSelection()
+                    GalleryEvents.CANCEL -> cancelPhotoSelection()
                 }
             }
         }
