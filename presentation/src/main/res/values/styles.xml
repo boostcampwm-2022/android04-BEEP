@@ -55,8 +55,17 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
+    <style name="BEEP.TextStyle.Toolbar" parent="BEEP.TextStyle.H6">
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+    </style>
+
     <!-- Component -->
-    <style name="BEEP.Chip.Choice" parent="">
-        <item name="elevationOverlayEnabled">false</item>
+    <style name="BEEP.Component.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:padding">8dp</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
     </style>
 </resources>

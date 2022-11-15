@@ -1,6 +1,10 @@
 <resources>
+
     <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="materialThemeOverlay">@style/BEEP.Chip.Choice</item>
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorPrimaryDark">@color/beep_pink</item>
+        <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
+        <item name="android:buttonStyle">@style/BEEP.Component.Button</item>
     </style>
 
     <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
