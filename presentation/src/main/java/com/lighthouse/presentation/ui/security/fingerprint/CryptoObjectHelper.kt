@@ -1,10 +1,9 @@
-package com.lighthouse.presentation.ui.security
+package com.lighthouse.presentation.ui.security.fingerprint
 
-import android.hardware.fingerprint.FingerprintManager
-import android.hardware.fingerprint.FingerprintManager.CryptoObject
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import java.security.Key
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -19,8 +18,8 @@ class CryptoObjectHelper {
         keyStore.load(null)
     }
 
-    fun getCryptoObject(): CryptoObject {
-        return FingerprintManager.CryptoObject(createCipher())
+    fun getCryptoObject(): FingerprintManagerCompat.CryptoObject {
+        return FingerprintManagerCompat.CryptoObject(createCipher())
     }
 
     private fun createCipher(): Cipher {

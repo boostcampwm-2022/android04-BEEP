@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security
+package com.lighthouse.presentation.ui.security.fingerprint
 
 import android.content.Context
 import android.content.Intent
@@ -13,28 +13,18 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 
-class BiometricAuthManager(
+class BiometricAuth(
     private val fragment: Fragment,
     private val context: Context,
     private val biometricLauncher: ActivityResultLauncher<Intent>,
-    private val biometricAuthCallback: BiometricAuthCallback
-) {
+    private val fingerprintAuthCallback: FingerprintAuthCallback
+) : FingerprintAuth {
     private lateinit var biometricPrompt: BiometricPrompt
     private val promptInfo: BiometricPrompt.PromptInfo
 
     init {
         promptInfo = setPromptInfo()
         setBiometricPrompt()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    fun examineBiometricAuthenticate() {
-        val biometricManager = BiometricManager.from(context)
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> biometricPrompt.authenticate(promptInfo)
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> printSnackBar(R.string.fingerprint_error_no_hardware)
-            else -> printSnackBar(R.string.fingerprint_unavailable)
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -60,7 +50,7 @@ class BiometricAuthManager(
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     printSnackBar(R.string.fingerprint_authentication_success)
-                    biometricAuthCallback.onBiometricAuthSuccess()
+                    fingerprintAuthCallback.onBiometricAuthSuccess()
                 }
 
                 override fun onAuthenticationFailed() {
@@ -74,7 +64,7 @@ class BiometricAuthManager(
                     printSnackBar(errString.toString())
                     when (errorCode) {
                         BiometricPrompt.ERROR_NO_BIOMETRICS -> goBiometricSetting()
-                        else -> biometricAuthCallback.onBiometricAuthError()
+                        else -> fingerprintAuthCallback.onBiometricAuthError()
                     }
                 }
             }
@@ -87,5 +77,14 @@ class BiometricAuthManager(
 
     private fun printSnackBar(msg: String) {
         Snackbar.make(fragment.requireView(), msg, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun authenticate() {
+        val biometricManager = BiometricManager.from(context)
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> biometricPrompt.authenticate(promptInfo)
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> printSnackBar(R.string.fingerprint_error_no_hardware)
+            else -> printSnackBar(R.string.fingerprint_unavailable)
+        }
     }
 }

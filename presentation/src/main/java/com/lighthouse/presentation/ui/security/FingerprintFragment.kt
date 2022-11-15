@@ -14,28 +14,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthCallback
+import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthManager
 
-class FingerprintFragment : Fragment(), BiometricAuthCallback {
+class FingerprintFragment : Fragment(), FingerprintAuthCallback {
 
-    private lateinit var biometricAuthManager: BiometricAuthManager
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    private val biometricLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
-            when (result.resultCode) {
-                Activity.RESULT_OK -> {
-                    biometricAuthManager.examineBiometricAuthenticate()
-                }
-                else -> {
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.fingerprint_info_obtain_fail),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
+    private lateinit var fingerprintAuthManager: FingerprintAuthManager
+    private var biometricLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,15 +32,31 @@ class FingerprintFragment : Fragment(), BiometricAuthCallback {
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        biometricAuthManager = BiometricAuthManager(this, requireContext(), biometricLauncher, this)
-        biometricAuthManager.examineBiometricAuthenticate()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            biometricLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                when (result.resultCode) {
+                    Activity.RESULT_OK -> {
+                        fingerprintAuthManager.authenticate()
+                    }
+                    else -> {
+                        Snackbar.make(
+                            requireView(),
+                            getString(R.string.fingerprint_info_obtain_fail),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+        fingerprintAuthManager = FingerprintAuthManager(this, requireContext(), biometricLauncher, this)
+        fingerprintAuthManager.authenticate()
     }
 
     override fun onBiometricAuthSuccess() {
-        Log.d("Bio", "Success~~~~~")
+        Log.d("Finger", "Success")
     }
 
     override fun onBiometricAuthError() {
-        Log.d("Bio", "error~~~~~~~")
+        Log.d("Finger", "Error")
     }
 }
