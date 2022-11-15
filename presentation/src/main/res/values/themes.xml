@@ -1,10 +1,7 @@
 <resources>
-
-    <style name="Base.Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
+    <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="materialThemeOverlay">@style/BEEP.Chip.Choice</item>
     </style>
-
-    <style name="Theme.BEEP" parent="Base.Theme.BEEP" />
 
     <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/beep_pink</item>
