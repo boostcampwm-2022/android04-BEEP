@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.utils.recycler
+package com.lighthouse.presentation.util.recycler
 
 import android.graphics.Rect
 import android.view.View

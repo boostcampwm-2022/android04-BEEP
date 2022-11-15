@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.bindingadapter
+package com.lighthouse.presentation.binding
 
 import android.view.View
 import androidx.databinding.BindingAdapter

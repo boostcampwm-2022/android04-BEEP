@@ -7,13 +7,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.model.GalleryUIModel
 
 class GalleryAdapter(
-    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit
+    private val selection: GallerySelection,
+    onClickGallery: (GalleryUIModel.Gallery) -> Unit
 ) : PagingDataAdapter<GalleryUIModel, RecyclerView.ViewHolder>(Diff) {
+
+    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit = { model ->
+        selection.toggle(model)
+        onClickGallery(model)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_HEADER -> GalleryHeaderViewHolder(parent)
-            TYPE_GALLERY -> GalleryItemViewHolder(parent, onClickGallery)
+            TYPE_GALLERY -> GalleryItemViewHolder(parent, onClickGallery, selection)
             else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
         }
     }

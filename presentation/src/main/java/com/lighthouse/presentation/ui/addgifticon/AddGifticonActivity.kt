@@ -8,17 +8,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityAddGifticonBinding
+import com.lighthouse.presentation.extension.getParcelableArrayList
+import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonDirections
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddGifticonActivity : AppCompatActivity() {
@@ -27,16 +27,16 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private val viewModel: AddGifticonViewModel by viewModels()
 
-    private val gifticonAdapter = AddGifticonAdapter(
-        onClickGallery = {
-            viewModel.gotoGallery()
-        },
-        onClickGifticon = {},
-        onDeleteGifticon = {}
-    )
+    private val gifticonAdapter = AddGifticonAdapter(onClickGallery = {
+        viewModel.gotoGallery()
+    }, onClickGifticon = {}, onDeleteGifticon = {})
 
     val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) { }
+        if (result.resultCode == Activity.RESULT_OK) {
+            val list = result.data?.getParcelableArrayList(Extras.GallerySelection, GalleryUIModel.Gallery::class.java)
+                ?: emptyList()
+            viewModel.loadGalleryImages(list)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,11 +52,9 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun setUpDirections() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.directionsFlow.collect { directions ->
-                    navigate(directions)
-                }
+        repeatOnStarted {
+            viewModel.directionsFlow.collect { directions ->
+                navigate(directions)
             }
         }
     }
@@ -83,8 +81,10 @@ class AddGifticonActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun gotoGallery(list: List<Uri>) {
-        val intent = Intent(this, GalleryActivity::class.java)
+    private fun gotoGallery(list: List<GalleryUIModel.Gallery>) {
+        val intent = Intent(this, GalleryActivity::class.java).apply {
+            putParcelableArrayListExtra(Extras.GallerySelection, ArrayList(list))
+        }
         gallery.launch(intent)
     }
 
