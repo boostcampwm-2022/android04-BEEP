@@ -3,6 +3,7 @@ package com.lighthouse.presentation.ui.addgifticon
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.model.AddGifticonUIModel
+import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonDirections
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,15 @@ class AddGifticonViewModel : ViewModel() {
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private var originImage: List<GalleryUIModel.Gallery> = listOf()
+
+    fun loadGalleryImages(list: List<GalleryUIModel.Gallery>) {
+        originImage = list
+        _displayList.value = listOf(AddGifticonUIModel.Gallery) + list.map {
+            AddGifticonUIModel.Gifticon(it.id, it.uri, false, false)
+        }
+    }
+
     fun selectGifticon(position: Int) {
         viewModelScope.launch {
             currentPos.emit(position)
@@ -40,12 +50,8 @@ class AddGifticonViewModel : ViewModel() {
     }
 
     fun gotoGallery() {
-        val list = displayList.value.mapNotNull {
-            (it as? AddGifticonUIModel.Gifticon)?.uri
-        }
-
         viewModelScope.launch {
-            directionsFlow.emit(AddGifticonDirections.Gallery(list))
+            directionsFlow.emit(AddGifticonDirections.Gallery(originImage))
         }
     }
 

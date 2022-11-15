@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
             name="dm"
             type="com.lighthouse.presentation.ui.gallery.adapter.GalleryDisplayModel" />
+
+        <variable
+            name="selection"
+            type="com.lighthouse.presentation.ui.gallery.adapter.GallerySelection" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,20 +29,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:loadUri="@{dm.item.uri}" />
 
-        <TextView
+        <View
             android:id="@+id/tv_selected"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:selected="@{selection.isSelected(dm.item)}"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_gallery_selected"
+            android:background="@drawable/bg_gallery"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="?attr/colorOnPrimary"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
