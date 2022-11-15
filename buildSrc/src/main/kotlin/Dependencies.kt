@@ -16,6 +16,8 @@ object Versions {
     const val RETROFIT = "2.9.0"
     const val MOSHI = "1.14.0"
 
+    const val ZXING = "3.5.1"
+
     const val FIREBASE_BOM = "31.0.2"
     const val FIREBASE_AUTH = "21.1.0"
     const val FIREBASE_FIRESTORE_KTX = "24.4.0"
@@ -60,6 +62,8 @@ object Libraries {
     private const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM}"
     private const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
     private const val ROOM_COMMON = "androidx.room:room-common:${Versions.ROOM}"
+
+    private const val ZXING = "com.google.zxing:core:${Versions.ZXING}"
 
     private const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
     private const val MOSHI_KOTLIN = "com.squareup.moshi:moshi-kotlin:${Versions.MOSHI}"
@@ -110,7 +114,8 @@ object Libraries {
         BIOMETRIC,
         NAVER_MAP,
         PLAY_SERVICES_LOCATION,
-        GLIDE
+        GLIDE,
+        ZXING
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
