@@ -24,6 +24,7 @@
         <activity android:name=".ui.addgifticon.AddGifticonActivity" />
         <activity android:name=".ui.cropgifticon.CropGifticonActivity" />
         <activity android:name=".ui.gallery.GalleryActivity" />
+        <activity android:name=".ui.detailgifticon.GifticonDetailActivity" />
 
         <activity
             android:name=".ui.map.MapActivity"
