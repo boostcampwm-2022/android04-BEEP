@@ -10,9 +10,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGalleryBinding
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.ui.gallery.adapter.GalleryAdapter
-import com.lighthouse.presentation.utils.extention.dp
-import com.lighthouse.presentation.utils.recycler.SectionSpaceGridDivider
+import com.lighthouse.presentation.util.recycler.SectionSpaceGridDivider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

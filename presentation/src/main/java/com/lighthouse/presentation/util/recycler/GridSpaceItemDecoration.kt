@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.utils.recycler
+package com.lighthouse.presentation.util.recycler
 
 import android.graphics.Rect
 import android.view.View
@@ -13,6 +13,7 @@ class GridSpaceItemDecoration(
     private val end: Int = 0,
     private val bottom: Int = 0
 ) : RecyclerView.ItemDecoration() {
+
     constructor(
         vSpace: Float,
         hSpace: Float,
