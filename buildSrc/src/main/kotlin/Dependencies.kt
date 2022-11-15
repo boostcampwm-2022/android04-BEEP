@@ -140,7 +140,9 @@ object Libraries {
         RETROFIT,
         MOSHI_KOTLIN,
         MOSHI_ADAPTERS,
-        CONVERTER_MOSHI
+        CONVERTER_MOSHI,
+        ROOM_RUNTIME,
+        ROOM_KTX
     )
 }
 
