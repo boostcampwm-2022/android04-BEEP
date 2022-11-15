@@ -5,5 +5,5 @@ import com.lighthouse.domain.model.GalleryImage
 import kotlinx.coroutines.flow.Flow
 
 interface GalleryImageRepository {
-    fun getImages(): Flow<PagingData<GalleryImage>>
+    fun getImages(pageSize: Int = 10): Flow<PagingData<GalleryImage>>
 }

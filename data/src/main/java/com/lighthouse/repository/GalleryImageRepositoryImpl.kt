@@ -14,11 +14,11 @@ class GalleryImageRepositoryImpl @Inject constructor(
     private val localSource: GalleryImageLocalSource
 ) : GalleryImageRepository {
 
-    override fun getImages(): Flow<PagingData<GalleryImage>> {
+    override fun getImages(pageSize: Int): Flow<PagingData<GalleryImage>> {
         return Pager(
-            config = PagingConfig(pageSize = 10, initialLoadSize = 10, enablePlaceholders = false),
+            config = PagingConfig(pageSize = pageSize, enablePlaceholders = false),
             pagingSourceFactory = {
-                GalleryImagePagingSource(localSource, 0, 10)
+                GalleryImagePagingSource(localSource, 0, pageSize)
             }
         ).flow
     }
