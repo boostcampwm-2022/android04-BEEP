@@ -1,4 +1,4 @@
-package com.boostcamp.data.database.converter
+package com.lighthouse.database.converter
 
 import androidx.room.TypeConverter
 import java.util.Date
