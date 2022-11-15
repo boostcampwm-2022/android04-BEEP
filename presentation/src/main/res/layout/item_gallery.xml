@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="dm"
             type="com.lighthouse.presentation.ui.gallery.adapter.GalleryDisplayModel" />
@@ -30,17 +31,28 @@
             app:loadUri="@{dm.item.uri}" />
 
         <View
-            android:id="@+id/tv_selected"
-            android:selected="@{selection.isSelected(dm.item)}"
+            android:id="@+id/view_shadow"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_gallery_selected"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
+            app:isVisible="@{selection.isSelected(dm.item)}"/>
+
+        <View
+            android:id="@+id/view_selected"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_gallery"
             android:gravity="center"
+            android:selected="@{selection.isSelected(dm.item)}"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
