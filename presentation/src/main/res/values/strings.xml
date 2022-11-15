@@ -60,5 +60,6 @@
     <string name="fingerprint_description">기기에 저장된 기프티콘을 보호합니다.</string>
     <string name="fingerprint_authentication_success">지문 인증 성공</string>
     <string name="fingerprint_authentication_fail">지문 인증 실패</string>
+    <string name="fingerprint_not_enrolled">등록된 지문이 없습니다.</string>
 
 </resources>
