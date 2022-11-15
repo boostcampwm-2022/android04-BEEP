@@ -15,10 +15,10 @@ class BrandRepositoryImpl @Inject constructor(
         brandName: String,
         x: String,
         y: String,
-        rect: String,
+        radius: String,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
-        val result = remoteBrandSource.getBrandPlaceInfo(brandName, x, y, rect, size).mapCatching { it.toDomain() }
+        val result = remoteBrandSource.getBrandPlaceInfo(brandName, x, y, radius, size).mapCatching { it.toDomain() }
         val exception = result.exceptionOrNull()
 
         return if (exception is CustomErrorData) {

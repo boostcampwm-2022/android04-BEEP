@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
+    <application
+        android:theme="@style/Theme.BEEP">
         <activity
             android:name=".ui.signin.SignInActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" 
             android:theme="@style/Theme.BEEP.Splash"
-            android:noHistory="true"
-            android:exported="true">
+            android:noHistory="true" >
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity android:name=".ui.addgifticon.AddGifticonActivity" />
-        <activity android:name=".ui.cropgifticon.CropGifticonActivity" />
-        <activity android:name=".ui.gallery.GalleryActivity" />
-
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.addgifticon.AddGifticonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.cropgifticon.CropGifticonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.gallery.GalleryActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.map.MapActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>
