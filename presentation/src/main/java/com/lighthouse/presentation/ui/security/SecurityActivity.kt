@@ -3,12 +3,8 @@ package com.lighthouse.presentation.ui.security
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
-import kotlinx.coroutines.launch
 
 class SecurityActivity : AppCompatActivity() {
 
