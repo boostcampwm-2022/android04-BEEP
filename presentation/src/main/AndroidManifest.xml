@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
+    <application
+        android:theme="@style/Theme.BEEP">
         <activity
             android:name=".ui.signin.SignInActivity"
             android:exported="true"
@@ -27,7 +28,6 @@
         <activity
             android:name=".ui.gallery.GalleryActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.map.MapActivity"
             android:exported="true"

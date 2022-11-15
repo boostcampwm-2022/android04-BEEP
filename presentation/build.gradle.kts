@@ -51,9 +51,6 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-//    implementation(platform(Libraries.FIREBASE_BOM))
-
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3")
     implementation(Libraries.VIEW_LIBRARIES)
     testImplementation(TestImpl.TEST_LIBRARIES)
     kapt(Kapt.VIEW_LIBRARIES)

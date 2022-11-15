@@ -42,13 +42,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_back"
-            app:spanCount="4"
-            app:setItems="@{vm.list}"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:spanCount="3"
             tools:listitem="@layout/item_gallery"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

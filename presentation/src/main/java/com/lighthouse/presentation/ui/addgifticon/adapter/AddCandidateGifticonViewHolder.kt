@@ -17,5 +17,6 @@ class AddCandidateGifticonViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: AddGifticonUIModel.Gifticon) {
+        binding.dm = AddCandidateGifticonDisplayModel(item, onClick, onDelete)
     }
 }
