@@ -3,7 +3,10 @@
 
     <string name="all_cash_unit">원</string>
     <string name="all_d_day">D-%1$d</string>
-    <string name="all_date">%4d.%2d.%2d</string>
+    <string name="all_d_day_more_than_year">D-365+</string>
+    <string name="all_d_day_expired">만료</string>
+    <string name="all_expired_date">~ %4d.%02d.%02d</string>
+    <string name="all_date">%4d.%02d.%02d</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
