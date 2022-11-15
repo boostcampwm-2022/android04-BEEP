@@ -116,7 +116,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
             Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(160, 10, 20), "bar", true, 1, "memo", true)
         )
         adapter.submitList(gifticonTestData)
-        binding.viewPagerGifticon.adapter = adapter
+        binding.vpGifticon.adapter = adapter
     }
 
     override fun onClick(overlay: Overlay): Boolean {
@@ -134,33 +134,33 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     }
 
     override fun onResume() {
-        mapView.onResume()
         super.onResume()
+        mapView.onResume()
     }
 
     override fun onPause() {
-        super.onPause()
         mapView.onPause()
+        super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onStop() {
-        super.onStop()
         mapView.onStop()
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mapView.onDestroy()
         fusedLocationProviderClient.stopLocationUpdates()
+        super.onDestroy()
     }
 
     override fun onLowMemory() {
-        super.onLowMemory()
         mapView.onLowMemory()
+        super.onLowMemory()
     }
 }

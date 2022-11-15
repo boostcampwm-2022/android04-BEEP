@@ -47,16 +47,15 @@ class FusedLocationProvider(
     private fun setLocationCallback() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                for (location in locationResult.locations) {
-                    listener.onLocationUpdated(location)
-                    break
-                }
+                locationResult.lastLocation?.let { listener.onLocationUpdated(it) }
             }
         }
     }
 
-    // location 특정 시간(LOCATION_INTERVAL) 마다 계속 수신 받을 때를 위해서 미리 만들어놓은 함수
-    // 나중에 위젯에 사용
+    /**
+     * TODO 추후에 위젯같은 곳에서 주기적으로 location update가 필요하다면 해당 view에서 사용을 하면 된다.
+     * view -> startLocationUpdates()
+     */
     fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -82,7 +81,9 @@ class FusedLocationProvider(
         )
     }
 
-    // 최근 위치를 갖고 온다.
+    /**
+     * 최근 위치를 갖고 온다.
+     */
     fun requestLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -101,7 +102,9 @@ class FusedLocationProvider(
             }
     }
 
-    // location 추적 종료
+    /**
+     * view가 종료되면 location 추적도 종료해야 한다.
+     */
     fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
