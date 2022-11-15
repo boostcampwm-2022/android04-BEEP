@@ -14,6 +14,7 @@ class GalleryHeaderViewHolder(
     )
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(header: GalleryUIModel.Header) {
+    fun bind(item: GalleryUIModel.Header) {
+        binding.item = item
     }
 }
