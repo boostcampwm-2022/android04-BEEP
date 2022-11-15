@@ -38,16 +38,15 @@ class SectionSpaceGridDivider(
 
         outRect.top = if (isSection(manager, params)) {
             if (isFirstRow(position)) top else sectionDivider - itemSpace / 2
-        } else itemSpace / 2
+        } else {
+            itemSpace / 2
+        }
 
-        outRect.bottom = if (isLastRow(position, manager, parent)) bottom
-        else itemSpace / 2
+        outRect.bottom = if (isLastRow(position, manager, parent)) bottom else itemSpace / 2
 
-        outRect.left = if (isFirstCol(params)) start
-        else itemSpace / 2
+        outRect.left = if (isFirstCol(params)) start else itemSpace / 2
 
-        outRect.right = if (isLastCol(manager, params)) end
-        else itemSpace / 2
+        outRect.right = if (isLastCol(manager, params)) end else itemSpace / 2
     }
 
     private fun isSection(manager: GridLayoutManager, params: GridLayoutManager.LayoutParams): Boolean {
