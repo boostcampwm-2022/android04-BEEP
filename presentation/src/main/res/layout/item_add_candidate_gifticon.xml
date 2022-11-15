@@ -2,17 +2,29 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="dm"
+            type="com.lighthouse.presentation.ui.addgifticon.adapter.AddCandidateGifticonDisplayModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="48dp"
         android:layout_height="48dp">
 
         <ImageView
             android:id="@+id/iv_candidate"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@color/surface_1"
             android:contentDescription="@string/add_gifticon_goto_gallery_description"
-            android:src="@drawable/ic_add_default_gifticon" />
+            android:src="@drawable/ic_add_default_gifticon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClickListener="@{() -> dm.onClickItem()}"/>
 
         <ImageView
             android:id="@+id/iv_delete"
@@ -22,7 +34,8 @@
             android:src="@drawable/ic_add_delete_gifticon"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{dm.closeVisibility}"/>
 
         <View
             android:id="@+id/view_warning_badge"
@@ -33,6 +46,7 @@
             android:background="@drawable/ic_add_warning_badge"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibility="@{dm.badgeVisibility}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

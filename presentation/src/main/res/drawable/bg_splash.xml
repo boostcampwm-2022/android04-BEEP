@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/beep_pink" />
+    <item
+        android:drawable="@drawable/ic_splash_beep"
+        android:gravity="center" />
+</layer-list>

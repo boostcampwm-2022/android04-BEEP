@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -15,6 +17,7 @@ android {
         targetSdk = AppConfig.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }
 
     buildTypes {
@@ -32,15 +35,21 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
         dataBinding = true
+    }
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
     }
 }
 
 dependencies {
     implementation(project(":domain"))
-
-//    implementation(platform(Libraries.FIREBASE_BOM))
 
     implementation(Libraries.VIEW_LIBRARIES)
     testImplementation(TestImpl.TEST_LIBRARIES)
@@ -48,6 +57,19 @@ dependencies {
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
     annotationProcessor(AnnotationProcessors.VIEW_LIBRARIES)
 }
+
 kapt {
     correctErrorTypes = true
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "1.8"
+    }
+}
+
+// JUnit5
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

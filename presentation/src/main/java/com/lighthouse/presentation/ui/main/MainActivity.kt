@@ -1,7 +1,10 @@
 package com.lighthouse.presentation.ui.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -22,6 +25,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
+
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                gotoAddGifticon()
+            }
+        }
 
     private val gifticonListFragment by lazy { GifticonListFragment() }
     private val homeFragment by lazy { HomeFragment() }
@@ -57,8 +67,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun gotoAddGifticon() {
-        val intent = Intent(this, AddGifticonActivity::class.java)
-        startActivity(intent)
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(this, AddGifticonActivity::class.java)
+            startActivity(intent)
+        } else {
+            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
     }
 
     private fun moveScreen(directions: MainDirections) {

@@ -1,37 +1,43 @@
 package com.lighthouse.presentation.ui.gallery
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
+import androidx.paging.map
+import com.lighthouse.domain.usecase.GetGalleryImagesUseCase
+import com.lighthouse.presentation.mapper.toPresentation
+import com.lighthouse.presentation.model.GalleryUIModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.map
+import java.text.SimpleDateFormat
+import java.util.Locale
+import javax.inject.Inject
 
-class GalleryViewModel : ViewModel() {
-//    val projection = arrayOf(
-//        MediaStore.Images.Media._ID,
-//        MediaStore.Images.Media.DATE_ADDED
-//    )
-//    val selection = "${MediaStore.Images.Media.MIME_TYPE} in (?,?)"
-//    val mimeTypeMap = MimeTypeMap.getSingleton()
-//    val selectionArg = arrayOf(
-//        mimeTypeMap.getMimeTypeFromExtension("png"),
-//        mimeTypeMap.getMimeTypeFromExtension("jpg")
-//    )
-//    val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
-//
-//    val cursor = contentResolver.query(
-//        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//        projection,
-//        selection,
-//        selectionArg,
-//        sortOrder
-//    )
-//
-//    cursor?.use {
-//        val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-//        val dateAddedColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
-//
-//        while (it.moveToNext()) {
-//            val id = it.getLong(idColumn)
-//            val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-//            val dateAdded = it.getLong(dateAddedColumn)
-//            val date = Date(dateAdded)
-//        }
-//    }
+@HiltViewModel
+class GalleryViewModel @Inject constructor(
+    getGalleryImagesUseCase: GetGalleryImagesUseCase
+) : ViewModel() {
+
+    private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    val list = getGalleryImagesUseCase().map { pagingData ->
+        pagingData.map {
+            it.toPresentation()
+        }.insertSeparators { before: GalleryUIModel.Gallery?, after: GalleryUIModel.Gallery? ->
+            if (before == null && after != null) {
+                GalleryUIModel.Header(format.format(after.date))
+            } else if (before != null && after != null) {
+                val beforeDate = format.format(before.date)
+                val afterDate = format.format(after.date)
+                if (beforeDate != afterDate) {
+                    GalleryUIModel.Header(afterDate)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        }
+    }.cachedIn(viewModelScope)
 }

@@ -51,7 +51,11 @@ class SignInFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        auth.currentUser?.let { gotoMain() } ?: initGoogleLogin()
+        if (auth.currentUser == null) {
+            initGoogleLogin()
+        } else {
+            gotoMain()
+        }
     }
 
     private fun initGoogleLogin() {

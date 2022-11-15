@@ -3,18 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="dm"
+            type="com.lighthouse.presentation.ui.gallery.adapter.GalleryDisplayModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/gallery_image_description"
+            android:onClickListener="@{() -> dm.onClickItem()}"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadUri="@{dm.item.uri}" />
 
         <TextView
             android:id="@+id/tv_selected"

@@ -7,4 +7,11 @@
 
     <color name="error">#E93B14</color>
     <color name="surface_1">#F5F5F5</color>
+
+    <color name="beep_pink">#EF2C67</color>
+
+    <color name="gray_200">#EAEAEA</color>
+    <color name="gray_400">#B8B8B8</color>
+    <color name="gray_500">#8C8C8C</color>
+
 </resources>
