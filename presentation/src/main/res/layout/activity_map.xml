@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             app:layout_constraintBottom_toTopOf="@id/vp_gifticon"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_gifticon"

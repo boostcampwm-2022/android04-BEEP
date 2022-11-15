@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.utils
+package com.lighthouse.presentation.util
 
 object TimeCalculator {
 
