@@ -48,7 +48,9 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
                 }
             }
         }
-        fingerprintAuthManager = FingerprintAuthManager(this.requireActivity(), requireContext(), biometricLauncher, this)
+
+        fingerprintAuthManager =
+            FingerprintAuthManager(requireActivity(), requireContext(), biometricLauncher, this)
         fingerprintAuthManager.authenticate()
     }
 
