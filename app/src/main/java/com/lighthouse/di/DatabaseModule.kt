@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.dao.GifticonDao
+import com.lighthouse.database.dao.SectionDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +41,10 @@ object DatabaseModule {
     fun provideGifticonDao(
         database: BeepDatabase
     ): GifticonDao = database.gifticonDao()
+
+    @Provides
+    @Singleton
+    fun provideSectionDao(
+        database: BeepDatabase
+    ): SectionDao = database.sectionDao()
 }
