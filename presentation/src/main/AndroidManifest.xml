@@ -9,9 +9,6 @@
         <activity
             android:name=".ui.security.SecurityActivity"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
         <activity
             android:name=".ui.signin.SignInActivity"

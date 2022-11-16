@@ -11,6 +11,7 @@ class LegacyFingerprintAuth(
     private val context: Context,
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) : FingerprintAuth {
+
     private val fingerprintManager = FingerprintManagerCompat.from(context)
     private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()

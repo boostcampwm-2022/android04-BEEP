@@ -20,6 +20,7 @@ class BiometricAuth(
     private val biometricLauncher: ActivityResultLauncher<Intent>,
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) : FingerprintAuth {
+
     private lateinit var biometricPrompt: BiometricPrompt
     private val promptInfo: BiometricPrompt.PromptInfo
 
@@ -79,8 +80,8 @@ class BiometricAuth(
                     biometricPrompt.authenticate(promptInfo)
                 }
             }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> fingerprintAuthCallback.onMessagePublished((R.string.fingerprint_error_no_hardware))
-            else -> fingerprintAuthCallback.onMessagePublished((R.string.fingerprint_unavailable))
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
+            else -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unavailable)
         }
     }
 }
