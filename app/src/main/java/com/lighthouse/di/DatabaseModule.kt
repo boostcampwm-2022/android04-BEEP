@@ -2,6 +2,10 @@ package com.lighthouse.di
 
 import android.content.ContentResolver
 import android.content.Context
+import androidx.room.Room
+import com.lighthouse.database.BeepDatabase
+import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
+import com.lighthouse.database.dao.GifticonDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,4 +22,22 @@ object DatabaseModule {
     fun provideContentResolver(
         @ApplicationContext context: Context
     ): ContentResolver = context.contentResolver
+
+    @Provides
+    @Singleton
+    fun provideBeepDatabase(
+        @ApplicationContext context: Context
+    ): BeepDatabase {
+        return Room.databaseBuilder(
+            context,
+            BeepDatabase::class.java,
+            DATABASE_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGifticonDao(
+        database: BeepDatabase
+    ): GifticonDao = database.gifticonDao()
 }

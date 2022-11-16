@@ -6,6 +6,11 @@
 
     <style name="Theme.BEEP" parent="Base.Theme.BEEP" />
 
+    <style name="Theme.BEEP.Toolbar" parent="Base.Theme.BEEP">
+        <item name="colorPrimary">?attr/colorSurface</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+    </style>
+
     <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/beep_pink</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_beep</item>

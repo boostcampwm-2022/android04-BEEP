@@ -1,23 +1,31 @@
 package com.lighthouse.presentation.ui.gallery.adapter
 
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.model.GalleryUIModel
 
-class GalleryAdapter() : BindableListAdapter<GalleryUIModel, RecyclerView.ViewHolder>(Diff) {
+class GalleryAdapter(
+    private val selection: GallerySelection,
+    onClickGallery: (GalleryUIModel.Gallery) -> Unit
+) : PagingDataAdapter<GalleryUIModel, RecyclerView.ViewHolder>(Diff) {
+
+    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit = { model ->
+        selection.toggle(model)
+        onClickGallery(model)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_HEADER -> GalleryHeaderViewHolder(parent)
-            TYPE_GALLERY -> GalleryItemViewHolder(parent)
+            TYPE_GALLERY -> GalleryItemViewHolder(parent, onClickGallery, selection)
             else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = currentList[position]
+        val item = getItem(position)
         when {
             holder is GalleryHeaderViewHolder && item is GalleryUIModel.Header -> {
                 holder.bind(item)
@@ -29,9 +37,10 @@ class GalleryAdapter() : BindableListAdapter<GalleryUIModel, RecyclerView.ViewHo
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (currentList[position]) {
+        return when (getItem(position)) {
             is GalleryUIModel.Header -> TYPE_HEADER
             is GalleryUIModel.Gallery -> TYPE_GALLERY
+            else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
         }
     }
 
@@ -54,7 +63,7 @@ class GalleryAdapter() : BindableListAdapter<GalleryUIModel, RecyclerView.ViewHo
             }
         }
 
-        private const val TYPE_HEADER = 1
-        private const val TYPE_GALLERY = 2
+        const val TYPE_HEADER = 1
+        const val TYPE_GALLERY = 2
     }
 }
