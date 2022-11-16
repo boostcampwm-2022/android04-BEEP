@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
 
+@RequiresApi(Build.VERSION_CODES.R)
 class BiometricAuth(
     private val activity: FragmentActivity,
     private val context: Context,
@@ -29,7 +30,6 @@ class BiometricAuth(
         setBiometricPrompt()
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     private fun goBiometricSetting() {
         val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
             putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED, BiometricManager.Authenticators.BIOMETRIC_STRONG)
@@ -60,7 +60,6 @@ class BiometricAuth(
                     fingerprintAuthCallback.onMessagePublished((R.string.fingerprint_authentication_fail))
                 }
 
-                @RequiresApi(Build.VERSION_CODES.R)
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     when (errorCode) {

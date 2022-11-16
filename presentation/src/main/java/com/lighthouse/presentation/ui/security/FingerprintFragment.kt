@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
@@ -30,7 +29,6 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
         return inflater.inflate(R.layout.fragment_fingerprint, container, false)
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             biometricLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

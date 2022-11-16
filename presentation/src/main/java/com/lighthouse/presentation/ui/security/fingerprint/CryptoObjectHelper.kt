@@ -68,8 +68,6 @@ class CryptoObjectHelper {
         private const val KEY_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
         private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
         private const val ENCRYPTION_PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
-        private const val TRANSFORMATION = KEY_ALGORITHM + "/" +
-            BLOCK_MODE + "/" +
-            ENCRYPTION_PADDING
+        private const val TRANSFORMATION = "$KEY_ALGORITHM/$BLOCK_MODE/$ENCRYPTION_PADDING"
     }
 }

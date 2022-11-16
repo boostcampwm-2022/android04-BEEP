@@ -13,17 +13,15 @@ class FingerprintAuthManager(
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) {
 
-    private val fingerprintAuth = initFingerPrintAuth()
-
-    fun authenticate() {
-        fingerprintAuth.authenticate()
-    }
-
-    private fun initFingerPrintAuth(): FingerprintAuth {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            biometricLauncher?.let { BiometricAuth(activity, context, biometricLauncher, fingerprintAuthCallback) } as FingerprintAuth
+    private val fingerprintAuth by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && biometricLauncher != null) {
+            BiometricAuth(activity, context, biometricLauncher, fingerprintAuthCallback)
         } else {
             LegacyFingerprintAuth(context, fingerprintAuthCallback)
         }
+    }
+
+    fun authenticate() {
+        fingerprintAuth.authenticate()
     }
 }
