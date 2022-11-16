@@ -47,7 +47,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <com.google.android.material.appbar.MaterialToolbar
+                    <Toolbar
                         android:id="@+id/tb_gifticon_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -328,7 +328,7 @@
                     app:layout_constraintVertical_bias="1"
                     tools:text="ⓘ 2022년 11월 8일에 공유된 기프티콘 입니다." />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/btn_use_gifticon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

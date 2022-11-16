@@ -55,13 +55,9 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="BEEP.TextStyle.Toolbar" parent="BEEP.TextStyle.H6">
-        <item name="titleTextColor">?attr/colorOnPrimary</item>
-    </style>
-
     <!-- Component -->
     <style name="BEEP.Component.Toolbar" parent="Widget.MaterialComponents.Toolbar">
-        <item name="titleTextColor">?attr/colorOnPrimary</item>
+        <item name="titleTextAppearance">@style/BEEP.TextStyle.H6</item>
     </style>
 
     <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">

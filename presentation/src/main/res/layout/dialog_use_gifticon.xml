@@ -16,6 +16,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:background="#22222222"
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
@@ -153,7 +154,7 @@
             app:layout_anchor="@id/btn_use_gifticon_completed"
             app:layout_anchorGravity="top" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_use_gifticon_completed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
