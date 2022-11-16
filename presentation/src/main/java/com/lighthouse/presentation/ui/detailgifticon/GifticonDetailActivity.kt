@@ -34,7 +34,6 @@ class GifticonDetailActivity : AppCompatActivity() {
         binding.btnUseGifticon.viewTreeObserver.addOnDrawListener {
             chip.post {
                 chip.isVisible = btnUseGifticon.isOnScreen().not()
-                chip.invalidate()
             }
         }
         repeatOnStarted {
