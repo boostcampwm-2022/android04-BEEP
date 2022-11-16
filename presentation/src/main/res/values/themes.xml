@@ -1,7 +1,8 @@
 <resources>
 
     <style name="Base.Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorPrimaryDark">@color/beep_pink</item>
     </style>
 
     <style name="Theme.BEEP" parent="Base.Theme.BEEP" />

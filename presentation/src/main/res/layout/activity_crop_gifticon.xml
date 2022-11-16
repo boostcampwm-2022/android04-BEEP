@@ -40,10 +40,18 @@
                 app:tint="?attr/colorOnPrimary" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/cl_toolbar"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_test"/>
+
+        <com.lighthouse.presentation.ui.cropgifticon.view.CropImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_toolbar"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
