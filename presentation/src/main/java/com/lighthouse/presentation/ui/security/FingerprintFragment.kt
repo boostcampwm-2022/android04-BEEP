@@ -59,4 +59,12 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
     override fun onBiometricAuthError() {
         Log.d("Finger", "Error")
     }
+
+    override fun onMessagePublished(id: Int) {
+        Snackbar.make(
+            requireView(),
+            getString(id),
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
 }

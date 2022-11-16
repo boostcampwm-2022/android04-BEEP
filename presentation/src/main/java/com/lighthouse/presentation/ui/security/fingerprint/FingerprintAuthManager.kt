@@ -25,7 +25,7 @@ class FingerprintAuthManager(
             }
             BiometricAuth(fragment, context, biometricLauncher, fingerprintAuthCallback)
         } else {
-            LegacyFingerprintAuth(fragment, context, fingerprintAuthCallback)
+            LegacyFingerprintAuth(context, fingerprintAuthCallback)
         }
     }
 }

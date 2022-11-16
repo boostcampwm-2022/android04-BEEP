@@ -4,13 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
-import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 
 class LegacyFingerprintAuth(
-    private val fragment: Fragment,
     private val context: Context,
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) : FingerprintAuth {
@@ -44,15 +41,11 @@ class LegacyFingerprintAuth(
         }
     }
 
-    private fun printSnackBar(id: Int) {
-        Snackbar.make(fragment.requireView(), context.getString(id), Snackbar.LENGTH_SHORT).show()
-    }
-
     override fun authenticate() {
         if (fingerprintManager.isHardwareDetected.not()) {
-            printSnackBar(R.string.fingerprint_error_no_hardware)
+            fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
         } else if (fingerprintManager.hasEnrolledFingerprints().not()) {
-            printSnackBar(R.string.fingerprint_not_enrolled)
+            fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_not_enrolled)
         } else {
             fingerprintManager.authenticate(
                 cryptoObjectHelper.getCryptoObject(),
