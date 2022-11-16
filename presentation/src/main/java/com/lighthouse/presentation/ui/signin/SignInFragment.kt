@@ -22,6 +22,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSignInBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
+import com.lighthouse.presentation.ui.security.SecurityActivity
 
 class SignInFragment : Fragment() {
 
@@ -54,7 +55,8 @@ class SignInFragment : Fragment() {
         if (auth.currentUser == null) {
             initGoogleLogin()
         } else {
-            gotoMain()
+            // gotoMain()
+            gotoSecurity() // TODO: fingerprint test
         }
     }
 
@@ -85,6 +87,11 @@ class SignInFragment : Fragment() {
 
     private fun gotoMain() {
         val intent = Intent(requireContext(), MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun gotoSecurity() {
+        val intent = Intent(requireContext(), SecurityActivity::class.java)
         startActivity(intent)
     }
 }

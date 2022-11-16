@@ -3,6 +3,7 @@
 
     <string name="all_cash_unit">원</string>
     <string name="all_d_day">D-%1$d</string>
+    <string name="all_cancel">취소</string>
     <string name="all_d_day_more_than_year">D-365+</string>
     <string name="all_d_day_expired">만료</string>
     <string name="all_expired_date">~ %4d.%02d.%02d</string>
@@ -58,6 +59,15 @@
     <string name="signin_success">로그인 성공</string>
     <string name="signin_fail">로그인 실패</string>
 
+    <string name="fingerprint_info_obtain_fail">기기의 지문 정보를 가져올 수 없습니다.</string>
+    <string name="fingerprint_error_no_hardware">지문 인증을 사용할 수 없는 기기입니다.</string>
+    <string name="fingerprint_unavailable">지문 인증을 사용할 수 없습니다.</string>
+    <string name="fingerprint_authentication">지문 인증</string>
+    <string name="fingerprint_description">기기에 저장된 기프티콘을 보호합니다.</string>
+    <string name="fingerprint_authentication_success">지문 인증 성공</string>
+    <string name="fingerprint_authentication_fail">지문 인증 실패</string>
+    <string name="fingerprint_not_enrolled">등록된 지문이 없습니다.</string>
+
     <string name="gifticon_detail_product_image_description">상품 사진</string>
     <string name="gifticon_detail_gifticon_detail_title">상세 정보</string>
     <string name="gifticon_detail_product_name_label">상품명</string>
@@ -74,4 +84,5 @@
     <string name="gifticon_detail_balance_label">남은 금액</string>
     <string name="gifticon_detail_cash_type_balance_label">남은 금액</string>
     <string name="gifticon_detail_scroll_down_for_use_button_text">사용하기</string>
+
 </resources>
