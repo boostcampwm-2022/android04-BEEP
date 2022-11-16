@@ -12,7 +12,6 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.DialogUseGifticonBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenHeight
-import com.lighthouse.presentation.extension.screenWidth
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel
 import com.lighthouse.presentation.util.BarcodeUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +22,8 @@ class UseGifticonDialog : BottomSheetDialogFragment() {
     private lateinit var binding: DialogUseGifticonBinding
     private val viewModel: GifticonDetailViewModel by activityViewModels()
 
-    @Inject lateinit var barcodeUtil: BarcodeUtil
+    @Inject
+    lateinit var barcodeUtil: BarcodeUtil
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.dialog_use_gifticon, container, false)
@@ -34,16 +34,17 @@ class UseGifticonDialog : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        binding.root.minimumHeight = (screenHeight * 0.9).toInt()
-        binding.root.minimumWidth = (screenWidth * 0.9).toInt()
+        binding.layoutContainer.minHeight = (screenHeight * 0.9).toInt()
 
         repeatOnStarted {
             viewModel.gifticon.collect {
                 barcodeUtil.displayBitmap(binding.ivBarcode, it.barcode)
-                binding.tvBarcodeNumber.text = it.barcode
+                binding.tvBarcodeNumber.text = divideBarcodeNumber(it.barcode)
             }
         }
     }
+
+    private fun divideBarcodeNumber(number: String) = number.chunked(4).joinToString(" ")
 
     companion object {
         const val TAG: String = "UseGifticonDialog"

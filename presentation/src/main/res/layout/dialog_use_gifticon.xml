@@ -15,8 +15,8 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_container"
             android:layout_width="match_parent"
-            android:background="#22222222"
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
@@ -141,28 +141,25 @@
                 app:layout_constraintTop_toBottomOf="@id/et_amount_to_use"
                 tools:text="남은 금액:3,620원" />
 
+            <TextView
+                android:id="@+id/tv_use_origin_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/use_gifticon_dialog_use_origin_image_label"
+                app:layout_constraintBottom_toTopOf="@id/btn_use_gifticon_completed"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/btn_use_gifticon_completed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="@string/use_gifticon_dialog_complete_button_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guid_end"
+                app:layout_constraintStart_toStartOf="@id/guid_start" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/tv_use_origin_image"
-            android:layout_width="match_parent"
-            android:background="#7CD88282"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:gravity="center_horizontal"
-            android:text="@string/use_gifticon_dialog_use_origin_image_label"
-            app:layout_anchor="@id/btn_use_gifticon_completed"
-            app:layout_anchorGravity="top" />
-
-        <Button
-            android:id="@+id/btn_use_gifticon_completed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="32dp"
-            android:text="@string/use_gifticon_dialog_complete_button_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/guid_end"
-            app:layout_constraintStart_toStartOf="@id/guid_start" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
