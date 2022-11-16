@@ -1,15 +1,11 @@
 package com.lighthouse.presentation.ui.security
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResult
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
@@ -19,7 +15,6 @@ import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthManage
 class FingerprintFragment : Fragment(), FingerprintAuthCallback {
 
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
-    private var biometricLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,25 +25,8 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            biometricLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                when (result.resultCode) {
-                    Activity.RESULT_OK -> {
-                        fingerprintAuthManager.authenticate()
-                    }
-                    else -> {
-                        Snackbar.make(
-                            requireView(),
-                            getString(R.string.fingerprint_info_obtain_fail),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
-
         fingerprintAuthManager =
-            FingerprintAuthManager(requireActivity(), requireContext(), biometricLauncher, this)
+            FingerprintAuthManager(requireActivity(), this)
         fingerprintAuthManager.authenticate()
     }
 
@@ -66,5 +44,13 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
             getString(id),
             Snackbar.LENGTH_SHORT
         ).show()
+    }
+
+    override fun onFingerprintRegisterSuccess() {
+        Log.d("Finger", "지문 등록 Success")
+    }
+
+    override fun onFingerprintRegisterError(result: ActivityResult) {
+        Log.d("Finger", "지문 등록 Error $result")
     }
 }

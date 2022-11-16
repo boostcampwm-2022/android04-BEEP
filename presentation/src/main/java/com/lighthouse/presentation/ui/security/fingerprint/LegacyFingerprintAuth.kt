@@ -1,18 +1,18 @@
 package com.lighthouse.presentation.ui.security.fingerprint
 
-import android.content.Context
 import android.util.Log
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
+import androidx.fragment.app.FragmentActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.lighthouse.presentation.R
 
 class LegacyFingerprintAuth(
-    private val context: Context,
+    private val activity: FragmentActivity,
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) : FingerprintAuth {
 
-    private val fingerprintManager = FingerprintManagerCompat.from(context)
+    private val fingerprintManager = FingerprintManagerCompat.from(activity.applicationContext)
     private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()
 
@@ -32,13 +32,9 @@ class LegacyFingerprintAuth(
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
             super.onAuthenticationError(errorCode, errString)
-            cancellationSignal.cancel()
-            Log.d("Finger", "onAuthenticationError")
+            Log.d("Finger", "onAuthenticationError $errString")
             fingerprintAuthCallback.onBiometricAuthError()
-        }
-
-        override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
-            super.onAuthenticationHelp(helpMsgId, helpString)
+            cancellationSignal.cancel()
         }
     }
 
@@ -55,7 +51,7 @@ class LegacyFingerprintAuth(
                 fingerprintCallback,
                 null
             )
-            BottomSheetDialog(context).show()
+            BottomSheetDialog(activity).show()
         }
     }
 }
