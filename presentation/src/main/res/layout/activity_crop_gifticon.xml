@@ -45,8 +45,8 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_toolbar"
-            android:scaleType="centerCrop"
-            android:src="@drawable/img_test"/>
+            android:scaleType="fitXY"
+            android:src="@drawable/img_test_gifticon"/>
 
         <com.lighthouse.presentation.ui.cropgifticon.view.CropImageView
             android:layout_width="match_parent"
