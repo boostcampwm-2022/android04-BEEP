@@ -58,6 +58,7 @@
     <!-- Component -->
     <style name="BEEP.Component.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="titleTextAppearance">@style/BEEP.TextStyle.H6</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
     </style>
 
     <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">

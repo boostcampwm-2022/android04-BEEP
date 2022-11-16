@@ -5,6 +5,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/beep_pink</item>
         <item name="materialButtonStyle">@style/BEEP.Component.Button</item>
+        <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
     </style>
 
     <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
