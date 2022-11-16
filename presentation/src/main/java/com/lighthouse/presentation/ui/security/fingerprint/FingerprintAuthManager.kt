@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
 class FingerprintAuthManager(
-    private val fragment: Fragment,
+    private val activity: FragmentActivity,
     private val context: Context,
     private val biometricLauncher: ActivityResultLauncher<Intent>?,
     private val fingerprintAuthCallback: FingerprintAuthCallback
@@ -23,7 +23,7 @@ class FingerprintAuthManager(
             if (biometricLauncher == null) {
                 throw Exception("FingerPrint init Error")
             }
-            BiometricAuth(fragment, context, biometricLauncher, fingerprintAuthCallback)
+            BiometricAuth(activity, context, biometricLauncher, fingerprintAuthCallback)
         } else {
             LegacyFingerprintAuth(context, fingerprintAuthCallback)
         }

@@ -9,11 +9,11 @@ import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
 
 class BiometricAuth(
-    private val fragment: Fragment,
+    private val activity: FragmentActivity,
     private val context: Context,
     private val biometricLauncher: ActivityResultLauncher<Intent>,
     private val fingerprintAuthCallback: FingerprintAuthCallback
@@ -43,7 +43,7 @@ class BiometricAuth(
     private fun setBiometricPrompt() {
         val executor = ContextCompat.getMainExecutor(context)
         biometricPrompt = BiometricPrompt(
-            fragment,
+            activity,
             executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
