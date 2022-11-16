@@ -3,8 +3,6 @@ package com.lighthouse.presentation.ui.security.fingerprint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
@@ -13,6 +11,10 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.R)
 class BiometricAuth(
@@ -24,6 +26,7 @@ class BiometricAuth(
 
     private lateinit var biometricPrompt: BiometricPrompt
     private val promptInfo: BiometricPrompt.PromptInfo
+    private lateinit var job: Job
 
     init {
         promptInfo = setPromptInfo()
@@ -51,17 +54,20 @@ class BiometricAuth(
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
+                    job.cancel()
                     fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_authentication_success)
                     fingerprintAuthCallback.onBiometricAuthSuccess()
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
+                    job.cancel()
                     fingerprintAuthCallback.onMessagePublished((R.string.fingerprint_authentication_fail))
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
+                    job.cancel()
                     when (errorCode) {
                         BiometricPrompt.ERROR_NO_BIOMETRICS -> goBiometricSetting()
                         else -> fingerprintAuthCallback.onBiometricAuthError()
@@ -75,7 +81,7 @@ class BiometricAuth(
         val biometricManager = BiometricManager.from(context)
         when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-                Handler(Looper.getMainLooper()).post {
+                job = CoroutineScope(Dispatchers.Main).launch {
                     biometricPrompt.authenticate(promptInfo)
                 }
             }
