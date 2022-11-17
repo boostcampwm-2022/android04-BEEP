@@ -4,6 +4,7 @@ import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.model.CustomErrorData
 import com.lighthouse.network.NetworkApiService
 import com.lighthouse.util.LocationConverter
+import kotlinx.coroutines.CoroutineDispatcher
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -12,14 +13,18 @@ class BrandRemoteDataSourceImpl @Inject constructor(
 ) : BrandRemoteDataSource {
 
     override suspend fun getBrandPlaceInfo(
-        brandName: String,
+        brandNames: List<String>,
         x: String,
         y: String,
         size: Int
-    ): Result<BrandPlaceInfoDataContainer> {
+    ): Result<List<BrandPlaceInfoDataContainer>> {
         val vertex = LocationConverter.getVertex(x, y)
 
-        val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, vertex, size) }
+        val result = runCatching {
+            brandNames.map { brandName ->
+                networkApiService.getAllBrandPlaceInfo(brandName, vertex, size)
+            }
+        }
 
         return when (val exception = result.exceptionOrNull()) {
             null -> result

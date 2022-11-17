@@ -16,7 +16,7 @@ class MapViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
-    private val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "아파트")
+    private val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "아파트", "어린이집")
 
     var state: MutableStateFlow<MapState> = MutableStateFlow(MapState.Loading)
         private set
