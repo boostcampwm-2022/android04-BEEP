@@ -8,8 +8,8 @@ import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddGifticonAdapter(
     private val onClickGallery: () -> Unit,
-    private val onClickGifticon: (AddGifticonUIModel.Gifticon) -> Unit,
-    private val onDeleteGifticon: (AddGifticonUIModel.Gifticon) -> Unit
+    private val onClickGifticon: (Int) -> Unit,
+    private val onDeleteGifticon: (Int) -> Unit
 ) : BindableListAdapter<AddGifticonUIModel, RecyclerView.ViewHolder>(Diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
