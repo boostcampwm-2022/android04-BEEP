@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityAddGifticonBinding
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
@@ -18,6 +19,7 @@ import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonDirections
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
+import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,9 +29,17 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private val viewModel: AddGifticonViewModel by viewModels()
 
-    private val gifticonAdapter = AddGifticonAdapter(onClickGallery = {
-        viewModel.gotoGallery()
-    }, onClickGifticon = {}, onDeleteGifticon = {})
+    private val gifticonAdapter = AddGifticonAdapter(
+        onClickGallery = {
+            viewModel.gotoGallery()
+        },
+        onClickGifticon = { position ->
+            viewModel.selectGifticon(position)
+        },
+        onDeleteGifticon = { position ->
+            viewModel.deleteGifticon(position)
+        }
+    )
 
     val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -47,8 +57,15 @@ class AddGifticonActivity : AppCompatActivity() {
             vm = viewModel
         }
 
-        binding.rvGifticon.adapter = gifticonAdapter
+        setUpRecyclerView()
         setUpDirections()
+    }
+
+    private fun setUpRecyclerView() {
+        binding.rvGifticon.apply {
+            adapter = gifticonAdapter
+            addItemDecoration(ListSpaceItemDecoration(4.dp, 16.dp, 0f, 16.dp, 0f))
+        }
     }
 
     private fun setUpDirections() {
@@ -68,7 +85,7 @@ class AddGifticonActivity : AppCompatActivity() {
                 gotoGallery(directions.list)
             }
             is AddGifticonDirections.CropGifticon -> {
-                gotoCropGallery(directions.origin)
+                gotoCropGifticon(directions.origin)
             }
             is AddGifticonDirections.OriginGifticon -> {
                 showOriginGifticonDialog(directions.origin)
@@ -88,8 +105,10 @@ class AddGifticonActivity : AppCompatActivity() {
         gallery.launch(intent)
     }
 
-    private fun gotoCropGallery(uri: Uri) {
-        val intent = Intent(this, CropGifticonActivity::class.java)
+    private fun gotoCropGifticon(uri: Uri) {
+        val intent = Intent(this, CropGifticonActivity::class.java).apply {
+            putExtra(Extras.OriginImage, uri)
+        }
         gallery.launch(intent)
     }
 
