@@ -10,12 +10,17 @@ import com.lighthouse.presentation.model.GalleryUIModel
 class GalleryItemViewHolder(
     parent: ViewGroup,
     private val onClick: (GalleryUIModel.Gallery) -> Unit,
+    private val selection: GallerySelection,
     private val binding: ItemGalleryBinding = ItemGalleryBinding.bind(
         LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false)
     )
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: GalleryUIModel.Gallery) {
-        binding.dm = GalleryDisplayModel(item, onClick)
+        binding.dm = GalleryDisplayModel(item) {
+            onClick(it)
+            binding.selection = selection
+        }
+        binding.selection = selection
     }
 }

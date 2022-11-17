@@ -1,20 +1,25 @@
 package com.lighthouse.presentation.ui.gallery
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGalleryBinding
 import com.lighthouse.presentation.extension.dp
+import com.lighthouse.presentation.extension.getParcelableArrayList
+import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.adapter.GalleryAdapter
+import com.lighthouse.presentation.ui.gallery.adapter.GallerySelection
+import com.lighthouse.presentation.ui.gallery.event.GalleryEvents
 import com.lighthouse.presentation.util.recycler.SectionSpaceGridDivider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GalleryActivity : AppCompatActivity() {
@@ -23,9 +28,17 @@ class GalleryActivity : AppCompatActivity() {
 
     private val viewModel: GalleryViewModel by viewModels()
 
-    private val galleryAdapter = GalleryAdapter(
-        onClickGallery = {}
-    )
+    private val selection by lazy {
+        val list =
+            intent.getParcelableArrayList(Extras.GallerySelection, GalleryUIModel.Gallery::class.java) ?: emptyList()
+        GallerySelection(list)
+    }
+
+    private val galleryAdapter by lazy {
+        GalleryAdapter(selection, onClickGallery = {
+            viewModel.selectItem(selection.size)
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +49,16 @@ class GalleryActivity : AppCompatActivity() {
             vm = viewModel
         }
 
+        setUpOnBackPressed()
         setUpRecyclerView()
         collectPagingData()
+        collectEvent()
+    }
+
+    private fun setUpOnBackPressed() {
+        onBackPressedDispatcher.addCallback {
+            cancelPhotoSelection()
+        }
     }
 
     private fun setUpRecyclerView() {
@@ -56,12 +77,34 @@ class GalleryActivity : AppCompatActivity() {
     }
 
     private fun collectPagingData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.list.collect {
-                    galleryAdapter.submitData(it)
+        repeatOnStarted {
+            viewModel.list.collect {
+                galleryAdapter.submitData(it)
+            }
+        }
+    }
+
+    private fun collectEvent() {
+        repeatOnStarted {
+            viewModel.eventsFlow.collect { events ->
+                when (events) {
+                    GalleryEvents.COMPLETE -> completePhotoSelection()
+                    GalleryEvents.CANCEL -> cancelPhotoSelection()
                 }
             }
         }
+    }
+
+    private fun completePhotoSelection() {
+        val intent = Intent().apply {
+            putParcelableArrayListExtra(Extras.GallerySelection, selection.toArrayList())
+        }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun cancelPhotoSelection() {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
     }
 }

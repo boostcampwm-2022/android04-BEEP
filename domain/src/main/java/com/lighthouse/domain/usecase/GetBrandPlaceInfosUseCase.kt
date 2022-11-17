@@ -13,13 +13,13 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
         brandNames: List<String>,
         x: String,
         y: String,
-        rect: String,
+        radius: String,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
         val brandPlaceInfos = mutableListOf<BrandPlaceInfo>()
 
         for (brandName in brandNames) {
-            val brandSearchResults = brandRepository.getBrandPlaceInfo(brandName, x, y, rect, size).getOrThrow()
+            val brandSearchResults = brandRepository.getBrandPlaceInfo(brandName, x, y, radius, size).getOrThrow()
             if (brandSearchResults.isNotEmpty()) brandPlaceInfos.addAll(brandSearchResults)
         }
 

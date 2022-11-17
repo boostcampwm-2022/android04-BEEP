@@ -5,6 +5,8 @@ import android.content.res.Resources
 import android.util.TypedValue
 import com.lighthouse.presentation.R
 import java.text.DecimalFormat
+import java.util.Calendar
+import java.util.Date
 
 val Int.dp
     get() = Resources.getSystem().displayMetrics?.let { dm ->
@@ -26,3 +28,21 @@ val screenWidth: Int
 
 val screenHeight: Int
     get() = Resources.getSystem().displayMetrics?.heightPixels ?: 0
+
+fun Date.toYear(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.YEAR)
+}
+
+fun Date.toMonth(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.MONTH)
+}
+
+fun Date.toDate(): Int {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    return calendar.get(Calendar.DATE)
+}
