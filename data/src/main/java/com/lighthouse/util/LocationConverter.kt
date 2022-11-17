@@ -88,7 +88,7 @@ object LocationConverter {
     private fun mergeDMS(degree: Int, minutes: Int, seconds: Int) =
         StringBuilder().append(degree).append(fillZero(minutes)).append(fillZero(seconds)).toString()
 
-    private fun fillZero(seconds: Int) = String.format("%02d", seconds)
+    private fun fillZero(seconds: Int) = seconds.toString().padStart(2, '0')
 
     /**
      * x, y 좌표를 기준으로 각 꼭짓점을 찾아주는 함수입니다.
