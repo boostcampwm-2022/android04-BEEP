@@ -23,7 +23,7 @@
         <item name="colorOnPrimary">?attr/colorOnSurface</item>
     </style>
 
-    <style name="Theme.BEEP.DatePicker" parent="android:Theme.Material.Light.Dialog">
+    <style name="Theme.BEEP.DatePicker" parent="android:Theme.DeviceDefault.Light.Dialog">
         <item name="colorPrimary">@color/beep_pink</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:datePickerStyle">@style/BEEP.Component.SpinnerDatePicker</item>
