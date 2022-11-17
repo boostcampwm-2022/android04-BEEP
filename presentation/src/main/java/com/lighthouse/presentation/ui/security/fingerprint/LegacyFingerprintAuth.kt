@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.security.FingerprintBottomSheetDialog
 
 class LegacyFingerprintAuth(
     private val activity: FragmentActivity,
@@ -15,6 +15,7 @@ class LegacyFingerprintAuth(
     private val fingerprintManager = FingerprintManagerCompat.from(activity.applicationContext)
     private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()
+    private val fingerprintBottomSheetDialog = FingerprintBottomSheetDialog()
 
     private val fingerprintCallback = object : FingerprintManagerCompat.AuthenticationCallback() {
         override fun onAuthenticationFailed() {
@@ -28,6 +29,8 @@ class LegacyFingerprintAuth(
             super.onAuthenticationSucceeded(result)
             Log.d("Finger", "onAuthenticationSucceeded")
             fingerprintAuthCallback.onBiometricAuthSuccess()
+            fingerprintBottomSheetDialog.dismiss()
+            fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_authentication_success)
         }
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
@@ -51,7 +54,7 @@ class LegacyFingerprintAuth(
                 fingerprintCallback,
                 null
             )
-            BottomSheetDialog(activity).show()
+            fingerprintBottomSheetDialog.show(activity.supportFragmentManager, "FingerprintBottomSheetDialog")
         }
     }
 }
