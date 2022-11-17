@@ -8,6 +8,10 @@
         <variable
             name="vm"
             type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
+
+        <import
+            alias="mode"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailMode" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -82,6 +86,7 @@
 
                 <ImageView
                     android:id="@+id/iv_edit_button"
+                    isVisible="@{vm.mode == mode.UNUSED}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
@@ -109,10 +114,13 @@
                     android:layout_marginTop="4dp"
                     android:background="@null"
                     android:ellipsize="end"
+                    style="@style/Theme.BEEP.EditText"
+                    android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:text="@{vm.gifticon.name}"
+                    android:textAppearance="@style/BEEP.TextStyle.H6"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
                     tools:text="딸기마카롱설빙" />
@@ -134,22 +142,25 @@
                     android:layout_marginTop="4dp"
                     android:background="@null"
                     android:ellipsize="end"
+                    android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:text="@{vm.gifticon.brand}"
+                    android:textAppearance="@style/BEEP.TextStyle.H6"
+                    style="@style/Theme.BEEP.EditText"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
                     tools:text="설빙" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_unused"
-                    isVisible="@{vm.gifticon.used}"
+                    isVisible="@{!vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,et_expire_date,tv_cash_balance_label,tv_cash_balance"
                     app:layout_constraintTop_toBottomOf="@id/et_expire_date"
-                    tools:visibility="gone" />
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tv_expire_date_label"
@@ -161,15 +172,15 @@
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/et_brand" />
 
-                <EditText
+                <TextView
                     android:id="@+id/et_expire_date"
+                    style="@style/BEEP.TextStyle.H6"
                     dateFormat="@{vm.gifticon.expireAt}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:autofillHints="creditCardExpirationDate"
                     android:background="@null"
-                    android:inputType="date"
                     app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date_label"
@@ -193,11 +204,16 @@
                     app:layout_constraintStart_toEndOf="@id/tv_expire_date_label"
                     app:layout_constraintTop_toTopOf="@id/tv_expire_date_label" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tv_cash_balance"
+                    concurrencyFormat="@{vm.gifticon.balance}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{String.valueOf(vm.gifticon.balance)}"
+                    android:background="@null"
+                    android:enabled="@{vm.mode == mode.EDIT}"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    style="@style/Theme.BEEP.EditText"
                     app:layout_constraintBottom_toBottomOf="@id/et_expire_date"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/et_expire_date"
@@ -211,7 +227,7 @@
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="iv_show_all_used_info_button,tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date,tv_balance_label,tv_balance"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_date"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_used_address_label"
@@ -303,17 +319,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/bg_gifticon_detail_memo"
+                    android:enabled="@{vm.mode == mode.EDIT}"
                     android:gravity="top"
                     android:hint="@string/gifticon_detail_memo_description"
                     android:importantForAutofill="no"
-                    android:inputType="textMultiLine"
+                    android:inputType="none"
                     android:minHeight="150dp"
                     android:padding="16dp"
                     android:text="@{vm.gifticon.memo}"
+                    android:textAppearance="@style/BEEP.TextStyle.Body1"
+                    style="@style/Theme.BEEP.EditText"
                     android:textColorHint="#616161"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/barrier_group_bottom" />
+                    app:layout_constraintTop_toBottomOf="@id/barrier_group_bottom"
+                    tools:text="adfasdfasdfasdfasdf" />
 
                 <TextView
                     android:id="@+id/tv_shared_info"
@@ -333,12 +353,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
+                    android:onClick="@{() -> vm.useGifticonButtonClicked()}"
                     android:text="@string/gifticon_detail_use_gifticon_button_text"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/et_memo"
-                    app:layout_constraintVertical_bias="1" />
+                    app:layout_constraintVertical_bias="1.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
