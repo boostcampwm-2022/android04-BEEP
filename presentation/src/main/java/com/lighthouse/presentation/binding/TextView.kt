@@ -3,12 +3,15 @@ package com.lighthouse.presentation.binding
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toMonth
+import com.lighthouse.presentation.extension.toYear
 import java.text.DecimalFormat
 import java.util.Date
 
 @BindingAdapter("dateFormat")
 fun applyDateFormat(view: TextView, date: Date) {
-    view.text = view.context.getString(R.string.all_date, date.year, date.month, date.day) // TODO Calendar 로 변경?
+    view.text = view.context.getString(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
 }
 
 @BindingAdapter("concurrencyFormat")

@@ -1,4 +1,5 @@
 <resources>
+
     <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/beep_pink</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -20,6 +21,12 @@
     <style name="Theme.BEEP.Toolbar" parent="Theme.BEEP">
         <item name="colorPrimary">?attr/colorSurface</item>
         <item name="colorOnPrimary">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Theme.BEEP.DatePicker" parent="android:Theme.DeviceDefault.Light.Dialog">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:datePickerStyle">@style/BEEP.Component.SpinnerDatePicker</item>
     </style>
 
     <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
