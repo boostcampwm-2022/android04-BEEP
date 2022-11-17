@@ -1,5 +1,4 @@
 <resources>
-
     <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/beep_pink</item>
         <item name="colorOnPrimary">@color/white</item>
