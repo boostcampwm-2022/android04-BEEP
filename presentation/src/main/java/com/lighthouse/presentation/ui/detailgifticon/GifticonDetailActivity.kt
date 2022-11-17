@@ -1,6 +1,10 @@
 package com.lighthouse.presentation.ui.detailgifticon
 
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
+import android.view.View
+import android.widget.DatePicker
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,16 +15,18 @@ import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
+import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePickerDialog
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GifticonDetailActivity : AppCompatActivity() {
+class GifticonDetailActivity : AppCompatActivity(), OnDateSetListener {
 
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
 
     private lateinit var checkEditDialog: AlertDialog
+    private lateinit var datePickerDialog: SpinnerDatePickerDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
 
     private val btnUseGifticon by lazy { binding.btnUseGifticon }
@@ -68,6 +74,9 @@ class GifticonDetailActivity : AppCompatActivity() {
             is Event.EditButtonClicked -> {
                 showCheckEditDialog()
             }
+            is Event.ExpireDateClicked -> {
+                showDatePickerDialog()
+            }
             is Event.UseGifticonButtonClicked -> {
                 // TODO 보안 인증
                 showUseGifticonDialog()
@@ -92,9 +101,26 @@ class GifticonDetailActivity : AppCompatActivity() {
         checkEditDialog.show()
     }
 
+    private fun showDatePickerDialog() {
+        if (this::datePickerDialog.isInitialized.not()) {
+            datePickerDialog = SpinnerDatePickerDialog(this, viewModel.gifticon.value.expireAt, this)
+            datePickerDialog.create()
+
+            // create 된 이후에 Button 을 가져올 수 있음. 옛날 API 라 Theme 에서 설정 불가
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(getColor(R.color.primary))
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).visibility = View.GONE
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEUTRAL).visibility = View.GONE
+        }
+        datePickerDialog.show()
+    }
+
     private fun showUseGifticonDialog() {
         useGifticonDialog = UseGifticonDialog().also { dialog ->
             dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
         }
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        binding.tvExpireDate.text = getString(R.string.all_date, year, month + 1, dayOfMonth)
     }
 }

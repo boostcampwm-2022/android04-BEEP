@@ -158,8 +158,8 @@
                     isVisible="@{!vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,et_expire_date,tv_cash_balance_label,tv_cash_balance"
-                    app:layout_constraintTop_toBottomOf="@id/et_expire_date"
+                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,tv_expire_date,tv_cash_balance_label,tv_cash_balance"
+                    app:layout_constraintTop_toBottomOf="@id/tv_expire_date"
                     tools:visibility="visible" />
 
                 <TextView
@@ -173,13 +173,14 @@
                     app:layout_constraintTop_toBottomOf="@id/et_brand" />
 
                 <TextView
-                    android:id="@+id/et_expire_date"
+                    android:id="@+id/tv_expire_date"
                     style="@style/BEEP.TextStyle.H6"
                     dateFormat="@{vm.gifticon.expireAt}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:enabled="@{vm.mode==mode.EDIT}"
+                    android:onClick="@{() -> vm.expireDateClicked()}"
                     app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date_label"
@@ -213,10 +214,10 @@
                     android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="number"
-                    app:layout_constraintBottom_toBottomOf="@id/et_expire_date"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_date"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/et_expire_date"
-                    app:layout_constraintTop_toTopOf="@id/et_expire_date"
+                    app:layout_constraintStart_toEndOf="@id/tv_expire_date"
+                    app:layout_constraintTop_toTopOf="@id/tv_expire_date"
                     tools:text="3,620원" />
 
                 <androidx.constraintlayout.widget.Group

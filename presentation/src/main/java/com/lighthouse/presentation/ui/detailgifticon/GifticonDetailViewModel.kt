@@ -57,6 +57,10 @@ class GifticonDetailViewModel @Inject constructor(
         event(Event.EditButtonClicked)
     }
 
+    fun expireDateClicked() {
+        event(Event.ExpireDateClicked)
+    }
+
     fun showAllUsedInfoButtonClicked() {
         event(Event.ShowAllUsedInfoButtonClicked)
     }
