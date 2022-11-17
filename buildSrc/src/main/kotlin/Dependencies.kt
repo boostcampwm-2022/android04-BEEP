@@ -118,7 +118,7 @@ object Libraries {
         NAVER_MAP,
         PLAY_SERVICES_LOCATION,
         GLIDE,
-        ZXING
+        ZXING,
         VIEW_PAGER2
     )
     val DATA_LIBRARIES = arrayListOf(
