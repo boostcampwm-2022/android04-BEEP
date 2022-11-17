@@ -9,8 +9,8 @@ import com.lighthouse.database.entity.BrandEntity.Companion.BRAND_TABLE
 data class BrandEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: Long,
-    @ColumnInfo(name = "section_id") val sectionId: String,
+    val id: Long = 0,
+    @ColumnInfo(name = "parent_section_id") val sectionId: Long,
     @ColumnInfo(name = "address_name") val addressName: String,
     @ColumnInfo(name = "place_name") val placeName: String,
     @ColumnInfo(name = "place_url") val placeUrl: String,

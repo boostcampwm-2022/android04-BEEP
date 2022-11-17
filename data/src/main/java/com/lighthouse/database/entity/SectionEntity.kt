@@ -8,8 +8,8 @@ import com.lighthouse.database.entity.SectionEntity.Companion.SECTION_TABLE
 @Entity(tableName = SECTION_TABLE)
 data class SectionEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long,
+    @ColumnInfo(name = "section_id")
+    val id: Long = 0,
     @ColumnInfo(name = "min_x") val minX: String,
     @ColumnInfo(name = "min_y") val minY: String
 ) {
