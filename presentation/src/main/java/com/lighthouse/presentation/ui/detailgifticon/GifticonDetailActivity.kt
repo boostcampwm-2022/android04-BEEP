@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.detailgifticon
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -19,6 +20,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
 
+    private lateinit var checkEditDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
 
     private val btnUseGifticon by lazy { binding.btnUseGifticon }
@@ -63,6 +65,9 @@ class GifticonDetailActivity : AppCompatActivity() {
             is Event.ScrollDownForUseButtonClicked -> {
                 binding.svGifticonDetail.scrollToBottom()
             }
+            is Event.EditButtonClicked -> {
+                showCheckEditDialog()
+            }
             is Event.UseGifticonButtonClicked -> {
                 // TODO 보안 인증
                 showUseGifticonDialog()
@@ -70,6 +75,21 @@ class GifticonDetailActivity : AppCompatActivity() {
             else -> { // TODO(이벤트 처리)
             }
         }
+    }
+
+    private fun showCheckEditDialog() {
+        if (this::checkEditDialog.isInitialized.not()) {
+            checkEditDialog = AlertDialog.Builder(this)
+                .setTitle(getString(R.string.gifticon_detail_check_edit_dialog_title))
+                .setPositiveButton(getString(R.string.gifticon_detail_check_edit_dialog_positive_button)) { _, _ ->
+                    viewModel.switchMode(GifticonDetailMode.EDIT)
+                }
+                .setNegativeButton(getString(R.string.gifticon_detail_check_edit_dialog_negative_button)) { dialog, _ ->
+                    dialog.cancel()
+                }
+                .create()
+        }
+        checkEditDialog.show()
     }
 
     private fun showUseGifticonDialog() {

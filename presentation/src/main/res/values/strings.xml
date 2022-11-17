@@ -97,4 +97,7 @@
     <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
     <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
     <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
+    <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
+    <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
+    <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
 </resources>
