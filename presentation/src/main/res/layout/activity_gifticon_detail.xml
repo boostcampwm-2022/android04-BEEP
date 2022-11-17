@@ -109,12 +109,12 @@
 
                 <EditText
                     android:id="@+id/et_product_name"
+                    style="@style/Theme.BEEP.EditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:background="@null"
                     android:ellipsize="end"
-                    style="@style/Theme.BEEP.EditText"
                     android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="textAutoComplete"
@@ -137,6 +137,7 @@
 
                 <EditText
                     android:id="@+id/et_brand"
+                    style="@style/Theme.BEEP.EditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -148,7 +149,6 @@
                     android:maxLines="1"
                     android:text="@{vm.gifticon.brand}"
                     android:textAppearance="@style/BEEP.TextStyle.H6"
-                    style="@style/Theme.BEEP.EditText"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
                     tools:text="설빙" />
@@ -179,8 +179,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:autofillHints="creditCardExpirationDate"
-                    android:background="@null"
+                    android:enabled="@{vm.mode==mode.EDIT}"
                     app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date_label"
@@ -206,6 +205,7 @@
 
                 <EditText
                     android:id="@+id/tv_cash_balance"
+                    style="@style/Theme.BEEP.EditText"
                     concurrencyFormat="@{vm.gifticon.balance}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -213,7 +213,6 @@
                     android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="number"
-                    style="@style/Theme.BEEP.EditText"
                     app:layout_constraintBottom_toBottomOf="@id/et_expire_date"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/et_expire_date"
@@ -315,6 +314,7 @@
 
                 <EditText
                     android:id="@+id/et_memo"
+                    style="@style/Theme.BEEP.EditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -328,7 +328,6 @@
                     android:padding="16dp"
                     android:text="@{vm.gifticon.memo}"
                     android:textAppearance="@style/BEEP.TextStyle.Body1"
-                    style="@style/Theme.BEEP.EditText"
                     android:textColorHint="#616161"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
