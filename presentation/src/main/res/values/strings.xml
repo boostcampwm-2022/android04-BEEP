@@ -11,6 +11,7 @@
     <string name="all_d_day_expired">만료</string>
     <string name="all_expired_date">~ %4d.%02d.%02d</string>
     <string name="all_date">%4d.%02d.%02d</string>
+    <string name="all_yes">네</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
@@ -101,5 +102,8 @@
     <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
     <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
     <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
+
+    <string name="secure_later">나중에 설정</string>
+    <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
 
 </resources>

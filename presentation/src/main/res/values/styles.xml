@@ -69,4 +69,10 @@
         <item name="android:padding">8dp</item>
         <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
     </style>
+
+    <style name="BEEP.Component.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:padding">8dp</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
+    </style>
+
 </resources>
