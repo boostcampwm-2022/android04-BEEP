@@ -49,6 +49,11 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
+    val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_gifticon)
@@ -109,7 +114,7 @@ class AddGifticonActivity : AppCompatActivity() {
         val intent = Intent(this, CropGifticonActivity::class.java).apply {
             putExtra(Extras.OriginImage, uri)
         }
-        gallery.launch(intent)
+        cropGifticon.launch(intent)
     }
 
     private fun showOriginGifticonDialog(uri: Uri) {}

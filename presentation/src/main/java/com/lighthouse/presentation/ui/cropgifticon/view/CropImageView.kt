@@ -7,7 +7,6 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PointF
-import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
 import android.util.AttributeSet
@@ -21,7 +20,7 @@ import com.lighthouse.presentation.extension.getBitmap
 class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     private var originBitmap: Bitmap? = null
-    private val originRect = Rect()
+    private val originRectF = RectF()
     private val imageMatrix = Matrix()
 
     fun setOriginUri(uri: Uri) {
@@ -47,9 +46,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
         val horizontalMargin = (width - imageWidth) / 2f
         val verticalMargin = (height - imageHeight) / 2f
-        originRect.set(0, 0, bitmap.width, bitmap.height)
+        originRectF.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         imageRect.set(horizontalMargin, verticalMargin, width - horizontalMargin, height - verticalMargin)
         cropRect.set(imageRect)
+
+        applyMatrix(bitmap)
+    }
+
+    private fun applyMatrix(bitmap: Bitmap?) {
+        if (width == 0 || height == 0 || bitmap == null) {
+            return
+        }
+        val scale = (width / bitmap.width.toFloat()).coerceAtMost(height / bitmap.height.toFloat())
+        imageMatrix.reset()
+        imageMatrix.postScale(scale, scale)
+        imageMatrix.mapRect(originRectF)
+
+        imageMatrix.reset()
+        imageMatrix.postTranslate((width - originRectF.width()) / 2, (height - originRectF.height()) / 2)
+        imageMatrix.mapRect(originRectF)
+
+        imageMatrix.reset()
+        imageMatrix.postScale(
+            zoom,
+            zoom,
+            (originRectF.right + originRectF.left) / 2,
+            (originRectF.bottom + originRectF.top) / 2
+        )
+        imageMatrix.mapRect(originRectF)
     }
 
     private val backgroundPaint by lazy {
@@ -85,7 +109,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val cropRect = RectF()
     private val imageRect = RectF()
 
-    private var eventType = EventType.None
+    private var eventType = EventType.NONE
 
     private var touchRange: TouchRange? = null
     private val cropBaseRect = RectF()
@@ -93,7 +117,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val touchStartPos = PointF()
     private val touchEndPos = PointF()
 
-    private var zoom = 1f
+    private var zoom = 2f
     private var zoomOffsetX = 0f
     private var zoomOffsetY = 0f
 
@@ -108,7 +132,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, null, imageRect, null)
             drawShadow(canvas)
-            if (eventType != EventType.None) {
+            if (eventType != EventType.NONE) {
                 drawGuidelines(canvas)
             }
             drawEdge(canvas)
@@ -215,7 +239,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         setTouchPos(event)
-        if (getEventType(event) == EventType.None) {
+        if (getEventType(event) == EventType.NONE) {
             return false
         }
 
@@ -236,9 +260,9 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (event.action == MotionEvent.ACTION_DOWN) {
             touchRange = getTouchRange(event.x, event.y)
             eventType = when (touchRange) {
-                TouchRange.Center -> EventType.Move
-                null -> EventType.None
-                else -> EventType.Resize
+                TouchRange.CENTER -> EventType.MOVE
+                null -> EventType.NONE
+                else -> EventType.RESIZE
             }
         }
         return eventType
@@ -246,8 +270,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun actionEvent() {
         when (eventType) {
-            EventType.Resize -> resizeCrop()
-            EventType.Move -> moveCrop()
+            EventType.RESIZE -> resizeCrop()
+            EventType.MOVE -> moveCrop()
             else -> {}
         }
     }
@@ -256,7 +280,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         when (event.action) {
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_UP -> {
-                eventType = EventType.None
+                eventType = EventType.NONE
             }
             else -> {}
         }
@@ -265,18 +289,18 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private fun getTouchRange(x: Float, y: Float): TouchRange? {
         return when {
             containLeft(x, y) -> when {
-                containTop(x, y) -> TouchRange.LeftTop
-                containBottom(x, y) -> TouchRange.LeftBottom
-                else -> TouchRange.Left
+                containTop(x, y) -> TouchRange.LEFT_TOP
+                containBottom(x, y) -> TouchRange.LEFT_BOTTOM
+                else -> TouchRange.LEFT
             }
             containRight(x, y) -> when {
-                containTop(x, y) -> TouchRange.RightTop
-                containBottom(x, y) -> TouchRange.RightBottom
-                else -> TouchRange.Right
+                containTop(x, y) -> TouchRange.RIGHT_TOP
+                containBottom(x, y) -> TouchRange.RIGHT_BOTTOM
+                else -> TouchRange.RIGHT
             }
-            containTop(x, y) -> TouchRange.Top
-            containBottom(x, y) -> TouchRange.Bottom
-            containCenter(x, y) -> TouchRange.Center
+            containTop(x, y) -> TouchRange.TOP
+            containBottom(x, y) -> TouchRange.BOTTOM
+            containCenter(x, y) -> TouchRange.CENTER
             else -> null
         }
     }
@@ -325,14 +349,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val diff = touchEndPos.minus(touchStartPos)
 
         when (range) {
-            TouchRange.Left, TouchRange.LeftTop, TouchRange.LeftBottom -> resizeLeft(diff.x)
-            TouchRange.Right, TouchRange.RightTop, TouchRange.RightBottom -> resizeRight(diff.x)
+            TouchRange.LEFT, TouchRange.LEFT_TOP, TouchRange.LEFT_BOTTOM -> resizeLeft(diff.x)
+            TouchRange.RIGHT, TouchRange.RIGHT_TOP, TouchRange.RIGHT_BOTTOM -> resizeRight(diff.x)
             else -> {}
         }
 
         when (range) {
-            TouchRange.Top, TouchRange.LeftTop, TouchRange.RightTop -> resizeTop(diff.y)
-            TouchRange.Bottom, TouchRange.LeftBottom, TouchRange.RightBottom -> resizeBottom(diff.y)
+            TouchRange.TOP, TouchRange.LEFT_TOP, TouchRange.RIGHT_TOP -> resizeTop(diff.y)
+            TouchRange.BOTTOM, TouchRange.LEFT_BOTTOM, TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
             else -> {}
         }
 
@@ -376,11 +400,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     enum class TouchRange {
-        Left, LeftTop, Top, RightTop, Right, RightBottom, Bottom, LeftBottom, Center
+        LEFT, LEFT_TOP, TOP, RIGHT_TOP, RIGHT, RIGHT_BOTTOM, BOTTOM, LEFT_BOTTOM, CENTER
     }
 
     enum class EventType {
-        None, Move, Resize
+        NONE, MOVE, RESIZE
     }
 
     companion object {
