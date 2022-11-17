@@ -3,7 +3,7 @@ package com.lighthouse.mapper
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 
-fun BrandPlaceInfoDataContainer.toDomain(): List<BrandPlaceInfo> {
+internal fun BrandPlaceInfoDataContainer.toDomain(): List<BrandPlaceInfo> {
     val brandName = this.meta.sameName.keyword
     return this.documents.map {
         BrandPlaceInfo(
