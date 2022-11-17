@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TextAppearance -->
+    <style name="BEEP.TextStyle.H4" parent="TextAppearance.MaterialComponents.Headline4" />
+
+    <style name="BEEP.TextStyle.H4.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.H5" parent="TextAppearance.MaterialComponents.Headline5" />
+
+    <style name="BEEP.TextStyle.H5.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.H6" parent="TextAppearance.MaterialComponents.Headline6" /> <!-- 툴바 -->
+
+    <style name="BEEP.TextStyle.H6.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Subtitle1.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Body1" parent="TextAppearance.MaterialComponents.Body2" />
+
+    <style name="BEEP.TextStyle.Body1.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Body2" parent="BEEP.TextStyle.Body1">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Body2.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Button.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Caption" parent="TextAppearance.MaterialComponents.Caption" />
+
+    <style name="BEEP.TextStyle.Caption.OnSurface">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Component -->
+    <style name="BEEP.Component.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextAppearance">@style/BEEP.TextStyle.H6</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="BEEP.Component.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="behavior_draggable">false</item>
+    </style>
+
+    <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:padding">8dp</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
+    </style>
+</resources>

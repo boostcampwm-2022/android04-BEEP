@@ -10,11 +10,16 @@ import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
+import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
+
+    private lateinit var useGifticonDialog: UseGifticonDialog
 
     private val btnUseGifticon by lazy { binding.btnUseGifticon }
     private val chip by lazy { binding.chipScrollDownForUseButton }
@@ -29,12 +34,26 @@ class GifticonDetailActivity : AppCompatActivity() {
         binding.btnUseGifticon.viewTreeObserver.addOnDrawListener {
             chip.post {
                 chip.isVisible = btnUseGifticon.isOnScreen().not()
-                chip.invalidate()
             }
         }
         repeatOnStarted {
             viewModel.event.collect { event ->
                 handleEvent(event)
+            }
+        }
+        repeatOnStarted {
+            viewModel.mode.collect { mode ->
+                when (mode) {
+                    GifticonDetailMode.UNUSED -> {
+                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_unused_mode_button_text)
+                    }
+                    GifticonDetailMode.USED -> {
+                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_used_mode_button_text)
+                    }
+                    GifticonDetailMode.EDIT -> {
+                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_edit_mode_button_text)
+                    }
+                }
             }
         }
     }
@@ -44,8 +63,18 @@ class GifticonDetailActivity : AppCompatActivity() {
             is Event.ScrollDownForUseButtonClicked -> {
                 binding.svGifticonDetail.scrollToBottom()
             }
+            is Event.UseGifticonButtonClicked -> {
+                // TODO 보안 인증
+                showUseGifticonDialog()
+            }
             else -> { // TODO(이벤트 처리)
             }
+        }
+    }
+
+    private fun showUseGifticonDialog() {
+        useGifticonDialog = UseGifticonDialog().also { dialog ->
+            dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
         }
     }
 }

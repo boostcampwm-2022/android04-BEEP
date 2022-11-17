@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
     <application
         android:theme="@style/Theme.BEEP">
+
+        <activity
+            android:name=".ui.security.SecurityActivity"
+            android:exported="false">
+        </activity>
         <activity
             android:name=".ui.signin.SignInActivity"
             android:theme="@style/Theme.BEEP.Splash"
@@ -30,4 +38,5 @@
             android:name=".ui.map.MapActivity"
             android:exported="true" />
     </application>
+
 </manifest>
