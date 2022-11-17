@@ -1,9 +1,7 @@
 package com.lighthouse.presentation.ui.detailgifticon.dialog
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class UseGifticonDialog : BottomSheetDialogFragment() {
+class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon) {
     private val binding by viewBindings(DialogUseGifticonBinding::bind)
     private val viewModel: GifticonDetailViewModel by activityViewModels()
 
@@ -30,10 +28,6 @@ class UseGifticonDialog : BottomSheetDialogFragment() {
 
     override fun getTheme(): Int {
         return R.style.Theme_BEEP_BottomSheetDialog
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.dialog_use_gifticon, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
