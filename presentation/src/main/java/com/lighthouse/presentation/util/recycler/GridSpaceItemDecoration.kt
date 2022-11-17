@@ -13,6 +13,7 @@ class GridSpaceItemDecoration(
     private val end: Int = 0,
     private val bottom: Int = 0
 ) : RecyclerView.ItemDecoration() {
+
     constructor(
         vSpace: Float,
         hSpace: Float,

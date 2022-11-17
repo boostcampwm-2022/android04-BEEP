@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import
+            alias="amount"
+            type="com.lighthouse.presentation.model.CashAmountPreset" />
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guid_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guid_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.9" />
+
+            <View
+                android:id="@+id/view_handle"
+                android:layout_width="100dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_bottom_sheet_handle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/use_gifticon_dialog_barcode_description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guid_end"
+                app:layout_constraintStart_toStartOf="@id/guid_start"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.2"
+                tools:layout_height="100dp" />
+
+            <TextView
+                android:id="@+id/tv_barcode_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintEnd_toEndOf="@id/iv_barcode"
+                app:layout_constraintStart_toStartOf="@id/iv_barcode"
+                app:layout_constraintTop_toBottomOf="@id/iv_barcode"
+                tools:text="1116 2725 6370" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_cash_card"
+                isVisible="@{vm.gifticon.cashCard}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="chip_amount_1,chip_amount_2,chip_amount_3,chip_total_amount,til_amount_to_use,tv_balance" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_amount_1"
+                concurrencyFormat="@{amount.ONE.amount}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:onClick="@{() -> vm.amountChipClicked(amount.ONE)}"
+                app:layout_constraintEnd_toStartOf="@id/chip_amount_2"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="@id/guid_start"
+                app:layout_constraintTop_toBottomOf="@id/tv_barcode_number"
+                tools:text="1,000원" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_amount_2"
+                concurrencyFormat="@{amount.TWO.amount}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> vm.amountChipClicked(amount.TWO)}"
+                app:layout_constraintBottom_toBottomOf="@id/chip_amount_1"
+                app:layout_constraintEnd_toStartOf="@id/chip_amount_3"
+                app:layout_constraintStart_toEndOf="@id/chip_amount_1"
+                app:layout_constraintTop_toTopOf="@id/chip_amount_1"
+                tools:text="5,000원" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_amount_3"
+                concurrencyFormat="@{amount.THREE.amount}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> vm.amountChipClicked(amount.THREE)}"
+                app:layout_constraintBottom_toBottomOf="@id/chip_amount_1"
+                app:layout_constraintEnd_toStartOf="@id/chip_total_amount"
+                app:layout_constraintStart_toEndOf="@id/chip_amount_2"
+                app:layout_constraintTop_toTopOf="@id/chip_amount_1"
+                tools:text="10,000원" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_total_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> vm.amountChipClicked(amount.TOTAL)}"
+                android:text="@string/use_gifticon_dialog_chip_total_amount"
+                app:layout_constraintBottom_toBottomOf="@id/chip_amount_1"
+                app:layout_constraintEnd_toEndOf="@id/guid_end"
+                app:layout_constraintStart_toEndOf="@id/chip_amount_3"
+                app:layout_constraintTop_toTopOf="@id/chip_amount_1"
+                tools:text="전액" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_amount_to_use"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                concurrencySuffixText="@{etAmountToUse.text.toString()}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                app:boxStrokeColor="@color/mtrl_textinput_default_box_stroke_color"
+                app:helperTextEnabled="false"
+                app:hintEnabled="false"
+                app:layout_constraintEnd_toEndOf="@id/guid_end"
+                app:layout_constraintStart_toStartOf="@id/guid_start"
+                app:layout_constraintTop_toBottomOf="@id/chip_amount_1"
+                app:suffixTextAppearance="@style/BEEP.TextStyle.H5"
+                app:suffixTextColor="?attr/colorOnSurface"
+                tools:ignore="PrivateResource">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_amountToUse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:hint="@string/use_gifticon_dialog_amount_to_use_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="12"
+                    android:textAppearance="@style/BEEP.TextStyle.H5.OnSurface"
+                    tools:text="3,000" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_balance"
+                style="@style/BEEP.TextStyle.Caption.OnSurface"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="@{@string/all_balance_label(vm.gifticon.balance)}"
+                app:layout_constraintEnd_toEndOf="@id/guid_end"
+                app:layout_constraintStart_toStartOf="@id/guid_start"
+                app:layout_constraintTop_toBottomOf="@id/til_amount_to_use"
+                tools:text="남은 금액:3,620원" />
+
+            <TextView
+                android:id="@+id/tv_use_origin_image"
+                style="@style/BEEP.TextStyle.Caption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/use_gifticon_dialog_use_origin_image_label"
+                app:layout_constraintBottom_toTopOf="@id/btn_use_gifticon_completed"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/btn_use_gifticon_completed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="@string/use_gifticon_dialog_complete_button_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guid_end"
+                app:layout_constraintStart_toStartOf="@id/guid_start" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
