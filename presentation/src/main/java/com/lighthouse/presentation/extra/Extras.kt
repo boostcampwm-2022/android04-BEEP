@@ -6,4 +6,6 @@ object Extras {
     const val OriginImage = "Extra.OriginImage"
 
     const val RecognizedText = "Extra.Recognized.Text"
+
+    const val KEY_GIFTICON_ID = "Extra.GifticonDetail.KeyGifticonId"
 }

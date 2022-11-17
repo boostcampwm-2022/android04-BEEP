@@ -1,37 +1,31 @@
 package com.lighthouse.presentation.ui.detailgifticon
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.usecase.GetGifticonUseCase
+import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.model.CashAmountPreset
-import com.lighthouse.presentation.util.UUID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class GifticonDetailViewModel @Inject constructor() : ViewModel() {
-    private val _gifticon = MutableStateFlow(
-        Gifticon(
-            id = UUID.generate(),
-            userId = "temp_id",
-            name = "딸기마카롱설빙",
-            brand = "설빙",
-            expireAt = Date(System.currentTimeMillis()),
-            barcode = "998935552189",
-            isCashCard = true,
-            balance = 100,
-            memo = "",
-            isUsed = false
-        )
-    )
-    val gifticon = _gifticon.asStateFlow()
+class GifticonDetailViewModel @Inject constructor(
+    stateHandle: SavedStateHandle,
+    private val getGifticonUseCase: GetGifticonUseCase
+) : ViewModel() {
+
+    private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
+    lateinit var gifticon: StateFlow<Gifticon>
 
     private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
     val mode = _mode.asStateFlow()
@@ -40,6 +34,12 @@ class GifticonDetailViewModel @Inject constructor() : ViewModel() {
 
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            gifticon = getGifticonUseCase(gifticonId).stateIn(viewModelScope)
+        }
+    }
 
     fun scrollDownForUseButtonClicked() {
         event(Event.ScrollDownForUseButtonClicked)
