@@ -5,8 +5,9 @@ import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddCandidateGifticonDisplayModel(
     val item: AddGifticonUIModel.Gifticon,
-    private val onClick: (AddGifticonUIModel.Gifticon) -> Unit,
-    private val onDelete: (AddGifticonUIModel.Gifticon) -> Unit
+    private val position: Int,
+    private val onClick: (Int) -> Unit,
+    private val onDelete: (Int) -> Unit
 ) {
 
     val closeVisibility = if (item.isDelete) View.VISIBLE else View.GONE
@@ -14,9 +15,9 @@ class AddCandidateGifticonDisplayModel(
 
     fun onClickItem() {
         if (item.isDelete) {
-            onDelete(item)
+            onDelete(position)
         } else {
-            onClick(item)
+            onClick(position)
         }
     }
 }
