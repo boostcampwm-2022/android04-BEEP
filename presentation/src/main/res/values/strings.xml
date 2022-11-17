@@ -87,6 +87,9 @@
     <string name="gifticon_detail_balance_label">남은 금액</string>
     <string name="gifticon_detail_cash_type_balance_label">남은 금액</string>
     <string name="gifticon_detail_scroll_down_for_use_button_text">사용하기</string>
+    <string name="fingerprint_error_lockout">5회 인증에 실패했습니다. 잠시 후 다시 시도해주세요</string>
+    <string name="fingerprint_error_lockout_permanent">잦은 실패로 지문 센서가 비활성화 되었습니다</string>
+    <string name="fingerprint_unknown_error">알 수 없는 오류가 발생했습니다.</string>
     <string name="gifticon_detail_edit_mode_button_text">수정 완료</string>
     <string name="gifticon_detail_unused_mode_button_text">기프티콘 사용</string>
     <string name="gifticon_detail_used_mode_button_text">사용 취소</string>

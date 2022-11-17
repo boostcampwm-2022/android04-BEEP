@@ -3,6 +3,7 @@ package com.lighthouse.presentation.ui.security.fingerprint
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricManager
@@ -47,8 +48,10 @@ class BiometricAuth(
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
             super.onAuthenticationError(errorCode, errString)
             job?.cancel()
+            Log.d("Finger", errorCode.toString())
             when (errorCode) {
                 BiometricPrompt.ERROR_NO_BIOMETRICS -> goBiometricSetting()
+                BiometricPrompt.ERROR_NEGATIVE_BUTTON -> fingerprintAuthCallback.onBiometricAuthCancel()
                 else -> fingerprintAuthCallback.onBiometricAuthError()
             }
         }

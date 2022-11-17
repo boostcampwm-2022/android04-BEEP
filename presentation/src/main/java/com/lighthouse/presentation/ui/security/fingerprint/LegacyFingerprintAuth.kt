@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.security.fingerprint
 
+import android.hardware.fingerprint.FingerprintManager
 import android.util.Log
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
@@ -15,7 +16,7 @@ class LegacyFingerprintAuth(
     private val fingerprintManager = FingerprintManagerCompat.from(activity.applicationContext)
     private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()
-    private val fingerprintBottomSheetDialog by lazy { FingerprintBottomSheetDialog() }
+    private val fingerprintBottomSheetDialog by lazy { FingerprintBottomSheetDialog(fingerprintAuthCallback) }
 
     private val fingerprintCallback = object : FingerprintManagerCompat.AuthenticationCallback() {
         override fun onAuthenticationFailed() {
@@ -35,7 +36,14 @@ class LegacyFingerprintAuth(
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
             super.onAuthenticationError(errorCode, errString)
-            Log.d("Finger", "onAuthenticationError $errString")
+            Log.d("Finger", "onAuthenticationError $errorCode $errString")
+            val errorMessageId = when (errorCode) {
+                FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> R.string.fingerprint_error_lockout
+                FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT -> R.string.fingerprint_error_lockout_permanent
+                else -> R.string.fingerprint_unknown_error
+            }
+
+            fingerprintBottomSheetDialog.showErrorMessage(errorMessageId)
             fingerprintAuthCallback.onBiometricAuthError()
             cancellationSignal.cancel()
         }

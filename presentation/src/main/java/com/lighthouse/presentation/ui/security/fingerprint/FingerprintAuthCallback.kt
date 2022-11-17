@@ -7,6 +7,7 @@ interface FingerprintAuthCallback {
 
     fun onBiometricAuthSuccess()
     fun onBiometricAuthError()
+    fun onBiometricAuthCancel()
     fun onMessagePublished(@StringRes id: Int)
     fun onFingerprintRegisterSuccess()
     fun onFingerprintRegisterError(result: ActivityResult)
