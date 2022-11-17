@@ -4,7 +4,6 @@ import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.model.CustomErrorData
 import com.lighthouse.network.NetworkApiService
 import com.lighthouse.util.LocationConverter
-import kotlinx.coroutines.CoroutineDispatcher
 import java.net.UnknownHostException
 import javax.inject.Inject
 
