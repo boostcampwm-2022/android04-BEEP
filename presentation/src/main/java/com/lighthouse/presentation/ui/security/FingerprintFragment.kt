@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.security
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,11 +10,15 @@ import androidx.activity.result.ActivityResult
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.databinding.FragmentFingerprintBinding
+import com.lighthouse.presentation.ui.common.viewBindings
+import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthCallback
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthManager
 
 class FingerprintFragment : Fragment(), FingerprintAuthCallback {
 
+    private val binding by viewBindings(FragmentFingerprintBinding::bind)
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
 
     override fun onCreateView(
@@ -27,11 +32,19 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fingerprintAuthManager =
             FingerprintAuthManager(requireActivity(), this)
-        fingerprintAuthManager.authenticate()
+
+        binding.btnUseFingerprint.setOnClickListener {
+            fingerprintAuthManager.authenticate()
+        }
+
+        binding.btnNotUseFingerprint.setOnClickListener {
+            gotoMain()
+        }
     }
 
     override fun onBiometricAuthSuccess() {
         Log.d("Finger", "Success")
+        gotoMain()
     }
 
     override fun onBiometricAuthError() {
@@ -51,10 +64,15 @@ class FingerprintFragment : Fragment(), FingerprintAuthCallback {
     }
 
     override fun onFingerprintRegisterSuccess() {
-        Log.d("Finger", "지문 등록 Success")
+        fingerprintAuthManager.authenticate()
     }
 
     override fun onFingerprintRegisterError(result: ActivityResult) {
         Log.d("Finger", "지문 등록 Error $result")
+    }
+
+    private fun gotoMain() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        startActivity(intent)
     }
 }
