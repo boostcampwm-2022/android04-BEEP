@@ -1,23 +1,29 @@
-package com.lighthouse.datasource
+package com.lighthouse.datasource.brand
 
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.model.CustomErrorData
 import com.lighthouse.network.NetworkApiService
+import com.lighthouse.util.LocationConverter
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BrandRemoteSourceImpl @Inject constructor(
+class BrandRemoteDataSourceImpl @Inject constructor(
     private val networkApiService: NetworkApiService
-) : BrandRemoteSource {
+) : BrandRemoteDataSource {
 
     override suspend fun getBrandPlaceInfo(
-        brandName: String,
+        brandNames: List<String>,
         x: String,
         y: String,
-        radius: String,
         size: Int
-    ): Result<BrandPlaceInfoDataContainer> {
-        val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, x, y, radius, size) }
+    ): Result<List<BrandPlaceInfoDataContainer>> {
+        val vertex = LocationConverter.getVertex(x, y)
+
+        val result = runCatching {
+            brandNames.map { brandName ->
+                networkApiService.getAllBrandPlaceInfo(brandName, vertex, size)
+            }
+        }
 
         return when (val exception = result.exceptionOrNull()) {
             null -> result

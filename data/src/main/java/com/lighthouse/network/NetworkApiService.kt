@@ -9,9 +9,7 @@ interface NetworkApiService {
     @GET("v2/local/search/keyword.json")
     suspend fun getAllBrandPlaceInfo(
         @Query("query") query: String,
-        @Query("x") x: String,
-        @Query("y") y: String,
-        @Query("radius") radius: String,
+        @Query("rect") rect: String,
         @Query("size") size: Int
     ): BrandPlaceInfoDataContainer
 }
