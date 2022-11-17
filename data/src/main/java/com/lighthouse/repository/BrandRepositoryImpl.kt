@@ -17,23 +17,21 @@ class BrandRepositoryImpl @Inject constructor(
         brandName: String,
         x: String,
         y: String,
-        radius: String,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
         brandLocalSource.getBrands(x, y, brandName).onSuccess { brandEntities ->
             return Result.success(brandEntities.toDomain())
         }
-        return getRemoteSourceData(brandName, x, y, radius, size)
+        return getRemoteSourceData(brandName, x, y, size)
     }
 
     private suspend fun getRemoteSourceData(
         brandName: String,
         x: String,
         y: String,
-        radius: String,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
-        val result = brandRemoteSource.getBrandPlaceInfo(brandName, x, y, radius, size).mapCatching { it.toDomain() }
+        val result = brandRemoteSource.getBrandPlaceInfo(brandName, x, y, size).mapCatching { it.toDomain() }
         val exception = result.exceptionOrNull()
 
         return if (exception is CustomErrorData) {
