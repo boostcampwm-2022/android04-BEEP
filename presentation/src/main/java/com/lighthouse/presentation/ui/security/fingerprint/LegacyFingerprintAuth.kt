@@ -15,14 +15,14 @@ class LegacyFingerprintAuth(
     private val fingerprintManager = FingerprintManagerCompat.from(activity.applicationContext)
     private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()
-    private val fingerprintBottomSheetDialog = FingerprintBottomSheetDialog()
+    private val fingerprintBottomSheetDialog by lazy { FingerprintBottomSheetDialog() }
 
     private val fingerprintCallback = object : FingerprintManagerCompat.AuthenticationCallback() {
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            cancellationSignal.cancel()
+            // cancellationSignal.cancel()
             Log.d("Finger", "onAuthenticationFailed")
-            // TODO: 재시도
+            fingerprintBottomSheetDialog.failAuthentication()
         }
 
         override fun onAuthenticationSucceeded(result: FingerprintManagerCompat.AuthenticationResult?) {
