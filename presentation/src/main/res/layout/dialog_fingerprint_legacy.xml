@@ -17,8 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="지문 인증"
-            style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+            android:text="@string/fingerprint_authentication"
+            style="@style/BEEP.TextStyle.H5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="기기에 저장된 기프티콘을 보호합니다."
+            android:text="@string/fingerprint_description"
+            style="@style/BEEP.TextStyle.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_fingerprint_title" />
@@ -40,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:src="@drawable/ic_fingerprint"
+            android:contentDescription="@string/fingerprint_authentication"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_fingerprint_subtitle" />
@@ -49,8 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Touch the fingerprint sensor"
-            android:textColor="@color/gray_400"
+            android:text="@string/fingerprint_sensor_description"
+            style="@style/BEEP.TextStyle.Caption"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_fingerprint" />
@@ -61,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="취소"
+            android:text="@string/all_cancel"
             android:textColor="@color/beep_pink"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
