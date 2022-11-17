@@ -10,10 +10,8 @@ data class SectionEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     val id: Long,
-    @ColumnInfo(name = "max_x") val maxX: Int,
-    @ColumnInfo(name = "min_x") val minX: Int,
-    @ColumnInfo(name = "max_y") val maxY: Int,
-    @ColumnInfo(name = "min_y") val minY: Int
+    @ColumnInfo(name = "min_x") val minX: String,
+    @ColumnInfo(name = "min_y") val minY: String
 ) {
 
     companion object {

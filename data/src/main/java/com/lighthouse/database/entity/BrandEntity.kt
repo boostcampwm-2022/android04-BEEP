@@ -10,7 +10,7 @@ data class BrandEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     val id: Long,
-    @ColumnInfo(name = "sectionId") val section_id: String,
+    @ColumnInfo(name = "section_id") val sectionId: String,
     @ColumnInfo(name = "address_name") val addressName: String,
     @ColumnInfo(name = "place_name") val placeName: String,
     @ColumnInfo(name = "place_url") val placeUrl: String,
