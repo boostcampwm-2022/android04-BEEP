@@ -6,4 +6,8 @@
         <item name="colorPrimaryDark">@color/beep_pink</item>
         <item name="colorAccent">@color/beep_pink</item>
     </style>
+
+    <style name="Theme.BEEP.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@drawable/tc_on_primary_disabled_night</item>
+    </style>
 </resources>

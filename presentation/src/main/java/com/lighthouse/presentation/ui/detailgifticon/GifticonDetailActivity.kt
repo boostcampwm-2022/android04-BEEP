@@ -41,6 +41,21 @@ class GifticonDetailActivity : AppCompatActivity() {
                 handleEvent(event)
             }
         }
+        repeatOnStarted {
+            viewModel.mode.collect { mode ->
+                when (mode) {
+                    GifticonDetailMode.UNUSED -> {
+                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_unused_mode_button_text)
+                    }
+                    GifticonDetailMode.USED -> {
+                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_used_mode_button_text)
+                    }
+                    GifticonDetailMode.EDIT -> {
+                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_edit_mode_button_text)
+                    }
+                }
+            }
+        }
     }
 
     private fun handleEvent(event: Event) {

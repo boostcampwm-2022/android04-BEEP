@@ -2,9 +2,11 @@
     <string name="app_name">BEEP</string>
 
     <string name="all_cash_unit">%s원</string>
+    <string name="all_cash_origin_unit">원</string>
     <string name="all_d_day">D-%1$d</string>
     <string name="all_date">%4d.%2d.%2d</string>
     <string name="all_concurrency_format">#,###</string>
+    <string name="all_balance_label">남은 금액:%s</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
@@ -71,6 +73,9 @@
     <string name="gifticon_detail_balance_label">남은 금액</string>
     <string name="gifticon_detail_cash_type_balance_label">남은 금액</string>
     <string name="gifticon_detail_scroll_down_for_use_button_text">사용하기</string>
+    <string name="gifticon_detail_edit_mode_button_text">수정 완료</string>
+    <string name="gifticon_detail_unused_mode_button_text">기프티콘 사용</string>
+    <string name="gifticon_detail_used_mode_button_text">사용 취소</string>
 
     <string name="use_gifticon_dialog_barcode_description">기프티콘 바코드</string>
     <string name="use_gifticon_dialog_complete_button_text">사용 완료</string>

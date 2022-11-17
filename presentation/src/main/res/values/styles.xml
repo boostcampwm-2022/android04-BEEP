@@ -61,6 +61,10 @@
         <item name="titleTextColor">?attr/colorOnPrimary</item>
     </style>
 
+    <style name="BEEP.Component.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="behavior_draggable">false</item>
+    </style>
+
     <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:padding">8dp</item>
         <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
