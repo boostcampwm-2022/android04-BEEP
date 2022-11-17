@@ -31,8 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:minHeight="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_collapseMode="pin">
 
                     <ImageView
                         android:id="@+id/iv_back"
@@ -40,7 +39,7 @@
                         android:layout_height="48dp"
                         android:layout_marginStart="4dp"
                         android:contentDescription="@string/gallery_back_description"
-                        android:onClickListener="@{() -> vm.cancelPhotoSelection()}"
+                        android:onClick="@{() -> vm.cancelPhotoSelection()}"
                         android:padding="12dp"
                         android:src="@drawable/ic_back"
                         app:layout_constraintBottom_toBottomOf="parent"

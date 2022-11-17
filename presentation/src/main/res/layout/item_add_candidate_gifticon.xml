@@ -19,11 +19,12 @@
             android:layout_height="0dp"
             android:background="@color/surface_1"
             android:contentDescription="@string/add_gifticon_goto_gallery_description"
-            android:src="@drawable/ic_add_default_gifticon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="centerCrop"
+            app:imageURI="@{dm.item.uri}"
             android:onClickListener="@{() -> dm.onClickItem()}"/>
 
         <ImageView
@@ -35,7 +36,7 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{dm.closeVisibility}"/>
+            app:visibility="@{dm.closeVisibility}" />
 
         <View
             android:id="@+id/view_warning_badge"
