@@ -11,10 +11,14 @@ val Int.dp
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), dm)
     } ?: 0f
 
-fun Int.toConcurrency(context: Context): String {
+fun Int.toConcurrency(context: Context, useUnit: Boolean = true): String {
     val format = context.resources.getString(R.string.all_concurrency_format)
     val formattedNumber = DecimalFormat(format).format(this)
-    return context.resources.getString(R.string.all_cash_unit, formattedNumber)
+    return if (useUnit) {
+        context.resources.getString(R.string.all_cash_unit, formattedNumber)
+    } else {
+        formattedNumber
+    }
 }
 
 val screenWidth: Int
