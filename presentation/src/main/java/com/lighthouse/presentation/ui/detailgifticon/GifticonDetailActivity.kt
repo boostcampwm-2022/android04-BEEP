@@ -11,7 +11,7 @@ import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
-import com.lighthouse.presentation.ui.common.dialog.CustomSpinnerDatePicker
+import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -97,7 +97,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showDatePickerDialog() {
-        CustomSpinnerDatePicker(this) { picker, year, month, dayOfMonth ->
+        SpinnerDatePicker(this) { picker, year, month, dayOfMonth ->
             binding.tvExpireDate.text = getString(R.string.all_date, year, month, dayOfMonth)
             picker.dismiss()
         }.apply {
