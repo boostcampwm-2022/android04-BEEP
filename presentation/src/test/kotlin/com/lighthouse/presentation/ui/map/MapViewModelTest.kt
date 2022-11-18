@@ -20,7 +20,7 @@ import org.junit.jupiter.api.DisplayName
 @ExperimentalCoroutinesApi
 class MapViewModelTest {
 
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase = mockk(relaxed = true)
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase = mockk()
 
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
@@ -39,12 +39,12 @@ class MapViewModelTest {
     fun getBrandPlaceInfoSuccess() {
         // given
         coEvery {
-            getBrandPlaceInfosUseCase(brandKeyword, "37.2840", "127.1071", "500", 5)
+            getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
         } returns Result.success(brandPlaceInfo)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
-        viewModel.getBrandPlaceInfos(brandKeyword)
+        viewModel.getBrandPlaceInfos(37.2840, 127.1071)
         val actual = viewModel.state.value
 
         // then
@@ -56,12 +56,12 @@ class MapViewModelTest {
     fun getBrandPlaceInfoNotFoundSearchResults() {
         // given
         coEvery {
-            getBrandPlaceInfosUseCase(brandKeyword, "37.2840", "127.1071", "500", 5)
+            getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
         } returns Result.failure(CustomError.NotFoundBrandPlaceInfos)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
-        viewModel.getBrandPlaceInfos(brandKeyword)
+        viewModel.getBrandPlaceInfos(37.284, 127.1071)
         val actual = viewModel.state.value
 
         // then
@@ -73,12 +73,12 @@ class MapViewModelTest {
     fun getBrandPlaceInfoNetworkError() {
         // given
         coEvery {
-            getBrandPlaceInfosUseCase(brandKeyword, "37.2840", "127.1071", "500", 5)
+            getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
         } returns Result.failure(CustomError.NetworkFailure)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
-        viewModel.getBrandPlaceInfos(brandKeyword)
+        viewModel.getBrandPlaceInfos(37.2840, 127.1071)
         val actual = viewModel.state.value
 
         // then
@@ -86,7 +86,7 @@ class MapViewModelTest {
     }
 
     companion object {
-        private val brandKeyword: List<String> = listOf("스타벅스", "베스킨라빈스", "BBQ")
+        private val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "아파트", "어린이집")
         private val brandPlaceInfo: List<BrandPlaceInfo> = listOf(BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""))
     }
 }

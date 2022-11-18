@@ -21,14 +21,12 @@ class GetBrandPlaceInfosUseCaseTest {
     fun getBrandPlaceInfoSuccess() = runTest {
         // given
         val useCase = GetBrandPlaceInfosUseCase(brandRepository)
-        for (keyword in brandKeyword) {
-            coEvery {
-                brandRepository.getBrandPlaceInfo(keyword, "37.2840", "127.1071", "500", 5)
-            } returns Result.success(brandPlaceInfo)
-        }
+        coEvery {
+            brandRepository.getBrandPlaceInfo(brandKeyword, "37.284", "127.1071", 5)
+        } returns Result.success(brandPlaceInfoResults)
 
         // when
-        val action = useCase(brandKeyword, "37.2840", "127.1071", "500", 5).getOrThrow()
+        val action = useCase(brandKeyword, "37.284", "127.1071", 5).getOrThrow()
 
         // then
         Truth.assertThat(action).isEqualTo(brandPlaceInfoResults)
@@ -39,21 +37,19 @@ class GetBrandPlaceInfosUseCaseTest {
     fun getBrandPlaceInfoNotFound() = runTest {
         // given
         val useCase = GetBrandPlaceInfosUseCase(brandRepository)
-        for (keyword in brandKeyword) {
-            coEvery {
-                brandRepository.getBrandPlaceInfo(keyword, "37.2840", "127.1071", "500", 5)
-            } returns Result.success(emptyList())
-        }
+        coEvery {
+            brandRepository.getBrandPlaceInfo(brandKeyword, "37.284", "127.1071", 5)
+        } returns Result.success(emptyList())
 
         // when
-        val action = useCase(brandKeyword, "37.2840", "127.1071", "500", 5).exceptionOrNull()
+        val action = useCase(brandKeyword, "37.284", "127.1071", 5).exceptionOrNull()
 
         // then
         Truth.assertThat(action).isInstanceOf(CustomError.NotFoundBrandPlaceInfos::class.java)
     }
 
     companion object {
-        private val brandKeyword: List<String> = listOf("스타벅스", "베스킨라빈스", "BBQ")
+        private val brandKeyword = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "아파트", "어린이집")
         private val brandPlaceInfo: List<BrandPlaceInfo> = listOf(BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""))
         private val brandPlaceInfoResults: List<BrandPlaceInfo> = listOf(
             BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""),
