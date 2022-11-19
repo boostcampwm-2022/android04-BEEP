@@ -42,10 +42,10 @@ class SpinnerDatePicker(
         setDate(initDate)
     }
 
-    private val binding: DialogSpinnerDatePickerBinding by lazy {
+    private val binding: DialogSpinnerDatePickerBinding =
         DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_spinner_date_picker, null, false)
-    }
-    private val dialog by lazy {
+
+    private val dialog = run {
         val theme = themeResId ?: R.style.Theme_BEEP_DatePicker
         AlertDialog.Builder(context, theme).setView(binding.root).create()
     }
@@ -61,7 +61,7 @@ class SpinnerDatePicker(
         setLabel()
         initPicker()
         binding.btnOk.setOnClickListener {
-            onClickOk(this, npYear.value + 1, npMonth.value + 1, npDate.value + 1)
+            onClickOk(this, npYear.value, npMonth.value, npDate.value)
         }
     }
 
