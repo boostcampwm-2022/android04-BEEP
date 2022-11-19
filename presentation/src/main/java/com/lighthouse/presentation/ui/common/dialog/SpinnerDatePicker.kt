@@ -18,6 +18,30 @@ class SpinnerDatePicker(
     private val onClickOk: (picker: SpinnerDatePicker, year: Int, month: Int, dayOfMonth: Int) -> Unit
 ) {
 
+    constructor(
+        context: Context,
+        initYear: Int,
+        initMonth: Int,
+        initDayOfMonth: Int,
+        themeResId: Int? = null,
+        onClickOk: (picker: SpinnerDatePicker, year: Int, month: Int, dayOfMonth: Int) -> Unit
+    ) : this(context, themeResId, onClickOk) {
+        setDate(initYear, initMonth, initDayOfMonth)
+    }
+
+    constructor(
+        context: Context,
+        initDate: Date,
+        themeResId: Int? = null,
+        onClickOk: (picker: SpinnerDatePicker, year: Int, month: Int, dayOfMonth: Int) -> Unit
+    ) : this(
+        context,
+        themeResId,
+        onClickOk
+    ) {
+        setDate(initDate)
+    }
+
     private val binding: DialogSpinnerDatePickerBinding by lazy {
         DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_spinner_date_picker, null, false)
     }
@@ -58,13 +82,14 @@ class SpinnerDatePicker(
     }
 
     /**
-     * 처음에 보여 줄 날짜를 설정한다
+     * 처음에 보여 줄 날짜를 설정한다. 표현할 수 있는 날짜를 벗어난 경우 현재 정보를 표시한다
      * */
-    fun setDate(year: Int, month: Int, dayOfMonth: Int) {
-        npDate.maxValue = getMaxDayOfMonth(year, month)
-        npYear.value = year - 1
-        npMonth.value = month - 1
-        npDate.value = dayOfMonth - 1
+    fun setDate(year: Int? = null, month: Int? = null, dayOfMonth: Int? = null) {
+        val today = Date()
+        npYear.value = checkAndGetIntRange(year ?: today.toYear(), MIN_YEAR, MAX_YEAR, today.toYear())
+        npMonth.value = checkAndGetIntRange(month ?: today.toMonth(), MIN_MONTH, MAX_MONTH, today.toMonth())
+        npDate.value = checkAndGetIntRange(dayOfMonth ?: today.toDate(), MIN_DATE, npDate.maxValue, today.toDate())
+        npDate.maxValue = getMaxDayOfMonth(npYear.value, npMonth.value)
     }
 
     /**
@@ -104,13 +129,13 @@ class SpinnerDatePicker(
 
     private fun initPicker() {
         // 초기 값 설정
-        npYear.minValue = 1900
-        npMonth.minValue = 1
-        npDate.minValue = 1
+        npYear.minValue = MIN_YEAR
+        npMonth.minValue = MIN_MONTH
+        npDate.minValue = MIN_DATE
 
-        npYear.maxValue = 3000
-        npMonth.maxValue = 12
-        npDate.maxValue = 31
+        npYear.maxValue = MAX_YEAR
+        npMonth.maxValue = MAX_MONTH
+        npDate.maxValue = MAX_DATE
 
         // 끝에서 처음으로 순환되지 않도록 하는 설정
         npYear.wrapSelectorWheel = false
@@ -130,8 +155,21 @@ class SpinnerDatePicker(
     }
 
     private fun getMaxDayOfMonth(year: Int, month: Int): Int {
+        return if (month == 2 && year % 4 == 0 && year % 100 != 0) 29 else preset[month - 1] // 윤년 확인
+    }
+
+    private fun checkAndGetIntRange(target: Int, start: Int, endInclude: Int, defaultValue: Int): Int {
+        return if (target in start..endInclude) target else defaultValue
+    }
+
+    companion object {
         val preset = arrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
-        return if (month == 2 && year % 4 == 0 && year % 100 != 0) 29 else preset[month - 1] // 윤년 확인
+        const val MIN_YEAR = 1900
+        const val MAX_YEAR = 3000
+        const val MIN_MONTH = 1
+        const val MAX_MONTH = 12
+        const val MIN_DATE = 1
+        const val MAX_DATE = 31
     }
 }

@@ -97,14 +97,13 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showDatePickerDialog() {
-        SpinnerDatePicker(this) { picker, year, month, dayOfMonth ->
+        SpinnerDatePicker(
+            this,
+            viewModel.gifticon.value.expireAt
+        ) { picker, year, month, dayOfMonth ->
             binding.tvExpireDate.text = getString(R.string.all_date, year, month, dayOfMonth)
             picker.dismiss()
-        }.apply {
-            setDate(viewModel.gifticon.value.expireAt)
-        }
-            .create()
-            .show()
+        }.show()
     }
 
     private fun showUseGifticonDialog() {
