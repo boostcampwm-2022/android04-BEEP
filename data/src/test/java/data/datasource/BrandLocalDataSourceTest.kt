@@ -60,6 +60,20 @@ class BrandLocalDataSourceTest {
         }
     }
 
+    @Test
+    @DisplayName("[성공] 룸에서 Section을 지우면 Brand들도 지워진다")
+    fun deleteSectionWithBrands() = runTest {
+        // given
+        dao.insertSectionWithBrands(sectionEntity, brandPlaceInfos)
+
+        // when
+        dao.deleteSection(1L)
+        val brands = dao.getBrands(1L)
+
+        // then
+        Truth.assertThat(brands.isEmpty()).isTrue()
+    }
+
     companion object {
         private val sectionEntity = SectionEntity(
             minX = "100",

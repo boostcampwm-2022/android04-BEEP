@@ -32,4 +32,7 @@ interface BrandWithSectionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBrand(brandEntity: List<BrandEntity>)
+
+    @Query("DELETE FROM section_table WHERE section_id =:sectionId")
+    suspend fun deleteSection(sectionId: Long)
 }
