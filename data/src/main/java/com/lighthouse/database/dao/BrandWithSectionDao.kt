@@ -9,6 +9,7 @@ import com.lighthouse.database.entity.BrandEntity
 import com.lighthouse.database.entity.BrandWithSections
 import com.lighthouse.database.entity.SectionEntity
 import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.mapper.toEntity
 
 @Dao
 interface BrandWithSectionDao {
@@ -23,24 +24,12 @@ interface BrandWithSectionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSectionWithBrands(sectionEntity: SectionEntity, brands: List<BrandPlaceInfo>) {
         val sectionId = insertSection(sectionEntity)
-        brands.forEach {
-            insertBrand(
-                BrandEntity(
-                    sectionId = sectionId,
-                    addressName = it.addressName,
-                    placeName = it.placeName,
-                    placeUrl = it.placeUrl,
-                    brand = it.brand,
-                    x = it.x,
-                    y = it.y
-                )
-            )
-        }
+        insertBrand(brands.toEntity(sectionId))
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSection(sectionEntity: SectionEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertBrand(brandEntity: BrandEntity)
+    suspend fun insertBrand(brandEntity: List<BrandEntity>)
 }
