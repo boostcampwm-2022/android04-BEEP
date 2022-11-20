@@ -5,4 +5,5 @@ import com.lighthouse.model.CustomErrorData
 
 internal fun CustomErrorData.toDomain(): CustomError = when (this) {
     is CustomErrorData.NetworkFailure -> CustomError.NetworkFailure
+    is CustomErrorData.NotFoundBrandPlaceInfos -> CustomError.NotFoundBrandPlaceInfos
 }

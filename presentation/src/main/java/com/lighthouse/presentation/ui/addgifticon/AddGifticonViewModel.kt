@@ -14,13 +14,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AddGifticonViewModel : ViewModel() {
+
     val directionsFlow = MutableSharedFlow<AddGifticonDirections>()
 
     private val _displayList = MutableStateFlow<List<AddGifticonUIModel>>(listOf(AddGifticonUIModel.Gallery))
     val displayList: StateFlow<List<AddGifticonUIModel>> = _displayList
 
     private val currentPos = MutableStateFlow(-1)
-    private val currentGifticon = displayList.combineTransform(currentPos) { list, pos ->
+    val currentGifticon = displayList.combineTransform(currentPos) { list, pos ->
         if (pos in list.indices && list[pos] is AddGifticonUIModel.Gifticon) {
             emit(list[pos] as AddGifticonUIModel.Gifticon)
         } else {
@@ -42,6 +43,8 @@ class AddGifticonViewModel : ViewModel() {
             currentPos.emit(position)
         }
     }
+
+    fun deleteGifticon(position: Int) {}
 
     fun popBackstack() {
         viewModelScope.launch {

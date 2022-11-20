@@ -6,4 +6,5 @@ sealed class CustomErrorData(
 ) : Exception(message, cause) {
 
     object NetworkFailure : CustomErrorData()
+    object NotFoundBrandPlaceInfos : CustomErrorData()
 }
