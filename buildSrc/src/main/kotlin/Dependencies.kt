@@ -45,6 +45,7 @@ object Versions {
     const val MOCK = "1.12.0"
     const val GOOGLE_TRUTH = "1.1.3"
     const val COROUTINES_TEST = "1.6.0"
+    const val MOCK_TEST = "2.28.2"
 }
 
 object Libraries {
@@ -161,6 +162,8 @@ object TestImpl {
     private const val MOCK = "io.mockk:mockk:${Versions.MOCK}"
     private const val GOOGLE_TRUTH = "com.google.truth:truth:${Versions.GOOGLE_TRUTH}"
     private const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES_TEST}"
+    private const val TEST_CORE = "androidx.test:core:1.5.0"
+    private const val ROBOLECTRIC = "org.robolectric:robolectric:4.9"
 
     val TEST_LIBRARIES = arrayListOf(
         JUNIT4,
@@ -170,16 +173,20 @@ object TestImpl {
         JUNIT_VINTAGE_ENGINE,
         MOCK,
         GOOGLE_TRUTH,
-        COROUTINES_TEST
+        COROUTINES_TEST,
+        ROBOLECTRIC
+    )
+
+    val ANDROID_TEST_LIBRARIES = arrayListOf(
+        TEST_CORE
     )
 }
 
 object AndroidTestImpl {
     private const val ANDROID_JUNIT = "androidx.test.ext:junit:${Versions.ANDROID_JUNIT}"
     private const val ESPRESSO = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO}"
-    private const val MOCKITO_CORE = "org.mockito:mockito-core:2.28.2"
-    private const val MOCKITO_ANDROID = "org.mockito:mockito-android:2.28.2"
-
+    private const val MOCKITO_CORE = "org.mockito:mockito-core:${Versions.MOCK_TEST}"
+    private const val MOCKITO_ANDROID = "org.mockito:mockito-android:${Versions.MOCK_TEST}"
     private const val WORK_MANAGER = "androidx.work:work-testing:${Versions.WORK_MANAGER}"
 
     val VIEW_LIBRARIES = arrayListOf(
