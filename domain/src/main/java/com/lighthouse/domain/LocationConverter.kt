@@ -12,8 +12,7 @@ data class Dms(
     val minutes: Int,
     val seconds: Int
 ) {
-    fun dmsToString() =
-        StringBuilder().append(degree).append(fillZero(minutes)).append(fillZero(seconds)).toString()
+    fun dmsToString() = "${degree}${fillZero(minutes)}${fillZero(seconds)}"
 
     private fun fillZero(seconds: Int) = seconds.toString().padStart(2, '0')
 }

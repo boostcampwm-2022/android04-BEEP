@@ -75,7 +75,7 @@ class MapViewModelTest {
     }
 
     @Test
-    @DisplayName("[실패] 네트워트 연결이 문제가 생긴다면 MapState는 NetworkFailure가 된다.")
+    @DisplayName("[실패] 네트워크 연결이 문제가 생긴다면 MapState는 NetworkFailure가 된다.")
     fun getBrandPlaceInfoNetworkError() = runTest {
         // given
         coEvery {

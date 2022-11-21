@@ -24,9 +24,9 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
         val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
 
         val brandSearchResults = withContext(ioDispatcher) {
-            cardinalLocations.map { location ->
+            cardinalLocations.flatMap { location ->
                 brandRepository.getBrandPlaceInfo(brandNames, location.x, location.y, size).getOrThrow()
-            }.flatten()
+            }
         }
 
         return if (brandSearchResults.isNotEmpty()) {
