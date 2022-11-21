@@ -2,7 +2,6 @@ package com.lighthouse.presentation.ui.map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.presentation.mapper.toPresentation
@@ -25,25 +24,22 @@ class MapViewModel @Inject constructor(
         private set
 
     fun getBrandPlaceInfos(x: Double, y: Double) {
-        val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
-        cardinalLocations.forEach { location ->
-            viewModelScope.launch {
-                getBrandPlaceInfosUseCase(brandList, location.x, location.y, 5)
-                    .mapCatching { it.toPresentation() }
-                    .onSuccess { brandPlaceInfos ->
-                        state.emit(UiState.Success(brandPlaceInfos))
-                    }
-                    .onFailure { throwable ->
-                        Timber.tag("TAG").d("throwable - > $throwable")
-                        state.emit(
-                            when (throwable) {
-                                CustomError.NetworkFailure -> UiState.NetworkFailure
-                                CustomError.EmptyResults -> UiState.NotFoundResults
-                                else -> UiState.Failure(throwable)
-                            }
-                        )
-                    }
-            }
+        viewModelScope.launch {
+            getBrandPlaceInfosUseCase(brandList, x, y, 5)
+                .mapCatching { it.toPresentation() }
+                .onSuccess { brandPlaceInfos ->
+                    state.emit(UiState.Success(brandPlaceInfos))
+                }
+                .onFailure { throwable ->
+                    Timber.tag("TAG").d("throwable - > $throwable")
+                    state.emit(
+                        when (throwable) {
+                            CustomError.NetworkFailure -> UiState.NetworkFailure
+                            CustomError.EmptyResults -> UiState.NotFoundResults
+                            else -> UiState.Failure(throwable)
+                        }
+                    )
+                }
         }
     }
 }

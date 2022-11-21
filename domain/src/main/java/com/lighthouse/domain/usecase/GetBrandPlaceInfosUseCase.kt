@@ -1,22 +1,33 @@
 package com.lighthouse.domain.usecase
 
-import com.lighthouse.domain.Dms
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.repository.BrandRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetBrandPlaceInfosUseCase @Inject constructor(
     private val brandRepository: BrandRepository
 ) {
 
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+
     suspend operator fun invoke(
         brandNames: List<String>,
-        x: Dms,
-        y: Dms,
+        x: Double,
+        y: Double,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
-        val brandSearchResults = brandRepository.getBrandPlaceInfo(brandNames, x, y, size).getOrThrow()
+        val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
+
+        val brandSearchResults = withContext(ioDispatcher) {
+            cardinalLocations.map { location ->
+                brandRepository.getBrandPlaceInfo(brandNames, location.x, location.y, size).getOrThrow()
+            }.flatten()
+        }
 
         return if (brandSearchResults.isNotEmpty()) {
             Result.success(brandSearchResults)
