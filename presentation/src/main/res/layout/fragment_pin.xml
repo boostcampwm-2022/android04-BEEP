@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.security.PinFragment">
+        tools:context=".ui.security.pin.PinFragment">
 
         <TextView
             android:id="@+id/tv_pin_description"

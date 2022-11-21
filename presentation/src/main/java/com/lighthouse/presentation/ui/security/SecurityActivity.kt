@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
+import com.lighthouse.presentation.ui.security.fingerprint.FingerprintFragment
+import com.lighthouse.presentation.ui.security.pin.PinFragment
 
 class SecurityActivity : AppCompatActivity() {
 

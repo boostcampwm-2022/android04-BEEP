@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security
+package com.lighthouse.presentation.ui.security.pin
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security.fingerprint
+package com.lighthouse.presentation.ui.security.fingerprint.biometric
 
 import android.app.Activity
 import androidx.activity.result.contract.ActivityResultContracts

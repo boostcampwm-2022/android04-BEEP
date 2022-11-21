@@ -1,8 +1,7 @@
-package com.lighthouse.presentation.ui.security
+package com.lighthouse.presentation.ui.security.fingerprint
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.fragment.app.Fragment
@@ -11,8 +10,9 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentFingerprintBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
-import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthCallback
-import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthManager
+import com.lighthouse.presentation.ui.security.fingerprint.biometric.FingerprintAuthCallback
+import com.lighthouse.presentation.ui.security.fingerprint.biometric.FingerprintAuthManager
+import timber.log.Timber
 
 class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), FingerprintAuthCallback {
 
@@ -33,16 +33,16 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), Fingerprint
     }
 
     override fun onBiometricAuthSuccess() {
-        Log.d("Finger", "Success")
+        Timber.tag("Finger").d("Success")
         gotoMain()
     }
 
     override fun onBiometricAuthError() {
-        Log.d("Finger", "Error")
+        Timber.tag("Finger").d("Error")
     }
 
     override fun onBiometricAuthCancel() {
-        Log.d("Finger", "Cancel")
+        Timber.tag("Finger").d("Cancel")
     }
 
     override fun onMessagePublished(id: Int) {
@@ -58,7 +58,7 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), Fingerprint
     }
 
     override fun onFingerprintRegisterError(result: ActivityResult) {
-        Log.d("Finger", "지문 등록 Error $result")
+        Timber.tag("Finger").d("지문 등록 Error $result")
     }
 
     private fun gotoMain() {
