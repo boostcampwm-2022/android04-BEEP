@@ -14,16 +14,32 @@
             type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailMode" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/cl_gifticon_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ab_gifticon_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tb_gifticon_detail"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:title="@string/gifticon_detail_gifticon_detail_title"
+                app:titleCentered="true" />
+        </com.google.android.material.appbar.AppBarLayout>
 
         <ScrollView
             android:id="@+id/sv_gifticon_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:nestedScrollingEnabled="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -43,22 +59,6 @@
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.9" />
 
-                <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/ab_gifticon_detail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/tb_gifticon_detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:title="@string/gifticon_detail_gifticon_detail_title"
-                        app:titleCentered="true" />
-                </com.google.android.material.appbar.AppBarLayout>
-
                 <ImageView
                     android:id="@+id/iv_product_image"
                     android:layout_width="200dp"
@@ -69,7 +69,7 @@
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/ab_gifticon_detail"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:src="@mipmap/ic_launcher" />
 
                 <ImageView
@@ -109,12 +109,12 @@
 
                 <EditText
                     android:id="@+id/et_product_name"
+                    style="@style/Theme.BEEP.EditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:background="@null"
                     android:ellipsize="end"
-                    style="@style/Theme.BEEP.EditText"
                     android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="textAutoComplete"
@@ -137,6 +137,7 @@
 
                 <EditText
                     android:id="@+id/et_brand"
+                    style="@style/Theme.BEEP.EditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -148,7 +149,6 @@
                     android:maxLines="1"
                     android:text="@{vm.gifticon.brand}"
                     android:textAppearance="@style/BEEP.TextStyle.H6"
-                    style="@style/Theme.BEEP.EditText"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
                     tools:text="설빙" />
@@ -158,8 +158,8 @@
                     isVisible="@{!vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,et_expire_date,tv_cash_balance_label,tv_cash_balance"
-                    app:layout_constraintTop_toBottomOf="@id/et_expire_date"
+                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,tv_expire_date,tv_cash_balance_label,tv_cash_balance"
+                    app:layout_constraintTop_toBottomOf="@id/tv_expire_date"
                     tools:visibility="visible" />
 
                 <TextView
@@ -173,14 +173,14 @@
                     app:layout_constraintTop_toBottomOf="@id/et_brand" />
 
                 <TextView
-                    android:id="@+id/et_expire_date"
+                    android:id="@+id/tv_expire_date"
                     style="@style/BEEP.TextStyle.H6"
                     dateFormat="@{vm.gifticon.expireAt}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:autofillHints="creditCardExpirationDate"
-                    android:background="@null"
+                    android:enabled="@{vm.mode==mode.EDIT}"
+                    android:onClick="@{() -> vm.expireDateClicked()}"
                     app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date_label"
@@ -206,6 +206,7 @@
 
                 <EditText
                     android:id="@+id/tv_cash_balance"
+                    style="@style/Theme.BEEP.EditText"
                     concurrencyFormat="@{vm.gifticon.balance}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -213,11 +214,10 @@
                     android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="number"
-                    style="@style/Theme.BEEP.EditText"
-                    app:layout_constraintBottom_toBottomOf="@id/et_expire_date"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_date"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/et_expire_date"
-                    app:layout_constraintTop_toTopOf="@id/et_expire_date"
+                    app:layout_constraintStart_toEndOf="@id/tv_expire_date"
+                    app:layout_constraintTop_toTopOf="@id/tv_expire_date"
                     tools:text="3,620원" />
 
                 <androidx.constraintlayout.widget.Group
@@ -315,6 +315,7 @@
 
                 <EditText
                     android:id="@+id/et_memo"
+                    style="@style/Theme.BEEP.EditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -328,7 +329,6 @@
                     android:padding="16dp"
                     android:text="@{vm.gifticon.memo}"
                     android:textAppearance="@style/BEEP.TextStyle.Body1"
-                    style="@style/Theme.BEEP.EditText"
                     android:textColorHint="#616161"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
@@ -368,15 +368,12 @@
             android:id="@+id/chip_scroll_down_for_use_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="60dp"
             android:alpha="0.78"
             android:elevation="1dp"
             android:onClick="@{() -> vm.scrollDownForUseButtonClicked()}"
             android:text="@string/gifticon_detail_scroll_down_for_use_button_text"
-            app:chipIcon="@drawable/ic_double_arrow_down"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.95" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:chipIcon="@drawable/ic_double_arrow_down" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

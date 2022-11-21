@@ -9,14 +9,14 @@ import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddCandidateGifticonViewHolder(
     parent: ViewGroup,
-    private val onClick: (AddGifticonUIModel.Gifticon) -> Unit,
-    private val onDelete: (AddGifticonUIModel.Gifticon) -> Unit,
+    private val onClick: (Int) -> Unit,
+    private val onDelete: (Int) -> Unit,
     private val binding: ItemAddCandidateGifticonBinding = ItemAddCandidateGifticonBinding.bind(
         LayoutInflater.from(parent.context).inflate(R.layout.item_add_candidate_gifticon, parent, false)
     )
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: AddGifticonUIModel.Gifticon) {
-        binding.dm = AddCandidateGifticonDisplayModel(item, onClick, onDelete)
+        binding.dm = AddCandidateGifticonDisplayModel(item, bindingAdapterPosition, onClick, onDelete)
     }
 }

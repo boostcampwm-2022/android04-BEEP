@@ -12,6 +12,10 @@
     <string name="all_expired_date">~ %4d.%02d.%02d</string>
     <string name="all_date">%4d.%02d.%02d</string>
     <string name="all_yes">네</string>
+    <string name="all_ok">OK</string>
+    <string name="all_year">년</string>
+    <string name="all_month">월</string>
+    <string name="all_day">일</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
@@ -20,7 +24,6 @@
     <string name="main_order_recent">최신순</string>
     <string name="main_order_d_day">디데이순</string>
     <string name="main_filter_all">전체</string>
-
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
@@ -106,4 +109,7 @@
     <string name="secure_later">나중에 설정</string>
     <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
 
+    <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
+    <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
+    <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
 </resources>
