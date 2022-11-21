@@ -46,6 +46,8 @@ object Versions {
     const val GOOGLE_TRUTH = "1.1.3"
     const val COROUTINES_TEST = "1.6.0"
     const val MOCK_TEST = "2.28.2"
+
+    const val TIMBER = "4.7.1"
 }
 
 object Libraries {
@@ -100,6 +102,8 @@ object Libraries {
 
     private const val VIEW_PAGER2 = "androidx.viewpager2:viewpager${Versions.VIEW_PAGER2}"
 
+    private const val TIMBER = "com.jakewharton.timber:timber:${Versions.TIMBER}"
+
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
         CORE_SPLASH,
@@ -120,7 +124,8 @@ object Libraries {
         PLAY_SERVICES_LOCATION,
         GLIDE,
         ZXING,
-        VIEW_PAGER2
+        VIEW_PAGER2,
+        TIMBER
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
@@ -133,13 +138,15 @@ object Libraries {
         INJECT,
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
-        WORK_MANAGER
+        WORK_MANAGER,
+        TIMBER
     )
     val DOMAIN_LIBRARIES = arrayListOf(
         COROUTINE_CORE,
         INJECT,
         PAGING_COMMON_KTX,
-        ROOM_COMMON
+        ROOM_COMMON,
+        TIMBER
     )
     val APP_LIBRARIES = arrayListOf(
         HILT,
@@ -148,7 +155,8 @@ object Libraries {
         MOSHI_ADAPTERS,
         CONVERTER_MOSHI,
         ROOM_RUNTIME,
-        ROOM_KTX
+        ROOM_KTX,
+        TIMBER
     )
 }
 
