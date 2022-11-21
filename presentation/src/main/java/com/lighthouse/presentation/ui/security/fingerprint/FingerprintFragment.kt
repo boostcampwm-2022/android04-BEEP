@@ -1,9 +1,12 @@
 package com.lighthouse.presentation.ui.security.fingerprint
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
@@ -18,10 +21,17 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), Fingerprint
 
     private val binding by viewBindings(FragmentFingerprintBinding::bind)
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
+    private val activityLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> onFingerprintRegisterSuccess()
+                else -> onFingerprintRegisterError(result)
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fingerprintAuthManager =
-            FingerprintAuthManager(requireActivity(), this)
+            FingerprintAuthManager(requireActivity(), activityLauncher, this)
 
         binding.btnUseFingerprint.setOnClickListener {
             fingerprintAuthManager.authenticate()
