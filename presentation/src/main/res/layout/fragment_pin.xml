@@ -20,7 +20,7 @@
             style="@style/BEEP.TextStyle.Subtitle1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pin_create_description"
+            android:text="@string/pin_initial_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -279,6 +279,7 @@
             android:layout_marginBottom="32dp"
             android:enabled="@{vm.pinString.length == 6}"
             android:text="@string/all_next"
+            android:onClick="@{() -> vm.next()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

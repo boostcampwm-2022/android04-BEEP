@@ -128,7 +128,9 @@
     <string name="pin_eight">8</string>
     <string name="pin_nine">9</string>
     <string name="pin_zero">0</string>
-    <string name="pin_create_description">PIN 번호를 생성하세요</string>
+    <string name="pin_initial_description">PIN 번호를 생성하세요</string>
+    <string name="pin_confirm_description">입력한 PIN 번호를 확인합니다</string>
+    <string name="pin_wrong_description">PIN 번호가 일치하지 않습니다!</string>
     <string name="pin">PIN</string>
     <string name="pin_backspace">Backspace</string>
 

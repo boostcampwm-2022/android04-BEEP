@@ -20,7 +20,7 @@ class SecurityActivity : AppCompatActivity() {
         moveScreen(SecurityDirections.PIN)
     }
 
-    private fun moveScreen(directions: SecurityDirections) {
+    fun moveScreen(directions: SecurityDirections) {
         val fragment = when (directions) {
             SecurityDirections.FINGERPRINT -> fingerprintFragment
             SecurityDirections.PIN -> pinFragment
