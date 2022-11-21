@@ -17,7 +17,7 @@ class SecurityActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_security)
 
-        moveScreen(SecurityDirections.FINGERPRINT)
+        moveScreen(SecurityDirections.PIN)
     }
 
     private fun moveScreen(directions: SecurityDirections) {

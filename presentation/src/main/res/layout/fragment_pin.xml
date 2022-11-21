@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.security.pin.PinViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +35,7 @@
             android:layout_marginStart="100dp"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
-            android:src="@drawable/ic_pin_filled"
+            android:src="@{vm.pinString.length &lt; 1 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_1"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
-            android:src="@drawable/ic_pin_filled"
+            android:src="@{vm.pinString.length &lt; 2 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
             app:layout_constraintEnd_toEndOf="@id/iv_pin_2"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_0"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
@@ -55,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
-            android:src="@drawable/ic_pin_filled"
+            android:src="@{vm.pinString.length &lt; 3 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_3"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_1"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
@@ -66,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
-            android:src="@drawable/ic_pin_filled"
+            android:src="@{vm.pinString.length &lt; 4 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_4"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_2"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
@@ -77,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
-            android:src="@drawable/ic_pin_border"
+            android:src="@{vm.pinString.length &lt; 5 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_5"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_3"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
@@ -89,7 +92,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="100dp"
             android:contentDescription="@string/pin"
-            android:src="@drawable/ic_pin_border"
+            android:src="@{vm.pinString.length &lt; 6 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_4"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
@@ -107,6 +110,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(1)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_one"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_4"
@@ -122,6 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(2)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_two"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_5"
@@ -137,6 +142,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(3)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_three"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_6"
@@ -152,6 +158,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(4)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_four"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_7"
@@ -166,6 +173,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(5)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_five"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_8"
@@ -180,6 +188,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(6)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_six"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_9"
@@ -195,6 +204,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(7)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_seven"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_8"
@@ -208,6 +218,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(8)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_eight"
             app:layout_constraintBottom_toTopOf="@id/tv_num_0"
@@ -222,6 +233,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(9)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_nine"
             app:layout_constraintBottom_toTopOf="@+id/iv_backspace"
@@ -237,6 +249,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(0)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_zero"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_9"
@@ -248,14 +261,15 @@
             android:id="@+id/iv_backspace"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_backspace"
             android:gravity="center"
+            android:onClick="@{() -> vm.removePin()}"
             android:paddingVertical="20dp"
             android:src="@drawable/ic_pin_backspace"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_0"
-            app:layout_constraintTop_toBottomOf="@id/tv_num_9"
-            android:contentDescription="@string/pin_backspace"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_num_9" />
 
 
         <com.google.android.material.button.MaterialButton
@@ -263,6 +277,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
+            android:enabled="@{vm.pinString.length == 6}"
             android:text="@string/all_next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
