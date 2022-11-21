@@ -164,7 +164,6 @@ object LocationConverter {
      */
     fun getVertex(x: Dms, y: Dms): String {
         val (maxX, maxY) = calculateMaxVertex(x, y)
-        println("TAG minX,minY -> ($x,$y)")
         val (minX, minY) = VertexLocation(convertToDD(x), convertToDD(y))
         return "$minX,$minY,$maxX,$maxY"
     }
