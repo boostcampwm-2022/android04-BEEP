@@ -37,6 +37,8 @@ class GifticonDetailActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
+        setSupportActionBar(binding.tbGifticonDetail)
+
         binding.btnUseGifticon.viewTreeObserver.addOnDrawListener {
             chip.post {
                 chip.isVisible = btnUseGifticon.isOnScreen().not()

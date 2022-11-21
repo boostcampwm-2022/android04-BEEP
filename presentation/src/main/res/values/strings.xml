@@ -11,6 +11,7 @@
     <string name="all_d_day_expired">만료</string>
     <string name="all_expired_date">~ %4d.%02d.%02d</string>
     <string name="all_date">%4d.%02d.%02d</string>
+    <string name="all_yes">네</string>
     <string name="all_ok">OK</string>
     <string name="all_year">년</string>
     <string name="all_month">월</string>
@@ -24,7 +25,6 @@
     <string name="main_order_recent">최신순</string>
     <string name="main_order_d_day">디데이순</string>
     <string name="main_filter_all">전체</string>
-
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
@@ -75,6 +75,10 @@
     <string name="fingerprint_authentication_success">지문 인증 성공</string>
     <string name="fingerprint_authentication_fail">지문 인증 실패</string>
     <string name="fingerprint_not_enrolled">등록된 지문이 없습니다.</string>
+    <string name="fingerprint_error_lockout">5회 인증에 실패했습니다. 잠시 후 다시 시도해주세요</string>
+    <string name="fingerprint_error_lockout_permanent">잦은 실패로 지문 센서가 비활성화 되었습니다</string>
+    <string name="fingerprint_unknown_error">알 수 없는 오류가 발생했습니다.</string>
+    <string name="fingerprint_sensor_description">Touch the fingerprint sensor</string>
 
     <string name="gifticon_detail_product_image_description">상품 사진</string>
     <string name="gifticon_detail_gifticon_detail_title">상세 정보</string>
@@ -102,9 +106,17 @@
     <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
     <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
     <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
+
+    <string name="secure_later">나중에 설정</string>
+    <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
+
     <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
     <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
     <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
     <string name="gifticon_detail_invalid_dialog_title">유효하지 않은 기프티콘입니다</string>
     <string name="gifticon_detail_invalid_dialog_message">곧 창이 닫힙니다</string>
+
+    <string name="error_network_failure">알 수 없는 오류가 생겼습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="error_not_found_results">검색 결과가 존재하지 않습니다.</string>
+    <string name="error_network_error">네트워크 연결을 확인해주세요.</string>
 </resources>
