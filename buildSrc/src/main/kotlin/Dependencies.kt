@@ -46,6 +46,7 @@ object Versions {
     const val GOOGLE_TRUTH = "1.1.3"
     const val COROUTINES_TEST = "1.6.0"
     const val MOCK_TEST = "2.28.2"
+    const val TURBINE = "0.12.1"
 
     const val TIMBER = "4.7.1"
 }
@@ -146,7 +147,6 @@ object Libraries {
         INJECT,
         PAGING_COMMON_KTX,
         ROOM_COMMON,
-        TIMBER
     )
     val APP_LIBRARIES = arrayListOf(
         HILT,
@@ -172,6 +172,7 @@ object TestImpl {
     private const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES_TEST}"
     private const val TEST_CORE = "androidx.test:core:1.5.0"
     private const val ROBOLECTRIC = "org.robolectric:robolectric:4.9"
+    private const val TURBINE = "app.cash.turbine:turbine:${Versions.TURBINE}"
 
     val TEST_LIBRARIES = arrayListOf(
         JUNIT4,
@@ -182,7 +183,8 @@ object TestImpl {
         MOCK,
         GOOGLE_TRUTH,
         COROUTINES_TEST,
-        ROBOLECTRIC
+        ROBOLECTRIC,
+        TURBINE
     )
 
     val ANDROID_TEST_LIBRARIES = arrayListOf(
