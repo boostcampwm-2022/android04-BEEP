@@ -13,16 +13,17 @@
         tools:context=".ui.security.FingerprintFragment">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/iv_fingerprint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="160dp"
-            android:src="@drawable/ic_fingerprint"
             android:contentDescription="@string/fingerprint_authentication"
+            android:src="@drawable/ic_fingerprint"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_fingerprint_suggest"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
 
         <TextView
             android:id="@+id/tv_fingerprint_suggest"
@@ -30,13 +31,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="152dp"
             android:text="@string/secure_suggest_fingerprint_description"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.2"
+            app:layout_constraintStart_toEndOf="@+id/iv_fingerprint"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_not_use_fingerprint"
             style="@style/BEEP.Component.TextButton"
             android:layout_width="wrap_content"
@@ -49,7 +51,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_fingerprint_suggest" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_use_fingerprint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -3,9 +3,7 @@ package com.lighthouse.presentation.ui.security
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
@@ -16,18 +14,10 @@ import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthCallback
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthManager
 
-class FingerprintFragment : Fragment(), FingerprintAuthCallback {
+class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), FingerprintAuthCallback {
 
     private val binding by viewBindings(FragmentFingerprintBinding::bind)
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_fingerprint, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fingerprintAuthManager =
