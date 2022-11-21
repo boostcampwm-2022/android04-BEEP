@@ -19,7 +19,7 @@ class BrandLocalDataSourceImpl @Inject constructor(
         val sectionId = brandWithSectionDao.getSectionId(minX = xToDMS, minY = yToDMS)
 
         return if (sectionId == null) {
-            Result.failure(CustomError.NotFoundBrandPlaceInfos)
+            Result.failure(CustomError.EmptyResults)
         } else {
             val brands = brandWithSectionDao.getBrands(sectionId)
             Result.success(brands)

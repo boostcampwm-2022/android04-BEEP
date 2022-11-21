@@ -20,7 +20,7 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
         return if (brandSearchResults.isNotEmpty()) {
             Result.success(brandSearchResults)
         } else {
-            Result.failure(CustomError.NotFoundBrandPlaceInfos)
+            Result.failure(CustomError.EmptyResults)
         }
     }
 }

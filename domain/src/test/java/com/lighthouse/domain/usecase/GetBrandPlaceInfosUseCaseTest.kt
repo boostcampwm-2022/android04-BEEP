@@ -45,7 +45,7 @@ class GetBrandPlaceInfosUseCaseTest {
         val action = useCase(brandKeyword, "37.284", "127.1071", 5).exceptionOrNull()
 
         // then
-        Truth.assertThat(action).isInstanceOf(CustomError.NotFoundBrandPlaceInfos::class.java)
+        Truth.assertThat(action).isInstanceOf(CustomError.EmptyResults::class.java)
     }
 
     companion object {

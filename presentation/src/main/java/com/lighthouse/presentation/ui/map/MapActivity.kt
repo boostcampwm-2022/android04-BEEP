@@ -3,15 +3,18 @@ package com.lighthouse.presentation.ui.map
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
+import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -61,15 +64,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
                     when (state) {
-                        is MapState.Success -> updateBrandMarker(viewModel.brandPlaceSearchResults)
-                        is MapState.Failure -> {}
-                        is MapState.NetworkFailure -> {}
-                        is MapState.NotFoundSearchResults -> {}
-                        is MapState.Loading -> {}
+                        is UiState.Success -> updateBrandMarker(state.item)
+                        is UiState.Loading -> Unit
+                        is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
+                        is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
+                        is UiState.Failure -> showSnackBar(R.string.error_network_failure)
                     }
                 }
             }
         }
+    }
+
+    private fun showSnackBar(@StringRes message: Int) {
+        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {

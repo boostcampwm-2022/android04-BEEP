@@ -4,6 +4,7 @@ import com.google.common.truth.Truth
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
+import com.lighthouse.presentation.ui.common.UiState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +49,7 @@ class MapViewModelTest {
         val actual = viewModel.state.value
 
         // then
-        Truth.assertThat(actual).isInstanceOf(MapState.Success::class.java)
+        Truth.assertThat(actual).isInstanceOf(UiState.Success::class.java)
     }
 
     @Test
@@ -57,7 +58,7 @@ class MapViewModelTest {
         // given
         coEvery {
             getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
-        } returns Result.failure(CustomError.NotFoundBrandPlaceInfos)
+        } returns Result.failure(CustomError.EmptyResults)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
@@ -65,7 +66,7 @@ class MapViewModelTest {
         val actual = viewModel.state.value
 
         // then
-        Truth.assertThat(actual).isInstanceOf(MapState.NotFoundSearchResults::class.java)
+        Truth.assertThat(actual).isInstanceOf(UiState.NotFoundResults::class.java)
     }
 
     @Test
@@ -82,7 +83,7 @@ class MapViewModelTest {
         val actual = viewModel.state.value
 
         // then
-        Truth.assertThat(actual).isInstanceOf(MapState.NetworkFailure::class.java)
+        Truth.assertThat(actual).isInstanceOf(UiState.NetworkFailure::class.java)
     }
 
     companion object {

@@ -104,4 +104,8 @@
     <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
     <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
     <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
+
+    <string name="error_network_failure">알 수 없는 오류가 생겼습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="error_not_found_results">검색 결과가 존재하지 않습니다.</string>
+    <string name="error_network_error">네트워크 연결을 확인해주세요.</string>
 </resources>
