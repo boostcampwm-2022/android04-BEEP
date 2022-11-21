@@ -28,7 +28,7 @@
 
 |[김명석](https://github.com/audxo112)|[박명범](https://github.com/mangbaam)|[양수진](https://github.com/yangsooplus)|[이지훈](https://github.com/lee-ji-hoon)|
 |------|---|---|------|
-|<img src="https://user-images.githubusercontent.com/53300830/203104186-2454f77f-4cab-485f-972b-22236a3d28ca.jpg" width="120">|||<img src="https://user-images.githubusercontent.com/53300830/203106749-8e92660f-87bd-4655-b39f-352dcc989c49.png" width="120">|
+|<img src="https://user-images.githubusercontent.com/53300830/203104186-2454f77f-4cab-485f-972b-22236a3d28ca.jpg" width="120" />|<img src="https://user-images.githubusercontent.com/44221447/203118314-c1a7ae71-d746-4399-bbef-2e7e71452b9c.jpg" width="120" />|<img src="https://user-images.githubusercontent.com/44221447/203118604-8b31cda6-70c9-4119-a636-0ac36b6c60a0.jpg" width="120" />|<img src="https://user-images.githubusercontent.com/53300830/203106749-8e92660f-87bd-4655-b39f-352dcc989c49.png" width="120" />|
 
 
 ## 기능 소개
