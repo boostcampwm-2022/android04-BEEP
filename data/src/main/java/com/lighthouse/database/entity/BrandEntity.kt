@@ -18,13 +18,12 @@ import com.lighthouse.database.entity.BrandEntity.Companion.BRAND_TABLE
     ]
 )
 data class BrandEntity(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long = 1,
-    @ColumnInfo(name = "parent_section_id") val sectionId: Long,
+    @PrimaryKey
+    @ColumnInfo(name = "place_url")
+    val placeUrl: String,
     @ColumnInfo(name = "address_name") val addressName: String,
+    @ColumnInfo(name = "parent_section_id") val sectionId: Long,
     @ColumnInfo(name = "place_name") val placeName: String,
-    @ColumnInfo(name = "place_url") val placeUrl: String,
     @ColumnInfo(name = "brand") val brand: String,
     @ColumnInfo(name = "x") val x: String,
     @ColumnInfo(name = "y") val y: String

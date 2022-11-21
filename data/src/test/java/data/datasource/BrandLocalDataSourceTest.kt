@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.jupiter.api.DisplayName
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.UUID
 
 @RunWith(RobolectricTestRunner::class)
 @ExperimentalCoroutinesApi
@@ -75,6 +76,7 @@ class BrandLocalDataSourceTest {
     }
 
     companion object {
+
         private val sectionEntity = SectionEntity(
             minX = "100",
             minY = "200"
@@ -84,7 +86,39 @@ class BrandLocalDataSourceTest {
             BrandPlaceInfo(
                 addressName = "경기도 용인시 기흥구",
                 placeName = "경기도 용인시 기흥구",
-                placeUrl = "https",
+                placeUrl = UUID.randomUUID().toString(),
+                brand = "스타벅스",
+                x = "210",
+                y = "110"
+            ),
+            BrandPlaceInfo(
+                addressName = "경기도 용인시 기흥구",
+                placeName = "경기도 용인시 기흥구",
+                placeUrl = UUID.randomUUID().toString(),
+                brand = "스타벅스",
+                x = "210",
+                y = "110"
+            ),
+            BrandPlaceInfo(
+                addressName = "경기도 용인시 기흥구",
+                placeName = "경기도 용인시 기흥구",
+                placeUrl = UUID.randomUUID().toString(),
+                brand = "스타벅스",
+                x = "210",
+                y = "110"
+            ),
+            BrandPlaceInfo(
+                addressName = "경기도 용인시 기흥구",
+                placeName = "경기도 용인시 기흥구",
+                placeUrl = UUID.randomUUID().toString(),
+                brand = "스타벅스",
+                x = "210",
+                y = "110"
+            ),
+            BrandPlaceInfo(
+                addressName = "경기도 용인시 기흥구",
+                placeName = "경기도 용인시 기흥구",
+                placeUrl = UUID.randomUUID().toString(),
                 brand = "스타벅스",
                 x = "210",
                 y = "110"
