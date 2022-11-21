@@ -4,13 +4,11 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
-import androidx.annotation.RequiresApi
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
 
-@RequiresApi(Build.VERSION_CODES.R)
 class BiometricAuth(
     private val activity: FragmentActivity,
     private val biometricLauncher: ActivityResultLauncher<Intent>,
@@ -44,8 +42,17 @@ class BiometricAuth(
     private val biometricPrompt: BiometricPrompt = BiometricPrompt(activity, authenticationCallback)
 
     private fun goBiometricSetting() {
-        val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-            putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED, BiometricManager.Authenticators.BIOMETRIC_STRONG)
+        val enrollIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                putExtra(
+                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG
+                )
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Intent(Settings.ACTION_FINGERPRINT_ENROLL)
+        } else {
+            Intent(Settings.ACTION_SECURITY_SETTINGS)
         }
         biometricLauncher.launch(enrollIntent)
     }
@@ -55,7 +62,7 @@ class BiometricAuth(
         val biometricAvailable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
         } else {
-            biometricManager.canAuthenticate()
+            biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)
         }
 
         when (biometricAvailable) {
