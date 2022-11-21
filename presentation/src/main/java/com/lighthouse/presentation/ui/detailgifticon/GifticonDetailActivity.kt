@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.extension.isOnScreen
@@ -14,6 +15,8 @@ import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity() {
@@ -59,6 +62,11 @@ class GifticonDetailActivity : AppCompatActivity() {
                 }
             }
         }
+        repeatOnStarted {
+            viewModel.failure.collect {
+                showInvalidDialog()
+            }
+        }
     }
 
     private fun handleEvent(event: Event) {
@@ -98,8 +106,7 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun showDatePickerDialog() {
         SpinnerDatePicker(
-            this,
-            viewModel.gifticon.value.expireAt
+            this
         ) { picker, year, month, dayOfMonth ->
             binding.tvExpireDate.text = getString(R.string.all_date, year, month, dayOfMonth)
             picker.dismiss()
@@ -109,6 +116,27 @@ class GifticonDetailActivity : AppCompatActivity() {
     private fun showUseGifticonDialog() {
         useGifticonDialog = UseGifticonDialog().also { dialog ->
             dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
+        }
+    }
+
+    private fun showInvalidDialog() {
+        lifecycleScope.launch {
+            withTimeout(3000) {
+                AlertDialog.Builder(this@GifticonDetailActivity)
+                    .setTitle(getString(R.string.gifticon_detail_invalid_dialog_title))
+                    .setMessage(getString(R.string.gifticon_detail_invalid_dialog_message))
+                    .setNegativeButton(getString(R.string.all_close_button)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setOnCancelListener { dialog ->
+                        dialog.dismiss()
+                    }
+                    .setOnDismissListener {
+                        finish()
+                    }.create().also { dialog ->
+                        dialog.show()
+                    }
+            }
         }
     }
 }
