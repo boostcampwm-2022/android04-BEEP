@@ -24,6 +24,7 @@ class MapViewModel @Inject constructor(
 
     fun getBrandPlaceInfos(x: Double, y: Double) {
         viewModelScope.launch {
+            state.value = UiState.Loading
             getBrandPlaceInfosUseCase(brandList, x.toString(), y.toString(), 5)
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brandPlaceInfos ->
