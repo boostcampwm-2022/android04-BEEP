@@ -4,6 +4,7 @@ import com.google.common.truth.Truth
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
+import com.lighthouse.presentation.ui.common.UiState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.DisplayName
 @ExperimentalCoroutinesApi
 class MapViewModelTest {
 
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase = mockk(relaxed = true)
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase = mockk()
 
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
@@ -39,16 +40,16 @@ class MapViewModelTest {
     fun getBrandPlaceInfoSuccess() {
         // given
         coEvery {
-            getBrandPlaceInfosUseCase(brandKeyword, "37.2840", "127.1071", "500", 5)
+            getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
         } returns Result.success(brandPlaceInfo)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
-        viewModel.getBrandPlaceInfos(brandKeyword)
+        viewModel.getBrandPlaceInfos(37.2840, 127.1071)
         val actual = viewModel.state.value
 
         // then
-        Truth.assertThat(actual).isInstanceOf(MapState.Success::class.java)
+        Truth.assertThat(actual).isInstanceOf(UiState.Success::class.java)
     }
 
     @Test
@@ -56,16 +57,16 @@ class MapViewModelTest {
     fun getBrandPlaceInfoNotFoundSearchResults() {
         // given
         coEvery {
-            getBrandPlaceInfosUseCase(brandKeyword, "37.2840", "127.1071", "500", 5)
-        } returns Result.failure(CustomError.NotFoundBrandPlaceInfos)
+            getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
+        } returns Result.failure(CustomError.EmptyResults)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
-        viewModel.getBrandPlaceInfos(brandKeyword)
+        viewModel.getBrandPlaceInfos(37.284, 127.1071)
         val actual = viewModel.state.value
 
         // then
-        Truth.assertThat(actual).isInstanceOf(MapState.NotFoundSearchResults::class.java)
+        Truth.assertThat(actual).isInstanceOf(UiState.NotFoundResults::class.java)
     }
 
     @Test
@@ -73,20 +74,20 @@ class MapViewModelTest {
     fun getBrandPlaceInfoNetworkError() {
         // given
         coEvery {
-            getBrandPlaceInfosUseCase(brandKeyword, "37.2840", "127.1071", "500", 5)
+            getBrandPlaceInfosUseCase(brandList, "37.284", "127.1071", 5)
         } returns Result.failure(CustomError.NetworkFailure)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
-        viewModel.getBrandPlaceInfos(brandKeyword)
+        viewModel.getBrandPlaceInfos(37.2840, 127.1071)
         val actual = viewModel.state.value
 
         // then
-        Truth.assertThat(actual).isInstanceOf(MapState.NetworkFailure::class.java)
+        Truth.assertThat(actual).isInstanceOf(UiState.NetworkFailure::class.java)
     }
 
     companion object {
-        private val brandKeyword: List<String> = listOf("스타벅스", "베스킨라빈스", "BBQ")
+        private val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "아파트", "어린이집")
         private val brandPlaceInfo: List<BrandPlaceInfo> = listOf(BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""))
     }
 }

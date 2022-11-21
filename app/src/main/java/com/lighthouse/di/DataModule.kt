@@ -1,9 +1,11 @@
 package com.lighthouse.di
 
-import com.lighthouse.datasource.BrandRemoteSource
-import com.lighthouse.datasource.BrandRemoteSourceImpl
 import com.lighthouse.datasource.GalleryImageLocalSource
 import com.lighthouse.datasource.GalleryImageLocalSourceImpl
+import com.lighthouse.datasource.brand.BrandLocalDataSource
+import com.lighthouse.datasource.brand.BrandLocalDataSourceImpl
+import com.lighthouse.datasource.brand.BrandRemoteDataSource
+import com.lighthouse.datasource.brand.BrandRemoteDataSourceImpl
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
 import com.lighthouse.repository.BrandRepositoryImpl
@@ -21,8 +23,14 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindBrandRemoteDataSource(
-        source: BrandRemoteSourceImpl
-    ): BrandRemoteSource
+        source: BrandRemoteDataSourceImpl
+    ): BrandRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindBrandLocalDataSource(
+        source: BrandLocalDataSourceImpl
+    ): BrandLocalDataSource
 
     @Binds
     @Singleton

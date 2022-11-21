@@ -1,11 +1,11 @@
 package com.lighthouse.presentation.ui.security.fingerprint
 
-import android.util.Log
+import android.hardware.fingerprint.FingerprintManager
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.security.FingerprintBottomSheetDialog
 
 class LegacyFingerprintAuth(
     private val activity: FragmentActivity,
@@ -15,24 +15,34 @@ class LegacyFingerprintAuth(
     private val fingerprintManager = FingerprintManagerCompat.from(activity.applicationContext)
     private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()
+    private val fingerprintBottomSheetDialog by lazy {
+        FingerprintBottomSheetDialog().also {
+            it.setFingerprintAuthCallback(fingerprintAuthCallback)
+        }
+    }
 
     private val fingerprintCallback = object : FingerprintManagerCompat.AuthenticationCallback() {
         override fun onAuthenticationFailed() {
             super.onAuthenticationFailed()
-            cancellationSignal.cancel()
-            Log.d("Finger", "onAuthenticationFailed")
-            // TODO: 재시도
+            fingerprintBottomSheetDialog.failAuthentication()
         }
 
         override fun onAuthenticationSucceeded(result: FingerprintManagerCompat.AuthenticationResult?) {
             super.onAuthenticationSucceeded(result)
-            Log.d("Finger", "onAuthenticationSucceeded")
             fingerprintAuthCallback.onBiometricAuthSuccess()
+            fingerprintBottomSheetDialog.dismiss()
+            fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_authentication_success)
         }
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
             super.onAuthenticationError(errorCode, errString)
-            Log.d("Finger", "onAuthenticationError $errString")
+            val errorMessageId = when (errorCode) {
+                FingerprintManager.FINGERPRINT_ERROR_LOCKOUT -> R.string.fingerprint_error_lockout
+                FingerprintManager.FINGERPRINT_ERROR_LOCKOUT_PERMANENT -> R.string.fingerprint_error_lockout_permanent
+                else -> R.string.fingerprint_unknown_error
+            }
+
+            fingerprintBottomSheetDialog.showErrorMessage(errorMessageId)
             fingerprintAuthCallback.onBiometricAuthError()
             cancellationSignal.cancel()
         }
@@ -51,7 +61,7 @@ class LegacyFingerprintAuth(
                 fingerprintCallback,
                 null
             )
-            BottomSheetDialog(activity).show()
+            fingerprintBottomSheetDialog.show(activity.supportFragmentManager, "FingerprintBottomSheetDialog")
         }
     }
 }

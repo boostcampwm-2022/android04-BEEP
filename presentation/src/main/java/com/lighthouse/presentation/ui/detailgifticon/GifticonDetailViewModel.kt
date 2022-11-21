@@ -41,6 +41,10 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
+    fun switchMode(mode: GifticonDetailMode) {
+        _mode.update { mode }
+    }
+
     fun scrollDownForUseButtonClicked() {
         event(Event.ScrollDownForUseButtonClicked)
     }
@@ -50,7 +54,11 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun editButtonClicked() {
-        _mode.update { GifticonDetailMode.EDIT }
+        event(Event.EditButtonClicked)
+    }
+
+    fun expireDateClicked() {
+        event(Event.ExpireDateClicked)
     }
 
     fun showAllUsedInfoButtonClicked() {
