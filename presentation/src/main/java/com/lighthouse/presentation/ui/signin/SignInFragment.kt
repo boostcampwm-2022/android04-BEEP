@@ -55,8 +55,7 @@ class SignInFragment : Fragment() {
         if (auth.currentUser == null) {
             initGoogleLogin()
         } else {
-            // gotoMain()
-            gotoSecurity() // TODO: fingerprint test
+            gotoMain()
         }
     }
 
@@ -78,7 +77,7 @@ class SignInFragment : Fragment() {
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
-                gotoMain()
+                gotoSecurity()
             } else {
                 Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
             }
