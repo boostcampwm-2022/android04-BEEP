@@ -36,11 +36,11 @@ dependencies {
     implementation(project(":domain"))
 
     implementation(platform(Libraries.FIREBASE_BOM))
-
-    implementation(TestImpl.TEST_LIBRARIES)
     implementation(Libraries.DATA_LIBRARIES)
     annotationProcessor(AnnotationProcessors.DATA_LIBRARIES)
     kapt(Kapt.DATA_LIBRARIES)
+    implementation(TestImpl.TEST_LIBRARIES)
+    implementation(TestImpl.ANDROID_TEST_LIBRARIES)
 }
 kapt {
     correctErrorTypes = true
