@@ -9,10 +9,6 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.R)
 class BiometricAuth(
@@ -21,7 +17,6 @@ class BiometricAuth(
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) : FingerprintAuth {
 
-    private var job: Job? = null
     private val promptInfo: BiometricPrompt.PromptInfo by lazy {
         BiometricPrompt.PromptInfo.Builder().apply {
             setTitle(activity.getString(R.string.fingerprint_authentication))
@@ -33,18 +28,11 @@ class BiometricAuth(
     private val authenticationCallback = object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
             super.onAuthenticationSucceeded(result)
-            job?.cancel()
             fingerprintAuthCallback.onBiometricAuthSuccess()
-        }
-
-        override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            job?.cancel()
         }
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
             super.onAuthenticationError(errorCode, errString)
-            job?.cancel()
             when (errorCode) {
                 BiometricPrompt.ERROR_NO_BIOMETRICS -> goBiometricSetting()
                 BiometricPrompt.ERROR_NEGATIVE_BUTTON -> fingerprintAuthCallback.onBiometricAuthCancel()
@@ -64,14 +52,19 @@ class BiometricAuth(
 
     override fun authenticate() {
         val biometricManager = BiometricManager.from(activity.applicationContext)
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                job = CoroutineScope(Dispatchers.Main).launch {
-                    biometricPrompt.authenticate(promptInfo)
-                }
-            }
+        val biometricAvailable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+        } else {
+            biometricManager.canAuthenticate()
+        }
+
+        when (biometricAvailable) {
+            BiometricManager.BIOMETRIC_SUCCESS -> biometricPrompt.authenticate(promptInfo)
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
-            else -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unavailable)
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> goBiometricSetting()
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unavailable)
+            else -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unknown_error)
         }
     }
 }
