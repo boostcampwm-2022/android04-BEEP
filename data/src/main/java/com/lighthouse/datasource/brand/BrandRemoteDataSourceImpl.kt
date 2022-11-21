@@ -1,9 +1,10 @@
 package com.lighthouse.datasource.brand
 
+import com.lighthouse.domain.Dms
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.model.CustomErrorData
 import com.lighthouse.network.NetworkApiService
-import com.lighthouse.util.LocationConverter
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -13,8 +14,8 @@ class BrandRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getBrandPlaceInfo(
         brandNames: List<String>,
-        x: String,
-        y: String,
+        x: Dms,
+        y: Dms,
         size: Int
     ): Result<List<BrandPlaceInfoDataContainer>> {
         val vertex = LocationConverter.getVertex(x, y)

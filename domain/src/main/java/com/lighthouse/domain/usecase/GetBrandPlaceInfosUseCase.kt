@@ -1,5 +1,6 @@
 package com.lighthouse.domain.usecase
 
+import com.lighthouse.domain.Dms
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.repository.BrandRepository
@@ -11,8 +12,8 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
 
     suspend operator fun invoke(
         brandNames: List<String>,
-        x: String,
-        y: String,
+        x: Dms,
+        y: Dms,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
         val brandSearchResults = brandRepository.getBrandPlaceInfo(brandNames, x, y, size).getOrThrow()
