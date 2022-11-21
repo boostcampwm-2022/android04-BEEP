@@ -6,13 +6,11 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
@@ -26,7 +24,6 @@ import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 
@@ -60,16 +57,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     }
 
     private fun setObserveSearchData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest { state ->
-                    when (state) {
-                        is UiState.Success -> updateBrandMarker(state.item)
-                        is UiState.Loading -> Unit
-                        is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
-                        is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
-                        is UiState.Failure -> showSnackBar(R.string.error_network_failure)
-                    }
+        repeatOnStarted {
+            viewModel.state.collectLatest { state ->
+                when (state) {
+                    is UiState.Success -> updateBrandMarker(state.item)
+                    is UiState.Loading -> Unit
+                    is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
+                    is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
+                    is UiState.Failure -> showSnackBar(R.string.error_network_failure)
                 }
             }
         }
