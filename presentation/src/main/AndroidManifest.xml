@@ -8,7 +8,7 @@
 
         <activity
             android:name=".ui.security.SecurityActivity"
-            android:exported="false">
+            android:exported="true">
         </activity>
         <activity
             android:name=".ui.signin.SignInActivity"
