@@ -21,7 +21,6 @@ interface BrandWithSectionDao {
     suspend fun getSectionId(minX: String, minY: String): Long?
 
     @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSectionWithBrands(sectionEntity: SectionEntity, brands: List<BrandPlaceInfo>) {
         val sectionId = insertSection(sectionEntity)
         insertBrand(brands.toEntity(sectionId))

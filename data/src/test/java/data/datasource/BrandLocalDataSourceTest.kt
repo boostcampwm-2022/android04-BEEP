@@ -48,7 +48,7 @@ class BrandLocalDataSourceTest {
         dao.insertSectionWithBrands(sectionEntity, brandPlaceInfos)
 
         // when
-        val brandWithSections = dao.getBrands(1L)
+        val brandWithSections = dao.getBrands(0)
 
         // then
         brandWithSections.forEach { brandWithSection ->
