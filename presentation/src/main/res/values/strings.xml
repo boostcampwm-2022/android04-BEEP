@@ -133,7 +133,7 @@
     <string name="pin_wrong_description">PIN 번호가 일치하지 않습니다!</string>
     <string name="pin">PIN</string>
     <string name="pin_backspace">Backspace</string>
-
+    <string name="pin_secure_not_use"><u>보안 설정 사용 안 함</u></string>
 
 
 </resources>
