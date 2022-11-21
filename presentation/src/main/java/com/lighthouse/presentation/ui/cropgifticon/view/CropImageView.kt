@@ -15,6 +15,9 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import androidx.core.graphics.minus
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dp
@@ -67,6 +70,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val mainMatrix = Matrix()
     private val mainInverseMatrix = Matrix()
 
+    private var imageMatrix: Matrix? = null
+
     private var zoom = 1f
 
     // Base 기준 으로 움직인 Offset
@@ -83,6 +88,66 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val touchCropRect = RectF()
     private val touchStartPos = PointF()
     private val touchEndPos = PointF()
+
+    private val cropZoomAnimation = object : Animation() {
+        private val startCropRect = RectF()
+        private val endCropRect = RectF()
+
+        private val startImageRect = RectF()
+        private val endImageRect = RectF()
+
+        private val startMatrixPoints = FloatArray(9)
+        private val endMatrixPoints = FloatArray(9)
+
+        private val animCropRect = RectF()
+        private val animImageRect = RectF()
+        private val animMatrixPoints = FloatArray(9)
+
+        init {
+            duration = 300
+            fillAfter = true
+            interpolator = AccelerateDecelerateInterpolator()
+        }
+
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            animCropRect.set(
+                startCropRect.left + (endCropRect.left - startCropRect.left) * interpolatedTime,
+                startCropRect.top + (endCropRect.top - startCropRect.top) * interpolatedTime,
+                startCropRect.right + (endCropRect.right - startCropRect.right) * interpolatedTime,
+                startCropRect.bottom + (endCropRect.bottom - startCropRect.bottom) * interpolatedTime
+            )
+
+            animImageRect.set(
+                startImageRect.left + (endImageRect.left - startImageRect.left) * interpolatedTime,
+                startImageRect.top + (endImageRect.top - startImageRect.top) * interpolatedTime,
+                startImageRect.right + (endImageRect.right - startImageRect.right) * interpolatedTime,
+                startImageRect.bottom + (endImageRect.bottom - startImageRect.bottom) * interpolatedTime
+            )
+
+            for (i in animMatrixPoints.indices) {
+                animMatrixPoints[i] =
+                    startMatrixPoints[i] + (endMatrixPoints[i] - startMatrixPoints[i]) * interpolatedTime
+            }
+
+            currentCropRect.set(animCropRect)
+            currentImageRect.set(animImageRect)
+            imageMatrix?.setValues(animMatrixPoints)
+            invalidate()
+        }
+
+        fun setStartState(cropRect: RectF, imageRect: RectF, imageMatrix: Matrix?) {
+            reset()
+            startCropRect.set(cropRect)
+            startImageRect.set(imageRect)
+            imageMatrix?.getValues(startMatrixPoints)
+        }
+
+        fun setEndState(cropRect: RectF, imageRectF: RectF, imageMatrix: Matrix?) {
+            endCropRect.set(cropRect)
+            endImageRect.set(imageRectF)
+            imageMatrix?.getValues(endMatrixPoints)
+        }
+    }
 
     fun setOriginUri(uri: Uri) {
         originBitmap = when (uri.scheme) {
@@ -136,12 +201,13 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         if (newZoom != zoom) {
+            cropZoomAnimation.setStartState(currentCropRect, currentImageRect, imageMatrix)
             zoom = newZoom
-            applyMatrix(true)
+            applyMatrix(center = true, animate = true)
         }
     }
 
-    private fun applyMatrix(center: Boolean) {
+    private fun applyMatrix(center: Boolean, animate: Boolean) {
         val bitmap = originBitmap
         if (width == 0 || height == 0 || bitmap == null) {
             return
@@ -208,19 +274,28 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         mainMatrix.mapRect(currentImageRect)
         mainMatrix.mapRect(currentCropRect)
 
-        invalidate()
+        if (animate) {
+            cropZoomAnimation.setEndState(currentCropRect, currentImageRect, mainMatrix)
+            startAnimation(cropZoomAnimation)
+        } else {
+            imageMatrix = mainMatrix
+            invalidate()
+        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
-        applyMatrix(true)
+        applyMatrix(center = true, animate = false)
     }
 
     override fun onDraw(canvas: Canvas) {
         val bitmap = originBitmap
         if (bitmap != null) {
-            canvas.drawBitmap(bitmap, mainMatrix, null)
+            val matrix = imageMatrix
+            if (matrix != null) {
+                canvas.drawBitmap(bitmap, matrix, null)
+            }
             drawShadow(canvas)
             if (eventType != EventType.NONE) {
                 drawGuidelines(canvas)
@@ -438,7 +513,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             set(touchCropRect)
             offset(offsetX, offsetY)
         }
-        applyMatrix(false)
+        applyMatrix(center = false, animate = false)
     }
 
     private fun resizeCrop() {
@@ -456,7 +531,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             TouchRange.BOTTOM, TouchRange.LEFT_BOTTOM, TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
             else -> {}
         }
-        applyMatrix(false)
+        applyMatrix(center = false, animate = false)
     }
 
     private fun resizeLeft(diffX: Float) {
