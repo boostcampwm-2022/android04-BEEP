@@ -39,7 +39,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                     }
                     PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> {
-                        Snackbar.make(requireView(), "PIN 설정이 완료됐습니다.", Snackbar.ANIMATION_MODE_SLIDE).show()
+                        Snackbar.make(view, getString(R.string.pin_complete), Snackbar.ANIMATION_MODE_SLIDE).show()
                         delay(1000)
                         (requireActivity() as SecurityActivity).moveScreen(SecurityDirections.FINGERPRINT)
                     }

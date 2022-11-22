@@ -20,22 +20,22 @@ class PinViewModel : ViewModel() {
         }
 
         if (pinString.value.length == 6) {
-            goNext()
+            goNextStep()
         }
     }
 
     fun removePin() {
         if (pinString.value.isNotEmpty()) {
-            _pinString.value = pinString.value.substring(0, pinString.value.length - 1)
+            _pinString.value = pinString.value.dropLast(1)
         }
     }
 
-    fun goPrevious() {
+    fun goPreviousStep() {
         _pinString.value = ""
         _pinMode.value = PinSettingType.INITIAL
     }
 
-    private fun goNext() {
+    private fun goNextStep() {
         when (pinMode.value) {
             PinSettingType.INITIAL -> {
                 temporaryPinString = pinString.value

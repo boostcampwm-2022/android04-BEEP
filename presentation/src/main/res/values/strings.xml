@@ -135,6 +135,7 @@
     <string name="pin">PIN</string>
     <string name="pin_backspace">Backspace</string>
     <string name="pin_secure_not_use"><u>보안 설정 사용 안 함</u></string>
+    <string name="pin_complete">PIN 설정이 완료됐습니다.</string>
 
 
 </resources>
