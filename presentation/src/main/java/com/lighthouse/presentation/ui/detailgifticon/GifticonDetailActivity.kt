@@ -15,8 +15,9 @@ import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity() {
@@ -140,5 +141,9 @@ class GifticonDetailActivity : AppCompatActivity() {
                     }
             }
         }
+    }
+
+    companion object {
+        const val INVALID_DIALOG_DEADLINE_SECOND = 5
     }
 }
