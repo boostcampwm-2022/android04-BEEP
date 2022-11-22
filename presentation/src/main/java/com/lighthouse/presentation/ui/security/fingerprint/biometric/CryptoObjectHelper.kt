@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security.fingerprint
+package com.lighthouse.presentation.ui.security.fingerprint.biometric
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException

@@ -1,11 +1,11 @@
-package com.lighthouse.presentation.ui.security.fingerprint
+package com.lighthouse.presentation.ui.security.fingerprint.biometric
 
 import android.hardware.fingerprint.FingerprintManager
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
 import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.ui.security.FingerprintBottomSheetDialog
+import com.lighthouse.presentation.ui.security.fingerprint.FingerprintBottomSheetDialog
 
 class LegacyFingerprintAuth(
     private val activity: FragmentActivity,
