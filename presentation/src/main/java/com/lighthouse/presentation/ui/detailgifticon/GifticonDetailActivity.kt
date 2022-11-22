@@ -15,8 +15,9 @@ import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity() {
@@ -122,23 +123,30 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showInvalidDialog() {
-        lifecycleScope.launch {
-            withTimeout(3000) {
-                AlertDialog.Builder(this@GifticonDetailActivity)
-                    .setTitle(getString(R.string.gifticon_detail_invalid_dialog_title))
-                    .setMessage(getString(R.string.gifticon_detail_invalid_dialog_message))
-                    .setNegativeButton(getString(R.string.all_close_button)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .setOnCancelListener { dialog ->
-                        dialog.dismiss()
-                    }
-                    .setOnDismissListener {
-                        finish()
-                    }.create().also { dialog ->
-                        dialog.show()
-                    }
+        var lastSecond = INVALID_DIALOG_DEADLINE_SECOND // 자동으로 닫힐 시간(초)
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.gifticon_detail_invalid_dialog_title))
+            .setNegativeButton(getString(R.string.all_close_button)) { dialog, _ ->
+                dialog.dismiss()
             }
+            .setOnDismissListener {
+                finish()
+            }
+            .create()
+        lifecycleScope.launch {
+            do {
+                dialog
+                    .setMessage(getString(R.string.gifticon_detail_invalid_dialog_message, lastSecond))
+                dialog.show()
+                delay(1000)
+            } while (--lastSecond > 0)
+
+            dialog.dismiss()
+            cancel()
         }
+    }
+
+    companion object {
+        const val INVALID_DIALOG_DEADLINE_SECOND = 5
     }
 }
