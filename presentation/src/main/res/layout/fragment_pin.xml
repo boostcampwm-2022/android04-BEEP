@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         tools:context=".ui.security.pin.PinFragment">
 
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_pin_prev"
             style="@style/BEEP.Component.TextButton"
@@ -22,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:onClick="@{() -> vm.goPrevious()}"
+            android:onClick="@{() -> vm.goPreviousStep()}"
             android:text="@string/all_prev"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,8 +37,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2" />
-
+            app:layout_constraintVertical_bias="0.15" />
 
         <ImageView
             android:id="@+id/iv_pin_0"
@@ -112,21 +110,14 @@
 
         <TextView
             android:id="@+id/tv_secure_not_use"
+            style="@style/BEEP.TextStyle.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="40dp"
             android:text="@string/pin_secure_not_use"
-            style="@style/BEEP.TextStyle.Caption"
-            app:layout_constraintBottom_toTopOf="@+id/guide_num_pad"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_num_pad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.65" />
 
         <TextView
             android:id="@+id/tv_num_1"
@@ -139,10 +130,9 @@
             android:text="@string/pin_one"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_4"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guide_num_pad"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
@@ -156,10 +146,9 @@
             android:text="@string/pin_two"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_5"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_3"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_num_1"
-            app:layout_constraintTop_toTopOf="@+id/guide_num_pad"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
@@ -173,10 +162,9 @@
             android:text="@string/pin_three"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_6"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_num_2"
-            app:layout_constraintTop_toTopOf="@+id/guide_num_pad"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
@@ -190,7 +178,6 @@
             android:text="@string/pin_four"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_7"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_5"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_1" />
 
@@ -205,7 +192,6 @@
             android:text="@string/pin_five"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_8"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_6"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_4"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_2" />
 
@@ -220,10 +206,8 @@
             android:text="@string/pin_six"
             app:layout_constraintBottom_toTopOf="@+id/tv_num_9"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_5"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_3" />
-
 
         <TextView
             android:id="@+id/tv_num_7"
@@ -234,9 +218,8 @@
             android:onClick="@{() -> vm.inputPin(7)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_seven"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_empty"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_8"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_4" />
 
@@ -249,9 +232,8 @@
             android:onClick="@{() -> vm.inputPin(8)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_eight"
-            app:layout_constraintBottom_toTopOf="@id/tv_num_0"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_0"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_9"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_7"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_5" />
 
@@ -266,10 +248,19 @@
             android:text="@string/pin_nine"
             app:layout_constraintBottom_toTopOf="@+id/iv_backspace"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_8"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_6" />
 
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/BEEP.TextStyle.H5"
+            android:paddingVertical="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_7" />
 
         <TextView
             android:id="@+id/tv_num_0"
@@ -280,10 +271,9 @@
             android:onClick="@{() -> vm.inputPin(0)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_zero"
-            app:layout_constraintBottom_toTopOf="@+id/guide_num_pad_bottom"
-            app:layout_constraintEnd_toStartOf="@+id/tv_num_9"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_num_7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_backspace"
+            app:layout_constraintStart_toEndOf="@+id/tv_empty"
             app:layout_constraintTop_toBottomOf="@+id/tv_num_8" />
 
         <ImageView
@@ -297,16 +287,10 @@
             android:src="@drawable/ic_pin_backspace"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_0"
-            app:layout_constraintTop_toBottomOf="@id/tv_num_9" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_9"
+            />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_num_pad_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
