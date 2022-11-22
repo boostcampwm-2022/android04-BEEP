@@ -44,6 +44,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         binding.tvSecureNotUse.setOnClickListener {
             // TODO: 보안 설정 사용 X 저장
             val intent = Intent(requireContext(), MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
     }
