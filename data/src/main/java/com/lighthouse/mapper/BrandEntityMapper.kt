@@ -1,6 +1,6 @@
 package com.lighthouse.mapper
 
-import com.lighthouse.database.entity.BrandEntity
+import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.database.entity.BrandWithSections
 import com.lighthouse.domain.model.BrandPlaceInfo
 
@@ -17,8 +17,8 @@ fun List<BrandWithSections>.toDomain(): List<BrandPlaceInfo> = this.map { brandW
     }
 }
 
-fun List<BrandPlaceInfo>.toEntity(sectionId: Long): List<BrandEntity> = this.map { brandInfo ->
-    BrandEntity(
+fun List<BrandPlaceInfo>.toEntity(sectionId: Long): List<BrandLocationEntity> = this.map { brandInfo ->
+    BrandLocationEntity(
         sectionId = sectionId,
         addressName = brandInfo.addressName,
         placeName = brandInfo.placeName,

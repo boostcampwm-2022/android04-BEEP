@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.lighthouse.database.entity.BrandEntity.Companion.BRAND_TABLE
+import com.lighthouse.database.entity.BrandLocationEntity.Companion.BRAND_TABLE
 
 @Entity(
     tableName = BRAND_TABLE,
@@ -17,7 +17,7 @@ import com.lighthouse.database.entity.BrandEntity.Companion.BRAND_TABLE
         )
     ]
 )
-data class BrandEntity(
+data class BrandLocationEntity(
     @PrimaryKey
     @ColumnInfo(name = "place_url")
     val placeUrl: String,

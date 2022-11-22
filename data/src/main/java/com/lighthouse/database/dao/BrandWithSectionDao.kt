@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.lighthouse.database.entity.BrandEntity
+import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.database.entity.BrandWithSections
 import com.lighthouse.database.entity.SectionEntity
 import com.lighthouse.domain.model.BrandPlaceInfo
@@ -30,7 +30,7 @@ interface BrandWithSectionDao {
     suspend fun insertSection(sectionEntity: SectionEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertBrand(brandEntity: List<BrandEntity>)
+    suspend fun insertBrand(brandEntity: List<BrandLocationEntity>)
 
     @Query("DELETE FROM section_table WHERE section_id =:sectionId")
     suspend fun deleteSection(sectionId: Long)

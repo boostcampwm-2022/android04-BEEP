@@ -9,7 +9,7 @@ data class BrandWithSections(
         parentColumn = PARENT_COLUMN_ID,
         entityColumn = ENTITY_COLUMN_ID
     )
-    val brands: List<BrandEntity>
+    val brands: List<BrandLocationEntity>
 ) {
 
     companion object {
