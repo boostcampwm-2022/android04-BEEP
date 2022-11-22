@@ -183,13 +183,19 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
             curImageRect.set(realImageRect)
             if (aspectRatioEnable) {
+                // AspectRatio 에 맞춰서 CropRect 를 변경 한다
                 val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
                 val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
 
                 val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
                 val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
 
-                realCropRect.set(aspectOffsetX, aspectOffsetY, aspectOffsetX + aspectWidth, aspectOffsetY + aspectHeight)
+                realCropRect.set(
+                    aspectOffsetX,
+                    aspectOffsetY,
+                    aspectOffsetX + aspectWidth,
+                    aspectOffsetY + aspectHeight
+                )
                 curCropRect.set(realCropRect)
             } else {
                 realCropRect.set(realImageRect)
@@ -236,6 +242,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    /**
+     * 화면이 갑자기 많이 바뀌는 상황에서 적절하게 위치를 조정하기 위한 함수
+     * ex) onLayout, applyZoom
+     */
     private fun applyMatrix(animate: Boolean) {
         val bitmap = originBitmap
         if (width == 0 || height == 0 || bitmap == null) {
@@ -266,6 +276,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         mapCurrentImageRectByMatrix()
 
         // 6. ZoomOffset 구하기
+        // 1) 지금 까지 계산 된 이미지의 크기가 화면 크기 보다 작다면 offset 이 존재할 필요가 없다
+        // 2) width / 2 - curCropRect.centerX() > 0, 이미지의 중앙이 왼쪽
+        //    width / 2 - curCropRect.centerX() < 0, 이미지의 중앙이 오른쪽
+        //    width / 2 - curCropRect.centerX() = 0, 이미지와 화면의 중앙이 일치
+        //
         val zoomOffsetX = when {
             width > curImageRect.width() -> 0f
             else -> max(
@@ -293,6 +308,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    // 현재 계산된 Matrix 를 이용 하여 curImageRect 를 계산 해준다
     private fun mapCurrentImageRectByMatrix() {
         curImageRect.set(realImageRect)
         mainMatrix.mapRect(curImageRect)
@@ -471,9 +487,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                 }
                 eventType = EventType.NONE
             }
-            else -> {
-                touchBeforePos.set(touchEndPos)
-            }
+            else -> touchBeforePos.set(touchEndPos)
         }
     }
 
@@ -516,6 +530,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun moveCrop() {
         val diff = touchEndPos.minus(touchBeforePos)
+        // bound 를 벗어 나지 않는 이동 위치를 계산 한다
         val offsetX = when {
             curCropRect.left + diff.x < curImageRect.left + SNAP_RADIUS -> curImageRect.left - curCropRect.left
             curCropRect.right + diff.x > curImageRect.right - SNAP_RADIUS -> curImageRect.right - curCropRect.right
@@ -526,6 +541,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             curCropRect.bottom + diff.y > curImageRect.bottom - SNAP_RADIUS -> curImageRect.bottom - curCropRect.bottom
             else -> diff.y
         }
+        // Crop 의 경우 벽에 닿은 경우 닿은 상태로 유지 해야한다.
         val screenMoveX = when {
             curCropRect.left + offsetX < 0f -> -(curCropRect.left + offsetX)
             curCropRect.right + offsetX > width -> width - (curCropRect.right + offsetX)
@@ -536,12 +552,12 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             curCropRect.bottom + offsetY > height -> height - (curCropRect.bottom + offsetY)
             else -> 0f
         }
+        // 이미지의 경우 현재 화면에 보이는 이미지 크기를 넘어서 이동하면 안된다
         val imageMoveX = when {
             screenMoveX > 0f -> if (curImageRect.left + screenMoveX * 2 > 0) -curImageRect.left else screenMoveX * 2
             screenMoveX < 0f -> if (curImageRect.right - width + screenMoveX * 2 < 0) width - curImageRect.right else screenMoveX * 2
             else -> 0f
         }
-
         val imageMoveY = when {
             screenMoveY > 0f -> if (curImageRect.top + screenMoveY * 2 > 0) -curImageRect.top else screenMoveY * 2
             screenMoveY < 0f -> if (curImageRect.bottom - height + screenMoveY * 2 < 0) height - curImageRect.bottom else screenMoveY * 2
