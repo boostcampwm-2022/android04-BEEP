@@ -164,8 +164,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
-    fun setOriginUri(uri: Uri) {
-        originBitmap = when (uri.scheme) {
+    fun setOriginUri(uri: Uri?) {
+        originBitmap = when (uri?.scheme) {
             SCHEME_CONTENT -> context.contentResolver.getBitmap(uri)
             SCHEME_FILE -> BitmapFactory.decodeFile(uri.path)
             else -> null
@@ -181,23 +181,25 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val bitmap = originBitmap
         if (bitmap != null) {
             realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
+            curImageRect.set(realImageRect)
+            if (aspectRatioEnable) {
+                val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
+                val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
+
+                val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
+                val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
+
+                realCropRect.set(aspectOffsetX, aspectOffsetY, aspectOffsetX + aspectWidth, aspectOffsetY + aspectHeight)
+                curCropRect.set(realCropRect)
+            } else {
+                realCropRect.set(realImageRect)
+                curCropRect.set(realImageRect)
+            }
         } else {
             realImageRect.set(RECT_F_EMPTY)
-        }
-        curImageRect.set(realImageRect)
-
-        if (aspectRatioEnable) {
-            val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
-            val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
-
-            val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
-            val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
-
-            realCropRect.set(aspectOffsetX, aspectOffsetY, aspectOffsetX + aspectWidth, aspectOffsetY + aspectHeight)
-            curCropRect.set(realCropRect)
-        } else {
-            realCropRect.set(realImageRect)
-            curCropRect.set(realImageRect)
+            curImageRect.set(RECT_F_EMPTY)
+            realCropRect.set(RECT_F_EMPTY)
+            curCropRect.set(RECT_F_EMPTY)
         }
     }
 
