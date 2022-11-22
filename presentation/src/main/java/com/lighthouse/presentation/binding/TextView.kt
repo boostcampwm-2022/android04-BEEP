@@ -10,7 +10,8 @@ import java.text.DecimalFormat
 import java.util.Date
 
 @BindingAdapter("dateFormat")
-fun applyDateFormat(view: TextView, date: Date) {
+fun applyDateFormat(view: TextView, date: Date?) {
+    date ?: return
     view.text = view.context.getString(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
 }
 

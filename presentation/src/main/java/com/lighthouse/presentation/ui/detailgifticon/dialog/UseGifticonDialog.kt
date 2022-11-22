@@ -43,7 +43,7 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
             val amountString = text.filter { char -> char.isDigit() }.toString()
             if (amountString.length < 10) {
                 val amount = amountString.toIntOrNull() ?: 0
-                if (amount <= viewModel.gifticon.value.balance) {
+                if (amount <= (viewModel.gifticon.value?.balance ?: return@addTextChangedListener)) {
                     viewModel.amountToUse.update { amount }
                 }
             }
@@ -51,13 +51,14 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
 
         repeatOnStarted {
             viewModel.gifticon.collect {
-                barcodeUtil.displayBitmap(binding.ivBarcode, it.barcode)
-                binding.tvBarcodeNumber.text = divideBarcodeNumber(it.barcode)
+                val gifticon = it ?: return@collect
+                barcodeUtil.displayBitmap(binding.ivBarcode, gifticon.barcode)
+                binding.tvBarcodeNumber.text = divideBarcodeNumber(gifticon.barcode)
             }
         }
         repeatOnStarted {
             viewModel.amountToUse.collect { amount ->
-                if (viewModel.gifticon.value.isCashCard) {
+                if (viewModel.gifticon.value?.isCashCard ?: return@collect) {
                     val displayValue = if (amount == 0) "" else amount.toConcurrency(requireContext(), false)
                     binding.etAmountToUse.setText(displayValue)
                 }
