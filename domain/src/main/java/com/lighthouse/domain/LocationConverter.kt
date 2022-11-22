@@ -17,9 +17,13 @@ data class Dms(
     private fun fillZero(seconds: Int) = seconds.toString().padStart(2, '0')
 }
 
+/**
+ * @property longitude : 경도
+ * @property latitude  : 위도
+ */
 data class VertexLocation(
-    val max: Double,
-    val min: Double
+    val longitude: Double,
+    val latitude: Double
 )
 
 data class NextLocation(
@@ -27,7 +31,7 @@ data class NextLocation(
     val y: Int
 )
 
-data class Location(
+data class DmsLocation(
     val x: Dms,
     val y: Dms
 )
@@ -45,7 +49,7 @@ object LocationConverter {
         NextLocation(-10, -10)
     )
 
-    fun getCardinalDirections(x: Double, y: Double): List<Location> {
+    fun getCardinalDirections(x: Double, y: Double): List<DmsLocation> {
         val xDms = toMinDms(x)
         val yDms = toMinDms(y)
 
@@ -55,9 +59,8 @@ object LocationConverter {
             // 다음 초 계산 결과가 0~60 사이면 시/분 쪽은 계산할 필요가 없다.
             val nextDmsX = calculateTime(nextX, xDms)
             val nextDmsY = calculateTime(nextY, yDms)
-            println("Location($nextDmsX,$nextDmsY)")
-            Location(nextDmsX, nextDmsY)
-        }.plusElement(Location(xDms, yDms))
+            DmsLocation(nextDmsX, nextDmsY)
+        }.plusElement(DmsLocation(xDms, yDms))
     }
 
     private fun calculateTime(
@@ -83,7 +86,7 @@ object LocationConverter {
      * 십진수를 도분초로 바꾸는 함수입니다.
      * @param coordinate -> x,y 좌표
      */
-    private fun toMinDms(coordinate: Double): Dms {
+    fun toMinDms(coordinate: Double): Dms {
         val dms = setDms(coordinate)
 
         val depressionSeconds = getDepression(dms.seconds)
