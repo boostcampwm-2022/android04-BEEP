@@ -1,10 +1,14 @@
 package com.lighthouse.domain.usecase
 
-import com.lighthouse.domain.model.GifticonSaveRequest
+import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.repository.GifticonRepository
+import javax.inject.Inject
 
-class SaveGifticonsUseCase {
+class SaveGifticonsUseCase @Inject constructor(
+    private val gifticonRepository: GifticonRepository
+) {
 
-    operator fun invoke(): List<GifticonSaveRequest> {
-        return emptyList()
+    suspend operator fun invoke(gifticons: List<Gifticon>) {
+        gifticonRepository.saveGifticons(gifticons)
     }
 }

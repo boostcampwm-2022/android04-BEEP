@@ -1,5 +1,6 @@
 package com.lighthouse.repository
 
+import com.lighthouse.database.mapper.toGifticonEntity
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -20,5 +21,13 @@ class GifticonRepositoryImpl @Inject constructor(
         }
     }.catch { e ->
         emit(DbResult.Failure(e))
+    }
+
+    override suspend fun saveGifticons(gifticons: List<Gifticon>) {
+        gifticonLocalDataSource.insertGifticons(
+            gifticons.map {
+                it.toGifticonEntity()
+            }
+        )
     }
 }
