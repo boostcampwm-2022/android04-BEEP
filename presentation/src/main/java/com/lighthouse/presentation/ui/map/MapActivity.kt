@@ -36,7 +36,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     private lateinit var binding: ActivityMapBinding
     private lateinit var naverMap: NaverMap
     private lateinit var mapView: MapView
-    private lateinit var fusedLocationProviderClient: FusedLocationProvider
     private lateinit var client: FusedLocationProviderClient
     private lateinit var locationSource: FusedLocationSource
     private val viewModel: MapViewModel by viewModels()
@@ -54,7 +53,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
 
         setGifticonAdapter()
         setObserveSearchData()
-        setFusedLocationProvider()
     }
 
     override fun onStart() {
@@ -95,10 +93,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
                 captionText = brandPlaceSearchResult.brand
             }
         }
-    }
-
-    private fun setFusedLocationProvider() {
-        fusedLocationProviderClient = FusedLocationProvider(this)
     }
 
     override fun onMapReady(map: NaverMap) {

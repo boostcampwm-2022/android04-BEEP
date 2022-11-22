@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
+import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
@@ -15,13 +16,26 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
+    private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
 
     private val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "서브웨이", "세븐일레븐", "파파존스")
 
     var state: MutableSharedFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableSharedFlow()
         private set
+
+    init {
+        collectLocation()
+    }
+
+    private fun collectLocation() {
+        viewModelScope.launch {
+            getUserLocation().collect {
+                getBrandPlaceInfos(it.longitude, it.latitude)
+            }
+        }
+    }
 
     fun getBrandPlaceInfos(x: Double, y: Double) {
         viewModelScope.launch {

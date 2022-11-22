@@ -8,8 +8,10 @@ import com.lighthouse.datasource.brand.BrandRemoteDataSource
 import com.lighthouse.datasource.brand.BrandRemoteDataSourceImpl
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
+import com.lighthouse.domain.repository.LocationRepository
 import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
+import com.lighthouse.repository.LocationRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -49,4 +51,10 @@ abstract class DataModule {
     abstract fun bindGalleryImageRepository(
         repository: GalleryImageRepositoryImpl
     ): GalleryImageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLocationRepository(
+        repository: LocationRepositoryImpl
+    ): LocationRepository
 }

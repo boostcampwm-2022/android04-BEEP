@@ -1,7 +1,7 @@
 package com.lighthouse.domain.usecase
 
 import com.google.common.truth.Truth
-import com.lighthouse.domain.Location
+import com.lighthouse.domain.DmsLocation
 import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.model.CustomError
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.DisplayName
 class GetBrandPlaceInfosUseCaseTest {
 
     private val brandRepository: BrandRepository = mockk()
-    private lateinit var cardinalLocations: List<Location>
+    private lateinit var cardinalLocations: List<DmsLocation>
 
     @Before
     fun setUp() {
