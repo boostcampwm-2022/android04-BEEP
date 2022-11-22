@@ -70,23 +70,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val mainMatrix = Matrix()
     private val mainInverseMatrix = Matrix()
 
-    private var imageMatrix: Matrix? = null
-
     private var zoom = 1f
-
-    // Base 기준 으로 움직인 Offset
-    private var zoomOffsetX = 0f
-    private var zoomOffsetY = 0f
-
-    // applyMatrix 에서 ZoomOffset 을 구하기 위해 사용 하는 Rect
-    private val zoomImageRect = RectF()
-    private val zoomCropRect = RectF()
 
     private var eventType = EventType.NONE
     private var touchRange: TouchRange? = null
 
     private val touchCropRect = RectF()
     private val touchStartPos = PointF()
+    private val touchBeforePos = PointF()
     private val touchEndPos = PointF()
 
     private val cropZoomAnimation = object : Animation() {
@@ -131,21 +122,21 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
             currentCropRect.set(animCropRect)
             currentImageRect.set(animImageRect)
-            imageMatrix?.setValues(animMatrixPoints)
+            mainMatrix.setValues(animMatrixPoints)
             invalidate()
         }
 
-        fun setStartState(cropRect: RectF, imageRect: RectF, imageMatrix: Matrix?) {
+        fun setStartState(cropRect: RectF, imageRect: RectF, imageMatrix: Matrix) {
             reset()
             startCropRect.set(cropRect)
             startImageRect.set(imageRect)
-            imageMatrix?.getValues(startMatrixPoints)
+            imageMatrix.getValues(startMatrixPoints)
         }
 
-        fun setEndState(cropRect: RectF, imageRectF: RectF, imageMatrix: Matrix?) {
+        fun setEndState(cropRect: RectF, imageRectF: RectF, imageMatrix: Matrix) {
             endCropRect.set(cropRect)
             endImageRect.set(imageRectF)
-            imageMatrix?.getValues(endMatrixPoints)
+            imageMatrix.getValues(endMatrixPoints)
         }
     }
 
@@ -201,13 +192,13 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         if (newZoom != zoom) {
-            cropZoomAnimation.setStartState(currentCropRect, currentImageRect, imageMatrix)
+            cropZoomAnimation.setStartState(currentCropRect, currentImageRect, mainMatrix)
             zoom = newZoom
-            applyMatrix(center = true, animate = true)
+            applyMatrix(animate = true)
         }
     }
 
-    private fun applyMatrix(center: Boolean, animate: Boolean) {
+    private fun applyMatrix(animate: Boolean) {
         val bitmap = originBitmap
         if (width == 0 || height == 0 || bitmap == null) {
             return
@@ -218,84 +209,67 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         mainInverseMatrix.mapRect(currentImageRect)
         mainInverseMatrix.mapRect(currentCropRect)
         mainMatrix.reset()
-        zoomImageRect.set(currentImageRect)
-        zoomCropRect.set(currentCropRect)
 
         // 2. 이미지를 화면에 맞게 키운다
         val wScale = width / bitmap.width.toFloat()
         val hScale = height / bitmap.height.toFloat()
         val scale = min(wScale, hScale)
         mainMatrix.postScale(scale, scale)
+        mapCurrentImageRectByMatrix()
 
         // 3. 변경된 이미지를 화면의 가운데로 이동
-        val offsetX = (width - bitmap.width * scale) / 2
-        val offsetY = (height - bitmap.height * scale) / 2
+        val offsetX = (width - currentImageRect.width()) / 2
+        val offsetY = (height - currentImageRect.height()) / 2
         mainMatrix.postTranslate(offsetX, offsetY)
 
         // 4. 행렬에 Zoom 연산 추가
         mainMatrix.postScale(zoom, zoom, width / 2f, height / 2f)
-
-        // 5. ZoomOffset 을 구하기 위해 일단 zoomRect 를 Zoom 연산을 진행 한다
-        mainMatrix.mapRect(zoomImageRect)
-        mainMatrix.mapRect(zoomCropRect)
+        mainMatrix.mapRect(currentCropRect)
+        mapCurrentImageRectByMatrix()
 
         // 6. ZoomOffset 구하기
-        if (center) {
-            zoomOffsetX = when {
-                width > zoomImageRect.width() -> 0f
-                else -> max(
-                    min(width / 2 - zoomCropRect.centerX(), -zoomImageRect.left),
-                    width - zoomImageRect.right
-                ) / zoom
-            }
-            zoomOffsetY = when {
-                height > zoomImageRect.height() -> 0f
-                else -> max(
-                    min(height / 2 - zoomCropRect.centerY(), -zoomImageRect.top),
-                    height - zoomImageRect.bottom
-                ) / zoom
-            }
-        } else {
-            // 일반적인 터치로 이동, 축소하는 경우
-            // 1) cropRect 의 edge 가 "0" or "화면 크기" 가 되야 한다
-            // 2) Offset * zoom 을 더하고 행렬에 translate 연산을 추가 한다
-            zoomOffsetX = min(
-                max(zoomOffsetX * zoom, -zoomCropRect.left),
-                width - zoomCropRect.right
-            ) / zoom
-            zoomOffsetY = min(
-                max(zoomOffsetY * zoom, -zoomCropRect.top),
-                height - zoomCropRect.bottom
-            ) / zoom
+        val zoomOffsetX = when {
+            width > currentImageRect.width() -> 0f
+            else -> max(
+                min(width / 2 - currentCropRect.centerX(), -currentImageRect.left),
+                width - currentImageRect.right
+            )
+        }
+        val zoomOffsetY = when {
+            height > currentImageRect.height() -> 0f
+            else -> max(
+                min(height / 2 - currentCropRect.centerY(), -currentImageRect.top),
+                height - currentImageRect.bottom
+            )
         }
 
-        mainMatrix.postTranslate(zoomOffsetX * zoom, zoomOffsetY * zoom)
-
-        mainMatrix.mapRect(currentImageRect)
-        mainMatrix.mapRect(currentCropRect)
+        mainMatrix.postTranslate(zoomOffsetX, zoomOffsetY)
+        currentCropRect.offset(zoomOffsetX, zoomOffsetY)
+        mapCurrentImageRectByMatrix()
 
         if (animate) {
             cropZoomAnimation.setEndState(currentCropRect, currentImageRect, mainMatrix)
             startAnimation(cropZoomAnimation)
         } else {
-            imageMatrix = mainMatrix
             invalidate()
         }
+    }
+
+    private fun mapCurrentImageRectByMatrix() {
+        currentImageRect.set(realImageRect)
+        mainMatrix.mapRect(currentImageRect)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
-        applyMatrix(center = true, animate = false)
+        applyMatrix(animate = false)
     }
 
     override fun onDraw(canvas: Canvas) {
         val bitmap = originBitmap
         if (bitmap != null) {
-            val matrix = imageMatrix
-            if (matrix != null) {
-                canvas.drawBitmap(bitmap, matrix, null)
-            }
+            canvas.drawBitmap(bitmap, mainMatrix, null)
             drawShadow(canvas)
             if (eventType != EventType.NONE) {
                 drawGuidelines(canvas)
@@ -420,6 +394,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private fun setTouchPos(event: MotionEvent) {
         if (event.action == MotionEvent.ACTION_DOWN) {
             touchStartPos.set(event.x, event.y)
+            touchBeforePos.set(event.x, event.y)
+
             touchCropRect.set(currentCropRect)
         }
         touchEndPos.set(event.x, event.y)
@@ -454,7 +430,9 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                 }
                 eventType = EventType.NONE
             }
-            else -> {}
+            else -> {
+                touchBeforePos.set(touchEndPos)
+            }
         }
     }
 
@@ -496,24 +474,33 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private fun containCenter(x: Float, y: Float) = currentCropRect.contains(x, y)
 
     private fun moveCrop() {
-        val diff = touchEndPos.minus(touchStartPos)
-
+        val diff = touchEndPos.minus(touchBeforePos)
         val offsetX = when {
-            touchCropRect.left + diff.x < currentImageRect.left -> currentImageRect.left - touchCropRect.left
-            touchCropRect.right + diff.x > currentImageRect.right -> currentImageRect.right - touchCropRect.right
+            currentCropRect.left + diff.x < currentImageRect.left + SNAP_RADIUS -> currentImageRect.left - currentCropRect.left
+            currentCropRect.right + diff.x > currentImageRect.right - SNAP_RADIUS -> currentImageRect.right - currentCropRect.right
             else -> diff.x
         }
+
         val offsetY = when {
-            touchCropRect.top + diff.y < currentImageRect.top -> currentImageRect.top - touchCropRect.top
-            touchCropRect.bottom + diff.y > currentImageRect.bottom -> currentImageRect.bottom - touchCropRect.bottom
+            currentCropRect.top + diff.y < currentImageRect.top + SNAP_RADIUS -> currentImageRect.top - currentCropRect.top
+            currentCropRect.bottom + diff.y > currentImageRect.bottom - SNAP_RADIUS -> currentImageRect.bottom - currentCropRect.bottom
             else -> diff.y
         }
-
-        currentCropRect.apply {
-            set(touchCropRect)
-            offset(offsetX, offsetY)
+        val screenMoveX = when {
+            currentCropRect.left + offsetX < 0f -> -(currentCropRect.left + offsetX)
+            currentCropRect.right + offsetX > width -> width - (currentCropRect.right + offsetX)
+            else -> 0f
         }
-        applyMatrix(center = false, animate = false)
+        val screenMoveY = when {
+            currentCropRect.top + offsetY < 0f -> -(currentCropRect.top + offsetY)
+            currentCropRect.bottom + offsetY > height -> height - (currentCropRect.bottom + offsetY)
+            else -> 0f
+        }
+
+        currentCropRect.offset(offsetX + screenMoveX, offsetY + screenMoveY)
+        mainMatrix.postTranslate(screenMoveX * 2, screenMoveY * 2)
+        mapCurrentImageRectByMatrix()
+        invalidate()
     }
 
     private fun resizeCrop() {
@@ -531,42 +518,42 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             TouchRange.BOTTOM, TouchRange.LEFT_BOTTOM, TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
             else -> {}
         }
-        applyMatrix(center = false, animate = false)
+        invalidate()
     }
 
     private fun resizeLeft(diffX: Float) {
-        val movedLeft = touchCropRect.left + diffX
+        val resizedLeft = touchCropRect.left + diffX
         currentCropRect.left = when {
-            movedLeft < currentImageRect.left -> currentImageRect.left
-            movedLeft > currentCropRect.right - MIN_SIZE -> touchCropRect.right - MIN_SIZE
-            else -> movedLeft
+            resizedLeft < 0f -> 0f
+            resizedLeft > currentCropRect.right - MIN_SIZE -> touchCropRect.right - MIN_SIZE
+            else -> resizedLeft
         }
     }
 
     private fun resizeRight(diffX: Float) {
-        val movedRight = touchCropRect.right + diffX
+        val resizedRight = touchCropRect.right + diffX
         currentCropRect.right = when {
-            movedRight > currentImageRect.right -> currentImageRect.right
-            movedRight < currentCropRect.left + MIN_SIZE -> touchCropRect.left + MIN_SIZE
-            else -> movedRight
+            resizedRight > width -> width.toFloat()
+            resizedRight < currentCropRect.left + MIN_SIZE -> touchCropRect.left + MIN_SIZE
+            else -> resizedRight
         }
     }
 
     private fun resizeTop(diffY: Float) {
-        val movedTop = touchCropRect.top + diffY
+        val resizedTop = touchCropRect.top + diffY
         currentCropRect.top = when {
-            movedTop < currentImageRect.top -> currentImageRect.top
-            movedTop > currentCropRect.bottom - MIN_SIZE -> touchCropRect.bottom - MIN_SIZE
-            else -> movedTop
+            resizedTop < 0f -> 0f
+            resizedTop > currentCropRect.bottom - MIN_SIZE -> touchCropRect.bottom - MIN_SIZE
+            else -> resizedTop
         }
     }
 
     private fun resizeBottom(diffY: Float) {
-        val movedBottom = touchCropRect.bottom + diffY
+        val resizedBottom = touchCropRect.bottom + diffY
         currentCropRect.bottom = when {
-            movedBottom > currentImageRect.bottom -> currentImageRect.bottom
-            movedBottom < currentCropRect.top + MIN_SIZE -> touchCropRect.top + MIN_SIZE
-            else -> movedBottom
+            resizedBottom > height -> height.toFloat()
+            resizedBottom < currentCropRect.top + MIN_SIZE -> touchCropRect.top + MIN_SIZE
+            else -> resizedBottom
         }
     }
 
@@ -591,5 +578,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         private val CORNER_LENGTH = 24.dp.toInt()
         private val MIN_SIZE = (CORNER_LENGTH + CORNER_THICKNESS) * 2
         private val EDGE_TOUCH_RANGE = 24.dp.toInt()
+        private val SNAP_RADIUS = 3.dp
     }
 }
