@@ -1,10 +1,8 @@
 package com.lighthouse.repository
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Looper
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -22,6 +20,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
+@SuppressLint("MissingPermission")
 class LocationRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : LocationRepository {
@@ -58,6 +57,8 @@ class LocationRepositoryImpl @Inject constructor(
                 val x = LocationConverter.toMinDms(lastLocation.longitude)
                 val y = LocationConverter.toMinDms(lastLocation.latitude)
                 val currentLocation = DmsLocation(x, y)
+
+                // 이전의 section에서 벗어난 경우에만 값 방출
                 if (prevLocation != currentLocation) {
                     prevLocation = currentLocation
                     trySend(VertexLocation(lastLocation.longitude, lastLocation.latitude))
@@ -65,23 +66,14 @@ class LocationRepositoryImpl @Inject constructor(
             }
         }
 
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
-                .addOnFailureListener { e ->
-                    close(e)
-                }
-        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+            .addOnFailureListener { e ->
+                close(e)
+            }
 
         awaitClose { fusedLocationProviderClient.removeLocationUpdates(locationCallback) }
     }

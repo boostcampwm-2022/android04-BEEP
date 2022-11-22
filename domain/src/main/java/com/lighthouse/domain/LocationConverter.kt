@@ -38,15 +38,17 @@ data class DmsLocation(
 
 object LocationConverter {
 
+    private const val gap = 20
+
     private val directions = listOf(
-        NextLocation(-10, 0),
-        NextLocation(-10, 10),
-        NextLocation(0, 10),
-        NextLocation(10, 10),
-        NextLocation(10, 0),
-        NextLocation(10, -10),
-        NextLocation(0, -10),
-        NextLocation(-10, -10)
+        NextLocation(-gap, 0),
+        NextLocation(-gap, gap),
+        NextLocation(0, gap),
+        NextLocation(gap, gap),
+        NextLocation(gap, 0),
+        NextLocation(gap, -gap),
+        NextLocation(0, -gap),
+        NextLocation(-gap, -gap)
     )
 
     fun getCardinalDirections(x: Double, y: Double): List<DmsLocation> {
@@ -139,8 +141,8 @@ object LocationConverter {
      * @return DMS(도분초) 에서 DD(십진수)로 변환해서 반환을 합니다.
      */
     private fun calculateMaxVertex(minX: Dms, minY: Dms): VertexLocation {
-        val maxX = calculateTime(10, minX)
-        val maxY = calculateTime(10, minY)
+        val maxX = calculateTime(gap, minX)
+        val maxY = calculateTime(gap, minY)
 
         return VertexLocation(convertToDD(maxX), convertToDD(maxY))
     }

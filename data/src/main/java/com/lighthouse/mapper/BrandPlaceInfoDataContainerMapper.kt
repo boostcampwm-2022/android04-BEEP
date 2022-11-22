@@ -4,7 +4,7 @@ import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 
 internal fun List<BrandPlaceInfoDataContainer>.toDomain(): List<BrandPlaceInfo> {
-    return this.map { brandPlaceInfoDataContainer ->
+    return this.flatMap { brandPlaceInfoDataContainer ->
         val brandName = brandPlaceInfoDataContainer.meta.sameName.keyword
         brandPlaceInfoDataContainer.documents.map {
             BrandPlaceInfo(
@@ -16,5 +16,5 @@ internal fun List<BrandPlaceInfoDataContainer>.toDomain(): List<BrandPlaceInfo> 
                 y = it.y
             )
         }
-    }.flatten()
+    }
 }
