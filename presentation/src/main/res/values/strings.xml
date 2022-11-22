@@ -17,6 +17,7 @@
     <string name="all_month">월</string>
     <string name="all_day">일</string>
     <string name="all_next">다음</string>
+    <string name="all_prev">이전</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="vm"
             type="com.lighthouse.presentation.ui.security.pin.PinViewModel" />
@@ -14,6 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.security.pin.PinFragment">
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_pin_prev"
+            style="@style/BEEP.Component.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:onClick="@{() -> vm.goPrevious()}"
+            android:text="@string/all_prev"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_pin_description"
@@ -25,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.1" />
+            app:layout_constraintVertical_bias="0.2" />
 
 
         <ImageView
@@ -113,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.4" />
+            app:layout_constraintGuide_percent="0.65" />
 
         <TextView
             android:id="@+id/tv_num_1"
@@ -127,6 +140,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tv_num_4"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_2"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guide_num_pad"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -143,6 +157,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tv_num_5"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_3"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_num_1"
             app:layout_constraintTop_toTopOf="@+id/guide_num_pad"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -159,6 +174,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tv_num_6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_num_2"
             app:layout_constraintTop_toTopOf="@+id/guide_num_pad"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -218,6 +234,7 @@
             android:onClick="@{() -> vm.inputPin(7)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_seven"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_8"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -263,6 +280,7 @@
             android:onClick="@{() -> vm.inputPin(0)}"
             android:paddingVertical="16dp"
             android:text="@string/pin_zero"
+            app:layout_constraintBottom_toTopOf="@+id/guide_num_pad_bottom"
             app:layout_constraintEnd_toStartOf="@+id/tv_num_9"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_7"
@@ -277,24 +295,18 @@
             android:onClick="@{() -> vm.removePin()}"
             android:paddingVertical="20dp"
             android:src="@drawable/ic_pin_backspace"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_num_0"
             app:layout_constraintTop_toBottomOf="@id/tv_num_9" />
 
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/BEEP.Component.TextButton"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_num_pad_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:enabled="@{vm.pinString.length == 6}"
-            android:text="@string/all_next"
-            android:onClick="@{() -> vm.next()}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -27,12 +27,14 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         lifecycleScope.launch {
             viewModel.pinMode.collect {
                 when (it) {
-                    PinSettingType.INITIAL ->
-                        binding.tvPinDescription.text =
-                            getString(R.string.pin_initial_description)
-                    PinSettingType.CONFIRM ->
-                        binding.tvPinDescription.text =
-                            getString(R.string.pin_confirm_description)
+                    PinSettingType.INITIAL -> {
+                        binding.tvPinDescription.text = getString(R.string.pin_initial_description)
+                        binding.btnPinPrev.visibility = View.GONE
+                    }
+                    PinSettingType.CONFIRM -> {
+                        binding.tvPinDescription.text = getString(R.string.pin_confirm_description)
+                        binding.btnPinPrev.visibility = View.VISIBLE
+                    }
                     PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> (requireActivity() as SecurityActivity).moveScreen(SecurityDirections.FINGERPRINT)
                 }
