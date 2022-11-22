@@ -46,8 +46,8 @@ object LocationConverter {
     )
 
     fun getCardinalDirections(x: Double, y: Double): List<Location> {
-        val xDms = toDMS(x)
-        val yDms = toDMS(y)
+        val xDms = toMinDms(x)
+        val yDms = toMinDms(y)
 
         return directions.map { nextLocation ->
             val (nextX, nextY) = nextLocation
@@ -55,6 +55,7 @@ object LocationConverter {
             // 다음 초 계산 결과가 0~60 사이면 시/분 쪽은 계산할 필요가 없다.
             val nextDmsX = calculateTime(nextX, xDms)
             val nextDmsY = calculateTime(nextY, yDms)
+            println("Location($nextDmsX,$nextDmsY)")
             Location(nextDmsX, nextDmsY)
         }.plusElement(Location(xDms, yDms))
     }
@@ -63,56 +64,17 @@ object LocationConverter {
         nextSecond: Int,
         dms: Dms
     ): Dms {
-        val dmsNextSecond = dms.seconds + nextSecond
-        return when {
-            dmsNextSecond in 0..60 -> {
-                dms.copy(
-                    degree = dms.degree,
-                    minutes = dms.minutes,
-                    seconds = dmsNextSecond
-                )
-            }
-            dmsNextSecond < 0 -> overMinSeconds(dms)
-            else -> overMaxSeconds(dms)
-        }
-    }
+        val degreeToSeconds = dms.degree * 3600
+        val minutesToSeconds = dms.minutes * 60
+        val seconds = dms.seconds
 
-    // 초 계산 결과가 60을 초과하는 경우이다. 즉 70이라는 의미
-    private fun overMinSeconds(dms: Dms): Dms {
-        val prevMinutesX = dms.minutes - 1
-        // 단 분도 -1한 결과가 -인 경우 도에서 -1 하고 분을 59로 한다.
-        return if (prevMinutesX < 0) {
-            dms.copy(
-                degree = dms.degree - 1,
-                minutes = 59,
-                seconds = 50
-            )
-        } else {
-            dms.copy(
-                degree = dms.degree,
-                minutes = dms.minutes - 1,
-                seconds = 50
-            )
-        }
-    }
+        val sum = degreeToSeconds + minutesToSeconds + seconds + nextSecond
 
-    // 초 계산 결과가 0미만 즉 -인 경우 분을 -1하고 초를 50으로 고정하면 된다.
-    private fun overMaxSeconds(dms: Dms): Dms {
-        val nextMinutesX = dms.minutes + 1
-        // 단 분도 +1한 결과가 60분을 넘어가면 도를 +1 하고 분을 1로 고정한다.
-        return if (nextMinutesX > 60) {
-            dms.copy(
-                degree = dms.degree + 1,
-                minutes = 1,
-                seconds = 10
-            )
-        } else {
-            dms.copy(
-                degree = dms.degree,
-                minutes = dms.minutes + 1,
-                seconds = 10
-            )
-        }
+        val resultDegree: Int = sum / 3600
+        val resultMinutes: Int = sum / 60 - (resultDegree * 60)
+        val resultSeconds: Int = sum % 60
+
+        return Dms(resultDegree, resultMinutes, resultSeconds)
     }
 
     /**
@@ -121,7 +83,7 @@ object LocationConverter {
      * 십진수를 도분초로 바꾸는 함수입니다.
      * @param coordinate -> x,y 좌표
      */
-    private fun toDMS(coordinate: Double): Dms {
+    private fun toMinDms(coordinate: Double): Dms {
         val dms = setDms(coordinate)
 
         val depressionSeconds = getDepression(dms.seconds)
