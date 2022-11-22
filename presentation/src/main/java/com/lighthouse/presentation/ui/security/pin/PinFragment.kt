@@ -6,12 +6,14 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PinFragment : Fragment(R.layout.fragment_pin) {
@@ -36,7 +38,11 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         binding.btnPinPrev.visibility = View.VISIBLE
                     }
                     PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
-                    PinSettingType.COMPLETE -> (requireActivity() as SecurityActivity).moveScreen(SecurityDirections.FINGERPRINT)
+                    PinSettingType.COMPLETE -> {
+                        Snackbar.make(requireView(), "PIN 설정이 완료됐습니다.", Snackbar.ANIMATION_MODE_SLIDE).show()
+                        delay(1000)
+                        (requireActivity() as SecurityActivity).moveScreen(SecurityDirections.FINGERPRINT)
+                    }
                 }
             }
         }
