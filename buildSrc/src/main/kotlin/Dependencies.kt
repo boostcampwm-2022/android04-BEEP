@@ -33,7 +33,7 @@ object Versions {
     const val INJECT = "1"
 
     const val NAVER_MAP = "3.16.0"
-    const val PLAY_SERVICES_LOCATION = "21.0.1"
+    const val PLAY_SERVICES_LOCATION = "20.0.0"
 
     const val GLIDE = "4.14.2"
     const val VIEW_PAGER2 = "2:1.0.0"
@@ -136,17 +136,18 @@ object Libraries {
         MOSHI_KOTLIN,
         MOSHI_ADAPTERS,
         CONVERTER_MOSHI,
-        INJECT,
+        HILT,
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
         WORK_MANAGER,
-        TIMBER
+        TIMBER,
+        PLAY_SERVICES_LOCATION
     )
     val DOMAIN_LIBRARIES = arrayListOf(
         COROUTINE_CORE,
         INJECT,
         PAGING_COMMON_KTX,
-        ROOM_COMMON,
+        ROOM_COMMON
     )
     val APP_LIBRARIES = arrayListOf(
         HILT,
@@ -240,7 +241,8 @@ object Kapt {
 
     val DATA_LIBRARIES = arrayListOf(
         ROOM_COMPILER,
-        MOSHI_KOTLIN_CODEGEN
+        MOSHI_KOTLIN_CODEGEN,
+        HILT
     )
 
     val APP_LIBRARIES = arrayListOf(
