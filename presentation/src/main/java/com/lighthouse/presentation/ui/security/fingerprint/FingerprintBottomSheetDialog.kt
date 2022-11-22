@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security
+package com.lighthouse.presentation.ui.security.fingerprint
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.DialogFingerprintLegacyBinding
-import com.lighthouse.presentation.ui.security.fingerprint.FingerprintAuthCallback
+import com.lighthouse.presentation.ui.security.fingerprint.biometric.FingerprintAuthCallback
 
 class FingerprintBottomSheetDialog : BottomSheetDialogFragment() {
     private lateinit var binding: DialogFingerprintLegacyBinding
