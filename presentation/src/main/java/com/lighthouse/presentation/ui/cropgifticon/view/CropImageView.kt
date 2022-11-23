@@ -877,8 +877,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeTopWithAspectRatio(diffY: Float) {
-        resizeTop(diffY, ResizeAddDir.RIGHT)
-        resizeRightByAspectRatio()
+        resizeTop(diffY, ResizeAddDir.HORIZONTAL)
+        resizeHorizontalByAspectRatio()
     }
 
     private fun resizeRightTopWithAspectRatio(diff: PointF) {
@@ -898,8 +898,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeRightWithAspectRatio(diffX: Float) {
-        resizeRight(diffX, ResizeAddDir.BOTTOM)
-        resizeBottomByAspectRatio()
+        resizeRight(diffX, ResizeAddDir.VERTICAL)
+        resizeVerticalByAspectRatio()
     }
 
     private fun resizeRightBottomWithAspectRatio(diff: PointF) {
@@ -919,8 +919,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeBottomWithAspectRatio(diffY: Float) {
-        resizeBottom(diffY, ResizeAddDir.RIGHT)
-        resizeRightByAspectRatio()
+        resizeBottom(diffY, ResizeAddDir.HORIZONTAL)
+        resizeHorizontalByAspectRatio()
     }
 
     private fun resizeLeftBottomWithAspectRatio(diff: PointF) {
@@ -940,8 +940,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeLeftWithAspectRatio(diffX: Float) {
-        resizeLeft(diffX, ResizeAddDir.BOTTOM)
-        resizeBottomByAspectRatio()
+        resizeLeft(diffX, ResizeAddDir.VERTICAL)
+        resizeVerticalByAspectRatio()
     }
 
     enum class TouchRange {
@@ -953,7 +953,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     enum class ResizeAddDir {
-        LEFT, TOP, RIGHT, BOTTOM, NONE
+        LEFT, TOP, RIGHT, BOTTOM, VERTICAL, HORIZONTAL, NONE
     }
 
     companion object {
