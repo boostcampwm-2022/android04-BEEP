@@ -56,6 +56,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
 
         setGifticonAdapter()
         setObserveSearchData()
+        viewModel.collectLocation()
     }
 
     override fun onStart() {
@@ -92,7 +93,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
                 map = naverMap
                 width = Marker.SIZE_AUTO
                 height = Marker.SIZE_AUTO
-                tag = brandPlaceSearchResult.brand
+                tag = brandPlaceSearchResult.placeUrl
                 captionText = brandPlaceSearchResult.brand
             }
         }
@@ -134,6 +135,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     }
 
     override fun onClick(overlay: Overlay): Boolean {
+        Timber.tag("TAG").d("${javaClass.simpleName} overley -> ${overlay.tag}")
         return true
     }
 
@@ -147,7 +149,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     private fun setNaverMapPolyLine() {
         repeatOnStarted {
             viewModel.userLocation.collect {
-                Timber.tag("TAG").d("${javaClass.simpleName} location -> $it")
                 polygonOverlay.map = null
                 val x = it.first
                 val y = it.second

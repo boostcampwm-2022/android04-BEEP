@@ -30,15 +30,16 @@ class MapViewModel @Inject constructor(
     // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
     var userLocation = MutableStateFlow(Pair(0.0, 0.0))
 
-    init {
-        collectLocation()
-    }
-
-    private fun collectLocation() {
+    fun collectLocation() {
         viewModelScope.launch {
             getUserLocation().collect { location ->
                 getBrandPlaceInfos(location.longitude, location.latitude)
-                userLocation.update { Pair(location.longitude, location.latitude) } // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
+                userLocation.update {
+                    Pair(
+                        location.longitude,
+                        location.latitude
+                    )
+                } // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
             }
         }
     }
