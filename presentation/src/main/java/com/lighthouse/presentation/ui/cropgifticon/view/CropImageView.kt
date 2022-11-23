@@ -575,14 +575,22 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val diff = touchEndPos.minus(touchStartPos)
 
         when (range) {
-            TouchRange.LEFT, TouchRange.LEFT_TOP, TouchRange.LEFT_BOTTOM -> resizeLeft(diff.x)
-            TouchRange.RIGHT, TouchRange.RIGHT_TOP, TouchRange.RIGHT_BOTTOM -> resizeRight(diff.x)
+            TouchRange.LEFT,
+            TouchRange.LEFT_TOP,
+            TouchRange.LEFT_BOTTOM -> resizeLeft(diff.x)
+            TouchRange.RIGHT,
+            TouchRange.RIGHT_TOP,
+            TouchRange.RIGHT_BOTTOM -> resizeRight(diff.x)
             else -> {}
         }
 
         when (range) {
-            TouchRange.TOP, TouchRange.LEFT_TOP, TouchRange.RIGHT_TOP -> resizeTop(diff.y)
-            TouchRange.BOTTOM, TouchRange.LEFT_BOTTOM, TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
+            TouchRange.TOP,
+            TouchRange.LEFT_TOP,
+            TouchRange.RIGHT_TOP -> resizeTop(diff.y)
+            TouchRange.BOTTOM,
+            TouchRange.LEFT_BOTTOM,
+            TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
             else -> {}
         }
         invalidate()
@@ -606,17 +614,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             resizedLeft = curCropRect.right - minCropWidth
         }
 
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newHeight = (curCropRect.right - resizedLeft) / aspectRatio
             if (newHeight < minCropHeight) {
                 resizedLeft = max(boundLeft, curCropRect.right - minCropHeight * aspectRatio)
                 newHeight = (curCropRect.right - resizedLeft) / aspectRatio
             }
-            if (dir == ResizeAddDir.TOP && newHeight > curCropRect.bottom - boundTop) {
-                resizedLeft = max(boundLeft, curCropRect.right - (curCropRect.bottom - boundTop) * aspectRatio)
-            } else if (dir == ResizeAddDir.BOTTOM && newHeight > boundBottom - curCropRect.top) {
-                resizedLeft =
-                    maxOf(resizedLeft, boundLeft, curCropRect.right - (boundBottom - curCropRect.top) * aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.TOP -> {
+                    if (newHeight > curCropRect.bottom - boundTop) {
+                        resizedLeft = max(boundLeft, curCropRect.right - (curCropRect.bottom - boundTop) * aspectRatio)
+                    }
+                }
+                ResizeAddDir.BOTTOM -> {
+                    if (newHeight > boundBottom - curCropRect.top) {
+                        resizedLeft =
+                            maxOf(
+                                resizedLeft,
+                                boundLeft,
+                                curCropRect.right - (boundBottom - curCropRect.top) * aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.VERTICAL -> {
+                    resizedLeft =
+                        maxOf(resizedLeft, boundLeft, curCropRect.right - (boundBottom - boundTop) * aspectRatio)
+                }
+                else -> {}
             }
         }
         curCropRect.left = resizedLeft
@@ -639,17 +664,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (resizedRight < curCropRect.left + minCropWidth) {
             resizedRight = curCropRect.left + minCropWidth
         }
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newHeight = (resizedRight - curCropRect.left) / aspectRatio
             if (newHeight < minCropHeight) {
                 resizedRight = min(boundRight, curCropRect.left + minCropHeight * aspectRatio)
                 newHeight = (resizedRight - curCropRect.left) / aspectRatio
             }
-            if (dir == ResizeAddDir.TOP && newHeight > curCropRect.bottom - boundTop) {
-                resizedRight = min(boundRight, curCropRect.left + (curCropRect.bottom - boundTop) * aspectRatio)
-            } else if (dir == ResizeAddDir.BOTTOM && newHeight > boundBottom - curCropRect.top) {
-                resizedRight =
-                    minOf(resizedRight, boundRight, curCropRect.left + (boundBottom - curCropRect.top) * aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.TOP -> {
+                    if (newHeight > curCropRect.bottom - boundTop) {
+                        resizedRight = min(boundRight, curCropRect.left + (curCropRect.bottom - boundTop) * aspectRatio)
+                    }
+                }
+                ResizeAddDir.BOTTOM -> {
+                    if (newHeight > boundBottom - curCropRect.top) {
+                        resizedRight =
+                            minOf(
+                                resizedRight,
+                                boundRight,
+                                curCropRect.left + (boundBottom - curCropRect.top) * aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.VERTICAL -> {
+                    resizedRight =
+                        minOf(resizedRight, boundRight, curCropRect.left + (boundBottom - boundTop) * aspectRatio)
+                }
+                else -> {}
             }
         }
 
@@ -673,17 +715,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (resizedTop > curCropRect.bottom - minCropHeight) {
             resizedTop = curCropRect.bottom - minCropHeight
         }
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newWidth = (curCropRect.bottom - resizedTop) * aspectRatio
             if (newWidth < minCropWidth) {
                 resizedTop = max(boundTop, curCropRect.bottom - minCropWidth / aspectRatio)
                 newWidth = (curCropRect.bottom - resizedTop) * aspectRatio
             }
-            if (dir == ResizeAddDir.LEFT && newWidth > curCropRect.right - boundLeft) {
-                resizedTop = max(boundTop, curCropRect.bottom - (curCropRect.right - boundLeft) / aspectRatio)
-            } else if (dir == ResizeAddDir.RIGHT && newWidth > boundRight - curCropRect.left) {
-                resizedTop =
-                    maxOf(resizedTop, boundTop, curCropRect.bottom - (boundRight - curCropRect.left) / aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.LEFT -> {
+                    if (newWidth > curCropRect.right - boundLeft) {
+                        resizedTop = max(boundTop, curCropRect.bottom - (curCropRect.right - boundLeft) / aspectRatio)
+                    }
+                }
+                ResizeAddDir.RIGHT -> {
+                    if (newWidth > boundRight - curCropRect.left) {
+                        resizedTop =
+                            maxOf(
+                                resizedTop,
+                                boundTop,
+                                curCropRect.bottom - (boundRight - curCropRect.left) / aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.HORIZONTAL -> {
+                    resizedTop =
+                        maxOf(resizedTop, boundTop, curCropRect.bottom - (boundRight - boundLeft) / aspectRatio)
+                }
+                else -> {}
             }
         }
         curCropRect.top = resizedTop
@@ -706,17 +765,35 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (resizedBottom < curCropRect.top + minCropHeight) {
             resizedBottom = curCropRect.top + minCropHeight
         }
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newWidth = (resizedBottom - curCropRect.top) * aspectRatio
             if (newWidth < minCropWidth) {
                 resizedBottom = min(boundBottom, curCropRect.top + minCropWidth / aspectRatio)
                 newWidth = (resizedBottom - curCropRect.top) * aspectRatio
             }
-            if (dir == ResizeAddDir.LEFT && newWidth > curCropRect.right - boundLeft) {
-                resizedBottom = min(boundBottom, curCropRect.top + (curCropRect.right - boundLeft) / aspectRatio)
-            } else if (dir == ResizeAddDir.RIGHT && newWidth > boundRight - curCropRect.left) {
-                resizedBottom =
-                    minOf(resizedBottom, boundBottom, curCropRect.top + (boundRight - curCropRect.left) / aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.LEFT -> {
+                    if (newWidth > curCropRect.right - boundLeft) {
+                        resizedBottom =
+                            min(boundBottom, curCropRect.top + (curCropRect.right - boundLeft) / aspectRatio)
+                    }
+                }
+                ResizeAddDir.RIGHT -> {
+                    if (newWidth > boundRight - curCropRect.left) {
+                        resizedBottom =
+                            minOf(
+                                resizedBottom,
+                                boundBottom,
+                                curCropRect.top + (boundRight - curCropRect.left) / aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.HORIZONTAL -> {
+                    resizedBottom =
+                        minOf(resizedBottom, boundBottom, curCropRect.top + (boundRight - boundLeft) / aspectRatio)
+                }
+                else -> {}
             }
         }
         curCropRect.bottom = resizedBottom
@@ -757,6 +834,30 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun resizeBottomByAspectRatio() {
         curCropRect.bottom = curCropRect.top + curCropRect.width() / aspectRatio
+    }
+
+    private fun resizeHorizontalByAspectRatio() {
+        curCropRect.inset((curCropRect.width() - curCropRect.height() * aspectRatio) / 2, 0f)
+        val boundLeft = boundLeft
+        val boundRight = boundRight
+        if (curCropRect.left < boundLeft) {
+            curCropRect.offset(boundLeft - curCropRect.left, 0f)
+        }
+        if (curCropRect.right > boundRight) {
+            curCropRect.offset(boundRight - curCropRect.right, 0f)
+        }
+    }
+
+    private fun resizeVerticalByAspectRatio() {
+        curCropRect.inset(0f, (curCropRect.height() - curCropRect.width() / aspectRatio) / 2)
+        val boundTop = boundTop
+        val boundBottom = boundBottom
+        if (curCropRect.top < boundTop) {
+            curCropRect.offset(0f, boundTop - curCropRect.top)
+        }
+        if (curCropRect.bottom > boundBottom) {
+            curCropRect.offset(0f, boundBottom - curCropRect.bottom)
+        }
     }
 
     private fun resizeLeftTopWithAspectRatio(diff: PointF) {
