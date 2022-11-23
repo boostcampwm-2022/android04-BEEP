@@ -1,4 +1,4 @@
-package com.lighthouse.datasource
+package com.lighthouse.datasource.gallery
 
 import android.content.ContentResolver
 import android.content.ContentUris

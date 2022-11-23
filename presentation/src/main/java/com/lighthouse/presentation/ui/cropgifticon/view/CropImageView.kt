@@ -61,7 +61,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     // 실제 이미지의 크기에 맞는 Rect
     private val realImageRect = RectF()
-    private val realCropRect = RectF()
 
     // 현재 화면에 그려지고 있는 Rect, Matrix
     private val curImageRect = RectF()
@@ -99,10 +98,18 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     // CropRect 를 줄일 수 있는 최소 범위
     private val calculateMinCropWidth
-        get() = if (aspectRatioEnable) max(MIN_SIZE, MIN_SIZE / aspectRatio) else MIN_SIZE
+        get() = if (aspectRatioEnable) {
+            if (aspectRatio > 1f) MIN_SIZE * aspectRatio else MIN_SIZE
+        } else {
+            MIN_SIZE
+        }
 
     private val calculateMinCropHeight
-        get() = if (aspectRatioEnable) max(MIN_SIZE * aspectRatio, MIN_SIZE) else MIN_SIZE
+        get() = if (aspectRatioEnable) {
+            if (aspectRatio > 1f) MIN_SIZE else MIN_SIZE / aspectRatio
+        } else {
+            MIN_SIZE
+        }
 
     private val cropZoomAnimation = object : Animation() {
         private val startCropRect = RectF()
@@ -164,6 +171,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    private var onCropImageListener: OnCropImageListener? = null
+    fun setOnCropImageListener(onCropImageListener: OnCropImageListener?) {
+        this.onCropImageListener = onCropImageListener
+    }
+
     fun setOriginUri(uri: Uri?) {
         originBitmap = when (uri?.scheme) {
             SCHEME_CONTENT -> context.contentResolver.getBitmap(uri)
@@ -172,6 +184,26 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         initRect()
+    }
+
+    fun cropImage() {
+        val bitmap = originBitmap
+        if (bitmap != null) {
+            val rect = RectF(curCropRect)
+            mainMatrix.invert(mainInverseMatrix)
+            mainInverseMatrix.mapRect(rect)
+
+            val croppedBitmap = Bitmap.createBitmap(
+                bitmap,
+                rect.left.toInt(),
+                rect.top.toInt(),
+                (rect.right - rect.left).toInt(),
+                (rect.bottom - rect.top).toInt()
+            )
+            onCropImageListener?.onCrop(croppedBitmap)
+        } else {
+            onCropImageListener?.onCrop(null)
+        }
     }
 
     // 새로운 이미지 등록시, Rect 초기화
@@ -183,22 +215,25 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
             curImageRect.set(realImageRect)
             if (aspectRatioEnable) {
+                // AspectRatio 에 맞춰서 CropRect 를 변경 한다
                 val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
                 val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
 
                 val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
                 val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
 
-                realCropRect.set(aspectOffsetX, aspectOffsetY, aspectOffsetX + aspectWidth, aspectOffsetY + aspectHeight)
-                curCropRect.set(realCropRect)
+                curCropRect.set(
+                    aspectOffsetX,
+                    aspectOffsetY,
+                    aspectOffsetX + aspectWidth,
+                    aspectOffsetY + aspectHeight
+                )
             } else {
-                realCropRect.set(realImageRect)
                 curCropRect.set(realImageRect)
             }
         } else {
             realImageRect.set(RECT_F_EMPTY)
             curImageRect.set(RECT_F_EMPTY)
-            realCropRect.set(RECT_F_EMPTY)
             curCropRect.set(RECT_F_EMPTY)
         }
     }
@@ -236,6 +271,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    /**
+     * 화면이 갑자기 많이 바뀌는 상황에서 적절하게 위치를 조정하기 위한 함수
+     * ex) onLayout, applyZoom
+     */
     private fun applyMatrix(animate: Boolean) {
         val bitmap = originBitmap
         if (width == 0 || height == 0 || bitmap == null) {
@@ -266,6 +305,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         mapCurrentImageRectByMatrix()
 
         // 6. ZoomOffset 구하기
+        // 1) 지금 까지 계산 된 이미지의 크기가 화면 크기 보다 작다면 offset 이 존재할 필요가 없다
+        // 2) width / 2 - curCropRect.centerX() > 0, 이미지의 중앙이 왼쪽
+        //    width / 2 - curCropRect.centerX() < 0, 이미지의 중앙이 오른쪽
+        //    width / 2 - curCropRect.centerX() = 0, 이미지와 화면의 중앙이 일치
+        //
         val zoomOffsetX = when {
             width > curImageRect.width() -> 0f
             else -> max(
@@ -293,6 +337,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    // 현재 계산된 Matrix 를 이용 하여 curImageRect 를 계산 해준다
     private fun mapCurrentImageRectByMatrix() {
         curImageRect.set(realImageRect)
         mainMatrix.mapRect(curImageRect)
@@ -417,8 +462,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         )
     }
 
+    private var activePointerId: Int? = null
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isActivePointer(event).not()) {
+            return false
+        }
+
         setTouchPos(event)
         if (getEventType(event) == EventType.NONE) {
             return false
@@ -427,6 +478,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         actionEvent()
         cleanEvent(event)
         return true
+    }
+
+    private fun isActivePointer(event: MotionEvent): Boolean {
+        val curPointerId = event.getPointerId(event.actionIndex)
+        if (activePointerId == null) {
+            activePointerId = curPointerId
+        }
+        return activePointerId == curPointerId
     }
 
     private fun setTouchPos(event: MotionEvent) {
@@ -452,7 +511,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun actionEvent() {
         when (eventType) {
-            EventType.RESIZE -> if (aspectRatioEnable) {
+            EventType.RESIZE -> if (aspectRatioEnable && aspectRatio > 0f) {
                 resizeCropWithFixedAspectRatio()
             } else {
                 resizeCropWithFreeAspectRatio()
@@ -470,10 +529,9 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                     applyZoom()
                 }
                 eventType = EventType.NONE
+                activePointerId = null
             }
-            else -> {
-                touchBeforePos.set(touchEndPos)
-            }
+            else -> touchBeforePos.set(touchEndPos)
         }
     }
 
@@ -516,6 +574,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun moveCrop() {
         val diff = touchEndPos.minus(touchBeforePos)
+        // bound 를 벗어 나지 않는 이동 위치를 계산 한다
         val offsetX = when {
             curCropRect.left + diff.x < curImageRect.left + SNAP_RADIUS -> curImageRect.left - curCropRect.left
             curCropRect.right + diff.x > curImageRect.right - SNAP_RADIUS -> curImageRect.right - curCropRect.right
@@ -526,6 +585,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             curCropRect.bottom + diff.y > curImageRect.bottom - SNAP_RADIUS -> curImageRect.bottom - curCropRect.bottom
             else -> diff.y
         }
+        // Crop 의 경우 벽에 닿은 경우 닿은 상태로 유지 해야한다.
         val screenMoveX = when {
             curCropRect.left + offsetX < 0f -> -(curCropRect.left + offsetX)
             curCropRect.right + offsetX > width -> width - (curCropRect.right + offsetX)
@@ -536,12 +596,12 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             curCropRect.bottom + offsetY > height -> height - (curCropRect.bottom + offsetY)
             else -> 0f
         }
+        // 이미지의 경우 현재 화면에 보이는 이미지 크기를 넘어서 이동하면 안된다
         val imageMoveX = when {
             screenMoveX > 0f -> if (curImageRect.left + screenMoveX * 2 > 0) -curImageRect.left else screenMoveX * 2
             screenMoveX < 0f -> if (curImageRect.right - width + screenMoveX * 2 < 0) width - curImageRect.right else screenMoveX * 2
             else -> 0f
         }
-
         val imageMoveY = when {
             screenMoveY > 0f -> if (curImageRect.top + screenMoveY * 2 > 0) -curImageRect.top else screenMoveY * 2
             screenMoveY < 0f -> if (curImageRect.bottom - height + screenMoveY * 2 < 0) height - curImageRect.bottom else screenMoveY * 2
@@ -559,14 +619,22 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val diff = touchEndPos.minus(touchStartPos)
 
         when (range) {
-            TouchRange.LEFT, TouchRange.LEFT_TOP, TouchRange.LEFT_BOTTOM -> resizeLeft(diff.x)
-            TouchRange.RIGHT, TouchRange.RIGHT_TOP, TouchRange.RIGHT_BOTTOM -> resizeRight(diff.x)
+            TouchRange.LEFT,
+            TouchRange.LEFT_TOP,
+            TouchRange.LEFT_BOTTOM -> resizeLeft(diff.x)
+            TouchRange.RIGHT,
+            TouchRange.RIGHT_TOP,
+            TouchRange.RIGHT_BOTTOM -> resizeRight(diff.x)
             else -> {}
         }
 
         when (range) {
-            TouchRange.TOP, TouchRange.LEFT_TOP, TouchRange.RIGHT_TOP -> resizeTop(diff.y)
-            TouchRange.BOTTOM, TouchRange.LEFT_BOTTOM, TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
+            TouchRange.TOP,
+            TouchRange.LEFT_TOP,
+            TouchRange.RIGHT_TOP -> resizeTop(diff.y)
+            TouchRange.BOTTOM,
+            TouchRange.LEFT_BOTTOM,
+            TouchRange.RIGHT_BOTTOM -> resizeBottom(diff.y)
             else -> {}
         }
         invalidate()
@@ -590,17 +658,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             resizedLeft = curCropRect.right - minCropWidth
         }
 
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newHeight = (curCropRect.right - resizedLeft) / aspectRatio
             if (newHeight < minCropHeight) {
                 resizedLeft = max(boundLeft, curCropRect.right - minCropHeight * aspectRatio)
                 newHeight = (curCropRect.right - resizedLeft) / aspectRatio
             }
-            if (dir == ResizeAddDir.TOP && newHeight > curCropRect.bottom - boundTop) {
-                resizedLeft = max(boundLeft, curCropRect.right - (curCropRect.bottom - boundTop) * aspectRatio)
-            } else if (dir == ResizeAddDir.BOTTOM && newHeight > boundBottom - curCropRect.top) {
-                resizedLeft =
-                    maxOf(resizedLeft, boundLeft, curCropRect.right - (boundBottom - curCropRect.top) * aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.TOP -> {
+                    if (newHeight > curCropRect.bottom - boundTop) {
+                        resizedLeft = max(boundLeft, curCropRect.right - (curCropRect.bottom - boundTop) * aspectRatio)
+                    }
+                }
+                ResizeAddDir.BOTTOM -> {
+                    if (newHeight > boundBottom - curCropRect.top) {
+                        resizedLeft =
+                            maxOf(
+                                resizedLeft,
+                                boundLeft,
+                                curCropRect.right - (boundBottom - curCropRect.top) * aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.VERTICAL -> {
+                    resizedLeft =
+                        maxOf(resizedLeft, boundLeft, curCropRect.right - (boundBottom - boundTop) * aspectRatio)
+                }
+                else -> {}
             }
         }
         curCropRect.left = resizedLeft
@@ -623,17 +708,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (resizedRight < curCropRect.left + minCropWidth) {
             resizedRight = curCropRect.left + minCropWidth
         }
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newHeight = (resizedRight - curCropRect.left) / aspectRatio
             if (newHeight < minCropHeight) {
                 resizedRight = min(boundRight, curCropRect.left + minCropHeight * aspectRatio)
                 newHeight = (resizedRight - curCropRect.left) / aspectRatio
             }
-            if (dir == ResizeAddDir.TOP && newHeight > curCropRect.bottom - boundTop) {
-                resizedRight = min(boundRight, curCropRect.left + (curCropRect.bottom - boundTop) * aspectRatio)
-            } else if (dir == ResizeAddDir.BOTTOM && newHeight > boundBottom - curCropRect.top) {
-                resizedRight =
-                    minOf(resizedRight, boundRight, curCropRect.left + (boundBottom - curCropRect.top) * aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.TOP -> {
+                    if (newHeight > curCropRect.bottom - boundTop) {
+                        resizedRight = min(boundRight, curCropRect.left + (curCropRect.bottom - boundTop) * aspectRatio)
+                    }
+                }
+                ResizeAddDir.BOTTOM -> {
+                    if (newHeight > boundBottom - curCropRect.top) {
+                        resizedRight =
+                            minOf(
+                                resizedRight,
+                                boundRight,
+                                curCropRect.left + (boundBottom - curCropRect.top) * aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.VERTICAL -> {
+                    resizedRight =
+                        minOf(resizedRight, boundRight, curCropRect.left + (boundBottom - boundTop) * aspectRatio)
+                }
+                else -> {}
             }
         }
 
@@ -657,17 +759,34 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (resizedTop > curCropRect.bottom - minCropHeight) {
             resizedTop = curCropRect.bottom - minCropHeight
         }
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newWidth = (curCropRect.bottom - resizedTop) * aspectRatio
             if (newWidth < minCropWidth) {
                 resizedTop = max(boundTop, curCropRect.bottom - minCropWidth / aspectRatio)
                 newWidth = (curCropRect.bottom - resizedTop) * aspectRatio
             }
-            if (dir == ResizeAddDir.LEFT && newWidth > curCropRect.right - boundLeft) {
-                resizedTop = max(boundTop, curCropRect.bottom - (curCropRect.right - boundLeft) / aspectRatio)
-            } else if (dir == ResizeAddDir.RIGHT && newWidth > boundRight - curCropRect.left) {
-                resizedTop =
-                    maxOf(resizedTop, boundTop, curCropRect.bottom - (boundRight - curCropRect.left) / aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.LEFT -> {
+                    if (newWidth > curCropRect.right - boundLeft) {
+                        resizedTop = max(boundTop, curCropRect.bottom - (curCropRect.right - boundLeft) / aspectRatio)
+                    }
+                }
+                ResizeAddDir.RIGHT -> {
+                    if (newWidth > boundRight - curCropRect.left) {
+                        resizedTop =
+                            maxOf(
+                                resizedTop,
+                                boundTop,
+                                curCropRect.bottom - (boundRight - curCropRect.left) / aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.HORIZONTAL -> {
+                    resizedTop =
+                        maxOf(resizedTop, boundTop, curCropRect.bottom - (boundRight - boundLeft) / aspectRatio)
+                }
+                else -> {}
             }
         }
         curCropRect.top = resizedTop
@@ -690,17 +809,35 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (resizedBottom < curCropRect.top + minCropHeight) {
             resizedBottom = curCropRect.top + minCropHeight
         }
-        if (aspectRatioEnable && aspectRatio > 0f) {
+        if (dir != ResizeAddDir.NONE) {
             var newWidth = (resizedBottom - curCropRect.top) * aspectRatio
             if (newWidth < minCropWidth) {
                 resizedBottom = min(boundBottom, curCropRect.top + minCropWidth / aspectRatio)
                 newWidth = (resizedBottom - curCropRect.top) * aspectRatio
             }
-            if (dir == ResizeAddDir.LEFT && newWidth > curCropRect.right - boundLeft) {
-                resizedBottom = min(boundBottom, curCropRect.top + (curCropRect.right - boundLeft) / aspectRatio)
-            } else if (dir == ResizeAddDir.RIGHT && newWidth > boundRight - curCropRect.left) {
-                resizedBottom =
-                    minOf(resizedBottom, boundBottom, curCropRect.top + (boundRight - curCropRect.left) / aspectRatio)
+
+            when (dir) {
+                ResizeAddDir.LEFT -> {
+                    if (newWidth > curCropRect.right - boundLeft) {
+                        resizedBottom =
+                            min(boundBottom, curCropRect.top + (curCropRect.right - boundLeft) / aspectRatio)
+                    }
+                }
+                ResizeAddDir.RIGHT -> {
+                    if (newWidth > boundRight - curCropRect.left) {
+                        resizedBottom =
+                            minOf(
+                                resizedBottom,
+                                boundBottom,
+                                curCropRect.top + (boundRight - curCropRect.left) / aspectRatio
+                            )
+                    }
+                }
+                ResizeAddDir.HORIZONTAL -> {
+                    resizedBottom =
+                        minOf(resizedBottom, boundBottom, curCropRect.top + (boundRight - boundLeft) / aspectRatio)
+                }
+                else -> {}
             }
         }
         curCropRect.bottom = resizedBottom
@@ -743,6 +880,30 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         curCropRect.bottom = curCropRect.top + curCropRect.width() / aspectRatio
     }
 
+    private fun resizeHorizontalByAspectRatio() {
+        curCropRect.inset((curCropRect.width() - curCropRect.height() * aspectRatio) / 2, 0f)
+        val boundLeft = boundLeft
+        val boundRight = boundRight
+        if (curCropRect.left < boundLeft) {
+            curCropRect.offset(boundLeft - curCropRect.left, 0f)
+        }
+        if (curCropRect.right > boundRight) {
+            curCropRect.offset(boundRight - curCropRect.right, 0f)
+        }
+    }
+
+    private fun resizeVerticalByAspectRatio() {
+        curCropRect.inset(0f, (curCropRect.height() - curCropRect.width() / aspectRatio) / 2)
+        val boundTop = boundTop
+        val boundBottom = boundBottom
+        if (curCropRect.top < boundTop) {
+            curCropRect.offset(0f, boundTop - curCropRect.top)
+        }
+        if (curCropRect.bottom > boundBottom) {
+            curCropRect.offset(0f, boundBottom - curCropRect.bottom)
+        }
+    }
+
     private fun resizeLeftTopWithAspectRatio(diff: PointF) {
         if (calculateAspectRatio(
                 curCropRect.left + diff.x,
@@ -760,8 +921,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeTopWithAspectRatio(diffY: Float) {
-        resizeTop(diffY, ResizeAddDir.RIGHT)
-        resizeRightByAspectRatio()
+        resizeTop(diffY, ResizeAddDir.HORIZONTAL)
+        resizeHorizontalByAspectRatio()
     }
 
     private fun resizeRightTopWithAspectRatio(diff: PointF) {
@@ -781,8 +942,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeRightWithAspectRatio(diffX: Float) {
-        resizeRight(diffX, ResizeAddDir.BOTTOM)
-        resizeBottomByAspectRatio()
+        resizeRight(diffX, ResizeAddDir.VERTICAL)
+        resizeVerticalByAspectRatio()
     }
 
     private fun resizeRightBottomWithAspectRatio(diff: PointF) {
@@ -802,8 +963,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeBottomWithAspectRatio(diffY: Float) {
-        resizeBottom(diffY, ResizeAddDir.RIGHT)
-        resizeRightByAspectRatio()
+        resizeBottom(diffY, ResizeAddDir.HORIZONTAL)
+        resizeHorizontalByAspectRatio()
     }
 
     private fun resizeLeftBottomWithAspectRatio(diff: PointF) {
@@ -823,8 +984,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun resizeLeftWithAspectRatio(diffX: Float) {
-        resizeLeft(diffX, ResizeAddDir.BOTTOM)
-        resizeBottomByAspectRatio()
+        resizeLeft(diffX, ResizeAddDir.VERTICAL)
+        resizeVerticalByAspectRatio()
     }
 
     enum class TouchRange {
@@ -836,7 +997,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     enum class ResizeAddDir {
-        LEFT, TOP, RIGHT, BOTTOM, NONE
+        LEFT, TOP, RIGHT, BOTTOM, VERTICAL, HORIZONTAL, NONE
     }
 
     companion object {
