@@ -1,6 +1,8 @@
 package com.lighthouse.domain.repository
 
+import kotlinx.coroutines.flow.Flow
+
 interface UserPreferencesRepository {
-    fun setPin(pinString: String)
-    fun getCorrespondWithPin(pinString: String)
+    suspend fun setPin(pinString: String)
+    fun getPin(): Flow<String>
 }

@@ -14,9 +14,11 @@ import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityViewModel
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class PinFragment : Fragment(R.layout.fragment_pin) {
 
     private val binding by viewBindings(FragmentPinBinding::bind)
