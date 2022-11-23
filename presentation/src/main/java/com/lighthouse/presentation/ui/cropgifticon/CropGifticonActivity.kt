@@ -53,8 +53,8 @@ class CropGifticonActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventsFlow.collect { events ->
                 when (events) {
-                    CropGifticonEvent.Crop -> requestCropImage()
-                    CropGifticonEvent.Cancel -> cancelCropImage()
+                    is CropGifticonEvent.Crop -> requestCropImage()
+                    is CropGifticonEvent.Cancel -> cancelCropImage()
                     is CropGifticonEvent.Complete -> completeCropImage(events.bitmap)
                 }
             }
