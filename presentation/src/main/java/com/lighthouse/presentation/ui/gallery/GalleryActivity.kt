@@ -18,7 +18,7 @@ import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.adapter.GalleryAdapter
 import com.lighthouse.presentation.ui.gallery.adapter.GallerySelection
 import com.lighthouse.presentation.ui.gallery.event.GalleryEvents
-import com.lighthouse.presentation.util.recycler.SectionSpaceGridDivider
+import com.lighthouse.presentation.util.recycler.GridSectionSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -72,7 +72,7 @@ class GalleryActivity : AppCompatActivity() {
                     }
                 }
             }
-            addItemDecoration(SectionSpaceGridDivider(20.dp, 4.dp, 4.dp, 12.dp, 4.dp, 12.dp))
+            addItemDecoration(GridSectionSpaceItemDecoration(20.dp, 4.dp, 4.dp, 12.dp, 4.dp, 12.dp))
         }
     }
 

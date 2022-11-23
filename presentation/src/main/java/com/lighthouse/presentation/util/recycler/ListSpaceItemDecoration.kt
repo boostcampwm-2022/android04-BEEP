@@ -27,7 +27,6 @@ class ListSpaceItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        super.getItemOffsets(outRect, view, parent, state)
         val manager = parent.layoutManager as? LinearLayoutManager ?: return
         val itemCount = parent.adapter?.itemCount ?: 0
         val position = when (parent.getChildAdapterPosition(view)) {

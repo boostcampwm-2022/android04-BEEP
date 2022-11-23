@@ -9,8 +9,9 @@ import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.SectionEntity
+import com.lighthouse.database.entity.UsageHistoryEntity
 
-@Database(entities = [GifticonEntity::class, SectionEntity::class, BrandLocationEntity::class], version = 1)
+@Database(entities = [GifticonEntity::class, SectionEntity::class, BrandLocationEntity::class, UsageHistoryEntity::class], version = 1)
 @TypeConverters(DateConverter::class)
 abstract class BeepDatabase : RoomDatabase() {
 

@@ -158,7 +158,7 @@
                     isVisible="@{!vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,tv_expire_date,tv_cash_balance_label,tv_cash_balance"
+                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,tv_expire_date"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date"
                     tools:visibility="visible" />
 

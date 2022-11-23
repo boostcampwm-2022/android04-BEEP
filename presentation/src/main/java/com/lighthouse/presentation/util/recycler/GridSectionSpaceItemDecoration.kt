@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class SectionSpaceGridDivider(
+class GridSectionSpaceItemDecoration(
     private val sectionDivider: Int,
     private val itemSpace: Int,
     private val start: Int = 0,
@@ -29,41 +29,35 @@ class SectionSpaceGridDivider(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        super.getItemOffsets(outRect, view, parent, state)
-
         val manager = parent.layoutManager as? GridLayoutManager ?: return
         val params = view.layoutParams as? GridLayoutManager.LayoutParams ?: return
 
         val position = parent.getChildAdapterPosition(view)
+        val itemCount = parent.adapter?.itemCount ?: 0
 
+        outRect.left = if (isFirstCol(params)) start else itemSpace / 2
         outRect.top = if (isSection(manager, params)) {
-            if (isFirstRow(position)) top else sectionDivider - itemSpace / 2
+            if (isFirstRow(manager, position)) top else sectionDivider - itemSpace / 2
         } else {
             itemSpace / 2
         }
-
-        outRect.bottom = if (isLastRow(position, manager, parent)) bottom else itemSpace / 2
-
-        outRect.left = if (isFirstCol(params)) start else itemSpace / 2
-
         outRect.right = if (isLastCol(manager, params)) end else itemSpace / 2
+        outRect.bottom = if (isLastRow(manager, position, itemCount)) bottom else itemSpace / 2
     }
 
     private fun isSection(manager: GridLayoutManager, params: GridLayoutManager.LayoutParams): Boolean {
         return manager.spanCount == params.spanSize
     }
 
-    private fun isFirstRow(position: Int): Boolean {
-        return position == 0
+    private fun isFirstRow(manager: GridLayoutManager, position: Int): Boolean {
+        return getGroupIndex(manager, position) == getGroupIndex(manager, 0)
     }
 
-    private fun isLastRow(position: Int, manager: GridLayoutManager, recyclerView: RecyclerView): Boolean {
-        val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-        return getGroupIndex(position, manager) == getGroupIndex(itemCount - 1, manager)
+    private fun isLastRow(manager: GridLayoutManager, position: Int, itemCount: Int): Boolean {
+        return getGroupIndex(manager, position) == getGroupIndex(manager, itemCount - 1)
     }
 
-    private fun getGroupIndex(position: Int, manager: GridLayoutManager): Int {
+    private fun getGroupIndex(manager: GridLayoutManager, position: Int): Int {
         return manager.spanSizeLookup.getSpanGroupIndex(position, manager.spanCount)
     }
 
