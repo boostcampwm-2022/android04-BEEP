@@ -120,7 +120,6 @@
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:text="@{vm.gifticon.name}"
-                    android:textAppearance="@style/BEEP.TextStyle.H6"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
                     tools:text="딸기마카롱설빙" />
@@ -148,7 +147,6 @@
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:text="@{vm.gifticon.brand}"
-                    android:textAppearance="@style/BEEP.TextStyle.H6"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
                     tools:text="설빙" />
@@ -174,7 +172,7 @@
 
                 <TextView
                     android:id="@+id/tv_expire_date"
-                    style="@style/BEEP.TextStyle.H6"
+                    style="@style/Theme.BEEP.TextView"
                     dateFormat="@{vm.gifticon.expireAt}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -191,7 +189,7 @@
                     isVisible="@{vm.gifticon.cashCard &amp;&amp; !vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="tv_cash_balance,tv_cash_balance_label"
+                    app:constraint_referenced_ids="tv_cash_balance,tv_cash_balance_label,tv_balance_label,tv_balance"
                     tools:visibility="gone" />
 
                 <TextView
@@ -225,7 +223,7 @@
                     isVisible="@{vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_show_all_used_info_button,tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date,tv_balance_label,tv_balance"
+                    app:constraint_referenced_ids="iv_show_all_used_info_button,tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_date"
                     tools:visibility="gone" />
 
@@ -240,12 +238,14 @@
 
                 <TextView
                     android:id="@+id/tv_used_address"
+                    style="@style/BEEP.TextStyle.Body1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="48dp"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:text="@{vm.latestUsageHistory.address}"
                     app:layout_constraintEnd_toStartOf="@id/iv_show_all_used_info_button"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"
@@ -276,6 +276,8 @@
 
                 <TextView
                     android:id="@+id/tv_used_date"
+                    style="@style/BEEP.TextStyle.Body1"
+                    dateFormat="@{vm.latestUsageHistory.date}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
