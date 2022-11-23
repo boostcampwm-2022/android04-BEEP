@@ -3,8 +3,8 @@ package com.lighthouse.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.lighthouse.datasource.GalleryImageLocalSource
-import com.lighthouse.datasource.GalleryImagePagingSource
+import com.lighthouse.datasource.gallery.GalleryImageLocalSource
+import com.lighthouse.datasource.gallery.GalleryImagePagingSource
 import com.lighthouse.domain.model.GalleryImage
 import com.lighthouse.domain.repository.GalleryImageRepository
 import kotlinx.coroutines.flow.Flow

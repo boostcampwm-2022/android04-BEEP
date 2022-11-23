@@ -1,11 +1,11 @@
 package com.lighthouse.di
 
-import com.lighthouse.datasource.GalleryImageLocalSource
-import com.lighthouse.datasource.GalleryImageLocalSourceImpl
 import com.lighthouse.datasource.brand.BrandLocalDataSource
 import com.lighthouse.datasource.brand.BrandLocalDataSourceImpl
 import com.lighthouse.datasource.brand.BrandRemoteDataSource
 import com.lighthouse.datasource.brand.BrandRemoteDataSourceImpl
+import com.lighthouse.datasource.gallery.GalleryImageLocalSource
+import com.lighthouse.datasource.gallery.GalleryImageLocalSourceImpl
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSourceImpl
 import com.lighthouse.domain.repository.BrandRepository
