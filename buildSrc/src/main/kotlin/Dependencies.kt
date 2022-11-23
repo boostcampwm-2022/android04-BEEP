@@ -48,6 +48,7 @@ object Versions {
     const val MOCK_TEST = "2.28.2"
 
     const val TIMBER = "4.7.1"
+    const val DATASTORE = "1.1.0-alpha01"
 }
 
 object Libraries {
@@ -103,6 +104,8 @@ object Libraries {
     private const val VIEW_PAGER2 = "androidx.viewpager2:viewpager${Versions.VIEW_PAGER2}"
 
     private const val TIMBER = "com.jakewharton.timber:timber:${Versions.TIMBER}"
+    private const val DATASTORE_CORE = "androidx.datastore:datastore-preferences-core:${Versions.DATASTORE}"
+    private const val DATASTORE = "androidx.datastore:datastore-preferences:${Versions.DATASTORE}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -139,7 +142,9 @@ object Libraries {
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
         WORK_MANAGER,
-        TIMBER
+        TIMBER,
+        DATASTORE,
+        DATASTORE_CORE
     )
     val DOMAIN_LIBRARIES = arrayListOf(
         COROUTINE_CORE,
@@ -156,7 +161,9 @@ object Libraries {
         CONVERTER_MOSHI,
         ROOM_RUNTIME,
         ROOM_KTX,
-        TIMBER
+        TIMBER,
+        DATASTORE,
+        DATASTORE_CORE
     )
 }
 
