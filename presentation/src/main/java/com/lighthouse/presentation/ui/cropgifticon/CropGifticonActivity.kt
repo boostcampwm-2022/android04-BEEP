@@ -17,7 +17,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityCropGifticonBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvents
+import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class CropGifticonActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityCropGifticonBinding
 
     private val viewModel: CropGifticonViewModel by viewModels()
@@ -52,9 +53,9 @@ class CropGifticonActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventsFlow.collect { events ->
                 when (events) {
-                    CropGifticonEvents.Crop -> requestCropImage()
-                    CropGifticonEvents.Cancel -> cancelCropImage()
-                    is CropGifticonEvents.Complete -> completeCropImage(events.bitmap)
+                    CropGifticonEvent.Crop -> requestCropImage()
+                    CropGifticonEvent.Cancel -> cancelCropImage()
+                    is CropGifticonEvent.Complete -> completeCropImage(events.bitmap)
                 }
             }
         }

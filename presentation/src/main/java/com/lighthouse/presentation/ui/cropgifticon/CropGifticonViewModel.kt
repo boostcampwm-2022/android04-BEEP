@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvents
+import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ class CropGifticonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _eventsFlow = MutableSharedFlow<CropGifticonEvents>()
+    private val _eventsFlow = MutableSharedFlow<CropGifticonEvent>()
     val eventsFlow = _eventsFlow.asSharedFlow()
 
     private val _messageFlow = MutableSharedFlow<Int>()
@@ -32,13 +32,13 @@ class CropGifticonViewModel @Inject constructor(
 
     fun cancelCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvents.Cancel)
+            _eventsFlow.emit(CropGifticonEvent.Cancel)
         }
     }
 
     fun requestCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvents.Crop)
+            _eventsFlow.emit(CropGifticonEvent.Crop)
         }
     }
 
@@ -47,7 +47,7 @@ class CropGifticonViewModel @Inject constructor(
             if (bitmap == null) {
                 _messageFlow.emit(R.string.crop_gifticon_failed)
             } else {
-                _eventsFlow.emit(CropGifticonEvents.Complete(bitmap))
+                _eventsFlow.emit(CropGifticonEvent.Complete(bitmap))
             }
         }
     }
