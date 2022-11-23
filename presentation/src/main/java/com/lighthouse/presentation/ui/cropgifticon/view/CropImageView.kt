@@ -98,10 +98,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     // CropRect 를 줄일 수 있는 최소 범위
     private val calculateMinCropWidth
-        get() = if (aspectRatioEnable) max(MIN_SIZE, MIN_SIZE / aspectRatio) else MIN_SIZE
+        get() = if (aspectRatioEnable) {
+            if (aspectRatio > 1f) MIN_SIZE * aspectRatio else MIN_SIZE
+        } else MIN_SIZE
 
     private val calculateMinCropHeight
-        get() = if (aspectRatioEnable) max(MIN_SIZE * aspectRatio, MIN_SIZE) else MIN_SIZE
+        get() = if (aspectRatioEnable) {
+            if (aspectRatio > 1f) MIN_SIZE else MIN_SIZE / aspectRatio
+        } else MIN_SIZE
 
     private val cropZoomAnimation = object : Animation() {
         private val startCropRect = RectF()
