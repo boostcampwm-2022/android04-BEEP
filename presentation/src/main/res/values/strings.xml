@@ -63,6 +63,7 @@
     <string name="gallery_confirm">완료</string>
 
     <string name="crop_gifticon_complete">완료</string>
+    <string name="crop_gifticon_failed">이미지 자르기에 실패 했습니다.</string>
 
     <string name="signin_google_fail">구글 로그인 실패</string>
     <string name="signin_google_connect_fail">구글 연결 실패</string>

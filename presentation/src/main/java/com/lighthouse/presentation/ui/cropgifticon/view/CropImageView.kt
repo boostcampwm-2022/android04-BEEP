@@ -61,7 +61,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     // 실제 이미지의 크기에 맞는 Rect
     private val realImageRect = RectF()
-    private val realCropRect = RectF()
 
     // 현재 화면에 그려지고 있는 Rect, Matrix
     private val curImageRect = RectF()
@@ -164,6 +163,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
+    private var onCropImageListener: OnCropImageListener? = null
+    fun setOnCropImageListener(onCropImageListener: OnCropImageListener?) {
+        this.onCropImageListener = onCropImageListener
+    }
+
     fun setOriginUri(uri: Uri?) {
         originBitmap = when (uri?.scheme) {
             SCHEME_CONTENT -> context.contentResolver.getBitmap(uri)
@@ -172,6 +176,26 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         initRect()
+    }
+
+    fun cropImage() {
+        val bitmap = originBitmap
+        if (bitmap != null) {
+            val rect = RectF(curCropRect)
+            mainMatrix.invert(mainInverseMatrix)
+            mainInverseMatrix.mapRect(rect)
+
+            val croppedBitmap = Bitmap.createBitmap(
+                bitmap,
+                rect.left.toInt(),
+                rect.top.toInt(),
+                (rect.right - rect.left).toInt(),
+                (rect.bottom - rect.top).toInt()
+            )
+            onCropImageListener?.onCrop(croppedBitmap)
+        } else {
+            onCropImageListener?.onCrop(null)
+        }
     }
 
     // 새로운 이미지 등록시, Rect 초기화
@@ -190,21 +214,18 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                 val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
                 val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
 
-                realCropRect.set(
+                curCropRect.set(
                     aspectOffsetX,
                     aspectOffsetY,
                     aspectOffsetX + aspectWidth,
                     aspectOffsetY + aspectHeight
                 )
-                curCropRect.set(realCropRect)
             } else {
-                realCropRect.set(realImageRect)
                 curCropRect.set(realImageRect)
             }
         } else {
             realImageRect.set(RECT_F_EMPTY)
             curImageRect.set(RECT_F_EMPTY)
-            realCropRect.set(RECT_F_EMPTY)
             curCropRect.set(RECT_F_EMPTY)
         }
     }
@@ -433,8 +454,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         )
     }
 
+    private var activePointerId: Int? = null
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isActivePointer(event).not()) {
+            return false
+        }
+
         setTouchPos(event)
         if (getEventType(event) == EventType.NONE) {
             return false
@@ -443,6 +470,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         actionEvent()
         cleanEvent(event)
         return true
+    }
+
+    private fun isActivePointer(event: MotionEvent): Boolean {
+        val curPointerId = event.getPointerId(event.actionIndex)
+        if (activePointerId == null) {
+            activePointerId = curPointerId
+        }
+        return activePointerId == curPointerId
     }
 
     private fun setTouchPos(event: MotionEvent) {
@@ -468,7 +503,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun actionEvent() {
         when (eventType) {
-            EventType.RESIZE -> if (aspectRatioEnable) {
+            EventType.RESIZE -> if (aspectRatioEnable && aspectRatio > 0f) {
                 resizeCropWithFixedAspectRatio()
             } else {
                 resizeCropWithFreeAspectRatio()
@@ -486,6 +521,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                     applyZoom()
                 }
                 eventType = EventType.NONE
+                activePointerId = null
             }
             else -> touchBeforePos.set(touchEndPos)
         }
