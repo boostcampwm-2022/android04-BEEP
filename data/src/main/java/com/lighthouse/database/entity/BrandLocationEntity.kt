@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.lighthouse.database.entity.BrandLocationEntity.Companion.BRAND_TABLE
+import com.lighthouse.database.entity.BrandLocationEntity.Companion.BRAND_LOCATION_TABLE
 
 @Entity(
-    tableName = BRAND_TABLE,
+    tableName = BRAND_LOCATION_TABLE,
     foreignKeys = [
         ForeignKey(
             entity = SectionEntity::class,
@@ -30,6 +30,6 @@ data class BrandLocationEntity(
 ) {
 
     companion object {
-        const val BRAND_TABLE = "brand_table"
+        const val BRAND_LOCATION_TABLE = "brand_location_table"
     }
 }
