@@ -13,19 +13,14 @@ class BrandRemoteDataSourceImpl @Inject constructor(
 ) : BrandRemoteDataSource {
 
     override suspend fun getBrandPlaceInfo(
-        brandNames: List<String>,
+        brandName: String,
         x: Dms,
         y: Dms,
         size: Int
-    ): Result<List<BrandPlaceInfoDataContainer>> {
+    ): Result<List<BrandPlaceInfoDataContainer.BrandPlaceInfoData>> {
         val vertex = LocationConverter.getVertex(x, y)
 
-        val result = runCatching {
-            brandNames.map { brandName ->
-                networkApiService.getAllBrandPlaceInfo(brandName, vertex, size)
-            }
-        }
-
+        val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, vertex, size).documents }
         return when (val exception = result.exceptionOrNull()) {
             null -> result
             is UnknownHostException -> Result.failure(CustomErrorData.NetworkFailure)

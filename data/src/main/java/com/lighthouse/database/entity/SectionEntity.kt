@@ -4,14 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.lighthouse.database.entity.SectionEntity.Companion.SECTION_TABLE
+import java.util.Date
 
 @Entity(tableName = SECTION_TABLE)
 data class SectionEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "section_id")
-    val id: Long = 0,
-    @ColumnInfo(name = "min_x") val minX: String,
-    @ColumnInfo(name = "min_y") val minY: String
+    val id: String,
+    @ColumnInfo(name = "search_date") val searchDate: Date
 ) {
 
     companion object {

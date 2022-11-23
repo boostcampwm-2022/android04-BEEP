@@ -38,9 +38,11 @@ data class DmsLocation(
 
 object LocationConverter {
 
-    private const val gap = 20
+    private const val gap = 10
+    private const val searchGap = gap * 2
 
     private val directions = listOf(
+        NextLocation(0, 0),
         NextLocation(-gap, 0),
         NextLocation(-gap, gap),
         NextLocation(0, gap),
@@ -51,18 +53,42 @@ object LocationConverter {
         NextLocation(-gap, -gap)
     )
 
+    private val searchDirections = directions + listOf(
+        NextLocation(-searchGap, -searchGap),
+        NextLocation(-searchGap, -gap),
+        NextLocation(-searchGap, 0),
+        NextLocation(-searchGap, gap),
+        NextLocation(-searchGap, searchGap),
+        NextLocation(-gap, searchGap),
+        NextLocation(0, searchGap),
+        NextLocation(gap, searchGap),
+        NextLocation(searchGap, searchGap),
+        NextLocation(searchGap, gap),
+        NextLocation(searchGap, 0),
+        NextLocation(searchGap, -gap),
+        NextLocation(searchGap, -searchGap),
+        NextLocation(gap, -searchGap),
+        NextLocation(0, -searchGap),
+        NextLocation(-gap, -searchGap)
+    )
+
     fun getCardinalDirections(x: Double, y: Double): List<DmsLocation> {
         val xDms = toMinDms(x)
         val yDms = toMinDms(y)
 
         return directions.map { nextLocation ->
-            val (nextX, nextY) = nextLocation
-
-            // 다음 초 계산 결과가 0~60 사이면 시/분 쪽은 계산할 필요가 없다.
-            val nextDmsX = calculateTime(nextX, xDms)
-            val nextDmsY = calculateTime(nextY, yDms)
+            val nextDmsX = calculateTime(nextLocation.x, xDms)
+            val nextDmsY = calculateTime(nextLocation.y, yDms)
             DmsLocation(nextDmsX, nextDmsY)
-        }.plusElement(DmsLocation(xDms, yDms))
+        }
+    }
+
+    fun getSearchCardinalDirections(x: Dms, y: Dms): List<DmsLocation> {
+        return searchDirections.map { nextLocation ->
+            val nextDmsX = calculateTime(nextLocation.x, x)
+            val nextDmsY = calculateTime(nextLocation.y, y)
+            DmsLocation(nextDmsX, nextDmsY)
+        }
     }
 
     private fun calculateTime(
@@ -129,22 +155,22 @@ object LocationConverter {
      * @return (좌측 X 좌표, 좌측 Y 좌표, 우측 X 좌표, 우측 Y 좌표 형식)
      */
     fun getVertex(x: Dms, y: Dms): String {
-        val (maxX, maxY) = calculateMaxVertex(x, y)
-        val (minX, minY) = VertexLocation(convertToDD(x), convertToDD(y))
+        val (maxX, maxY) = calculateVertex(x, y, searchGap + gap)
+        val (minX, minY) = calculateVertex(x, y, -searchGap)
         return "$minX,$minY,$maxX,$maxY"
     }
 
     /**
      * section 에서 좌측 하단의 좌표를 이용해서 우측 상단의 좌표를 구하는 코드입니다.
-     * @param minX section 좌측 하단 x
-     * @param minY section 좌측 하단 y
+     * @param x section x
+     * @param y section y
      * @return DMS(도분초) 에서 DD(십진수)로 변환해서 반환을 합니다.
      */
-    private fun calculateMaxVertex(minX: Dms, minY: Dms): VertexLocation {
-        val maxX = calculateTime(gap, minX)
-        val maxY = calculateTime(gap, minY)
+    private fun calculateVertex(x: Dms, y: Dms, value: Int): VertexLocation {
+        val calculateX = calculateTime(value, x)
+        val calculateY = calculateTime(value, y)
 
-        return VertexLocation(convertToDD(maxX), convertToDD(maxY))
+        return VertexLocation(convertToDD(calculateX), convertToDD(calculateY))
     }
 
     /**

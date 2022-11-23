@@ -22,7 +22,7 @@ data class BrandLocationEntity(
     @ColumnInfo(name = "place_url")
     val placeUrl: String,
     @ColumnInfo(name = "address_name") val addressName: String,
-    @ColumnInfo(name = "parent_section_id") val sectionId: Long,
+    @ColumnInfo(name = "parent_section_id") val sectionId: String,
     @ColumnInfo(name = "place_name") val placeName: String,
     @ColumnInfo(name = "brand") val brand: String,
     @ColumnInfo(name = "x") val x: String,

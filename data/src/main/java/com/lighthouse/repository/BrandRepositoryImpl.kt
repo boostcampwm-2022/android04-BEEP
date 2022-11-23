@@ -15,31 +15,29 @@ class BrandRepositoryImpl @Inject constructor(
 ) : BrandRepository {
 
     override suspend fun getBrandPlaceInfo(
-        brandNames: List<String>,
+        brandName: String,
         x: Dms,
         y: Dms,
         size: Int
-    ): Result<List<BrandPlaceInfo>> {
-        brandLocalSource.getBrands(x, y).onSuccess { brandWithSections ->
-            return Result.success(brandWithSections.toDomain())
+    ): Result<List<BrandPlaceInfo>> = brandLocalSource.getBrands(x, y, brandName).mapCatching { it.toDomain() }
+        .recoverCatching {
+            getRemoteSourceData(brandName, x, y, size).getOrDefault(emptyList())
+            brandLocalSource.getBrands(x, y, brandName).mapCatching { it.toDomain() }.getOrDefault(emptyList())
         }
-        return getRemoteSourceData(brandNames, x, y, size)
-    }
 
     private suspend fun getRemoteSourceData(
-        brandNames: List<String>,
+        brandName: String,
         x: Dms,
         y: Dms,
         size: Int
     ): Result<List<BrandPlaceInfo>> {
-        val result = brandRemoteSource.getBrandPlaceInfo(brandNames, x, y, size).mapCatching { it.toDomain() }
+        val result = brandRemoteSource.getBrandPlaceInfo(brandName, x, y, size).mapCatching { it.toDomain(brandName) }
         val exception = result.exceptionOrNull()
 
         return if (exception is CustomErrorData) {
             Result.failure(exception.toDomain())
         } else {
-            result.onSuccess { brandLocalSource.insertBrands(it, x, y) }
-            result
+            result.onSuccess { brandLocalSource.insertBrands(it, x, y, brandName) }
         }
     }
 }

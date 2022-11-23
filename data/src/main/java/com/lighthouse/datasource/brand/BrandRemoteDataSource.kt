@@ -6,9 +6,9 @@ import com.lighthouse.model.BrandPlaceInfoDataContainer
 interface BrandRemoteDataSource {
 
     suspend fun getBrandPlaceInfo(
-        brandNames: List<String>,
+        brandName: String,
         x: Dms,
         y: Dms,
         size: Int
-    ): Result<List<BrandPlaceInfoDataContainer>>
+    ): Result<List<BrandPlaceInfoDataContainer.BrandPlaceInfoData>>
 }

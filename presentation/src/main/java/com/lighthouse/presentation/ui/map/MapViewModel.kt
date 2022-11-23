@@ -39,21 +39,26 @@ class MapViewModel @Inject constructor(
 
     fun getBrandPlaceInfos(x: Double, y: Double) {
         viewModelScope.launch {
-            getBrandPlaceInfosUseCase(brandList, x, y, 5)
-                .mapCatching { it.toPresentation() }
-                .onSuccess { brandPlaceInfos ->
-                    state.emit(UiState.Success(brandPlaceInfos))
-                }
-                .onFailure { throwable ->
-                    Timber.tag("TAG").d("throwable - > $throwable")
-                    state.emit(
-                        when (throwable) {
-                            CustomError.NetworkFailure -> UiState.NetworkFailure
-                            CustomError.EmptyResults -> UiState.NotFoundResults
-                            else -> UiState.Failure(throwable)
-                        }
-                    )
-                }
+            getBrandPlaceInfosUseCase(brandList, x, y, SEARCH_SIZE).collect { result ->
+                result.mapCatching { it.toPresentation() }
+                    .onSuccess { brandPlaceInfos ->
+                        state.emit(UiState.Success(brandPlaceInfos))
+                    }
+                    .onFailure { throwable ->
+                        Timber.tag("TAG").d("throwable - > $throwable")
+                        state.emit(
+                            when (throwable) {
+                                CustomError.NetworkFailure -> UiState.NetworkFailure
+                                CustomError.EmptyResults -> UiState.NotFoundResults
+                                else -> UiState.Failure(throwable)
+                            }
+                        )
+                    }
+            }
         }
+    }
+
+    companion object {
+        private const val SEARCH_SIZE = 10
     }
 }
