@@ -100,7 +100,8 @@ class GifticonDetailViewModel @Inject constructor(
             GifticonDetailMode.UNUSED -> {
                 viewModelScope.launch {
                     if (gifticon.value?.isCashCard == true) {
-                        useCashCardGifticonUseCase(gifticonId, amountToUse.value)
+//                        useCashCardGifticonUseCase(gifticonId, amountToUse.value) // TODO 이걸로 사용해야 함
+                        useGifticonUseCase(gifticonId) // TODO 이건 제거
                     } else {
                         useGifticonUseCase(gifticonId)
                     }
