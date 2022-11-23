@@ -43,7 +43,12 @@ class BrandLocalDataSourceImpl @Inject constructor(
         val searchCardinalDirections = LocationConverter.getSearchCardinalDirections(x, y)
         searchCardinalDirections.forEach { location ->
             brandWithSectionDao.insertSection(
-                SectionEntity(combineSectionId(location.x.dmsToString(), location.y.dmsToString(), brandName), Date())
+                SectionEntity(
+                    combineSectionId(location.x.dmsToString(), location.y.dmsToString(), brandName),
+                    Date(),
+                    location.x,
+                    location.y
+                )
             )
         }
         brandWithSectionDao.insertBrand(brandPlaceInfos.toEntity())
@@ -51,10 +56,7 @@ class BrandLocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertSection(x: Dms, y: Dms, brandName: String) {
         brandWithSectionDao.insertSection(
-            SectionEntity(
-                combineSectionId(x.dmsToString(), y.dmsToString(), brandName),
-                Date()
-            )
+            SectionEntity(combineSectionId(x.dmsToString(), y.dmsToString(), brandName), Date(), x, y)
         )
     }
 
