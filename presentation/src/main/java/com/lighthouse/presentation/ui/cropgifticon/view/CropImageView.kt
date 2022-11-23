@@ -100,12 +100,16 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val calculateMinCropWidth
         get() = if (aspectRatioEnable) {
             if (aspectRatio > 1f) MIN_SIZE * aspectRatio else MIN_SIZE
-        } else MIN_SIZE
+        } else {
+            MIN_SIZE
+        }
 
     private val calculateMinCropHeight
         get() = if (aspectRatioEnable) {
             if (aspectRatio > 1f) MIN_SIZE else MIN_SIZE / aspectRatio
-        } else MIN_SIZE
+        } else {
+            MIN_SIZE
+        }
 
     private val cropZoomAnimation = object : Animation() {
         private val startCropRect = RectF()
