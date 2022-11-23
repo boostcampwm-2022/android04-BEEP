@@ -10,6 +10,8 @@ import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,14 +27,18 @@ class MapViewModel @Inject constructor(
     var state: MutableSharedFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableSharedFlow()
         private set
 
+    // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
+    var userLocation = MutableStateFlow(Pair(0.0, 0.0))
+
     init {
         collectLocation()
     }
 
     private fun collectLocation() {
         viewModelScope.launch {
-            getUserLocation().collect {
-                getBrandPlaceInfos(it.longitude, it.latitude)
+            getUserLocation().collect { location ->
+                getBrandPlaceInfos(location.longitude, location.latitude)
+                userLocation.update { Pair(location.longitude, location.latitude) } // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
             }
         }
     }

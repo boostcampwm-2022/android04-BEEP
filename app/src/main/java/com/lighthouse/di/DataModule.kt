@@ -10,14 +10,12 @@ import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSourceImpl
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
+import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.domain.repository.LocationRepository
 import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
-import com.lighthouse.repository.LocationRepositoryImpl
-import com.lighthouse.domain.repository.GifticonRepository
-import com.lighthouse.repository.BrandRepositoryImpl
-import com.lighthouse.repository.GalleryImageRepositoryImpl
 import com.lighthouse.repository.GifticonRepositoryImpl
+import com.lighthouse.repository.LocationRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

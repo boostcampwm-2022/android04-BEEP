@@ -14,4 +14,8 @@
     <color name="gray_400">#B8B8B8</color>
     <color name="gray_500">#8C8C8C</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/beep_pink</color>
+
+    <!-- 폴리곤 테스트용 색-->
+    <color name="polygon">#668C8C8C</color>
+
 </resources>

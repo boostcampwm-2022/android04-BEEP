@@ -180,4 +180,22 @@ object LocationConverter {
      */
     private fun convertToDD(dms: Dms) =
         dms.degree.toDouble() + (dms.minutes.toDouble() / 60.0) + (dms.seconds.toDouble() / 3600.0)
+
+    fun toPolygonLatLng(x: Double, y: Double): ArrayList<Pair<Double, Double>> {
+        val tempX = toMinDms(x)
+        val tempY = toMinDms(y)
+
+        val tempList = arrayListOf<Pair<Double, Double>>()
+        // 왼쪽 아래
+        tempList.add(Pair(convertToDD(calculateTime(-gap, tempX)), convertToDD(calculateTime(-gap, tempY))))
+        // 왼쪽 위
+        tempList.add(Pair(convertToDD(calculateTime(-gap, tempX)), convertToDD(calculateTime(gap * 2, tempY))))
+        // 오른쪽 위
+        tempList.add(Pair(convertToDD(calculateTime(gap * 2, tempX)), convertToDD(calculateTime(gap * 2, tempY))))
+        // 오른쪽 아래
+        tempList.add(Pair(convertToDD(calculateTime(gap * 2, tempX)), convertToDD(calculateTime(-gap, tempY))))
+
+        println("결과 -> $tempList")
+        return tempList
+    }
 }
