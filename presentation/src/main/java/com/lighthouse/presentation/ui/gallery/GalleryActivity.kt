@@ -72,7 +72,7 @@ class GalleryActivity : AppCompatActivity() {
                     }
                 }
             }
-            addItemDecoration(GridSectionSpaceItemDecoration(20.dp, 4.dp, 4.dp, 12.dp, 4.dp, 12.dp))
+            addItemDecoration(GridSectionSpaceItemDecoration(20.dp, 4.dp, 12.dp, 12.dp))
         }
     }
 
