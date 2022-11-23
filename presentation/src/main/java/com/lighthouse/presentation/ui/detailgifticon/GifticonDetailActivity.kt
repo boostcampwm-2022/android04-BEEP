@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.detailgifticon
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -9,15 +10,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
+import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
+import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity() {
@@ -27,6 +31,8 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
+
+    private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
 
     private val btnUseGifticon by lazy { binding.btnUseGifticon }
     private val chip by lazy { binding.chipScrollDownForUseButton }
@@ -66,6 +72,13 @@ class GifticonDetailActivity : AppCompatActivity() {
             }
         }
         repeatOnStarted {
+            viewModel.usageHistory.collect { histories ->
+                if (histories != null) {
+                    usageHistoryAdapter.submitList(histories)
+                }
+            }
+        }
+        repeatOnStarted {
             viewModel.failure.collect {
                 showInvalidDialog()
             }
@@ -87,13 +100,16 @@ class GifticonDetailActivity : AppCompatActivity() {
                 // TODO 보안 인증
                 showUseGifticonDialog()
             }
+            is Event.ShowAllUsedInfoButtonClicked -> {
+                showUsageHistoryDialog()
+            }
             else -> { // TODO(이벤트 처리)
             }
         }
     }
 
     private fun showCheckEditDialog() {
-        if (this::checkEditDialog.isInitialized.not()) {
+        if (::checkEditDialog.isInitialized.not()) {
             checkEditDialog = AlertDialog.Builder(this)
                 .setTitle(getString(R.string.gifticon_detail_check_edit_dialog_title))
                 .setPositiveButton(getString(R.string.gifticon_detail_check_edit_dialog_positive_button)) { _, _ ->
@@ -120,6 +136,20 @@ class GifticonDetailActivity : AppCompatActivity() {
         useGifticonDialog = UseGifticonDialog().also { dialog ->
             dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
         }
+    }
+
+    private fun showUsageHistoryDialog() {
+        val usageHistoryView = DataBindingUtil.inflate<DialogUsageHistoryBinding>(
+            LayoutInflater.from(this),
+            R.layout.dialog_usage_history,
+            null,
+            false
+        )
+        usageHistoryView.rvUsageHistory.adapter = usageHistoryAdapter
+        Timber.tag("usageHistory").d("${usageHistoryAdapter.currentList}")
+        AlertDialog.Builder(this)
+            .setView(usageHistoryView.root)
+            .show()
     }
 
     private fun showInvalidDialog() {
