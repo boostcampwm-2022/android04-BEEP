@@ -13,8 +13,8 @@ import com.lighthouse.presentation.ui.gallery.event.GalleryEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -28,7 +28,7 @@ class GalleryViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _eventsFlow = MutableSharedFlow<GalleryEvents>()
-    val eventsFlow: SharedFlow<GalleryEvents> = _eventsFlow
+    val eventsFlow = _eventsFlow.asSharedFlow()
 
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 

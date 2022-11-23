@@ -10,7 +10,12 @@ class GalleryImagePagingSource(
     private val limit: Int
 ) : PagingSource<Int, GalleryImage>() {
 
-    override fun getRefreshKey(state: PagingState<Int, GalleryImage>): Int? = state.anchorPosition
+    override fun getRefreshKey(state: PagingState<Int, GalleryImage>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
+    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GalleryImage> {
         val current = params.key ?: page
