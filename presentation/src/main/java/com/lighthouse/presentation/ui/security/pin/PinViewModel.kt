@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,12 +66,9 @@ class PinViewModel @Inject constructor(
     private fun savePin() {
         viewModelScope.launch {
             savePinUseCase(pinString.value).onSuccess {
-                Timber.tag("DATASTORE").d("저장 성공")
-                val correct = getCorrespondWithPinUseCase(pinString.value) // TODO: test
-                Timber.tag("DATASTORE").d("일치 여부 $correct")
                 _pinMode.value = PinSettingType.COMPLETE
             }.onFailure {
-                Timber.tag("DATASTORE").d("저장 실패 $it")
+                _pinMode.value = PinSettingType.ERROR
             }
         }
     }

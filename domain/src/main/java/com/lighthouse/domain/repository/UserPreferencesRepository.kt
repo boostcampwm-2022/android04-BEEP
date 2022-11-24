@@ -3,6 +3,6 @@ package com.lighthouse.domain.repository
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferencesRepository {
-    suspend fun setPin(pinString: String)
-    fun getPin(): Flow<String>
+    suspend fun setPinString(pinString: String): Result<Unit>
+    fun getPinString(): Flow<String>
 }

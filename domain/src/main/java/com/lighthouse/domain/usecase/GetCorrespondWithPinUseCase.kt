@@ -9,10 +9,7 @@ class GetCorrespondWithPinUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(pinString: String): Boolean {
-        val correctPinString = userPreferencesRepository.getPin()
-        val result = correctPinString.first()
-
-        println("DATASTORE 저장된 pinString: $result")
-        return pinString == result
+        val correctPinString = userPreferencesRepository.getPinString()
+        return pinString == correctPinString.first()
     }
 }

@@ -13,15 +13,16 @@ import javax.inject.Inject
 class UserPreferencesRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferencesRepository {
-    override suspend fun setPin(pinString: String) {
+    override suspend fun setPinString(pinString: String): Result<Unit> = runCatching {
         dataStore.edit { preferences ->
             val cryptoResult = CryptoObjectHelper.encrypt(pinString)
             preferences[PIN] = cryptoResult.first
             preferences[IV] = cryptoResult.second
         }
+        Unit
     }
 
-    override fun getPin(): Flow<String> = dataStore.data.map { preferences ->
+    override fun getPinString(): Flow<String> = dataStore.data.map { preferences ->
         preferences[PIN]?.let { pin ->
             preferences[IV]?.let { iv -> CryptoObjectHelper.decrypt(pin, iv) }
         } ?: ""

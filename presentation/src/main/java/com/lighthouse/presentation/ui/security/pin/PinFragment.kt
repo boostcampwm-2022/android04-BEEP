@@ -47,6 +47,12 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         delay(1000)
                         activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
                     }
+                    PinSettingType.ERROR -> {
+                        Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.ANIMATION_MODE_SLIDE)
+                            .show()
+                        delay(1000)
+                        activityViewModel.gotoOtherScreen(SecurityDirections.MAIN)
+                    }
                 }
             }
         }

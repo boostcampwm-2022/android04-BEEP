@@ -8,8 +8,6 @@ class SavePinUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(pinString: String): Result<Unit> {
-        // TODO: 저장 성공 / 실패 여부 알아오기
-        userPreferencesRepository.setPin(pinString)
-        return Result.success(Unit)
+        return userPreferencesRepository.setPinString(pinString)
     }
 }
