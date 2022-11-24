@@ -1,6 +1,9 @@
 package com.lighthouse.domain
 
+import kotlin.math.acos
+import kotlin.math.cos
 import kotlin.math.floor
+import kotlin.math.sin
 
 /**
  * @property degree 도
@@ -178,7 +181,7 @@ object LocationConverter {
      * @param dms : 도.분.초
      * @return 도분초를 각각 계산해서 하나의 좌표로 만들어줍니다.
      */
-    private fun convertToDD(dms: Dms) =
+    fun convertToDD(dms: Dms) =
         dms.degree.toDouble() + (dms.minutes.toDouble() / 60.0) + (dms.seconds.toDouble() / 3600.0)
 
     fun toPolygonLatLng(x: Double, y: Double): ArrayList<Pair<Double, Double>> {
@@ -195,7 +198,42 @@ object LocationConverter {
         // 오른쪽 아래
         tempList.add(Pair(convertToDD(calculateTime(gap * 2, tempX)), convertToDD(calculateTime(-gap, tempY))))
 
-        println("결과 -> $tempList")
         return tempList
+    }
+
+    /** 참고 : https://www.geodatasource.com/developers/java
+     * 두 좌표 사이의 거리를 구하는 함수
+     * @param lat1 기준 x
+     * @param lon1 기준 y
+     * @param lat2 비교 x
+     * @param lon2 비교 y
+     * @return 미터 단위로 반환
+     */
+    fun locationDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val theta = lon1 - lon2
+        var dist =
+            sin(decimalToRadian(lat1)) * sin(decimalToRadian(lat2)) + cos(decimalToRadian(lat1)) * cos(decimalToRadian(lat2)) * cos(decimalToRadian(theta))
+        dist = acos(dist)
+        dist = radianToDecimal(dist)
+        dist *= 60 * 1.1515 * 1609.344
+        return dist // 단위 meter
+    }
+
+    /**
+     * 10진수를 radian(라디안)으로 변환
+     * @param deg 10진수
+     * @return radian 반환
+     */
+    private fun decimalToRadian(deg: Double): Double {
+        return deg * Math.PI / 180.0
+    }
+
+    /**
+     * radian(라디안)을 10진수로 변환
+     * @param radian
+     * @return
+     */
+    private fun radianToDecimal(radian: Double): Double {
+        return radian * 180 / Math.PI
     }
 }

@@ -1,40 +1,43 @@
 package com.lighthouse.presentation.ui.map
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.LocationConverter.toPolygonLatLng
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
+import com.lighthouse.presentation.ui.map.event.MarkerClickEvent
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.Marker.DEFAULT_ICON
 import com.naver.maps.map.overlay.PolygonOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
-import java.util.Date
-import java.util.UUID
 
+@SuppressLint("MissingPermission")
 @AndroidEntryPoint
-class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickListener {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityMapBinding
     private lateinit var naverMap: NaverMap
@@ -44,6 +47,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     private val viewModel: MapViewModel by viewModels()
     private val adapter = MapGifticonAdapter()
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
+    private var focusMarker = Marker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +57,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
             onCreate(savedInstanceState)
             getMapAsync(this@MapActivity)
         }
-
         setGifticonAdapter()
         setObserveSearchData()
         viewModel.collectLocation()
@@ -69,7 +72,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
             viewModel.state.collectLatest { state ->
                 when (state) {
                     is UiState.Success -> updateBrandMarker(state.item)
-                    is UiState.Loading -> Unit
+                    is UiState.Loading -> Unit // TODO 로딩화면 처리 필요
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
                     is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
@@ -85,37 +88,76 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {
         brandPlaceSearchResults.forEach { brandPlaceSearchResult ->
             val marker = Marker()
-
             val latLng = LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
-            with(marker) {
-                position = latLng
-                onClickListener = this@MapActivity
-                map = naverMap
-                width = Marker.SIZE_AUTO
-                height = Marker.SIZE_AUTO
-                tag = brandPlaceSearchResult.placeUrl
-                captionText = brandPlaceSearchResult.brand
+
+            setMarker(marker, latLng, brandPlaceSearchResult)
+        }
+    }
+
+    private fun setMarker(
+        marker: Marker,
+        latLng: LatLng,
+        brandPlaceSearchResult: BrandPlaceInfoUiModel
+    ) {
+        with(marker) {
+            position = latLng
+            map = naverMap
+            width = Marker.SIZE_AUTO
+            height = Marker.SIZE_AUTO
+            tag = brandPlaceSearchResult.placeUrl
+            captionText = brandPlaceSearchResult.brand
+
+            setOnClickListener {
+                resetFocusMarker()
+                focusMarker = marker.apply {
+                    iconTintColor = Color.RED
+                }
+                moveMapCamera(latLng.longitude, latLng.latitude)
+                updateGifticonList(MarkerClickEvent.BrandGifticon(this.captionText))
+                true
             }
         }
     }
 
+    private fun resetFocusMarker() {
+        focusMarker.icon = DEFAULT_ICON
+        focusMarker.iconTintColor = Color.TRANSPARENT
+    }
+
+    private fun updateGifticonList(markerClickEvent: MarkerClickEvent) {
+        val couponList = viewModel.gifticonTestData.filter { gifticon ->
+            when (markerClickEvent) {
+                is MarkerClickEvent.AllGifticon -> viewModel.brandList.contains(gifticon.brand)
+                is MarkerClickEvent.BrandGifticon -> {
+                    gifticon.brand == markerClickEvent.brandName
+                }
+            }
+        }
+        adapter.submitList(couponList)
+    }
+
     override fun onMapReady(map: NaverMap) {
         naverMap = map
-        locationSource = FusedLocationSource(this, 1000)
+        locationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
 
         val uiSetting = naverMap.uiSettings
         uiSetting.isLocationButtonEnabled = false
 
         currentLocationButton.map = naverMap
+
+        naverMap.setOnMapClickListener { _, _ ->
+            resetFocusMarker()
+            updateGifticonList(MarkerClickEvent.AllGifticon)
+        }
+
         setNaverMapZoom()
         setNaverMapPolyLine()
     }
 
-    @SuppressLint("MissingPermission")
     private fun setNaverMapZoom() {
         naverMap.maxZoom = 18.0
-        naverMap.minZoom = 10.0
+        naverMap.minZoom = 7.0
 
         client.lastLocation.addOnSuccessListener { startLocation ->
             moveMapCamera(startLocation.longitude, startLocation.latitude)
@@ -123,24 +165,51 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     }
 
     private fun setGifticonAdapter() {
-        val gifticonTestData = listOf(
-            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(120, 20, 20), "bar", true, 1, "memo", true),
-            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(122, 11, 15), "bar", true, 1, "memo", true),
-            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(122, 5, 10), "bar", true, 1, "memo", true),
-            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(150, 10, 20), "bar", true, 1, "memo", true),
-            Gifticon(UUID.randomUUID().toString(), "이름", "bbq", "bbq", Date(160, 10, 20), "bar", true, 1, "memo", true)
-        )
-        adapter.submitList(gifticonTestData)
+        // TODO 추후에는 collect 하는 방식으로 바뀌어야함
+        updateGifticonList(MarkerClickEvent.AllGifticon)
         binding.vpGifticon.adapter = adapter
-    }
+        binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val selectBrand = adapter.currentList[position].brand
+                val brandInfos = viewModel.brandInfos
+                findBrandPlaceInfo(brandInfos, selectBrand)
+            }
 
-    override fun onClick(overlay: Overlay): Boolean {
-        Timber.tag("TAG").d("${javaClass.simpleName} overley -> ${overlay.tag}")
-        return true
+            /**
+             * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
+             * @param brandPlaceInfos 지도에 보이고 있는 브랜드들
+             * @param brandName 찾고자하는 브랜드명
+             */
+            private fun findBrandPlaceInfo(brandPlaceInfos: Set<BrandPlaceInfoUiModel>, brandName: String) {
+                client.lastLocation.addOnSuccessListener { currentLocation ->
+                    val brandPlaceInfo = brandPlaceInfos.filter { brandPlaceInfo ->
+                        brandPlaceInfo.brand == brandName
+                    }.sortedBy { location ->
+                        diffLocation(location, currentLocation)
+                    }.toList().firstOrNull()
+
+                    if (brandPlaceInfo != null) {
+                        moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
+                    }
+                }
+            }
+
+            private fun diffLocation(
+                location: BrandPlaceInfoUiModel,
+                currentLocation: Location
+            ) = LocationConverter.locationDistance(
+                location.x.toDouble(),
+                location.y.toDouble(),
+                currentLocation.longitude,
+                currentLocation.latitude
+            )
+        })
     }
 
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
+            .animate(CameraAnimation.Easing)
         naverMap.moveCamera(cameraUpdate)
     }
 
@@ -161,7 +230,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
                     LatLng(toPolygonLatLng[3].second, toPolygonLatLng[3].first)
                 )
                 polygonOverlay.color = getColor(R.color.polygon)
-                Timber.tag("TAG").d("${javaClass.simpleName} polygonOverlay -> ${polygonOverlay.coords}")
                 polygonOverlay.map = naverMap
             }
         }
@@ -196,5 +264,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     override fun onLowMemory() {
         mapView.onLowMemory()
         super.onLowMemory()
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 100
     }
 }
