@@ -10,11 +10,11 @@ import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
@@ -25,8 +25,8 @@ class MapViewModel @Inject constructor(
     private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableStateFlow(UiState.Loading)
-    val state = _state.asStateFlow()
+    private val _state: MutableSharedFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableSharedFlow()
+    val state = _state.asSharedFlow()
 
     private val _brandInfos = mutableSetOf<BrandPlaceInfoUiModel>()
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
@@ -68,7 +68,10 @@ class MapViewModel @Inject constructor(
             runCatching { getBrandPlaceInfosUseCase(brandList, x, y, SEARCH_SIZE) }
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brandPlaceInfos ->
-                    _state.emit(UiState.Success(brandPlaceInfos))
+                    val diffBrandPlaceInfo = brandPlaceInfos.filter {
+                        brandInfos.contains(it).not()
+                    }
+                    _state.emit(UiState.Success(diffBrandPlaceInfo))
                     _brandInfos.addAll(brandPlaceInfos)
                 }
                 .onFailure { throwable ->
