@@ -154,13 +154,13 @@
                     android:importantForAutofill="no"
                     android:inputType="number"
                     android:maxLength="12"
-                    android:textAppearance="@style/BEEP.TextStyle.H5.OnSurface"
+                    android:textAppearance="@style/BEEP.TextStyle.H5"
                     tools:text="3,000" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/tv_balance"
-                style="@style/BEEP.TextStyle.Caption.OnSurface"
+                style="@style/BEEP.TextStyle.Caption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="end"

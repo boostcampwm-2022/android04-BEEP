@@ -36,7 +36,11 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>> = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getUsageHistory(gifticonId).collect {
-            emit(DbResult.Success(it))
+            if (it.isEmpty()) {
+                emit(DbResult.Empty)
+            } else {
+                emit(DbResult.Success(it))
+            }
         }
     }.catch { e ->
         emit(DbResult.Failure(e))

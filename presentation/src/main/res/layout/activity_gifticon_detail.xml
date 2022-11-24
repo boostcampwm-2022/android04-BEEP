@@ -120,7 +120,6 @@
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:text="@{vm.gifticon.name}"
-                    android:textAppearance="@style/BEEP.TextStyle.H6"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
                     tools:text="딸기마카롱설빙" />
@@ -148,39 +147,39 @@
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:text="@{vm.gifticon.brand}"
-                    android:textAppearance="@style/BEEP.TextStyle.H6"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
                     tools:text="설빙" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_unused"
-                    isVisible="@{!vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,tv_expire_date"
+                    app:isVisible="@{!vm.gifticon.used}"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_expire_date_label"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/gifticon_detail_product_expire_date_label"
                     app:layout_constraintEnd_toStartOf="@id/tv_cash_balance_label"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/et_brand" />
+                    app:layout_constraintTop_toBottomOf="@id/et_brand"
+                    app:layout_goneMarginTop="16dp" />
 
                 <TextView
                     android:id="@+id/tv_expire_date"
-                    style="@style/BEEP.TextStyle.H6"
-                    dateFormat="@{vm.gifticon.expireAt}"
+                    style="@style/Theme.BEEP.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:enabled="@{vm.mode==mode.EDIT}"
                     android:onClick="@{() -> vm.expireDateClicked()}"
+                    app:dateFormat="@{vm.gifticon.expireAt}"
                     app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date_label"
@@ -188,21 +187,23 @@
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_cash_card"
-                    isVisible="@{vm.gifticon.cashCard &amp;&amp; !vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="tv_cash_balance,tv_cash_balance_label"
-                    tools:visibility="gone" />
+                    app:isVisible="@{vm.gifticon.cashCard &amp;&amp; !vm.gifticon.used}"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tv_cash_balance_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:text="@string/gifticon_detail_cash_type_balance_label"
                     app:layout_constraintBottom_toBottomOf="@id/tv_expire_date_label"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/tv_expire_date_label"
-                    app:layout_constraintTop_toTopOf="@id/tv_expire_date_label" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_used_address"
+                    app:layout_goneMarginTop="0dp" />
 
                 <EditText
                     android:id="@+id/tv_cash_balance"
@@ -210,22 +211,23 @@
                     concurrencyFormat="@{vm.gifticon.balance}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:background="@null"
                     android:enabled="@{vm.mode == mode.EDIT}"
                     android:importantForAutofill="no"
                     android:inputType="number"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_date"
+                    android:text="@{@string/all_cash_unit(vm.gifticon.balance)}"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toEndOf="@id/tv_expire_date"
-                    app:layout_constraintTop_toTopOf="@id/tv_expire_date"
+                    app:layout_constraintTop_toBottomOf="@id/tv_cash_balance_label"
                     tools:text="3,620원" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_used"
-                    isVisible="@{vm.gifticon.used}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_show_all_used_info_button,tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date,tv_balance_label,tv_balance"
+                    app:constraint_referenced_ids="iv_show_all_used_info_button,tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date"
+                    app:isVisible="@{vm.gifticon.used}"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_date"
                     tools:visibility="gone" />
 
@@ -240,12 +242,14 @@
 
                 <TextView
                     android:id="@+id/tv_used_address"
+                    style="@style/BEEP.TextStyle.Body1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="48dp"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:text="@{vm.latestUsageHistory.address}"
                     app:layout_constraintEnd_toStartOf="@id/iv_show_all_used_info_button"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"
@@ -253,12 +257,12 @@
 
                 <ImageView
                     android:id="@+id/iv_show_all_used_info_button"
-                    isVisible="@{vm.gifticon.cashCard}"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:contentDescription="@string/gifticon_detail_show_all_used_info_button_description"
                     android:onClick="@{() -> vm.showAllUsedInfoButtonClicked()}"
                     android:src="@drawable/ic_outline_info"
+                    app:isVisible="@{vm.gifticon.cashCard}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_used_address"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintTop_toTopOf="@id/tv_used_address"
@@ -266,44 +270,25 @@
 
                 <TextView
                     android:id="@+id/tv_used_date_label"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/gifticon_detail_used_date_label"
-                    app:layout_constraintEnd_toStartOf="@id/tv_balance_label"
+                    app:layout_constraintEnd_toStartOf="@id/tv_cash_balance_label"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_address" />
 
                 <TextView
                     android:id="@+id/tv_used_date"
-                    android:layout_width="0dp"
+                    style="@style/BEEP.TextStyle.Body1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    app:layout_constraintEnd_toStartOf="@id/tv_balance"
+                    app:dateFormat="@{vm.latestUsageHistory.date}"
+                    app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_used_date_label"
                     tools:text="2022.11.08" />
-
-                <TextView
-                    android:id="@+id/tv_balance_label"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gifticon_detail_balance_label"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_used_date_label"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_used_date_label"
-                    app:layout_constraintTop_toTopOf="@id/tv_used_date_label" />
-
-                <TextView
-                    android:id="@+id/tv_balance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_used_date"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_used_date"
-                    app:layout_constraintTop_toTopOf="@id/tv_used_date"
-                    tools:text="0원" />
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/barrier_group_bottom"
