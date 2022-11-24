@@ -4,16 +4,19 @@ import android.hardware.fingerprint.FingerprintManager
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import androidx.core.os.CancellationSignal
 import androidx.fragment.app.FragmentActivity
+import com.lighthouse.domain.usecase.GetFingerprintCipherUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintBottomSheetDialog
+import javax.inject.Inject
 
 class LegacyFingerprintAuth(
     private val activity: FragmentActivity,
     private val fingerprintAuthCallback: FingerprintAuthCallback
 ) : FingerprintAuth {
 
+    @Inject
+    lateinit var getFingerprintCipherUseCase: GetFingerprintCipherUseCase
     private val fingerprintManager = FingerprintManagerCompat.from(activity.applicationContext)
-    private val cryptoObjectHelper = CryptoObjectHelper()
     private val cancellationSignal = CancellationSignal()
     private val fingerprintBottomSheetDialog by lazy {
         FingerprintBottomSheetDialog().also {
@@ -55,7 +58,7 @@ class LegacyFingerprintAuth(
             fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_not_enrolled)
         } else {
             fingerprintManager.authenticate(
-                cryptoObjectHelper.getCryptoObject(),
+                FingerprintManagerCompat.CryptoObject(getFingerprintCipherUseCase()),
                 0,
                 cancellationSignal,
                 fingerprintCallback,

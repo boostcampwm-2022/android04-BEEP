@@ -1,8 +1,13 @@
 package com.lighthouse.domain.usecase
 
-class SavePinUseCase {
+import com.lighthouse.domain.repository.UserPreferencesRepository
+import javax.inject.Inject
 
-    operator fun invoke(pin: Int): Result<Unit> {
-        return Result.success(Unit)
+class SavePinUseCase @Inject constructor(
+    private val userPreferencesRepository: UserPreferencesRepository
+) {
+
+    suspend operator fun invoke(pinString: String): Result<Unit> {
+        return userPreferencesRepository.setPinString(pinString)
     }
 }
