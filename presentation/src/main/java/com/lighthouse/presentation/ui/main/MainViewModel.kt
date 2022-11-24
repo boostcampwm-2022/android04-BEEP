@@ -23,6 +23,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun gotoMap() {
+        viewModelScope.launch {
+            directionsFlow.emit(MainDirections.MAP)
+        }
+    }
+
     fun gotoMenuItem(itemId: Int): Boolean {
         if (selectedMenuItem.value == itemId) {
             return true

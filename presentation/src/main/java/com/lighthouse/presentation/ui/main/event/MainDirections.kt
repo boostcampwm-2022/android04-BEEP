@@ -4,5 +4,6 @@ enum class MainDirections {
     HOME,
     LIST,
     SETTING,
-    ADD_GIFTICON
+    ADD_GIFTICON,
+    MAP
 }

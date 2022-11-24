@@ -1,8 +1,10 @@
 package com.lighthouse.domain.usecase
 
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
-import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.repository.BrandRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetBrandPlaceInfosUseCase @Inject constructor(
@@ -11,16 +13,18 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
 
     suspend operator fun invoke(
         brandNames: List<String>,
-        x: String,
-        y: String,
+        x: Double,
+        y: Double,
         size: Int
-    ): Result<List<BrandPlaceInfo>> {
-        val brandSearchResults = brandRepository.getBrandPlaceInfo(brandNames, x, y, size).getOrThrow()
+    ): Flow<Result<List<BrandPlaceInfo>>> {
+        val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
 
-        return if (brandSearchResults.isNotEmpty()) {
-            Result.success(brandSearchResults)
-        } else {
-            Result.failure(CustomError.EmptyResults)
+        return flow {
+            cardinalLocations.forEach { location ->
+                brandNames.forEach { brandName ->
+                    emit(brandRepository.getBrandPlaceInfo(brandName, location.x, location.y, size))
+                }
+            }
         }
     }
 }
