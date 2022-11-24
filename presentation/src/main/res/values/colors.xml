@@ -20,4 +20,6 @@
     <!-- 폴리곤 테스트용 색-->
     <color name="polygon">#668C8C8C</color>
 
+    <color name="point_green">#06DA79</color>
+
 </resources>

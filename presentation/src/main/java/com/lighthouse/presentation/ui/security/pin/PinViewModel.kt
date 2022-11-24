@@ -7,6 +7,7 @@ import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.domain.usecase.SavePinUseCase
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -54,18 +55,23 @@ class PinViewModel @Inject constructor(
     }
 
     private fun goNextStep() {
-        when (pinMode.value) {
-            PinSettingType.INITIAL -> {
-                temporaryPinString = pinString.value
-                _pinString.value = ""
-                _pinMode.value = PinSettingType.CONFIRM
-            }
-            else -> {
-                if (pinString.value == temporaryPinString) {
-                    savePin()
-                } else {
+        viewModelScope.launch {
+            when (pinMode.value) {
+                PinSettingType.INITIAL -> {
+                    temporaryPinString = pinString.value
+                    delay(500L)
                     _pinString.value = ""
-                    _pinMode.value = PinSettingType.WRONG
+                    _pinMode.value = PinSettingType.CONFIRM
+                }
+                else -> {
+                    if (pinString.value == temporaryPinString) {
+                        savePin()
+                    } else {
+                        _pinMode.value = PinSettingType.WRONG
+                        delay(1000L)
+                        _pinString.value = ""
+                        _pinMode.value = PinSettingType.CONFIRM
+                    }
                 }
             }
         }
@@ -75,6 +81,7 @@ class PinViewModel @Inject constructor(
         viewModelScope.launch {
             savePinUseCase(pinString.value).onSuccess {
                 _pinMode.value = PinSettingType.COMPLETE
+                delay(1000L)
                 userPreferencesRepository.setIntOption(UserPreferenceOption.SECURITY, SecurityOption.PIN.ordinal)
             }.onFailure {
                 _pinMode.value = PinSettingType.ERROR

@@ -178,7 +178,7 @@ object LocationConverter {
      * @param dms : 도.분.초
      * @return 도분초를 각각 계산해서 하나의 좌표로 만들어줍니다.
      */
-    private fun convertToDD(dms: Dms) =
+    fun convertToDD(dms: Dms) =
         dms.degree.toDouble() + (dms.minutes.toDouble() / 60.0) + (dms.seconds.toDouble() / 3600.0)
 
     fun toPolygonLatLng(x: Double, y: Double): ArrayList<Pair<Double, Double>> {

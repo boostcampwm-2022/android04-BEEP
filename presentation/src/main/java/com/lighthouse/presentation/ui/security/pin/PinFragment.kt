@@ -3,6 +3,8 @@ package com.lighthouse.presentation.ui.security.pin
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,6 +26,13 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private val binding by viewBindings(FragmentPinBinding::bind)
     private val viewModel: PinViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
+    private val shakeAnimation: Animation by lazy {
+        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
+    }
+
+    private val fadeUpAnimation: Animation by lazy {
+        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,16 +50,23 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         binding.tvPinDescription.text = getString(R.string.pin_confirm_description)
                         binding.btnPinPrev.visibility = View.VISIBLE
                     }
-                    PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
+                    PinSettingType.WRONG -> {
+                        binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
+                        playWrongPinAnimation()
+                    }
                     PinSettingType.COMPLETE -> {
                         Snackbar.make(view, getString(R.string.pin_complete), Snackbar.ANIMATION_MODE_SLIDE).show()
-                        delay(1000)
+                        binding.ivCheck.apply {
+                            visibility = View.VISIBLE
+                            startAnimation(fadeUpAnimation)
+                        }
+                        delay(1000L)
                         activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
                     }
                     PinSettingType.ERROR -> {
                         Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
-                        delay(1000)
+                        delay(500L)
                         activityViewModel.gotoOtherScreen(SecurityDirections.MAIN)
                     }
                 }
@@ -63,5 +79,14 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+    }
+
+    private fun playWrongPinAnimation() {
+        binding.ivPin0.startAnimation(shakeAnimation)
+        binding.ivPin1.startAnimation(shakeAnimation)
+        binding.ivPin2.startAnimation(shakeAnimation)
+        binding.ivPin3.startAnimation(shakeAnimation)
+        binding.ivPin4.startAnimation(shakeAnimation)
+        binding.ivPin5.startAnimation(shakeAnimation)
     }
 }
