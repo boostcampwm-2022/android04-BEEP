@@ -100,7 +100,7 @@
             android:layout_marginTop="4dp"
             android:enabled="@{vm.mode==mode.EDIT}"
             android:onClick="@{() -> vm.expireDateClicked()}"
-            app:dateFormat="@{vm.gifticon.expireAt}"
+            app:dateFormat="@{vm.tempGifticon.expireAt ?? vm.gifticon.expireAt}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expire_at_label"
             tools:text="2023.07.03" />

@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +41,7 @@ class GifticonDetailViewModel @Inject constructor(
     private val gifticonDbResult =
         getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    val gifticon = gifticonDbResult.transform {
+    val gifticon: StateFlow<Gifticon?> = gifticonDbResult.transform {
         if (it is DbResult.Success) {
             emit(it.data)
             switchMode(if (it.data.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
@@ -72,7 +74,8 @@ class GifticonDetailViewModel @Inject constructor(
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
 
-    private var tempGifticon: Gifticon? = null
+    private val _tempGifticon = MutableStateFlow<Gifticon?>(null)
+    val tempGifticon = _tempGifticon.asStateFlow()
 
     fun switchMode(mode: GifticonDetailMode) {
         _mode.update { mode }
@@ -125,30 +128,40 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun editProductName(newName: String) {
-        tempGifticon?.let {
-            tempGifticon = it.copy(name = newName)
+        tempGifticon.value?.let {
+            _tempGifticon.value = it.copy(name = newName)
         }
         Timber.tag("edit").d("editProductName: $tempGifticon")
     }
 
     fun editBrand(newBrand: String) {
-        tempGifticon?.let {
-            tempGifticon = it.copy(brand = newBrand)
+        tempGifticon.value?.let {
+            _tempGifticon.value = it.copy(brand = newBrand)
         }
         Timber.tag("edit").d("editBrand: $tempGifticon")
     }
 
     fun editBalance(newBalance: String) {
-        tempGifticon?.let {
+        tempGifticon.value?.let {
             val newBalanceAmount = newBalance.filter { c -> c.isDigit() }.toIntOrNull() ?: return@let
-            tempGifticon = it.copy(balance = newBalanceAmount)
+            _tempGifticon.value = it.copy(balance = newBalanceAmount)
         }
         Timber.tag("edit").d("editBalance: $tempGifticon")
     }
 
+    fun editExpireDate(year: Int, month: Int, dayOfMonth: Int) {
+        tempGifticon.value?.let {
+            val cal = Calendar.getInstance().apply {
+                set(year, month - 1, dayOfMonth)
+            }
+            _tempGifticon.value = it.copy(expireAt = cal.time)
+        }
+        Timber.tag("edit").d("editExpireDate: $tempGifticon")
+    }
+
     fun editMemo(newMemo: String) {
-        tempGifticon?.let {
-            tempGifticon = it.copy(memo = newMemo)
+        tempGifticon.value?.let {
+            _tempGifticon.value = it.copy(memo = newMemo)
         }
         Timber.tag("edit").d("editMemo: $tempGifticon")
     }
@@ -171,14 +184,14 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun startEdit() {
-        tempGifticon = gifticon.value ?: return
+        _tempGifticon.value = gifticon.value ?: return
     }
 
     private fun endEdit() {
         val before = gifticon.value ?: return
-        val after = tempGifticon ?: return
+        val after = tempGifticon.value ?: return
         event(Event.OnGifticonInfoChanged(before, after))
-        tempGifticon = null
+        _tempGifticon.value = null
     }
 
     private fun event(event: Event) {
