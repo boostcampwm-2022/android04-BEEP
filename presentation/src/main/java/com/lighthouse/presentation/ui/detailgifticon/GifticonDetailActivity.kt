@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
@@ -28,6 +29,9 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
+
+    private val standardGifticonInfo by lazy { StandardGifticonInfoFragment() }
+    private val cashCardGifticonInfo by lazy { CashCardGifticonInfoFragment() }
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
@@ -55,6 +59,21 @@ class GifticonDetailActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.event.collect { event ->
                 handleEvent(event)
+            }
+        }
+        repeatOnStarted {
+            viewModel.gifticon.collect { gifticon ->
+                gifticon?.let {
+                    if (it.isCashCard) {
+                        supportFragmentManager.commit {
+                            replace(binding.fcvGifticonInfo.id, cashCardGifticonInfo)
+                        }
+                    } else {
+                        supportFragmentManager.commit {
+                            replace(binding.fcvGifticonInfo.id, standardGifticonInfo)
+                        }
+                    }
+                }
             }
         }
         repeatOnStarted {
@@ -121,7 +140,7 @@ class GifticonDetailActivity : AppCompatActivity() {
         SpinnerDatePicker(
             this
         ) { picker, year, month, dayOfMonth ->
-            binding.tvExpireDate.text = getString(R.string.all_date, year, month, dayOfMonth)
+//            binding.tvExpireDate.text = getString(R.string.all_date, year, month, dayOfMonth) // TODO 만료 날짜 설정
             picker.dismiss()
         }.show()
     }
