@@ -1,15 +1,17 @@
 package com.lighthouse.presentation.ui.cropgifticon
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvents
+import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,8 +20,11 @@ class CropGifticonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _eventsFlow = MutableSharedFlow<CropGifticonEvents>()
-    val eventsFlow: SharedFlow<CropGifticonEvents> = _eventsFlow
+    private val _eventsFlow = MutableSharedFlow<CropGifticonEvent>()
+    val eventsFlow = _eventsFlow.asSharedFlow()
+
+    private val _messageFlow = MutableSharedFlow<Int>()
+    val messageFlow = _messageFlow.asSharedFlow()
 
     val isComplete = MutableStateFlow(true)
 
@@ -27,13 +32,23 @@ class CropGifticonViewModel @Inject constructor(
 
     fun cancelCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvents.CANCEL)
+            _eventsFlow.emit(CropGifticonEvent.Cancel)
         }
     }
 
-    fun completeCropImage() {
+    fun requestCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvents.COMPLETE)
+            _eventsFlow.emit(CropGifticonEvent.Crop)
+        }
+    }
+
+    fun onCropImageListener(bitmap: Bitmap?) {
+        viewModelScope.launch {
+            if (bitmap == null) {
+                _messageFlow.emit(R.string.crop_gifticon_failed)
+            } else {
+                _eventsFlow.emit(CropGifticonEvent.Complete(bitmap))
+            }
         }
     }
 }

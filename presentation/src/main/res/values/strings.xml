@@ -63,6 +63,7 @@
     <string name="gallery_confirm">완료</string>
 
     <string name="crop_gifticon_complete">완료</string>
+    <string name="crop_gifticon_failed">이미지 자르기에 실패 했습니다.</string>
 
     <string name="signin_google_fail">구글 로그인 실패</string>
     <string name="signin_google_connect_fail">구글 연결 실패</string>
@@ -141,5 +142,8 @@
     <string name="pin_complete">PIN 설정을 완료했습니다</string>
     <string name="pin_internal_error">PIN 설정 중 오류가 발생했습니다. 잠시후 다시 시도해주세요.</string>
 
+    <string name="dialog_usage_history_date_label">일자</string>
+    <string name="dialog_usage_history_address_label">위치</string>
+    <string name="dialog_usage_history_amount_label">금액</string>
 
 </resources>

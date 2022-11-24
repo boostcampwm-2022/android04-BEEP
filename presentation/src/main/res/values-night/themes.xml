@@ -1,10 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <item name="colorPrimary">@color/beep_pink</item>
-        <item name="colorPrimaryDark">@color/beep_pink</item>
-        <item name="colorAccent">@color/beep_pink</item>
+        <item name="colorPrimary">@color/beep_pink_dark</item>
+        <item name="colorPrimaryDark">@color/beep_pink_dark</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+        <item name="colorSecondary">@color/beep_pink_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
     </style>
 
     <style name="Theme.BEEP.EditText" parent="Widget.AppCompat.EditText">

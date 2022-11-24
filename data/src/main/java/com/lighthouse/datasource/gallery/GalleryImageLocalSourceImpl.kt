@@ -1,4 +1,4 @@
-package com.lighthouse.datasource
+package com.lighthouse.datasource.gallery
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -42,7 +42,7 @@ class GalleryImageLocalSourceImpl @Inject constructor(
                 null
             )
         } else {
-            val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC OFFSET $offset LIMIT $limit "
+            val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC LIMIT $limit OFFSET $offset"
             contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 projection,

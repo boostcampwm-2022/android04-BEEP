@@ -8,20 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 class GridSpaceItemDecoration(
     private val vSpace: Int,
     private val hSpace: Int,
-    private val start: Int = 0,
-    private val top: Int = 0,
-    private val end: Int = 0,
-    private val bottom: Int = 0
+    private val scrollStart: Int = 0,
+    private val scrollEnd: Int = 0
 ) : RecyclerView.ItemDecoration() {
 
     constructor(
         vSpace: Float,
         hSpace: Float,
-        start: Float = 0f,
-        top: Float = 0f,
-        end: Float = 0f,
-        bottom: Float = 0f
-    ) : this(vSpace.toInt(), hSpace.toInt(), start.toInt(), top.toInt(), end.toInt(), bottom.toInt())
+        scrollStart: Float = 0f,
+        scrollEnd: Float = 0f
+    ) : this(vSpace.toInt(), hSpace.toInt(), scrollStart.toInt(), scrollEnd.toInt())
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -29,36 +25,52 @@ class GridSpaceItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        super.getItemOffsets(outRect, view, parent, state)
-
         val manager = parent.layoutManager as? GridLayoutManager ?: return
 
         val position = parent.getChildAdapterPosition(view)
-        val spanCount = manager.spanCount
+        val itemCount = parent.adapter?.itemCount ?: 0
 
-        outRect.left = if (isFirstCol(position, spanCount)) start else hSpace / 2
-        outRect.top = if (isFirstRow(position, spanCount)) top else vSpace / 2
-        outRect.right = if (isLastCol(position, spanCount)) end else hSpace / 2
-        outRect.bottom = if (isLastRow(position, spanCount, getItemCount(parent))) bottom else vSpace / 2
+        val isVertical = manager.orientation == GridLayoutManager.VERTICAL
+        if (isVertical) {
+            calculateVerticalOffsets(outRect, manager, position, itemCount)
+        } else {
+            calculateHorizontalOffsets(outRect, manager, position, itemCount)
+        }
     }
 
-    private fun isFirstRow(position: Int, spanCount: Int): Boolean {
-        return position < spanCount
+    private fun calculateVerticalOffsets(
+        outRect: Rect,
+        manager: GridLayoutManager,
+        position: Int,
+        itemCount: Int
+    ) {
+        outRect.left = hSpace / 2
+        outRect.top = if (isFirstRow(manager, position)) scrollStart else vSpace / 2
+        outRect.right = hSpace / 2
+        outRect.bottom = if (isLastRow(manager, position, itemCount)) scrollEnd else vSpace / 2
     }
 
-    private fun isFirstCol(position: Int, spanCount: Int): Boolean {
-        return position % spanCount == 0
+    private fun calculateHorizontalOffsets(
+        outRect: Rect,
+        manager: GridLayoutManager,
+        position: Int,
+        itemCount: Int
+    ) {
+        outRect.left = if (isFirstRow(manager, position)) scrollStart else hSpace / 2
+        outRect.top = vSpace / 2
+        outRect.right = if (isLastRow(manager, position, itemCount)) scrollEnd else hSpace / 2
+        outRect.bottom = vSpace / 2
     }
 
-    private fun isLastRow(position: Int, spanCount: Int, itemCount: Int): Boolean {
-        return position >= itemCount - itemCount % spanCount
+    private fun isFirstRow(manager: GridLayoutManager, position: Int): Boolean {
+        return getGroupIndex(manager, position) == getGroupIndex(manager, 0)
     }
 
-    private fun isLastCol(position: Int, spanCount: Int): Boolean {
-        return isFirstCol(position + 1, spanCount)
+    private fun isLastRow(manager: GridLayoutManager, position: Int, itemCount: Int): Boolean {
+        return getGroupIndex(manager, position) == getGroupIndex(manager, itemCount - 1)
     }
 
-    private fun getItemCount(parent: RecyclerView): Int {
-        return parent.adapter?.itemCount ?: 0
+    private fun getGroupIndex(manager: GridLayoutManager, position: Int): Int {
+        return manager.spanSizeLookup.getSpanGroupIndex(position, manager.spanCount)
     }
 }

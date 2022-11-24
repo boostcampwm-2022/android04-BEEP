@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import com.lighthouse.presentation.R
@@ -16,6 +17,7 @@ import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
 import com.lighthouse.presentation.ui.main.event.MainDirections
+import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -59,8 +61,14 @@ class MainActivity : AppCompatActivity() {
     private fun navigate(directions: MainDirections) {
         when (directions) {
             MainDirections.ADD_GIFTICON -> gotoAddGifticon()
+            MainDirections.MAP -> gotoMap()
             else -> moveScreen(directions)
         }
+    }
+
+    private fun gotoMap() {
+        val intent = Intent(this, MapActivity::class.java)
+        startActivity(intent)
     }
 
     private fun gotoAddGifticon() {

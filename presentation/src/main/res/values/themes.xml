@@ -4,6 +4,8 @@
         <item name="colorPrimary">@color/beep_pink</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/beep_pink</item>
+        <item name="colorSecondary">@color/beep_pink</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="materialButtonStyle">@style/BEEP.Component.Button</item>
         <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
     </style>
@@ -16,6 +18,12 @@
 
     <style name="Theme.BEEP.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textColor">@drawable/tc_on_primary_disabled</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Body1</item>
+    </style>
+
+    <style name="Theme.BEEP.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@drawable/tc_on_primary_disabled</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Body1</item>
     </style>
 
     <style name="Theme.BEEP.Toolbar" parent="Theme.BEEP">

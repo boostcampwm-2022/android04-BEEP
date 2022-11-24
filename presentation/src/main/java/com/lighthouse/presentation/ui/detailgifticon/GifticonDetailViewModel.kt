@@ -5,6 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetGifticonUseCase
+import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
+import com.lighthouse.domain.usecase.UnUseGifticonUseCase
+import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
+import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.model.CashAmountPreset
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,19 +26,37 @@ import javax.inject.Inject
 @HiltViewModel
 class GifticonDetailViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
-    getGifticonUseCase: GetGifticonUseCase
+    getGifticonUseCase: GetGifticonUseCase,
+    getUsageHistoryUseCase: GetUsageHistoriesUseCase,
+    private val useGifticonUseCase: UseGifticonUseCase,
+    private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
+    private val unUseGifticonUseCase: UnUseGifticonUseCase
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
-    val dbResult = getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+    private val gifticonDbResult =
+        getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    val gifticon = dbResult.transform {
+    val gifticon = gifticonDbResult.transform {
+        if (it is DbResult.Success) {
+            emit(it.data)
+            switchMode(if (it.data.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val usageHistoryDbResult = getUsageHistoryUseCase(gifticonId)
+
+    val usageHistory = usageHistoryDbResult.transform {
         if (it is DbResult.Success) {
             emit(it.data)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val failure = dbResult.transform {
+    val latestUsageHistory = usageHistory.transform {
+        emit(it?.last())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val failure = gifticonDbResult.transform {
         if (it is DbResult.Failure) {
             emit(it.throwable)
         }
@@ -74,9 +96,20 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun useGifticonButtonClicked() {
         when (mode.value) {
-            GifticonDetailMode.UNUSED -> event(Event.UseGifticonButtonClicked) // TODO(USED 모드로 변경해야 함)
+            GifticonDetailMode.UNUSED -> {
+                viewModelScope.launch {
+                    if (gifticon.value?.isCashCard == true) {
+//                        useCashCardGifticonUseCase(gifticonId, amountToUse.value) // TODO 이걸로 사용해야 함
+                        useGifticonUseCase(gifticonId) // TODO 이건 제거
+                    } else {
+                        useGifticonUseCase(gifticonId)
+                    }
+                }
+            }
             GifticonDetailMode.USED -> {
-                _mode.update { GifticonDetailMode.UNUSED }
+                viewModelScope.launch {
+                    unUseGifticonUseCase(gifticonId)
+                }
             }
             GifticonDetailMode.EDIT -> {
                 // TODO(수정사항 반영)

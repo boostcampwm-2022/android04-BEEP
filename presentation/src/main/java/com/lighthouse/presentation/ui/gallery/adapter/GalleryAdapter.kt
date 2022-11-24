@@ -61,9 +61,18 @@ class GalleryAdapter(
             override fun areContentsTheSame(oldItem: GalleryUIModel, newItem: GalleryUIModel): Boolean {
                 return oldItem == newItem
             }
+
+            override fun getChangePayload(oldItem: GalleryUIModel, newItem: GalleryUIModel): Any? {
+                if (oldItem is GalleryUIModel.Gallery && newItem is GalleryUIModel.Gallery) {
+                    return UPDATE_SELECTED
+                }
+                return super.getChangePayload(oldItem, newItem)
+            }
         }
 
         const val TYPE_HEADER = 1
         const val TYPE_GALLERY = 2
+
+        private const val UPDATE_SELECTED = 1
     }
 }
