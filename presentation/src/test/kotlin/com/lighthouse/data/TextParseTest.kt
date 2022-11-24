@@ -1,5 +1,7 @@
 package com.lighthouse.data
 
+import com.google.common.truth.Truth
+import com.lighthouse.presentation.util.parser.GifticonParser
 import org.junit.Test
 import java.text.SimpleDateFormat
 
@@ -23,8 +25,6 @@ class TextParseTest {
         assert(parser.match)
 
         assert(parser.date == dateFormat.parse("2016.09.13"))
-
-        assert(parser.title == "")
 
         assert("다크 초콜릿 카우보이 쿠키" in parser.candidateList)
         assert("교수령 1 개" in parser.candidateList)
@@ -53,15 +53,42 @@ class TextParseTest {
 
         assert(parser.date == dateFormat.parse("2016.09.11"))
 
-        assert(parser.title == "")
-
-        assert(parser.brand == "스타벅스")
-
         assert(parser.barcode == "999967256650")
 
         assert("아이스 카페 라떼 Tall" in parser.candidateList)
         assert("스타벅스" in parser.candidateList)
         assert(parser.candidateList.size == 2)
+    }
+
+    @Test
+    fun `syrup 테스트 (3)`() {
+        val text = listOf(
+            "GS25",
+            "3,000",
+            "원권",
+            "GS25 모바일 상품권 3천",
+            "교환수량 1개",
+            "사용기한",
+            "사용처",
+            "1 GS25",
+            "gifticon",
+            "gifticon",
+            "GS25",
+            "-2021.01.06",
+            "9896 6528 6137 8725",
+            "마음을 전하는 또 다른 방법... 기프티콘"
+        )
+
+        val parser = GifticonParser.parse(text)
+
+        Truth.assertThat(parser.match).isTrue()
+
+        assert(parser.date == dateFormat.parse("2021.01.06"))
+
+        assert(parser.barcode == "9896652861378725")
+
+        assert("GS25 모바일 상품권 3천" in parser.candidateList)
+        assert("GS25" in parser.candidateList)
     }
 
     @Test
@@ -81,10 +108,6 @@ class TextParseTest {
         assert(parser.match)
 
         assert(parser.date == dateFormat.parse("2020.05.04"))
-
-        assert(parser.title == "카페아메리카노 Tal")
-
-        assert(parser.brand == "스타벅스")
 
         assert(parser.barcode == "900369921874")
 
@@ -116,10 +139,6 @@ class TextParseTest {
 
         assert(parser.date == dateFormat.parse("2019.06.17"))
 
-        assert(parser.title == "")
-
-        assert(parser.brand == "")
-
         assert(parser.barcode == "981059893232")
 
         assert("카페아메리카노 Tal" in parser.candidateList)
@@ -146,10 +165,6 @@ class TextParseTest {
         assert(parser.match)
 
         assert(parser.date == dateFormat.parse("2020.10.27"))
-
-        assert(parser.title == "")
-
-        assert(parser.brand == "")
 
         assert(parser.barcode == "946116133562")
 
