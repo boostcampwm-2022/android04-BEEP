@@ -25,15 +25,16 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     override fun getPinString(): Flow<String> = dataStore.data.map { preferences ->
-        preferences[PIN]?.let { pin ->
-            preferences[IV]?.let { iv -> CryptoObjectHelper.decrypt(pin, iv) }
-        } ?: ""
+        val pin = preferences[PIN] ?: throw Exception("Cannot Find Encrypted PIN")
+        val iv = preferences[IV] ?: throw Exception("Cannot Find IV")
+
+        CryptoObjectHelper.decrypt(pin, iv)
     }
 
     override suspend fun setIntOption(option: UserPreferenceOption, value: Int): Result<Unit> = runCatching {
         val key = when (option) {
             UserPreferenceOption.SECURITY -> SECURITY
-            else -> throw Exception()
+            else -> throw Exception("Unsupportable Option : Not Int")
         }
 
         dataStore.edit { preferences ->
@@ -44,11 +45,11 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     override fun getIntOption(option: UserPreferenceOption): Flow<Int> {
         val key = when (option) {
             UserPreferenceOption.SECURITY -> SECURITY
-            else -> throw Exception("")
+            else -> throw Exception("Unsupportable Option : Not Int")
         }
 
         return dataStore.data.map { preferences ->
-            preferences[key] ?: throw Exception()
+            preferences[key] ?: throw Exception("Cannot Find Int Option")
         }
     }
 
@@ -56,7 +57,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         val key = when (option) {
             UserPreferenceOption.NOTIFICATION -> NOTIFICATION
             UserPreferenceOption.LOCATION -> LOCATION
-            else -> throw Exception("")
+            else -> throw Exception("Unsupportable Option : Not Boolean")
         }
 
         dataStore.edit { preferences ->
@@ -68,11 +69,11 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         val key = when (option) {
             UserPreferenceOption.NOTIFICATION -> NOTIFICATION
             UserPreferenceOption.LOCATION -> LOCATION
-            else -> throw Exception("")
+            else -> throw Exception("Unsupportable Option : Not Boolean")
         }
 
         return dataStore.data.map { preferences ->
-            preferences[key] ?: throw Exception()
+            preferences[key] ?: throw Exception("Cannot Find Boolean Option")
         }
     }
 

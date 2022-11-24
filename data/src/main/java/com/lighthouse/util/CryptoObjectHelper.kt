@@ -27,10 +27,9 @@ object CryptoObjectHelper {
 
     fun getFingerprintCipher(): Cipher {
         val key = getKey(KEY_NAME_FINGERPRINT)
-        val cipher = Cipher.getInstance(TRANSFORMATION).also {
+        return Cipher.getInstance(TRANSFORMATION).also {
             it.init(Cipher.ENCRYPT_MODE, key)
         }
-        return cipher
     }
 
     private fun getKey(keyName: String): Key {
