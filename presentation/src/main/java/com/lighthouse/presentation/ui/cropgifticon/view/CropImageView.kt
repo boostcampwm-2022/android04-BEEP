@@ -1,6 +1,8 @@
 package com.lighthouse.presentation.ui.cropgifticon.view
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver.SCHEME_CONTENT
+import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -1002,9 +1004,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     companion object {
         private val RECT_F_EMPTY = RectF()
-
-        private const val SCHEME_CONTENT = "content"
-        private const val SCHEME_FILE = "file"
 
         private const val MIN_ZOOM = 1f
         private const val MAX_ZOOM = 4f
