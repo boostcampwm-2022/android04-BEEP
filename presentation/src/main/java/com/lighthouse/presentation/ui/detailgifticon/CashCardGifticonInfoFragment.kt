@@ -15,5 +15,6 @@ class CashCardGifticonInfoFragment : Fragment(R.layout.fragment_cash_card_giftic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
     }
 }
