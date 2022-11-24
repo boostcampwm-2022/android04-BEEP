@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="tv_expire_at_label,tv_expire_at,tv_balance_label,et_balance"
             app:isVisible="@{!vm.gifticon.used}"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_expire_at_label"
@@ -139,7 +139,7 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date,iv_show_all_used_info_button"
             app:isVisible="@{vm.gifticon.used}"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_used_address_label"
@@ -225,7 +225,7 @@
             android:padding="16dp"
             android:text="@{vm.gifticon.memo}"
             android:textAppearance="@style/BEEP.TextStyle.Body1"
-            android:textColorHint="#616161"
+            android:textColorHint="@color/gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrier"
