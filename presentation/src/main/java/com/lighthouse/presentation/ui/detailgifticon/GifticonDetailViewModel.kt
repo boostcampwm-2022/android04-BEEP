@@ -8,6 +8,7 @@ import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
+import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
@@ -34,7 +35,8 @@ class GifticonDetailViewModel @Inject constructor(
     getUsageHistoryUseCase: GetUsageHistoriesUseCase,
     private val useGifticonUseCase: UseGifticonUseCase,
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
-    private val unUseGifticonUseCase: UnUseGifticonUseCase
+    private val unUseGifticonUseCase: UnUseGifticonUseCase,
+    private val updateGifticonInfoUseCase: UpdateGifticonInfoUseCase
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
@@ -190,6 +192,12 @@ class GifticonDetailViewModel @Inject constructor(
     private fun endEdit() {
         val before = gifticon.value ?: return
         val after = tempGifticon.value ?: return
+
+        if (before != after) {
+            viewModelScope.launch {
+                updateGifticonInfoUseCase(after)
+            }
+        }
         event(Event.OnGifticonInfoChanged(before, after))
         _tempGifticon.value = null
     }
