@@ -182,7 +182,9 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun rollbackChangedGifticonInfo(before: Gifticon) {
         Timber.tag("edit").d("기프티콘 정보 되돌리기")
-        // TODO 기프티콘 정보 업데이트
+        viewModelScope.launch {
+            updateGifticonInfoUseCase(before)
+        }
     }
 
     fun startEdit() {
