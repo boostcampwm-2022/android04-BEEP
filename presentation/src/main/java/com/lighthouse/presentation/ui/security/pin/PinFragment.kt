@@ -55,7 +55,9 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         playWrongPinAnimation()
                     }
                     PinSettingType.COMPLETE -> {
-                        Snackbar.make(view, getString(R.string.pin_complete), Snackbar.ANIMATION_MODE_SLIDE).show()
+                        Snackbar.make(view, getString(R.string.pin_complete), Snackbar.LENGTH_SHORT)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
+                            .show()
                         binding.ivCheck.apply {
                             visibility = View.VISIBLE
                             startAnimation(fadeUpAnimation)
@@ -64,7 +66,8 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
                     }
                     PinSettingType.ERROR -> {
-                        Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.ANIMATION_MODE_SLIDE)
+                        Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.LENGTH_SHORT)
+                            .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
                         delay(500L)
                         activityViewModel.gotoOtherScreen(SecurityDirections.MAIN)
@@ -74,7 +77,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         }
 
         binding.tvSecureNotUse.setOnClickListener {
-            // TODO: 보안 설정 사용 X 저장
             val intent = Intent(requireContext(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

@@ -58,7 +58,7 @@ class LegacyFingerprintAuth(
             fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_not_enrolled)
         } else {
             fingerprintManager.authenticate(
-                FingerprintManagerCompat.CryptoObject(getFingerprintCipherUseCase.invoke()),
+                FingerprintManagerCompat.CryptoObject(getFingerprintCipherUseCase()),
                 0,
                 cancellationSignal,
                 fingerprintCallback,
