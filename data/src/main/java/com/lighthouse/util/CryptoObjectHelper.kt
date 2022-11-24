@@ -20,7 +20,6 @@ object CryptoObjectHelper {
     private const val TRANSFORMATION = "$KEY_ALGORITHM/$BLOCK_MODE/$ENCRYPTION_PADDING"
 
     private val keyStore: KeyStore = KeyStore.getInstance(KEYSTORE_NAME)
-    private var ivByteArray: ByteArray? = null
 
     init {
         keyStore.load(null)
@@ -69,33 +68,26 @@ object CryptoObjectHelper {
         keyGenerator.generateKey()
     }
 
-    fun encrypt(pin: String): ByteArray {
+    fun encrypt(pin: String): Pair<ByteArray, ByteArray> {
         if (keyStore.containsAlias(KEY_NAME_PIN).not()) {
             createKey(KEY_NAME_PIN)
         }
         val secretKey = getKey(KEY_NAME_PIN)
-
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
-        ivByteArray = cipher.iv
 
-        return cipher.doFinal(pin.toByteArray(Charsets.UTF_8))
+        val encrypted = cipher.doFinal(pin.toByteArray(Charsets.UTF_8))
+        val iv = cipher.iv
+
+        return Pair(encrypted, iv)
     }
 
-    fun decrypt(encrypted: ByteArray): String {
-        if (keyStore.containsAlias(KEY_NAME_PIN).not()) {
-            createKey(KEY_NAME_PIN)
-        }
+    fun decrypt(encrypted: ByteArray, iv: ByteArray): String {
         val secretKey = getKey(KEY_NAME_PIN)
         val cipher = Cipher.getInstance(TRANSFORMATION)
 
-        if (ivByteArray == null) {
-            // TODO: ivByteArray 불러오기
-        }
-
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(ivByteArray))
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
         val decrypted = cipher.doFinal(encrypted)
-
         return String(decrypted, Charsets.UTF_8)
     }
 }

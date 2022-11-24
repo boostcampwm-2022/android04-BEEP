@@ -2,9 +2,10 @@ package com.lighthouse.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.util.CryptoObjectHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -14,15 +15,20 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 ) : UserPreferencesRepository {
     override suspend fun setPin(pinString: String) {
         dataStore.edit { preferences ->
-            preferences[PIN] = pinString
+            val cryptoResult = CryptoObjectHelper.encrypt(pinString)
+            preferences[PIN] = cryptoResult.first
+            preferences[IV] = cryptoResult.second
         }
     }
 
     override fun getPin(): Flow<String> = dataStore.data.map { preferences ->
-        preferences[PIN] ?: ""
+        preferences[PIN]?.let { pin ->
+            preferences[IV]?.let { iv -> CryptoObjectHelper.decrypt(pin, iv) }
+        } ?: ""
     }
 
     companion object {
-        val PIN = stringPreferencesKey("pin")
+        val PIN = byteArrayPreferencesKey("pin")
+        val IV = byteArrayPreferencesKey("iv")
     }
 }
