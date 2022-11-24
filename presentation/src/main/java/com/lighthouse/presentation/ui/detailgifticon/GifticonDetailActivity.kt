@@ -9,6 +9,8 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
@@ -36,6 +38,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
+    private lateinit var gifticonInfoChangedSnackbar: Snackbar
 
     private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
 
@@ -106,6 +109,9 @@ class GifticonDetailActivity : AppCompatActivity() {
             is Event.EditButtonClicked -> {
                 showCheckEditDialog()
             }
+            is Event.OnGifticonInfoChanged -> {
+                showGifticonInfoChangedSnackBar(event.before)
+            }
             is Event.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
@@ -127,6 +133,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.gifticon_detail_check_edit_dialog_title))
                 .setPositiveButton(getString(R.string.gifticon_detail_check_edit_dialog_positive_button)) { _, _ ->
                     viewModel.switchMode(GifticonDetailMode.EDIT)
+                    viewModel.startEdit()
                 }
                 .setNegativeButton(getString(R.string.gifticon_detail_check_edit_dialog_negative_button)) { dialog, _ ->
                     dialog.cancel()
@@ -192,7 +199,23 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
+        if (::gifticonInfoChangedSnackbar.isInitialized.not()) {
+            gifticonInfoChangedSnackbar = Snackbar.make(
+                binding.root,
+                getString(R.string.gifticon_detail_info_changed_snackbar_text),
+                INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND
+            )
+        }
+        gifticonInfoChangedSnackbar.setAction(getString(R.string.gifticon_detail_info_changed_snackbar_action_text)) {
+            viewModel.rollbackChangedGifticonInfo(before)
+        }.also { snackbar ->
+            snackbar.show()
+        }
+    }
+
     companion object {
         const val INVALID_DIALOG_DEADLINE_SECOND = 5
+        const val INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND = 5000
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
@@ -71,6 +72,8 @@ class GifticonDetailViewModel @Inject constructor(
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
 
+    private var tempGifticon: Gifticon? = null
+
     fun switchMode(mode: GifticonDetailMode) {
         _mode.update { mode }
     }
@@ -116,8 +119,38 @@ class GifticonDetailViewModel @Inject constructor(
             GifticonDetailMode.EDIT -> {
                 // TODO(수정사항 반영)
                 _mode.update { GifticonDetailMode.UNUSED }
+                endEdit()
             }
         }
+    }
+
+    fun editProductName(newName: String) {
+        tempGifticon?.let {
+            tempGifticon = it.copy(name = newName)
+        }
+        Timber.tag("edit").d("editProductName: $tempGifticon")
+    }
+
+    fun editBrand(newBrand: String) {
+        tempGifticon?.let {
+            tempGifticon = it.copy(brand = newBrand)
+        }
+        Timber.tag("edit").d("editBrand: $tempGifticon")
+    }
+
+    fun editBalance(newBalance: String) {
+        tempGifticon?.let {
+            val newBalanceAmount = newBalance.filter { c -> c.isDigit() }.toIntOrNull() ?: return@let
+            tempGifticon = it.copy(balance = newBalanceAmount)
+        }
+        Timber.tag("edit").d("editBalance: $tempGifticon")
+    }
+
+    fun editMemo(newMemo: String) {
+        tempGifticon?.let {
+            tempGifticon = it.copy(memo = newMemo)
+        }
+        Timber.tag("edit").d("editMemo: $tempGifticon")
     }
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
@@ -130,6 +163,22 @@ class GifticonDetailViewModel @Inject constructor(
         } ?: amountToUse.update {
             gifticon.value.balance
         }*/
+    }
+
+    fun rollbackChangedGifticonInfo(before: Gifticon) {
+        Timber.tag("edit").d("기프티콘 정보 되돌리기")
+        // TODO 기프티콘 정보 업데이트
+    }
+
+    fun startEdit() {
+        tempGifticon = gifticon.value ?: return
+    }
+
+    private fun endEdit() {
+        val before = gifticon.value ?: return
+        val after = tempGifticon ?: return
+        event(Event.OnGifticonInfoChanged(before, after))
+        tempGifticon = null
     }
 
     private fun event(event: Event) {
