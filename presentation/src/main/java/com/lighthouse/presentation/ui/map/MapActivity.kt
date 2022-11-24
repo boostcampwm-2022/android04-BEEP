@@ -16,11 +16,14 @@ import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.LocationConverter.toPolygonLatLng
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extension.screenWidth
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
 import com.lighthouse.presentation.ui.map.event.MarkerClickEvent
+import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
@@ -43,11 +46,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var mapView: MapView
     private lateinit var client: FusedLocationProviderClient
-    private lateinit var locationSource: FusedLocationSource
+    private lateinit var fusedLocationSource: FusedLocationSource
     private val viewModel: MapViewModel by viewModels()
-    private val adapter = MapGifticonAdapter()
+    private val gifticonAdapter = MapGifticonAdapter()
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
-    private var focusMarker = Marker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +59,139 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             onCreate(savedInstanceState)
             getMapAsync(this@MapActivity)
         }
-        setGifticonAdapter()
-        setObserveSearchData()
-        viewModel.collectLocation()
+        setAdapter()
+        setInitAdapterData()
+    }
+
+    private fun setAdapter() {
+        val pagerWidth = 300.dp
+        val pageMarginPx = 20.dp
+        val offsetPx = screenWidth - pageMarginPx - pagerWidth
+        with(binding.vpGifticon) {
+            adapter = gifticonAdapter
+            offscreenPageLimit = 3
+            setPageTransformer { page, position ->
+                page.translationX = position * -offsetPx
+            }
+            addItemDecoration(
+                ListSpaceItemDecoration(
+                    space = 50.dp,
+                    start = 25.dp,
+                    end = 25.dp
+                )
+            )
+        }
+    }
+
+    private fun setInitAdapterData() {
+        val focusModel = viewModel.focusMarker.value
+
+        when (focusModel.captionText.isEmpty()) {
+            true -> updateGifticonList(MarkerClickEvent.AllGifticon)
+            false -> updateGifticonList(MarkerClickEvent.BrandGifticon(focusModel.captionText))
+        }
     }
 
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+    }
+
+    private fun updateGifticonList(markerClickEvent: MarkerClickEvent) {
+        val couponList = viewModel.gifticonTestData.filter { gifticon ->
+            when (markerClickEvent) {
+                is MarkerClickEvent.AllGifticon -> viewModel.brandList.contains(gifticon.brand)
+                is MarkerClickEvent.BrandGifticon -> gifticon.brand == markerClickEvent.brandName
+            }
+        }
+        gifticonAdapter.submitList(couponList)
+    }
+
+    override fun onMapReady(map: NaverMap) {
+        fusedLocationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
+        naverMap = map.apply {
+            this.locationSource = fusedLocationSource
+            setOnMapClickListener { _, _ ->
+                updateGifticonList(MarkerClickEvent.AllGifticon)
+                resetFocusMarker(viewModel.focusMarker.value)
+            }
+        }
+        currentLocationButton.map = naverMap
+
+        setObserveFocusMarker()
+        setGifticonAdapter()
+        setObserveSearchData()
+        setNaverMapZoom()
+        setObserverMarkerData()
+        setNaverMapPolyLine()
+    }
+
+    private fun setObserveFocusMarker() {
+        repeatOnStarted {
+            viewModel.focusMarker.collectLatest { marker ->
+                marker.iconTintColor = Color.BLUE
+                marker.zIndex = 1
+                val location = marker.position
+                moveMapCamera(location.longitude, location.latitude)
+            }
+        }
+    }
+
+    private fun setGifticonAdapter() {
+        // TODO 추후에는 collect 하는 방식으로 바뀌어야함
+        binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (isFocusing(gifticonAdapter.currentList[position].brand)) return
+                val currentItem = gifticonAdapter.currentList[position].brand
+                val brandInfos = viewModel.brandInfos
+                findBrandPlaceInfo(brandInfos, currentItem)
+            }
+
+            /**
+             * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
+             * @param brandPlaceInfos 지도에 보이고 있는 브랜드들
+             * @param brandName 찾고자하는 브랜드명
+             */
+            private fun findBrandPlaceInfo(brandPlaceInfos: Set<BrandPlaceInfoUiModel>, brandName: String) {
+                client.lastLocation.addOnSuccessListener { currentLocation ->
+                    val brandPlaceInfo = brandPlaceInfos.filter { brandPlaceInfo ->
+                        brandPlaceInfo.brand == brandName
+                    }.minByOrNull { location ->
+                        diffLocation(location, currentLocation)
+                    } ?: return@addOnSuccessListener
+
+                    resetFocusMarker(viewModel.focusMarker.value)
+                    moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
+
+                    val currentFocusMarker = viewModel.markerHolder.find {
+                        currentLocation(it, brandPlaceInfo)
+                    } ?: return@addOnSuccessListener
+
+                    viewModel.updateFocusMarker(currentFocusMarker)
+                }
+            }
+
+            private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
+                it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
+
+            private fun diffLocation(
+                location: BrandPlaceInfoUiModel,
+                currentLocation: Location
+            ) = LocationConverter.locationDistance(
+                location.x.toDouble(),
+                location.y.toDouble(),
+                currentLocation.longitude,
+                currentLocation.latitude
+            )
+        })
+    }
+
+    private fun isFocusing(brand: String) = viewModel.focusMarker.value.captionText == brand
+
+    private fun moveMapCamera(longitude: Double, latitude: Double) {
+        val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
+            .animate(CameraAnimation.Easing)
+        naverMap.moveCamera(cameraUpdate)
     }
 
     private fun setObserveSearchData() {
@@ -81,80 +208,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun showSnackBar(@StringRes message: Int) {
-        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {
-        brandPlaceSearchResults.forEach { brandPlaceSearchResult ->
-            val marker = Marker()
-            val latLng = LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
-
-            setMarker(marker, latLng, brandPlaceSearchResult)
-        }
-    }
-
-    private fun setMarker(
-        marker: Marker,
-        latLng: LatLng,
-        brandPlaceSearchResult: BrandPlaceInfoUiModel
-    ) {
-        with(marker) {
-            position = latLng
-            map = naverMap
-            width = Marker.SIZE_AUTO
-            height = Marker.SIZE_AUTO
-            tag = brandPlaceSearchResult.placeUrl
-            captionText = brandPlaceSearchResult.brand
-
-            setOnClickListener {
-                resetFocusMarker()
-                focusMarker = marker.apply {
-                    iconTintColor = Color.RED
-                }
-                moveMapCamera(latLng.longitude, latLng.latitude)
-                updateGifticonList(MarkerClickEvent.BrandGifticon(this.captionText))
-                true
-            }
-        }
-    }
-
-    private fun resetFocusMarker() {
-        focusMarker.icon = DEFAULT_ICON
-        focusMarker.iconTintColor = Color.TRANSPARENT
-    }
-
-    private fun updateGifticonList(markerClickEvent: MarkerClickEvent) {
-        val couponList = viewModel.gifticonTestData.filter { gifticon ->
-            when (markerClickEvent) {
-                is MarkerClickEvent.AllGifticon -> viewModel.brandList.contains(gifticon.brand)
-                is MarkerClickEvent.BrandGifticon -> {
-                    gifticon.brand == markerClickEvent.brandName
-                }
-            }
-        }
-        adapter.submitList(couponList)
-    }
-
-    override fun onMapReady(map: NaverMap) {
-        naverMap = map
-        locationSource = FusedLocationSource(this, PERMISSION_REQUEST_CODE)
-        naverMap.locationSource = locationSource
-
-        val uiSetting = naverMap.uiSettings
-        uiSetting.isLocationButtonEnabled = false
-
-        currentLocationButton.map = naverMap
-
-        naverMap.setOnMapClickListener { _, _ ->
-            resetFocusMarker()
-            updateGifticonList(MarkerClickEvent.AllGifticon)
-        }
-
-        setNaverMapZoom()
-        setNaverMapPolyLine()
-    }
-
     private fun setNaverMapZoom() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 7.0
@@ -164,53 +217,61 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setGifticonAdapter() {
-        // TODO 추후에는 collect 하는 방식으로 바뀌어야함
-        updateGifticonList(MarkerClickEvent.AllGifticon)
-        binding.vpGifticon.adapter = adapter
-        binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                val selectBrand = adapter.currentList[position].brand
-                val brandInfos = viewModel.brandInfos
-                findBrandPlaceInfo(brandInfos, selectBrand)
+    private fun setObserverMarkerData() {
+        repeatOnStarted {
+            viewModel.markers.collect { markers ->
+                markers.forEach { it.map = naverMap }
             }
-
-            /**
-             * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
-             * @param brandPlaceInfos 지도에 보이고 있는 브랜드들
-             * @param brandName 찾고자하는 브랜드명
-             */
-            private fun findBrandPlaceInfo(brandPlaceInfos: Set<BrandPlaceInfoUiModel>, brandName: String) {
-                client.lastLocation.addOnSuccessListener { currentLocation ->
-                    val brandPlaceInfo = brandPlaceInfos.filter { brandPlaceInfo ->
-                        brandPlaceInfo.brand == brandName
-                    }.sortedBy { location ->
-                        diffLocation(location, currentLocation)
-                    }.toList().firstOrNull()
-
-                    if (brandPlaceInfo != null) {
-                        moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
-                    }
-                }
-            }
-
-            private fun diffLocation(
-                location: BrandPlaceInfoUiModel,
-                currentLocation: Location
-            ) = LocationConverter.locationDistance(
-                location.x.toDouble(),
-                location.y.toDouble(),
-                currentLocation.longitude,
-                currentLocation.latitude
-            )
-        })
+        }
+        viewModel.updateBrandList()
     }
 
-    private fun moveMapCamera(longitude: Double, latitude: Double) {
-        val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
-            .animate(CameraAnimation.Easing)
-        naverMap.moveCamera(cameraUpdate)
+    private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {
+        val brandMarkers = brandPlaceSearchResults.map { brandPlaceSearchResult ->
+            Marker().apply {
+                val latLng = LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
+                setMarker(this, latLng, brandPlaceSearchResult)
+            }
+        }
+        viewModel.updateMarkers(brandMarkers)
+    }
+
+    private fun setMarker(
+        marker: Marker,
+        latLng: LatLng,
+        brandPlaceSearchResult: BrandPlaceInfoUiModel
+    ) {
+        with(marker) {
+            position = latLng
+            width = Marker.SIZE_AUTO
+            height = Marker.SIZE_AUTO
+            tag = brandPlaceSearchResult.placeUrl
+            captionText = brandPlaceSearchResult.brand
+            isHideCollidedSymbols = true
+            zIndex = 0
+        }
+        marker.setOnClickListener {
+            if (isSameMarker(marker)) return@setOnClickListener true
+            val curFocusBrand = viewModel.focusMarker.value
+            resetFocusMarker(curFocusBrand)
+            viewModel.updateFocusMarker(marker)
+            updateGifticonList(MarkerClickEvent.BrandGifticon(marker.captionText))
+            true
+        }
+    }
+
+    private fun isSameMarker(marker: Marker) =
+        marker.position.longitude == viewModel.focusMarker.value.position.longitude &&
+            marker.position.latitude == viewModel.focusMarker.value.position.latitude
+
+    private fun resetFocusMarker(marker: Marker) {
+        marker.zIndex = 0
+        marker.icon = DEFAULT_ICON
+        marker.iconTintColor = Color.TRANSPARENT
+    }
+
+    private fun showSnackBar(@StringRes message: Int) {
+        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
     }
 
     // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
