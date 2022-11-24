@@ -2,8 +2,10 @@ package com.lighthouse.presentation.ui.security.pin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.usecase.GetCorrespondWithPinUseCase
+import com.lighthouse.domain.model.UserPreferenceOption
+import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.domain.usecase.SavePinUseCase
+import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PinViewModel @Inject constructor(
     private val savePinUseCase: SavePinUseCase,
-    private val getCorrespondWithPinUseCase: GetCorrespondWithPinUseCase
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
     private val _pinString = MutableStateFlow("")
@@ -23,6 +25,12 @@ class PinViewModel @Inject constructor(
     val pinMode = _pinMode.asStateFlow()
 
     private var temporaryPinString: String? = null
+
+    init {
+        viewModelScope.launch {
+            userPreferencesRepository.setIntOption(UserPreferenceOption.SECURITY, SecurityOption.NONE.ordinal)
+        }
+    }
 
     fun inputPin(num: Int) {
         if (pinString.value.length < 6) {
@@ -67,6 +75,7 @@ class PinViewModel @Inject constructor(
         viewModelScope.launch {
             savePinUseCase(pinString.value).onSuccess {
                 _pinMode.value = PinSettingType.COMPLETE
+                userPreferencesRepository.setIntOption(UserPreferenceOption.SECURITY, SecurityOption.PIN.ordinal)
             }.onFailure {
                 _pinMode.value = PinSettingType.ERROR
             }
