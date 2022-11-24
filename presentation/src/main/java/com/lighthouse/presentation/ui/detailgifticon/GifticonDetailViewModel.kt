@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,6 +88,7 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun expireDateClicked() {
+        Timber.tag("gifticon_detail").d("expireDateClicked() 호출")
         event(Event.ExpireDateClicked)
     }
 
