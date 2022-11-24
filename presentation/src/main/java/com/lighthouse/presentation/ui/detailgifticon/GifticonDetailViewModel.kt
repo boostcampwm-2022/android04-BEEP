@@ -45,7 +45,6 @@ class GifticonDetailViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val usageHistoryDbResult = getUsageHistoryUseCase(gifticonId)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     val usageHistory = usageHistoryDbResult.transform {
         if (it is DbResult.Success) {

@@ -30,6 +30,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     private val viewModel: GifticonDetailViewModel by viewModels()
 
     private lateinit var checkEditDialog: AlertDialog
+    private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
 
     private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
@@ -68,13 +69,6 @@ class GifticonDetailActivity : AppCompatActivity() {
                     GifticonDetailMode.EDIT -> {
                         binding.btnUseGifticon.text = getString(R.string.gifticon_detail_edit_mode_button_text)
                     }
-                }
-            }
-        }
-        repeatOnStarted {
-            viewModel.usageHistory.collect { histories ->
-                if (histories != null) {
-                    usageHistoryAdapter.submitList(histories)
                 }
             }
         }
@@ -139,17 +133,20 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showUsageHistoryDialog() {
-        val usageHistoryView = DataBindingUtil.inflate<DialogUsageHistoryBinding>(
-            LayoutInflater.from(this),
-            R.layout.dialog_usage_history,
-            null,
-            false
-        )
-        usageHistoryView.rvUsageHistory.adapter = usageHistoryAdapter
-        Timber.tag("usageHistory").d("${usageHistoryAdapter.currentList}")
-        AlertDialog.Builder(this)
-            .setView(usageHistoryView.root)
-            .show()
+        if (::usageHistoryDialog.isInitialized.not()) {
+            val usageHistoryView = DataBindingUtil.inflate<DialogUsageHistoryBinding>(
+                LayoutInflater.from(this),
+                R.layout.dialog_usage_history,
+                null,
+                false
+            )
+            usageHistoryView.vm = viewModel
+            usageHistoryView.rvUsageHistory.adapter = usageHistoryAdapter
+            Timber.tag("usageHistory").d("${usageHistoryAdapter.currentList}")
+            usageHistoryDialog = AlertDialog.Builder(this).setView(usageHistoryView.root).create()
+        }
+
+        usageHistoryDialog.show()
     }
 
     private fun showInvalidDialog() {

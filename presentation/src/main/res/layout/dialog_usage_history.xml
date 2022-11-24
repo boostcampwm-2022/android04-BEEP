@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,6 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:layout_constraintVertical_bias="0"
+            app:setItems="@{vm.usageHistory}"
             tools:itemCount="10"
             tools:listitem="@layout/item_usage_history" />
     </androidx.constraintlayout.widget.ConstraintLayout>

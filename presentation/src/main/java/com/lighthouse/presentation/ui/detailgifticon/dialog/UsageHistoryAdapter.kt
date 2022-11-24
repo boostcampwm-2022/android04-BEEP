@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.databinding.ItemUsageHistoryBinding
 
-class UsageHistoryAdapter : ListAdapter<UsageHistory, UsageHistoryAdapter.UsageHistoryViewHolder>(diffUtil) {
+class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapter.UsageHistoryViewHolder>(diffUtil) {
 
     class UsageHistoryViewHolder(private val binding: ItemUsageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
