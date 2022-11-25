@@ -76,6 +76,8 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
+    private val originImageDialog = OriginImageDialog()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_gifticon)
@@ -140,7 +142,7 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun showOriginGifticonDialog(uri: Uri) {
-        OriginImageDialog().apply {
+        originImageDialog.apply {
             arguments = Bundle().apply {
                 putParcelable(Extras.OriginImage, uri)
             }

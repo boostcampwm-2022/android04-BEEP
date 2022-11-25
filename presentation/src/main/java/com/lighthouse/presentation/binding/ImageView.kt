@@ -8,14 +8,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lighthouse.presentation.extension.getThumbnail
 
 @BindingAdapter("loadUri")
-fun loadUri(view: ImageView, uri: Uri?) {
-    view.setImageBitmap(null)
+fun ImageView.loadUri(uri: Uri?) {
+    setImageBitmap(null)
     if (uri != null) {
-        Glide.with(view)
+        Glide.with(this)
             .load(uri)
-            .into(view)
+            .into(this)
     } else {
-        view.setImageBitmap(null)
+        setImageBitmap(null)
     }
 }
 
