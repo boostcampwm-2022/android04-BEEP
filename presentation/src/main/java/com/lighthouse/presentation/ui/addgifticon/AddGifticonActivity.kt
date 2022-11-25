@@ -7,20 +7,29 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityAddGifticonBinding
 import com.lighthouse.presentation.extension.dp
+import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
+import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonDirections
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class AddGifticonActivity : AppCompatActivity() {
@@ -41,7 +50,7 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     )
 
-    val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val list = result.data?.getParcelableArrayList(Extras.GallerySelection, GalleryUIModel.Gallery::class.java)
                 ?: emptyList()
@@ -49,8 +58,21 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            val croppedUri =
+                result.data?.getParcelable(Extras.CroppedImage, Uri::class.java) ?: return@registerForActivityResult
+            val gifticon = viewModel.currentGifticon.value ?: return@registerForActivityResult
+            val output = getFileStreamPath("Temp${gifticon.id}")
+
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    FileInputStream(croppedUri.path).copyTo(
+                        FileOutputStream(output)
+                    )
+                }
+                viewModel.croppedImage(output.toUri())
+            }
         }
     }
 
@@ -117,5 +139,14 @@ class AddGifticonActivity : AppCompatActivity() {
         cropGifticon.launch(intent)
     }
 
-    private fun showOriginGifticonDialog(uri: Uri) {}
+    val dialog = OriginImageDialog().apply {
+        arguments = Bundle()
+    }
+
+    private fun showOriginGifticonDialog(uri: Uri) {
+        dialog.apply {
+            arguments?.putParcelable(Extras.OriginImage, uri)
+            show(supportFragmentManager, OriginImageDialog::class.java.name)
+        }
+    }
 }

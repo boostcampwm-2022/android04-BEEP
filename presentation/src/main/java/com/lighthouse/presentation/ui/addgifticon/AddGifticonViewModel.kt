@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.addgifticon
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.model.AddGifticonUIModel
@@ -44,7 +45,11 @@ class AddGifticonViewModel : ViewModel() {
         }
     }
 
-    fun deleteGifticon(position: Int) {}
+    fun croppedImage(uri: Uri) {
+    }
+
+    fun deleteGifticon(position: Int) {
+    }
 
     fun popBackstack() {
         viewModelScope.launch {
@@ -59,14 +64,14 @@ class AddGifticonViewModel : ViewModel() {
     }
 
     fun gotoCropGifticon() {
-        val originUri = currentGifticon.value?.uri ?: return
+        val originUri = currentGifticon.value?.origin ?: return
         viewModelScope.launch {
             directionsFlow.emit(AddGifticonDirections.CropGifticon(originUri))
         }
     }
 
     fun gotoOriginGifticon() {
-        val originUri = currentGifticon.value?.uri ?: return
+        val originUri = currentGifticon.value?.origin ?: return
         viewModelScope.launch {
             directionsFlow.emit(AddGifticonDirections.OriginGifticon(originUri))
         }

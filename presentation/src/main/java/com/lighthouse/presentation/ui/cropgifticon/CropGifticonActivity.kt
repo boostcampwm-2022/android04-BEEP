@@ -1,15 +1,14 @@
 package com.lighthouse.presentation.ui.cropgifticon
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -22,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class CropGifticonActivity : AppCompatActivity() {
@@ -86,13 +86,17 @@ class CropGifticonActivity : AppCompatActivity() {
 
     private fun completeCropImage(bitmap: Bitmap) {
         lifecycleScope.launch {
+            val file = getFileStreamPath(TEMP_FILE_PATH)
+            file.delete()
+
             withContext(Dispatchers.IO) {
-                openFileOutput(TEMP_FILE_PATH, Context.MODE_PRIVATE).use {
+                FileOutputStream(file).use {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
                 }
             }
+
             val intent = Intent().apply {
-                putExtra(Extras.CroppedImage, Uri.fromFile(getFileStreamPath(TEMP_FILE_PATH)))
+                putExtra(Extras.CroppedImage, file.toUri())
             }
             setResult(Activity.RESULT_OK, intent)
             finish()
