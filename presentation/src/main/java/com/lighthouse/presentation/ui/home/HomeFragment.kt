@@ -9,7 +9,7 @@ import com.lighthouse.presentation.ui.main.MainViewModel
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val binding by viewBindings(FragmentHomeBinding::bind)
+    private val binding: FragmentHomeBinding by viewBindings()
 
     private val mainViewModel: MainViewModel by activityViewModels()
 }

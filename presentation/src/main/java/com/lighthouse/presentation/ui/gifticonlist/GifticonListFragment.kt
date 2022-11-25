@@ -20,7 +20,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class GifticonListFragment : Fragment(R.layout.fragment_gifticon_list) {
 
-    private val binding by viewBindings(FragmentGifticonListBinding::bind)
+    private val binding: FragmentGifticonListBinding by viewBindings()
 
     @Inject
     lateinit var saveGifticonsUseCase: SaveGifticonsUseCase

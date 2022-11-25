@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class PinFragment : Fragment(R.layout.fragment_pin) {
 
-    private val binding by viewBindings(FragmentPinBinding::bind)
+    private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
 
