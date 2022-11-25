@@ -56,6 +56,8 @@
     <string name="add_gifticon_cancel">취소</string>
     <string name="add_gifticon_register">등록하기</string>
 
+    <string name="origin_image_description">기프티콘 원본 이미지</string>
+
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>
     <string name="gallery_title">이미지 선택</string>

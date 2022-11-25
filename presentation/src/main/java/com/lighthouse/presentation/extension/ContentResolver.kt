@@ -38,8 +38,6 @@ fun ContentResolver.getThumbnail(uri: Uri?): Bitmap? {
             null
         }
     } else {
-        uri.lastPathSegment?.toLong()?.let { id ->
-            MediaStore.Images.Thumbnails.getThumbnail(this, id, MediaStore.Images.Thumbnails.MINI_KIND, null)
-        }
+        return null
     }
 }
