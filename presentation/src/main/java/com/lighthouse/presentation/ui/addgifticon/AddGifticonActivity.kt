@@ -95,6 +95,14 @@ class AddGifticonActivity : AppCompatActivity() {
             adapter = gifticonAdapter
             addItemDecoration(ListSpaceItemDecoration(4.dp, 16.dp, 0f, 16.dp, 0f))
         }
+
+        repeatOnStarted {
+            viewModel.displayList.collect { list ->
+                gifticonAdapter.submitList(list) {
+                    binding.rvGifticon.invalidateItemDecorations()
+                }
+            }
+        }
     }
 
     private fun setUpDirections() {

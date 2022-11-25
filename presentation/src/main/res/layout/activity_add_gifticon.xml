@@ -113,7 +113,6 @@
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintTop_toBottomOf="@id/tv_registered_count"
-                    app:setItems="@{vm.displayList}"
                     tools:listitem="@layout/item_add_candidate_gifticon" />
 
                 <ImageView

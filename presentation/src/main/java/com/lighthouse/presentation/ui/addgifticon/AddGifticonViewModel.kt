@@ -9,7 +9,7 @@ import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonDirections
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ class AddGifticonViewModel : ViewModel() {
     val directionsFlow = MutableSharedFlow<AddGifticonDirections>()
 
     private val _displayList = MutableStateFlow<List<AddGifticonUIModel>>(listOf(AddGifticonUIModel.Gallery))
-    val displayList: StateFlow<List<AddGifticonUIModel>> = _displayList
+    val displayList = _displayList.asStateFlow()
 
     private val currentPos = MutableStateFlow(-1)
     val currentGifticon = displayList.combineTransform(currentPos) { list, pos ->
