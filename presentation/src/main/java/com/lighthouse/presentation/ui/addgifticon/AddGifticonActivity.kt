@@ -139,13 +139,11 @@ class AddGifticonActivity : AppCompatActivity() {
         cropGifticon.launch(intent)
     }
 
-    val dialog = OriginImageDialog().apply {
-        arguments = Bundle()
-    }
-
     private fun showOriginGifticonDialog(uri: Uri) {
-        dialog.apply {
-            arguments?.putParcelable(Extras.OriginImage, uri)
+        OriginImageDialog().apply {
+            arguments = Bundle().apply {
+                putParcelable(Extras.OriginImage, uri)
+            }
             show(supportFragmentManager, OriginImageDialog::class.java.name)
         }
     }

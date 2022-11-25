@@ -13,7 +13,6 @@ fun loadUri(view: ImageView, uri: Uri?) {
     if (uri != null) {
         Glide.with(view)
             .load(uri)
-            .centerCrop()
             .into(view)
     } else {
         view.setImageBitmap(null)
