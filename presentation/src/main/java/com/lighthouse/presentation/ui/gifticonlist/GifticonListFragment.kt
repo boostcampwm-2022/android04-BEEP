@@ -61,10 +61,22 @@ class GifticonListFragment : Fragment(R.layout.fragment_gifticon_list) {
                             id = "sample3",
                             userId = "mangbaam",
                             name = "어머니는 외계인",
-                            brand = "베스킨라빈스31",
+                            brand = "베스킨라빈스",
                             expireAt = Date(),
                             barcode = "808346588450",
                             isCashCard = false,
+                            balance = 0,
+                            memo = "",
+                            isUsed = true
+                        ),
+                        Gifticon(
+                            id = "sample4",
+                            userId = "mangbaam",
+                            name = "3만원권",
+                            brand = "e마트",
+                            expireAt = Date(),
+                            barcode = "808346588450",
+                            isCashCard = true,
                             balance = 0,
                             memo = "",
                             isUsed = true
@@ -77,7 +89,13 @@ class GifticonListFragment : Fragment(R.layout.fragment_gifticon_list) {
         binding.btnTest.setOnClickListener {
             startActivity(
                 Intent(requireContext(), GifticonDetailActivity::class.java).apply {
-                    putExtra(KEY_GIFTICON_ID, "sample1")
+                    val key = when (binding.rgTestOption.checkedRadioButtonId) {
+                        R.id.rb1 -> "sample1"
+                        R.id.rb2 -> "sample2"
+                        R.id.rb3 -> "sample3"
+                        else -> "sample4"
+                    }
+                    putExtra(KEY_GIFTICON_ID, key)
                 }
             )
         }

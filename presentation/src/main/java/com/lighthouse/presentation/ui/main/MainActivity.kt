@@ -15,6 +15,7 @@ import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
+import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,10 +52,16 @@ class MainActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { directions ->
                 when (directions) {
                     MainEvents.NavigateAddGifticon -> gotoAddGifticon()
+                    MainEvents.NavigateMap -> gotoMap()
                     else -> moveScreen(directions)
                 }
             }
         }
+    }
+
+    private fun gotoMap() {
+        val intent = Intent(this, MapActivity::class.java)
+        startActivity(intent)
     }
 
     private fun gotoAddGifticon() {

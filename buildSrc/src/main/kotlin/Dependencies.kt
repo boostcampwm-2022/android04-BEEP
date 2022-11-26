@@ -33,7 +33,7 @@ object Versions {
     const val INJECT = "1"
 
     const val NAVER_MAP = "3.16.0"
-    const val PLAY_SERVICES_LOCATION = "21.0.1"
+    const val PLAY_SERVICES_LOCATION = "20.0.0"
 
     const val GLIDE = "4.14.2"
     const val VIEW_PAGER2 = "2:1.0.0"
@@ -46,8 +46,10 @@ object Versions {
     const val GOOGLE_TRUTH = "1.1.3"
     const val COROUTINES_TEST = "1.6.0"
     const val MOCK_TEST = "2.28.2"
+    const val TURBINE = "0.12.1"
 
     const val TIMBER = "4.7.1"
+    const val DATASTORE = "1.1.0-alpha01"
 }
 
 object Libraries {
@@ -103,6 +105,8 @@ object Libraries {
     private const val VIEW_PAGER2 = "androidx.viewpager2:viewpager${Versions.VIEW_PAGER2}"
 
     private const val TIMBER = "com.jakewharton.timber:timber:${Versions.TIMBER}"
+    private const val DATASTORE_CORE = "androidx.datastore:datastore-preferences-core:${Versions.DATASTORE}"
+    private const val DATASTORE = "androidx.datastore:datastore-preferences:${Versions.DATASTORE}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -135,18 +139,20 @@ object Libraries {
         MOSHI_KOTLIN,
         MOSHI_ADAPTERS,
         CONVERTER_MOSHI,
-        INJECT,
+        HILT,
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
         WORK_MANAGER,
-        TIMBER
+        TIMBER,
+        DATASTORE,
+        DATASTORE_CORE,
+        PLAY_SERVICES_LOCATION
     )
     val DOMAIN_LIBRARIES = arrayListOf(
         COROUTINE_CORE,
         INJECT,
         PAGING_COMMON_KTX,
-        ROOM_COMMON,
-        TIMBER
+        ROOM_COMMON
     )
     val APP_LIBRARIES = arrayListOf(
         HILT,
@@ -156,7 +162,9 @@ object Libraries {
         CONVERTER_MOSHI,
         ROOM_RUNTIME,
         ROOM_KTX,
-        TIMBER
+        TIMBER,
+        DATASTORE,
+        DATASTORE_CORE
     )
 }
 
@@ -172,6 +180,7 @@ object TestImpl {
     private const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES_TEST}"
     private const val TEST_CORE = "androidx.test:core:1.5.0"
     private const val ROBOLECTRIC = "org.robolectric:robolectric:4.9"
+    private const val TURBINE = "app.cash.turbine:turbine:${Versions.TURBINE}"
 
     val TEST_LIBRARIES = arrayListOf(
         JUNIT4,
@@ -182,7 +191,8 @@ object TestImpl {
         MOCK,
         GOOGLE_TRUTH,
         COROUTINES_TEST,
-        ROBOLECTRIC
+        ROBOLECTRIC,
+        TURBINE
     )
 
     val ANDROID_TEST_LIBRARIES = arrayListOf(
@@ -238,7 +248,8 @@ object Kapt {
 
     val DATA_LIBRARIES = arrayListOf(
         ROOM_COMPILER,
-        MOSHI_KOTLIN_CODEGEN
+        MOSHI_KOTLIN_CODEGEN,
+        HILT
     )
 
     val APP_LIBRARIES = arrayListOf(

@@ -11,7 +11,9 @@ import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintFragment
 import com.lighthouse.presentation.ui.security.pin.PinFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SecurityActivity : AppCompatActivity() {
 
     private val viewModel: SecurityViewModel by viewModels()

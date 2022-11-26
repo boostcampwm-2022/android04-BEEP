@@ -23,6 +23,16 @@
             app:layout_constraintBottom_toTopOf="@id/bnv"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/BEEP.Component.TextButton"
+            android:text="지도"
+            android:onClickListener="@{() -> vm.gotoMap()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_gifticon"
             android:layout_width="wrap_content"
@@ -33,15 +43,15 @@
             android:onClickListener="@{() -> vm.gotoAddGifticon()}"
             android:src="@drawable/btn_main_floating_add"
             app:layout_constraintBottom_toTopOf="@id/bnv"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bnv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/menu_main_navigation"
             app:onItemSelectedListener="@{(item) -> vm.gotoMenuItem(item.itemId)}"
             app:selectedItemId="@{vm.selectedMenuItem}" />

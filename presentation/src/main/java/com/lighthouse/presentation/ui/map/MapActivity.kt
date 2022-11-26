@@ -1,18 +1,19 @@
 package com.lighthouse.presentation.ui.map
 
-import android.location.Location
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.domain.LocationConverter.toPolygonLatLng
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
@@ -23,26 +24,30 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.PolygonOverlay
 import com.naver.maps.map.util.FusedLocationSource
+import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Date
 import java.util.UUID
 
 @AndroidEntryPoint
-class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickListener, OnLocationUpdateListener {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickListener {
 
     private lateinit var binding: ActivityMapBinding
     private lateinit var naverMap: NaverMap
     private lateinit var mapView: MapView
-    private lateinit var fusedLocationProviderClient: FusedLocationProvider
+    private lateinit var client: FusedLocationProviderClient
     private lateinit var locationSource: FusedLocationSource
     private val viewModel: MapViewModel by viewModels()
     private val adapter = MapGifticonAdapter()
+    private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        client = LocationServices.getFusedLocationProviderClient(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map)
         mapView = binding.mapView.apply {
             onCreate(savedInstanceState)
@@ -51,7 +56,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
 
         setGifticonAdapter()
         setObserveSearchData()
-        setFusedLocationProvider()
+        viewModel.collectLocation()
     }
 
     override fun onStart() {
@@ -60,16 +65,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     }
 
     private fun setObserveSearchData() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest { state ->
-                    when (state) {
-                        is UiState.Success -> updateBrandMarker(state.item)
-                        is UiState.Loading -> Unit
-                        is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
-                        is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
-                        is UiState.Failure -> showSnackBar(R.string.error_network_failure)
-                    }
+        repeatOnStarted {
+            viewModel.state.collectLatest { state ->
+                when (state) {
+                    is UiState.Success -> updateBrandMarker(state.item)
+                    is UiState.Loading -> Unit
+                    is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
+                    is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
+                    is UiState.Failure -> showSnackBar(R.string.error_network_failure)
                 }
             }
         }
@@ -90,15 +93,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
                 map = naverMap
                 width = Marker.SIZE_AUTO
                 height = Marker.SIZE_AUTO
-                tag = brandPlaceSearchResult.brand
+                tag = brandPlaceSearchResult.placeUrl
                 captionText = brandPlaceSearchResult.brand
             }
-        }
-    }
-
-    private fun setFusedLocationProvider() {
-        fusedLocationProviderClient = FusedLocationProvider(this, this).apply {
-            requestLastLocation()
         }
     }
 
@@ -106,12 +103,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
         naverMap = map
         locationSource = FusedLocationSource(this, 1000)
         naverMap.locationSource = locationSource
+
+        val uiSetting = naverMap.uiSettings
+        uiSetting.isLocationButtonEnabled = false
+
+        currentLocationButton.map = naverMap
         setNaverMapZoom()
+        setNaverMapPolyLine()
     }
 
+    @SuppressLint("MissingPermission")
     private fun setNaverMapZoom() {
         naverMap.maxZoom = 18.0
         naverMap.minZoom = 10.0
+
+        client.lastLocation.addOnSuccessListener { startLocation ->
+            moveMapCamera(startLocation.longitude, startLocation.latitude)
+        }
     }
 
     private fun setGifticonAdapter() {
@@ -127,18 +135,38 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
     }
 
     override fun onClick(overlay: Overlay): Boolean {
+        Timber.tag("TAG").d("${javaClass.simpleName} overley -> ${overlay.tag}")
         return true
-    }
-
-    override fun onLocationUpdated(location: Location) {
-        viewModel.getBrandPlaceInfos(location.longitude, location.latitude)
-        moveMapCamera(location.longitude, location.latitude)
     }
 
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
         naverMap.moveCamera(cameraUpdate)
     }
+
+    // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
+    private val polygonOverlay = PolygonOverlay()
+    private fun setNaverMapPolyLine() {
+        repeatOnStarted {
+            viewModel.userLocation.collect {
+                polygonOverlay.map = null
+                val x = it.first
+                val y = it.second
+                val toPolygonLatLng = toPolygonLatLng(x, y)
+
+                polygonOverlay.coords = listOf(
+                    LatLng(toPolygonLatLng[0].second, toPolygonLatLng[0].first),
+                    LatLng(toPolygonLatLng[1].second, toPolygonLatLng[1].first),
+                    LatLng(toPolygonLatLng[2].second, toPolygonLatLng[2].first),
+                    LatLng(toPolygonLatLng[3].second, toPolygonLatLng[3].first)
+                )
+                polygonOverlay.color = getColor(R.color.polygon)
+                Timber.tag("TAG").d("${javaClass.simpleName} polygonOverlay -> ${polygonOverlay.coords}")
+                polygonOverlay.map = naverMap
+            }
+        }
+    }
+    // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
 
     override fun onResume() {
         super.onResume()
@@ -162,7 +190,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickList
 
     override fun onDestroy() {
         mapView.onDestroy()
-        fusedLocationProviderClient.stopLocationUpdates()
         super.onDestroy()
     }
 

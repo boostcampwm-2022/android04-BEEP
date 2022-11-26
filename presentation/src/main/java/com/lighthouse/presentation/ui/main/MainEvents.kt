@@ -6,4 +6,5 @@ sealed class MainEvents {
     object NavigateList : MainEvents()
     object NavigateSetting : MainEvents()
     object NavigateAddGifticon : MainEvents()
+    object NavigateMap : MainEvents()
 }

@@ -4,5 +4,6 @@ enum class PinSettingType {
     INITIAL,
     CONFIRM,
     WRONG,
-    COMPLETE
+    COMPLETE,
+    ERROR
 }

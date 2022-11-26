@@ -11,18 +11,26 @@ import com.lighthouse.datasource.gifticon.GifticonLocalDataSourceImpl
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
 import com.lighthouse.domain.repository.GifticonRepository
+import com.lighthouse.domain.repository.LocationRepository
+import com.lighthouse.domain.repository.SecurityRepository
+import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
 import com.lighthouse.repository.GifticonRepositoryImpl
+import com.lighthouse.repository.LocationRepositoryImpl
+import com.lighthouse.repository.SecurityRepositoryImpl
+import com.lighthouse.repository.UserPreferencesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataModule {
+abstract class SingletonScopedDataModule {
 
     @Binds
     @Singleton
@@ -65,4 +73,27 @@ abstract class DataModule {
     abstract fun bindGifticonRepository(
         repository: GifticonRepositoryImpl
     ): GifticonRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSecurityRepository(
+        repository: SecurityRepositoryImpl
+    ): SecurityRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserPreferencesRepository(
+        repository: UserPreferencesRepositoryImpl
+    ): UserPreferencesRepository
+}
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+abstract class ViewModelScopedDataModule {
+
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindLocationRepository(
+        repository: LocationRepositoryImpl
+    ): LocationRepository
 }

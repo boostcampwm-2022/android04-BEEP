@@ -97,243 +97,15 @@
                     app:layout_constraintTop_toTopOf="@id/iv_share_button"
                     app:tint="@color/gray" />
 
-                <TextView
-                    android:id="@+id/tv_product_name_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:labelFor="@id/et_product_name"
-                    android:text="@string/gifticon_detail_product_name_label"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/iv_product_image" />
-
-                <EditText
-                    android:id="@+id/et_product_name"
-                    style="@style/Theme.BEEP.EditText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:enabled="@{vm.mode == mode.EDIT}"
-                    android:importantForAutofill="no"
-                    android:inputType="textAutoComplete"
-                    android:maxLines="1"
-                    android:text="@{vm.gifticon.name}"
-                    android:textAppearance="@style/BEEP.TextStyle.H6"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
-                    tools:text="딸기마카롱설빙" />
-
-                <TextView
-                    android:id="@+id/tv_brand_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:labelFor="@id/et_brand"
-                    android:text="@string/gifticon_detail_product_brand_label"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/et_product_name" />
-
-                <EditText
-                    android:id="@+id/et_brand"
-                    style="@style/Theme.BEEP.EditText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:background="@null"
-                    android:ellipsize="end"
-                    android:enabled="@{vm.mode == mode.EDIT}"
-                    android:importantForAutofill="no"
-                    android:inputType="textAutoComplete"
-                    android:maxLines="1"
-                    android:text="@{vm.gifticon.brand}"
-                    android:textAppearance="@style/BEEP.TextStyle.H6"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
-                    tools:text="설빙" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/group_unused"
-                    isVisible="@{!vm.gifticon.used}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_edit_button,tv_expire_date_label,tv_expire_date"
-                    app:layout_constraintTop_toBottomOf="@id/tv_expire_date"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/tv_expire_date_label"
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fcv_gifticon_info"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/gifticon_detail_product_expire_date_label"
-                    app:layout_constraintEnd_toStartOf="@id/tv_cash_balance_label"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/et_brand" />
-
-                <TextView
-                    android:id="@+id/tv_expire_date"
-                    style="@style/BEEP.TextStyle.H6"
-                    dateFormat="@{vm.gifticon.expireAt}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:enabled="@{vm.mode==mode.EDIT}"
-                    android:onClick="@{() -> vm.expireDateClicked()}"
-                    app:layout_constraintEnd_toStartOf="@id/tv_cash_balance"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_expire_date_label"
-                    tools:text="2023.07.23" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/group_cash_card"
-                    isVisible="@{vm.gifticon.cashCard &amp;&amp; !vm.gifticon.used}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="tv_cash_balance,tv_cash_balance_label"
-                    tools:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_cash_balance_label"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gifticon_detail_cash_type_balance_label"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_date_label"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_expire_date_label"
-                    app:layout_constraintTop_toTopOf="@id/tv_expire_date_label" />
-
-                <EditText
-                    android:id="@+id/tv_cash_balance"
-                    style="@style/Theme.BEEP.EditText"
-                    concurrencyFormat="@{vm.gifticon.balance}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:enabled="@{vm.mode == mode.EDIT}"
-                    android:importantForAutofill="no"
-                    android:inputType="number"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_date"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_expire_date"
-                    app:layout_constraintTop_toTopOf="@id/tv_expire_date"
-                    tools:text="3,620원" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/group_used"
-                    isVisible="@{vm.gifticon.used}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="iv_show_all_used_info_button,tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date,tv_balance_label,tv_balance"
-                    app:layout_constraintTop_toBottomOf="@id/tv_used_date"
-                    tools:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_used_address_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/gifticon_detail_used_address_label"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/et_brand" />
-
-                <TextView
-                    android:id="@+id/tv_used_address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="48dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    app:layout_constraintEnd_toStartOf="@id/iv_show_all_used_info_button"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"
-                    tools:text="서울시 용산구 백범로 90라길 올리브영" />
-
-                <ImageView
-                    android:id="@+id/iv_show_all_used_info_button"
-                    isVisible="@{vm.gifticon.cashCard}"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="@string/gifticon_detail_show_all_used_info_button_description"
-                    android:onClick="@{() -> vm.showAllUsedInfoButtonClicked()}"
-                    android:src="@drawable/ic_outline_info"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_used_address"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintTop_toTopOf="@id/tv_used_address"
-                    app:tint="@color/gray" />
-
-                <TextView
-                    android:id="@+id/tv_used_date_label"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/gifticon_detail_used_date_label"
-                    app:layout_constraintEnd_toStartOf="@id/tv_balance_label"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_used_address" />
-
-                <TextView
-                    android:id="@+id/tv_used_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintEnd_toStartOf="@id/tv_balance"
-                    app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_used_date_label"
-                    tools:text="2022.11.08" />
-
-                <TextView
-                    android:id="@+id/tv_balance_label"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gifticon_detail_balance_label"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_used_date_label"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_used_date_label"
-                    app:layout_constraintTop_toTopOf="@id/tv_used_date_label" />
-
-                <TextView
-                    android:id="@+id/tv_balance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_used_date"
-                    app:layout_constraintEnd_toEndOf="@id/gl_end"
-                    app:layout_constraintStart_toEndOf="@id/tv_used_date"
-                    app:layout_constraintTop_toTopOf="@id/tv_used_date"
-                    tools:text="0원" />
-
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/barrier_group_bottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="group_used,group_unused" />
-
-                <EditText
-                    android:id="@+id/et_memo"
-                    style="@style/Theme.BEEP.EditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_gifticon_detail_memo"
-                    android:enabled="@{vm.mode == mode.EDIT}"
-                    android:gravity="top"
-                    android:hint="@string/gifticon_detail_memo_description"
-                    android:importantForAutofill="no"
-                    android:inputType="none"
-                    android:minHeight="150dp"
-                    android:padding="16dp"
-                    android:text="@{vm.gifticon.memo}"
-                    android:textAppearance="@style/BEEP.TextStyle.Body1"
-                    android:textColorHint="#616161"
+                    app:layout_constraintBottom_toTopOf="@id/tv_shared_info"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/barrier_group_bottom"
-                    tools:text="adfasdfasdfasdfasdf" />
+                    app:layout_constraintTop_toBottomOf="@id/iv_share_button"
+                    tools:layout="@layout/fragment_standard_gifticon_info" />
 
                 <TextView
                     android:id="@+id/tv_shared_info"
@@ -344,7 +116,7 @@
                     app:layout_constraintBottom_toTopOf="@id/btn_use_gifticon"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/et_memo"
+                    app:layout_constraintTop_toBottomOf="@id/fcv_gifticon_info"
                     app:layout_constraintVertical_bias="1"
                     tools:text="ⓘ 2022년 11월 8일에 공유된 기프티콘 입니다." />
 
@@ -359,7 +131,7 @@
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
-                    app:layout_constraintTop_toBottomOf="@id/et_memo"
+                    app:layout_constraintTop_toBottomOf="@id/tv_shared_info"
                     app:layout_constraintVertical_bias="1.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
