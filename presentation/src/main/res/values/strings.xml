@@ -32,7 +32,7 @@
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
     <string name="add_gifticon_title">기프티콘 추가</string>
     <string name="add_gifticon_empty">없음</string>
-    <string name="add_gifticon_registered">개 등록됨</string>
+    <string name="add_gifticon_registered">%d개 등록됨</string>
     <string name="add_gifticon_goto_gallery_description">갤러리 이동하기 버튼</string>
     <string name="add_gifticon_delete_description">등록된 이미지 삭제 버튼</string>
     <string name="add_gifticon_candidate_description">기프티콘 후보 버튼</string>
@@ -61,7 +61,7 @@
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>
     <string name="gallery_title">이미지 선택</string>
-    <string name="gallery_selected">개 선택됨</string>
+    <string name="gallery_selected">%d개 선택됨</string>
     <string name="gallery_confirm">완료</string>
 
     <string name="crop_gifticon_complete">완료</string>

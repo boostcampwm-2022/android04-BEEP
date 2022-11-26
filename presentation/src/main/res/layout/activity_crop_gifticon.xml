@@ -47,7 +47,6 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textColor="?attr/colorOnPrimary"
                 android:textStyle="bold"
-                app:isVisible="@{vm.isComplete}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -57,11 +56,11 @@
             android:id="@+id/crop_image_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:cropInfo="@{vm.cropInfo}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_toolbar"
-            app:originUri="@{vm.originUri}"
-            app:onCropImageListener="@{(b) -> vm.onCropImageListener(b)}" />
+            app:onCropImageListener="@{(bitmap, rect) -> vm.onCropImageListener(bitmap, rect)}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

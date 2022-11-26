@@ -34,23 +34,23 @@ fun ImageView.loadUriWithoutCache(uri: Uri?) {
 }
 
 @BindingAdapter("loadThumbnailByContentUri")
-fun loadThumbnailByContentUri(view: ImageView, contentUri: Uri?) {
-    val resolver = view.context.contentResolver
+fun ImageView.loadThumbnailByContentUri(contentUri: Uri?) {
+    val resolver = context.contentResolver
     val thumbnail = resolver.getThumbnail(contentUri)
-    view.setImageBitmap(null)
+    setImageBitmap(null)
     if (thumbnail != null) {
-        Glide.with(view)
+        Glide.with(this)
             .load(thumbnail)
             .centerCrop()
-            .into(view)
+            .into(this)
     } else {
         if (contentUri != null) {
-            Glide.with(view)
+            Glide.with(this)
                 .load(contentUri)
                 .centerCrop()
-                .into(view)
+                .into(this)
         } else {
-            view.setImageBitmap(null)
+            setImageBitmap(null)
         }
     }
 }

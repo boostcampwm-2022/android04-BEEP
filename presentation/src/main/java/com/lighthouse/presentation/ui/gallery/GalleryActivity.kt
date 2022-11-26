@@ -11,13 +11,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGalleryBinding
 import com.lighthouse.presentation.extension.dp
-import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.adapter.GalleryAdapter
 import com.lighthouse.presentation.ui.gallery.adapter.GallerySelection
-import com.lighthouse.presentation.ui.gallery.event.GalleryEvents
 import com.lighthouse.presentation.util.recycler.GridSectionSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,9 +26,8 @@ class GalleryActivity : AppCompatActivity() {
     private val viewModel: GalleryViewModel by viewModels()
 
     private val selection by lazy {
-        val list =
-            intent.getParcelableArrayList(Extras.GallerySelection, GalleryUIModel.Gallery::class.java) ?: emptyList()
-        GallerySelection(list)
+        val list = intent.getLongArrayExtra(Extras.KEY_SELECTED_IDS) ?: emptyArray<Long>()
+        GallerySelection(listOf())
     }
 
     private val galleryAdapter by lazy {
@@ -51,7 +47,6 @@ class GalleryActivity : AppCompatActivity() {
 
         setUpOnBackPressed()
         setUpRecyclerView()
-        collectPagingData()
         collectEvent()
     }
 
@@ -74,12 +69,11 @@ class GalleryActivity : AppCompatActivity() {
             }
             addItemDecoration(GridSectionSpaceItemDecoration(20.dp, 4.dp, 12.dp, 12.dp))
         }
-    }
 
-    private fun collectPagingData() {
         repeatOnStarted {
             viewModel.list.collect {
                 galleryAdapter.submitData(it)
+                binding.rvList.invalidateItemDecorations()
             }
         }
     }
@@ -88,8 +82,8 @@ class GalleryActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventsFlow.collect { events ->
                 when (events) {
-                    GalleryEvents.COMPLETE -> completePhotoSelection()
-                    GalleryEvents.CANCEL -> cancelPhotoSelection()
+                    is GalleryEvents.CompleteSelect -> completePhotoSelection()
+                    is GalleryEvents.PopupBackStack -> cancelPhotoSelection()
                 }
             }
         }
@@ -97,7 +91,7 @@ class GalleryActivity : AppCompatActivity() {
 
     private fun completePhotoSelection() {
         val intent = Intent().apply {
-            putParcelableArrayListExtra(Extras.GallerySelection, selection.toArrayList())
+            putParcelableArrayListExtra(Extras.KEY_SELECTED_GALLERY_ITEM, selection.toArrayList())
         }
         setResult(Activity.RESULT_OK, intent)
         finish()

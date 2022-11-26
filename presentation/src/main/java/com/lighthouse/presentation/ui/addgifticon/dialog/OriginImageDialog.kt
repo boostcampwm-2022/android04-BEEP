@@ -19,6 +19,9 @@ class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
 
     private val binding: DialogOriginImageBinding by viewBindings()
 
+    private val originUri
+        get() = arguments?.getParcelableCompat(Extras.KEY_ORIGIN_IMAGE, Uri::class.java)
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             window?.apply {
@@ -37,11 +40,12 @@ class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
             dismiss()
         }
 
-        binding.ivOrigin.loadUri(arguments?.getParcelableCompat(Extras.OriginImage, Uri::class.java))
+        binding.ivOrigin.loadUri(originUri)
     }
 
     override fun onResume() {
         super.onResume()
+
         dialog?.window?.apply {
             attributes = attributes.apply {
                 width = WindowManager.LayoutParams.MATCH_PARENT

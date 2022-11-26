@@ -8,9 +8,9 @@ import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddGifticonAdapter(
     private val onClickGallery: () -> Unit,
-    private val onClickGifticon: (Int) -> Unit,
-    private val onDeleteGifticon: (Int) -> Unit
-) : BindableListAdapter<AddGifticonUIModel, RecyclerView.ViewHolder>(Diff) {
+    private val onClickGifticon: (AddGifticonUIModel.Gifticon) -> Unit,
+    private val onDeleteGifticon: (AddGifticonUIModel.Gifticon) -> Unit
+) : BindableListAdapter<AddGifticonUIModel, RecyclerView.ViewHolder>(diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -37,7 +37,7 @@ class AddGifticonAdapter(
     }
 
     companion object {
-        private val Diff = object : DiffUtil.ItemCallback<AddGifticonUIModel>() {
+        private val diff = object : DiffUtil.ItemCallback<AddGifticonUIModel>() {
             override fun areItemsTheSame(oldItem: AddGifticonUIModel, newItem: AddGifticonUIModel): Boolean {
                 return when {
                     oldItem is AddGifticonUIModel.Gallery && newItem is AddGifticonUIModel.Gallery -> true
@@ -50,6 +50,12 @@ class AddGifticonAdapter(
 
             override fun areContentsTheSame(oldItem: AddGifticonUIModel, newItem: AddGifticonUIModel): Boolean {
                 return oldItem == newItem
+//                return when {
+//                    oldItem is AddGifticonUIModel.Gallery && newItem is AddGifticonUIModel.Gallery -> true
+//                    oldItem is AddGifticonUIModel.Gifticon && newItem is AddGifticonUIModel.Gifticon -> {
+//                    }
+//                    else -> false
+//                }
             }
         }
 

@@ -74,26 +74,17 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tv_registered_count"
+                    android:id="@+id/tv_registered"
                     android:layout_width="wrap_content"
                     android:layout_height="38dp"
                     android:layout_marginStart="16dp"
                     android:gravity="center"
+                    android:text="@string/add_gifticon_registered"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="1" />
-
-                <TextView
-                    android:id="@+id/tv_registered"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_gifticon_registered"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:textStyle="bold"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_registered_count"
-                    app:layout_constraintStart_toEndOf="@id/tv_registered_count" />
+                    app:setUIText="@{vm.registeredSizeText}"/>
 
                 <TextView
                     android:id="@+id/tv_mode"
@@ -103,7 +94,7 @@
                     android:text="@string/add_gifticon_delete_mode"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textStyle="bold"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_registered_count"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_registered"
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -112,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@id/tv_registered_count"
+                    app:layout_constraintTop_toBottomOf="@id/tv_registered"
                     tools:listitem="@layout/item_add_candidate_gifticon" />
 
                 <ImageView
@@ -124,10 +115,10 @@
                     android:contentDescription="@string/add_gifticon_image_description"
                     android:onClick="@{() -> vm.gotoCropGifticon()}"
                     android:scaleType="centerCrop"
-                    app:loadUriWithoutCache="@{vm.currentGifticon.origin}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_gifticon" />
+                    app:layout_constraintTop_toBottomOf="@id/rv_gifticon"
+                    app:loadUriWithoutCache="@{vm.selectedGifticon.uri}" />
 
                 <TextView
                     android:id="@+id/tv_edit_gifticon_image"
@@ -151,12 +142,12 @@
                     android:layout_marginEnd="16dp"
                     android:background="@color/gray"
                     android:gravity="center"
+                    android:onClick="@{() -> vm.gotoOriginGifticon()}"
                     android:padding="8dp"
                     android:text="@string/add_gifticon_confirm_origin_image"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:onClick="@{() -> vm.gotoOriginGifticon()}"
                     app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image" />
 
                 <ImageView

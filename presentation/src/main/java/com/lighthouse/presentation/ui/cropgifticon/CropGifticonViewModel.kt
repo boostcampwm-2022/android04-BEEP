@@ -1,17 +1,18 @@
 package com.lighthouse.presentation.ui.cropgifticon
 
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvent
+import com.lighthouse.presentation.ui.cropgifticon.view.CropImageInfo
+import com.lighthouse.presentation.util.flow.MutableEventFlow
+import com.lighthouse.presentation.util.flow.asEventFlow
+import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,34 +21,32 @@ class CropGifticonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _eventsFlow = MutableSharedFlow<CropGifticonEvent>()
-    val eventsFlow = _eventsFlow.asSharedFlow()
+    private val _eventsFlow = MutableEventFlow<CropGifticonEvents>()
+    val eventsFlow = _eventsFlow.asEventFlow()
 
-    private val _messageFlow = MutableSharedFlow<Int>()
-    val messageFlow = _messageFlow.asSharedFlow()
-
-    val isComplete = MutableStateFlow(true)
-
-    val originUri = savedStateHandle.get<Uri>(Extras.OriginImage)
+    val cropInfo = CropImageInfo(
+        savedStateHandle.get<Uri>(Extras.KEY_ORIGIN_IMAGE),
+        savedStateHandle.get<RectF>(Extras.KEY_CROPPED_RECT)
+    )
 
     fun cancelCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvent.Cancel)
+            _eventsFlow.emit(CropGifticonEvents.PopupBackStack)
         }
     }
 
     fun requestCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvent.Crop)
+            _eventsFlow.emit(CropGifticonEvents.RequestCrop)
         }
     }
 
-    fun onCropImageListener(bitmap: Bitmap?) {
+    fun onCropImageListener(croppedBitmap: Bitmap?, croppedRect: RectF) {
         viewModelScope.launch {
-            if (bitmap == null) {
-                _messageFlow.emit(R.string.crop_gifticon_failed)
+            if (croppedBitmap == null) {
+                _eventsFlow.emit(CropGifticonEvents.ShowSnackBar(UIText.StringResource(R.string.crop_gifticon_failed)))
             } else {
-                _eventsFlow.emit(CropGifticonEvent.Complete(bitmap))
+                _eventsFlow.emit(CropGifticonEvents.CompleteCrop(croppedBitmap, croppedRect))
             }
         }
     }

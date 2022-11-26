@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.addgifticon
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,7 +21,6 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
-import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonDirections
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
@@ -42,17 +42,17 @@ class AddGifticonActivity : AppCompatActivity() {
         onClickGallery = {
             viewModel.gotoGallery()
         },
-        onClickGifticon = { position ->
-            viewModel.selectGifticon(position)
+        onClickGifticon = { gifticon ->
+            viewModel.selectGifticon(gifticon)
         },
-        onDeleteGifticon = { position ->
-            viewModel.deleteGifticon(position)
+        onDeleteGifticon = { gifticon ->
+            viewModel.deleteGifticon(gifticon)
         }
     )
 
     private val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val list = result.data?.getParcelableArrayList(Extras.GallerySelection, GalleryUIModel.Gallery::class.java)
+            val list = result.data?.getParcelableArrayList(Extras.KEY_SELECTED_GALLERY_ITEM, GalleryUIModel.Gallery::class.java)
                 ?: emptyList()
             viewModel.loadGalleryImages(list)
         }
@@ -61,8 +61,10 @@ class AddGifticonActivity : AppCompatActivity() {
     private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val croppedUri =
-                result.data?.getParcelable(Extras.CroppedImage, Uri::class.java) ?: return@registerForActivityResult
-            val gifticon = viewModel.currentGifticon.value ?: return@registerForActivityResult
+                result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return@registerForActivityResult
+            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return@registerForActivityResult
+
+            val gifticon = viewModel.selectedGifticon.value ?: return@registerForActivityResult
             val output = getFileStreamPath("Temp${gifticon.id}")
 
             lifecycleScope.launch {
@@ -71,7 +73,7 @@ class AddGifticonActivity : AppCompatActivity() {
                         FileOutputStream(output)
                     )
                 }
-                viewModel.croppedImage(output.toUri())
+                viewModel.croppedImage(output.toUri(), croppedRect)
             }
         }
     }
@@ -87,7 +89,7 @@ class AddGifticonActivity : AppCompatActivity() {
         }
 
         setUpRecyclerView()
-        setUpDirections()
+        collectEvent()
     }
 
     private fun setUpRecyclerView() {
@@ -97,35 +99,22 @@ class AddGifticonActivity : AppCompatActivity() {
         }
 
         repeatOnStarted {
-            viewModel.displayList.collect { list ->
-                gifticonAdapter.submitList(list) {
-                    binding.rvGifticon.invalidateItemDecorations()
-                }
+            viewModel.displayList.collect { items ->
+                gifticonAdapter.submitList(items)
+                binding.rvGifticon.invalidateItemDecorations()
             }
         }
     }
 
-    private fun setUpDirections() {
+    private fun collectEvent() {
         repeatOnStarted {
-            viewModel.directionsFlow.collect { directions ->
-                navigate(directions)
-            }
-        }
-    }
-
-    private fun navigate(directions: AddGifticonDirections) {
-        when (directions) {
-            AddGifticonDirections.Back -> {
-                cancelAddGifticon()
-            }
-            is AddGifticonDirections.Gallery -> {
-                gotoGallery(directions.list)
-            }
-            is AddGifticonDirections.CropGifticon -> {
-                gotoCropGifticon(directions.origin)
-            }
-            is AddGifticonDirections.OriginGifticon -> {
-                showOriginGifticonDialog(directions.origin)
+            viewModel.eventFlow.collect { events ->
+                when (events) {
+                    AddGifticonEvents.PopupBackStack -> cancelAddGifticon()
+                    is AddGifticonEvents.NavigateToGallery -> gotoGallery(events.list)
+                    is AddGifticonEvents.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
+                    is AddGifticonEvents.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
+                }
             }
         }
     }
@@ -135,16 +124,17 @@ class AddGifticonActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun gotoGallery(list: List<GalleryUIModel.Gallery>) {
+    private fun gotoGallery(list: List<Long>) {
         val intent = Intent(this, GalleryActivity::class.java).apply {
-            putParcelableArrayListExtra(Extras.GallerySelection, ArrayList(list))
+            putExtra(Extras.KEY_SELECTED_IDS, list.toTypedArray())
         }
         gallery.launch(intent)
     }
 
-    private fun gotoCropGifticon(uri: Uri) {
+    private fun gotoCropGifticon(uri: Uri, croppedRect: RectF) {
         val intent = Intent(this, CropGifticonActivity::class.java).apply {
-            putExtra(Extras.OriginImage, uri)
+            putExtra(Extras.KEY_ORIGIN_IMAGE, uri)
+            putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
         }
         cropGifticon.launch(intent)
     }
@@ -152,7 +142,7 @@ class AddGifticonActivity : AppCompatActivity() {
     private fun showOriginGifticonDialog(uri: Uri) {
         originImageDialog.apply {
             arguments = Bundle().apply {
-                putParcelable(Extras.OriginImage, uri)
+                putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
             show(supportFragmentManager, OriginImageDialog::class.java.name)
         }

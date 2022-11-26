@@ -24,7 +24,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:scaleType="centerCrop"
-            app:loadUriWithoutCache="@{dm.item.origin}"
             android:onClickListener="@{() -> dm.onClickItem()}"/>
 
         <ImageView
