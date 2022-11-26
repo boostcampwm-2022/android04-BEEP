@@ -3,9 +3,9 @@ package com.lighthouse.presentation.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.ui.main.event.MainDirections
+import com.lighthouse.presentation.util.flow.MutableEventFlow
+import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,13 +13,20 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    val directionsFlow = MutableSharedFlow<MainDirections>()
+    private val _eventFlow = MutableEventFlow<MainEvents>()
+    val eventFlow = _eventFlow.asEventFlow()
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
+    init {
+        viewModelScope.launch {
+            _eventFlow.emit(MainEvents.NavigateHome)
+        }
+    }
+
     fun gotoAddGifticon() {
         viewModelScope.launch {
-            directionsFlow.emit(MainDirections.ADD_GIFTICON)
+            _eventFlow.emit(MainEvents.NavigateAddGifticon)
         }
     }
 
@@ -30,12 +37,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
         selectedMenuItem.value = itemId
         viewModelScope.launch {
             val directions = when (itemId) {
-                R.id.menu_list -> MainDirections.LIST
-                R.id.menu_home -> MainDirections.HOME
-                R.id.menu_setting -> MainDirections.SETTING
+                R.id.menu_list -> MainEvents.NavigateList
+                R.id.menu_home -> MainEvents.NavigateHome
+                R.id.menu_setting -> MainEvents.NavigateSetting
                 else -> null
             } ?: return@launch
-            directionsFlow.emit(directions)
+            _eventFlow.emit(directions)
         }
         return true
     }

@@ -15,7 +15,6 @@ import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
-import com.lighthouse.presentation.ui.main.event.MainDirections
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,22 +43,17 @@ class MainActivity : AppCompatActivity() {
             vm = viewModel
         }
 
-        moveScreen(MainDirections.HOME)
-        setUpDirections()
+        collectEvent()
     }
 
-    private fun setUpDirections() {
+    private fun collectEvent() {
         repeatOnStarted {
-            viewModel.directionsFlow.collect { directions ->
-                navigate(directions)
+            viewModel.eventFlow.collect { directions ->
+                when (directions) {
+                    MainEvents.NavigateAddGifticon -> gotoAddGifticon()
+                    else -> moveScreen(directions)
+                }
             }
-        }
-    }
-
-    private fun navigate(directions: MainDirections) {
-        when (directions) {
-            MainDirections.ADD_GIFTICON -> gotoAddGifticon()
-            else -> moveScreen(directions)
         }
     }
 
@@ -72,11 +66,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun moveScreen(directions: MainDirections) {
+    private fun moveScreen(directions: MainEvents) {
         val fragment = when (directions) {
-            MainDirections.LIST -> gifticonListFragment
-            MainDirections.HOME -> homeFragment
-            MainDirections.SETTING -> settingFragment
+            MainEvents.NavigateList -> gifticonListFragment
+            MainEvents.NavigateHome -> homeFragment
+            MainEvents.NavigateSetting -> settingFragment
             else -> null
         } ?: return
         supportFragmentManager.commit {
