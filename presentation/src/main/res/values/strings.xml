@@ -145,5 +145,6 @@
     <string name="dialog_usage_history_date_label">일자</string>
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
+    <string name="pin_input_description">PIN 번호를 입력하세요</string>
 
 </resources>

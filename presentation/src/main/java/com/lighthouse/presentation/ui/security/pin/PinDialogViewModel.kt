@@ -1,20 +1,34 @@
 package com.lighthouse.presentation.ui.security.pin
 
-import com.lighthouse.domain.repository.UserPreferencesRepository
-import com.lighthouse.domain.usecase.SavePinUseCase
+import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.usecase.GetCorrespondWithPinUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PinDialogViewModel @Inject constructor(
-    private val savePinUseCase: SavePinUseCase,
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val getCorrespondWithPinUseCase: GetCorrespondWithPinUseCase
 ) : PinViewModel() {
+
+    init {
+        _pinMode.value = PinSettingType.CONFIRM
+    }
+
     override fun goPreviousStep() {
-        TODO("Not yet implemented")
     }
 
     override fun goNextStep() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            if (getCorrespondWithPinUseCase(pinString.value)) {
+                _pinMode.value = PinSettingType.COMPLETE
+            } else {
+                _pinMode.value = PinSettingType.WRONG
+                delay(1000L)
+                _pinString.value = ""
+                _pinMode.value = PinSettingType.CONFIRM
+            }
+        }
     }
 }
