@@ -6,7 +6,7 @@ import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.mapper.toUsageHistory
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
-import com.lighthouse.mapper.toGifticon
+import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override fun getGifticon(id: String): Flow<Gifticon> {
         return gifticonDao.getGifticon(id).map { entity ->
-            entity.toGifticon()
+            entity.toDomain()
         }
     }
 
@@ -47,5 +47,13 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertUsageHistory(usageHistory: UsageHistoryEntity) {
         gifticonDao.insertUsageHistory(usageHistory)
+    }
+
+    override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
+        return gifticonDao.getGifticonByBrand(brand)
+    }
+
+    override fun getAllGifticons(): Flow<List<GifticonEntity>> {
+        return gifticonDao.getAllGifticons()
     }
 }

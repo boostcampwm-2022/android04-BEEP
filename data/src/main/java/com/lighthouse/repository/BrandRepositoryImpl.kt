@@ -3,6 +3,7 @@ package com.lighthouse.repository
 import com.lighthouse.datasource.brand.BrandLocalDataSource
 import com.lighthouse.datasource.brand.BrandRemoteDataSource
 import com.lighthouse.domain.Dms
+import com.lighthouse.domain.DmsLocation
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.mapper.toDomain
@@ -25,6 +26,19 @@ class BrandRepositoryImpl @Inject constructor(
             brandLocalSource.getBrands(x, y, brandName).mapCatching { it.toDomain() }.getOrDefault(emptyList())
         }
 
+    override suspend fun isNearBrand(brandName: String, cardinalLocations: List<DmsLocation>): Result<Boolean> {
+        cardinalLocations.forEach { location ->
+            val isNearBrand = brandLocalSource.isNearBrand(location.x, location.y, brandName)
+            if (isNearBrand) return Result.success(true)
+
+            val result = getRemoteSourceData(brandName, location.x, location.y, DEFAULT_SIZE).exceptionOrNull()
+            if (result is BeepErrorData) {
+                return Result.failure(result.toDomain())
+            }
+        }
+        return Result.success(false)
+    }
+
     private suspend fun getRemoteSourceData(
         brandName: String,
         x: Dms,
@@ -39,5 +53,9 @@ class BrandRepositoryImpl @Inject constructor(
         } else {
             result.onSuccess { brandLocalSource.insertBrands(it, x, y, brandName) }
         }
+    }
+
+    companion object {
+        private const val DEFAULT_SIZE = 15
     }
 }
