@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_view"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_start"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintGuide_begin="24dp"/>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_end"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintGuide_end="24dp"/>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_top"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintGuide_begin="0dp"/>
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_marginBaseline="40dp"
+                    app:layout_constraintBaseline_toBottomOf="@id/guideline_top"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    android:textColor="@color/on_surface_87"
+                    android:textStyle="bold"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    tools:text="정말 나가시겠습니까?"/>
+
+                <TextView
+                    android:id="@+id/tv_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_marginBaseline="36dp"
+                    app:layout_goneMarginBaseline="38dp"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_title"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    android:textColor="@color/on_surface_60"
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    tools:text="등록중인 기프티콘이 존재합니다."/>
+
+                <TextView
+                    android:id="@+id/tv_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@id/tv_ok"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    tools:text="@string/confirmation_cancel"/>
+
+                <TextView
+                    android:id="@+id/tv_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_message"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    tools:text="@string/confirmation_ok"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</layout>
