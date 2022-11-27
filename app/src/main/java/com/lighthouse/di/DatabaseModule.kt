@@ -11,6 +11,8 @@ import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.dao.BrandWithSectionDao
 import com.lighthouse.database.dao.GifticonDao
+import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.presentation.util.UserPreference
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,5 +61,11 @@ object DatabaseModule {
         return PreferenceDataStoreFactory.create(
             produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) }
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserPreference(userPreferencesRepository: UserPreferencesRepository): UserPreference {
+        return UserPreference(userPreferencesRepository)
     }
 }

@@ -12,12 +12,11 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
 import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.ui.common.viewBindings
-import dagger.hilt.android.AndroidEntryPoint
+import com.lighthouse.presentation.ui.security.AuthCallback
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
-class PinDialog : BottomSheetDialogFragment(R.layout.fragment_pin) {
+class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragment(R.layout.fragment_pin) {
 
     private val binding by viewBindings(FragmentPinBinding::bind)
     private val viewModel: PinDialogViewModel by viewModels()
@@ -52,7 +51,7 @@ class PinDialog : BottomSheetDialogFragment(R.layout.fragment_pin) {
                         }
                         delay(1000L)
                         dismiss()
-                        // TODO: 인증 성공 콜백
+                        authCallback.onAuthSuccess()
                     }
                     else -> {}
                 }
