@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.adapter.BindableListAdapter
 
-class MapGifticonAdapter : BindableListAdapter<Gifticon, MapGifticonItemViewHolder>(Diff) {
+class MapGifticonAdapter : BindableListAdapter<Gifticon, MapGifticonItemViewHolder>(diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MapGifticonItemViewHolder {
         return MapGifticonItemViewHolder(parent)
@@ -16,7 +16,7 @@ class MapGifticonAdapter : BindableListAdapter<Gifticon, MapGifticonItemViewHold
     }
 
     companion object {
-        private val Diff = object : DiffUtil.ItemCallback<Gifticon>() {
+        private val diff = object : DiffUtil.ItemCallback<Gifticon>() {
             override fun areItemsTheSame(oldItem: Gifticon, newItem: Gifticon): Boolean {
                 return oldItem.id == newItem.id
             }
