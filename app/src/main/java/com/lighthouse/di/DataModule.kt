@@ -12,10 +12,14 @@ import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.domain.repository.LocationRepository
+import com.lighthouse.domain.repository.SecurityRepository
+import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
 import com.lighthouse.repository.GifticonRepositoryImpl
 import com.lighthouse.repository.LocationRepositoryImpl
+import com.lighthouse.repository.SecurityRepositoryImpl
+import com.lighthouse.repository.UserPreferencesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -69,6 +73,18 @@ abstract class SingletonScopedDataModule {
     abstract fun bindGifticonRepository(
         repository: GifticonRepositoryImpl
     ): GifticonRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSecurityRepository(
+        repository: SecurityRepositoryImpl
+    ): SecurityRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserPreferencesRepository(
+        repository: UserPreferencesRepositoryImpl
+    ): UserPreferencesRepository
 }
 
 @Module

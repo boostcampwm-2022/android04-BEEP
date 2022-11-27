@@ -49,6 +49,7 @@ object Versions {
     const val TURBINE = "0.12.1"
 
     const val TIMBER = "4.7.1"
+    const val DATASTORE = "1.1.0-alpha01"
 }
 
 object Libraries {
@@ -104,6 +105,8 @@ object Libraries {
     private const val VIEW_PAGER2 = "androidx.viewpager2:viewpager${Versions.VIEW_PAGER2}"
 
     private const val TIMBER = "com.jakewharton.timber:timber:${Versions.TIMBER}"
+    private const val DATASTORE_CORE = "androidx.datastore:datastore-preferences-core:${Versions.DATASTORE}"
+    private const val DATASTORE = "androidx.datastore:datastore-preferences:${Versions.DATASTORE}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -141,6 +144,8 @@ object Libraries {
         FIREBASE_STORAGE_KTX,
         WORK_MANAGER,
         TIMBER,
+        DATASTORE,
+        DATASTORE_CORE,
         PLAY_SERVICES_LOCATION
     )
     val DOMAIN_LIBRARIES = arrayListOf(
@@ -157,7 +162,9 @@ object Libraries {
         CONVERTER_MOSHI,
         ROOM_RUNTIME,
         ROOM_KTX,
-        TIMBER
+        TIMBER,
+        DATASTORE,
+        DATASTORE_CORE
     )
 }
 

@@ -2,6 +2,10 @@ package com.lighthouse.di
 
 import android.content.ContentResolver
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
@@ -17,6 +21,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+    private const val USER_PREFERENCES = "user_preferences"
 
     @Provides
     @Singleton
@@ -47,4 +52,12 @@ object DatabaseModule {
     fun provideBrandDao(
         database: BeepDatabase
     ): BrandWithSectionDao = database.brandWithSectionDao()
+
+    @Singleton
+    @Provides
+    fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) }
+        )
+    }
 }

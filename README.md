@@ -53,8 +53,8 @@
 
 |등록화면|이미지확인|갤러리|이미지편집|
 |:-----:|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108320-3505e4fb-8cd6-4260-886a-5eadf9e1afbe.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108312-04a0033a-5f10-4325-b940-a51c42b3c31c.png">|이미지 준비중|이미지 준비중|
-|구현중|구현중|구현중|구현중|
+|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108320-3505e4fb-8cd6-4260-886a-5eadf9e1afbe.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108312-04a0033a-5f10-4325-b940-a51c42b3c31c.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015611-52d291cc-1ac3-4014-a25f-8006055becab.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015793-3062337d-b79e-40d6-aaec-2c5779a1d4f3.png">|
+|구현중|구현중|구현중|구현완료|
 
 ### 목록 && 디테일
 
