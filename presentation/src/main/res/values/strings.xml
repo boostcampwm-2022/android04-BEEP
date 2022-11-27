@@ -146,4 +146,9 @@
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
 
+    <string name="home_near_title">근처에서 사용할 수 있어요</string>
+    <string name="home_near_more_label">지도보기</string>
+    <string name="home_expire_title">사용 기한이 임박했어요!</string>
+    <string name="home_expire_more_label">더보기</string>
+
 </resources>
