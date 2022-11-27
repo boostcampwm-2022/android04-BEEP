@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class AuthManager @Inject constructor(
@@ -34,7 +33,6 @@ class AuthManager @Inject constructor(
                 SecurityOption.PIN -> authPin(activity.supportFragmentManager, authCallback)
                 SecurityOption.FINGERPRINT -> authFingerprint(activity, biometricLauncher, authCallback)
             }
-            Timber.tag("Auth").d("${userPreference.securityOption.value}")
         }
     }
 
@@ -43,7 +41,7 @@ class AuthManager @Inject constructor(
             if (::pinDialog.isInitialized.not()) {
                 pinDialog = PinDialog(authCallback)
             }
-            pinDialog.show(supportFragmentManager, "PIN")
+            pinDialog.show(supportFragmentManager, PIN_TAG)
         }
     }
 
@@ -58,5 +56,9 @@ class AuthManager @Inject constructor(
             }
             biometricAuth.authenticate()
         }
+    }
+
+    companion object {
+        private const val PIN_TAG = "PIN"
     }
 }
