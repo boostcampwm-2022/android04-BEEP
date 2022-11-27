@@ -7,5 +7,5 @@ enum class AddGifticonFocus {
     EXPIRED_AT,
     BALANCE,
     MEMO,
-    NONE,
+    NONE
 }
