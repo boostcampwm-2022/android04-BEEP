@@ -1,10 +1,9 @@
 package com.lighthouse.model
 
-sealed class CustomErrorData(
+sealed class BeepErrorData(
     override val message: String? = null,
     override val cause: Throwable? = null
 ) : Exception(message, cause) {
 
-    object NetworkFailure : CustomErrorData()
-    object NotFoundBrandPlaceInfos : CustomErrorData()
+    object NetworkFailure : BeepErrorData()
 }

@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.model.CustomError
+import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
@@ -15,9 +15,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
 
@@ -27,8 +27,8 @@ class MapViewModel @Inject constructor(
     private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableStateFlow(UiState.Loading)
-    val state = _state.asStateFlow()
+    private val _state: MutableSharedFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableSharedFlow()
+    val state = _state.asSharedFlow()
 
     var focusMarker = MutableStateFlow(Marker())
         private set
@@ -103,14 +103,18 @@ class MapViewModel @Inject constructor(
                     val diffBrandPlaceInfo = brandPlaceInfos.filter {
                         brandInfos.contains(it).not()
                     }
-                    _state.emit(UiState.Success(diffBrandPlaceInfo))
                     _brandInfos.addAll(brandPlaceInfos)
+                    if (brandInfos.isEmpty()) {
+                        _state.emit(UiState.NotFoundResults)
+                    } else {
+                        _state.emit(UiState.Success(diffBrandPlaceInfo))
+                    }
                 }
                 .onFailure { throwable ->
+                    Timber.tag("TAG").d("${javaClass.simpleName} map throw -> $throwable")
                     _state.emit(
                         when (throwable) {
-                            CustomError.NetworkFailure -> UiState.NetworkFailure
-                            CustomError.EmptyResults -> UiState.NotFoundResults
+                            BeepError.NetworkFailure -> UiState.NetworkFailure
                             else -> UiState.Failure(throwable)
                         }
                     )

@@ -3,7 +3,7 @@ package com.lighthouse.presentation.ui.map
 import app.cash.turbine.test
 import com.google.common.truth.Truth
 import com.lighthouse.domain.model.BrandPlaceInfo
-import com.lighthouse.domain.model.CustomError
+import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.presentation.ui.common.UiState
 import io.mockk.coEvery
@@ -61,7 +61,7 @@ class MapViewModelTest {
         // given
         coEvery {
             getBrandPlaceInfosUseCase(brandList, x, y, 5)
-        } returns Result.failure(CustomError.EmptyResults)
+        } returns Result.failure(BeepError.EmptyResults)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)
@@ -80,7 +80,7 @@ class MapViewModelTest {
         // given
         coEvery {
             getBrandPlaceInfosUseCase(brandList, x, y, 5)
-        } returns Result.failure(CustomError.NetworkFailure)
+        } returns Result.failure(BeepError.NetworkFailure)
 
         // when
         val viewModel = MapViewModel(getBrandPlaceInfosUseCase)

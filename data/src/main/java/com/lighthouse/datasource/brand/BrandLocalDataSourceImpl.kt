@@ -6,7 +6,6 @@ import com.lighthouse.database.entity.SectionEntity
 import com.lighthouse.domain.Dms
 import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
-import com.lighthouse.domain.model.CustomError
 import com.lighthouse.mapper.toEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,7 @@ class BrandLocalDataSourceImpl @Inject constructor(
         val sectionResults =
             brandWithSectionDao.getBrands(combineSectionId(x.dmsToString(), y.dmsToString(), brandName))
         return if (sectionResults == null) {
-            Result.failure(CustomError.EmptyResults)
+            Result.failure(Exception())
         } else {
             Result.success(sectionResults.brands)
         }

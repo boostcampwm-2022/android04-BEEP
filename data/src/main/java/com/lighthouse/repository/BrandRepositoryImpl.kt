@@ -6,7 +6,7 @@ import com.lighthouse.domain.Dms
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.mapper.toDomain
-import com.lighthouse.model.CustomErrorData
+import com.lighthouse.model.BeepErrorData
 import javax.inject.Inject
 
 class BrandRepositoryImpl @Inject constructor(
@@ -34,7 +34,7 @@ class BrandRepositoryImpl @Inject constructor(
         val result = brandRemoteSource.getBrandPlaceInfo(brandName, x, y, size).mapCatching { it.toDomain(brandName) }
         val exception = result.exceptionOrNull()
 
-        return if (exception is CustomErrorData) {
+        return if (exception is BeepErrorData) {
             Result.failure(exception.toDomain())
         } else {
             result.onSuccess { brandLocalSource.insertBrands(it, x, y, brandName) }

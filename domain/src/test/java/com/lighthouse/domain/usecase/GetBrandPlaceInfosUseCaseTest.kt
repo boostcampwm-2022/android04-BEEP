@@ -4,7 +4,7 @@ import com.google.common.truth.Truth
 import com.lighthouse.domain.DmsLocation
 import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
-import com.lighthouse.domain.model.CustomError
+import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.repository.BrandRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -58,7 +58,7 @@ class GetBrandPlaceInfosUseCaseTest {
         val action = useCase(brandKeyword, x, y, 5).exceptionOrNull()
 
         // then
-        Truth.assertThat(action).isInstanceOf(CustomError.EmptyResults::class.java)
+        Truth.assertThat(action).isInstanceOf(BeepError.EmptyResults::class.java)
     }
 
     companion object {
