@@ -6,7 +6,6 @@
         <attr name="maxValue" format="reference|integer" />
         <attr name="chunkSize" format="reference|integer" />
         <attr name="unitText" format="reference|string" />
-        <attr name="textColor" format="reference|integer" />
         <attr name="underStrokeColor" format="reference|color" />
     </declare-styleable>
 </resources>

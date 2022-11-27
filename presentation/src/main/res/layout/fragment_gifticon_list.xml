@@ -60,5 +60,16 @@
             app:layout_constraintBottom_toTopOf="@id/rg_test_option"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <com.lighthouse.presentation.ui.common.ConcurrencyEditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:chunkSize="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_test"
+            app:suffixText="@string/all_cash_origin_unit"
+            app:underStrokeColor="@color/mtrl_textinput_default_box_stroke_color" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

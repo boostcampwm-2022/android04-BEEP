@@ -3,14 +3,11 @@ package com.lighthouse.presentation.ui.common
 import android.content.Context
 import android.content.res.TypedArray
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import androidx.databinding.DataBindingUtil
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.databinding.CustomConcurrencyEditTextBinding
 
 class ConcurrencyEditText @JvmOverloads constructor(
     context: Context,
@@ -18,15 +15,7 @@ class ConcurrencyEditText @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : TextInputLayout(context, attrs, defStyleAttr) {
 
-    private val binding = DataBindingUtil.inflate<CustomConcurrencyEditTextBinding>(
-        LayoutInflater.from(context),
-        R.layout.custom_concurrency_edit_text,
-        this,
-        true
-    )
-    private val container by lazy { binding.tilContainer }
-    private val inputEditText by lazy { binding.tietValue }
-
+    private val inputEditText: TextInputEditText
     var maxValue: Int = Int.MAX_VALUE
         set(value) {
             setTextChangedListener()
@@ -39,22 +28,21 @@ class ConcurrencyEditText @JvmOverloads constructor(
         }
 
     init {
+        val binding = inflate(context, R.layout.custom_concurrency_edit_text, this)
+        inputEditText = binding.findViewById(R.id.tiet_value)
         initAttrs()
-
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ConcurrencyEditText)
         setTypeArray(typedArray)
     }
 
     private fun initAttrs() {
-        with(container) {
-            suffixText = context.getString(R.string.all_cash_origin_unit)
-            setSuffixTextAppearance(R.style.BEEP_TextStyle_H5)
-            isHelperTextEnabled = false
-            isHintEnabled = false
-            boxBackgroundColor = context.getColor(android.R.color.transparent)
-        }
+        suffixText = context.getString(R.string.all_cash_origin_unit)
+        setSuffixTextAppearance(R.style.BEEP_TextStyle_H5)
+        isHelperTextEnabled = false
+        isHintEnabled = false
+        boxBackgroundColor = context.getColor(android.R.color.transparent)
+
         with(inputEditText) {
-            inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
             setTextAppearance(R.style.BEEP_TextStyle_H5)
         }
     }
@@ -71,13 +59,10 @@ class ConcurrencyEditText @JvmOverloads constructor(
         chunkSize = typedArray.getInt(R.styleable.ConcurrencyEditText_maxValue, 3)
 
         val unitText = typedArray.getText(R.styleable.ConcurrencyEditText_unitText)
-        container.suffixText = unitText
-
-        val textColor = typedArray.getColor(R.styleable.ConcurrencyEditText_textColor, 0)
-        inputEditText.setTextColor(textColor)
+        suffixText = unitText
 
         val underStrokeColor = typedArray.getColor(R.styleable.ConcurrencyEditText_underStrokeColor, 0)
-        container.boxStrokeColor = underStrokeColor
+        boxStrokeColor = underStrokeColor
 
         typedArray.recycle()
     }
