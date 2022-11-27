@@ -94,7 +94,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun getBrandPlaceInfos(x: Double, y: Double) {
+    private fun getBrandPlaceInfos(x: Double, y: Double) {
         viewModelScope.launch {
             _state.emit(UiState.Loading)
             runCatching { getBrandPlaceInfosUseCase(brandList, x, y, SEARCH_SIZE) }
