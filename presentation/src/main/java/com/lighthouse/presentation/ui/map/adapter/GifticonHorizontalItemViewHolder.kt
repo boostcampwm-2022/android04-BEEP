@@ -7,7 +7,7 @@ import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ItemGifticonHorizontalBinding
 
-class MapGifticonItemViewHolder(
+class GifticonHorizontalItemViewHolder(
     parent: ViewGroup,
     private val binding: ItemGifticonHorizontalBinding = ItemGifticonHorizontalBinding.bind(
         LayoutInflater.from(parent.context).inflate(R.layout.item_gifticon_horizontal, parent, false)

@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.main.MainViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/home_near_more_label"
+            android:onClickListener="@{() -> vm.gotoMap()}"
             android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
             app:layout_constraintBottom_toBottomOf="@id/tv_near_title"
             app:layout_constraintEnd_toEndOf="@id/gl_end" />

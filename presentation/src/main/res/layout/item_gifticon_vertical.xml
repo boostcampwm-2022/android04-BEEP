@@ -12,9 +12,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="160dp"
-        android:layout_height="220dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="8dp">
+        android:layout_height="240dp"
+        app:cardCornerRadius="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -22,12 +21,12 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_product"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:adjustViewBounds="true"
-                android:elevation="4dp"
+                android:background="@color/beep_pink"
                 android:src="@drawable/ic_launcher_foreground"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -49,12 +48,14 @@
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:text="@{gifticon.brand}"
                 android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
-                app:layout_constraintStart_toStartOf="@id/iv_product"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_product"
                 tools:text="스타벅스" />
 
@@ -62,7 +63,7 @@
                 android:id="@+id/tv_body"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:text="@{gifticon.name}"
