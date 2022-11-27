@@ -9,7 +9,9 @@ fun <T> setItems(view: RecyclerView, data: T?) {
     data ?: return
     when (val listAdapter = view.adapter) {
         is BindableAdapter<*> -> {
-            (listAdapter as BindableAdapter<T>).setData(data)
+            (listAdapter as BindableAdapter<T>).setData(data) {
+                view.invalidateItemDecorations()
+            }
         }
     }
 }

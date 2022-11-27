@@ -8,7 +8,7 @@ abstract class BindableListAdapter<T, VH : RecyclerView.ViewHolder>(diffCallback
     ListAdapter<T, VH>(diffCallback),
     BindableAdapter<List<T>> {
 
-    override fun setData(data: List<T>) {
-        submitList(data)
+    override fun setData(data: List<T>, commitCallback: () -> Unit) {
+        submitList(data, commitCallback)
     }
 }
