@@ -1,6 +1,10 @@
 package com.lighthouse.presentation.ui.security
 
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.lighthouse.presentation.ui.security.fingerprint.BiometricAuth
 import com.lighthouse.presentation.ui.security.pin.PinDialog
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import com.lighthouse.presentation.util.UserPreference
@@ -8,36 +12,51 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class AuthManager(
-    private val supportFragmentManager: FragmentManager,
-    private val authCallback: AuthCallback
+class AuthManager @Inject constructor(
+    private val userPreference: UserPreference
 ) {
-
     private lateinit var job: Job
-    private val pinDialog = PinDialog(authCallback)
+    private lateinit var pinDialog: PinDialog
+    private lateinit var biometricAuth: BiometricAuth
 
-    @Inject
-    lateinit var userPreference: UserPreference
-
-    fun auth() {
+    fun auth(
+        activity: FragmentActivity,
+        biometricLauncher: ActivityResultLauncher<Intent>,
+        authCallback: AuthCallback
+    ) {
         job = CoroutineScope(Dispatchers.IO).launch {
-            // Usecase를 만들어서 Flow<Int>가 아닌 Int로 받아오는 건 어떤가?
             when (userPreference.securityOption.value) {
                 SecurityOption.NONE -> authCallback.onAuthSuccess()
-                SecurityOption.PIN -> authPin()
-                SecurityOption.FINGERPRINT -> authFingerprint()
+                SecurityOption.PIN -> authPin(activity.supportFragmentManager, authCallback)
+                SecurityOption.FINGERPRINT -> authFingerprint(activity, biometricLauncher, authCallback)
             }
             Timber.tag("Auth").d("${userPreference.securityOption.value}")
         }
     }
 
-    private fun authPin() {
-        pinDialog.show(supportFragmentManager, "PIN")
+    private suspend fun authPin(supportFragmentManager: FragmentManager, authCallback: AuthCallback) {
+        withContext(Dispatchers.Main) {
+            if (::pinDialog.isInitialized.not()) {
+                pinDialog = PinDialog(authCallback)
+            }
+            pinDialog.show(supportFragmentManager, "PIN")
+        }
     }
 
-    private fun authFingerprint() {
+    private suspend fun authFingerprint(
+        activity: FragmentActivity,
+        biometricLauncher: ActivityResultLauncher<Intent>,
+        authCallback: AuthCallback
+    ) {
+        withContext(Dispatchers.Main) {
+            if (::biometricAuth.isInitialized.not()) {
+                biometricAuth = BiometricAuth(activity, biometricLauncher, authCallback)
+            }
+            biometricAuth.authenticate()
+        }
     }
 }

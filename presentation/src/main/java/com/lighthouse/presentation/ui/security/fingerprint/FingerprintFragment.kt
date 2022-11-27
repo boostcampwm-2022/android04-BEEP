@@ -4,37 +4,38 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.activityViewModels
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentFingerprintBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
-import com.lighthouse.presentation.ui.security.fingerprint.biometric.FingerprintAuthCallback
-import com.lighthouse.presentation.ui.security.fingerprint.biometric.FingerprintAuthManager
+import com.lighthouse.presentation.ui.security.AuthCallback
+import com.lighthouse.presentation.ui.security.SecurityViewModel
+import com.lighthouse.presentation.ui.setting.SecurityOption
 import timber.log.Timber
 
-class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), FingerprintAuthCallback {
+class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallback {
 
     private val binding by viewBindings(FragmentFingerprintBinding::bind)
-    private lateinit var fingerprintAuthManager: FingerprintAuthManager
+    private val activityViewModel: SecurityViewModel by activityViewModels()
+    private lateinit var biometricAuth: BiometricAuth
     private val activityLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
-                Activity.RESULT_OK -> onFingerprintRegisterSuccess()
-                else -> onFingerprintRegisterError(result)
+                Activity.RESULT_OK -> onAuthSuccess()
+                else -> onAuthError()
             }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        fingerprintAuthManager =
-            FingerprintAuthManager(requireActivity(), activityLauncher, this)
+        biometricAuth =
+            BiometricAuth(requireActivity(), activityLauncher, this)
 
         binding.btnUseFingerprint.setOnClickListener {
-            fingerprintAuthManager.authenticate()
+            biometricAuth.authenticate()
         }
 
         binding.btnNotUseFingerprint.setOnClickListener {
@@ -42,38 +43,25 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), Fingerprint
         }
     }
 
-    override fun onBiometricAuthSuccess() {
-        Timber.tag("Finger").d("Success")
-        gotoMain()
-    }
-
-    override fun onBiometricAuthError() {
-        Timber.tag("Finger").d("Error")
-    }
-
-    override fun onBiometricAuthCancel() {
-        Timber.tag("Finger").d("Cancel")
-    }
-
-    override fun onMessagePublished(id: Int) {
-        Snackbar.make(
-            requireView(),
-            getString(id),
-            Snackbar.LENGTH_SHORT
-        ).show()
-    }
-
-    override fun onFingerprintRegisterSuccess() {
-        fingerprintAuthManager.authenticate()
-    }
-
-    override fun onFingerprintRegisterError(result: ActivityResult) {
-        Timber.tag("Finger").d("지문 등록 Error $result")
-    }
-
     private fun gotoMain() {
         val intent = Intent(requireContext(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    override fun onAuthSuccess() {
+        Timber.tag("Finger").d("Success")
+        activityViewModel.setSecurityOption(SecurityOption.FINGERPRINT)
+        gotoMain()
+    }
+
+    override fun onAuthCancel() {
+        Timber.tag("Finger").d("Cancel")
+        activityViewModel.setSecurityOption(SecurityOption.PIN)
+    }
+
+    override fun onAuthError() {
+        Timber.tag("Finger").d("Error")
+        activityViewModel.setSecurityOption(SecurityOption.PIN)
     }
 }

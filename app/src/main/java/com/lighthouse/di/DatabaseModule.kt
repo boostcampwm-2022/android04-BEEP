@@ -12,6 +12,7 @@ import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.dao.BrandWithSectionDao
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.presentation.ui.security.AuthManager
 import com.lighthouse.presentation.util.UserPreference
 import dagger.Module
 import dagger.Provides
@@ -67,5 +68,11 @@ object DatabaseModule {
     @Provides
     fun provideUserPreference(userPreferencesRepository: UserPreferencesRepository): UserPreference {
         return UserPreference(userPreferencesRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthManger(userPreference: UserPreference): AuthManager {
+        return AuthManager(userPreference)
     }
 }

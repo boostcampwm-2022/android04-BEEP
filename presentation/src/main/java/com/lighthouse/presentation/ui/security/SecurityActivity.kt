@@ -12,7 +12,6 @@ import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.security.fingerprint.FingerprintFragment
 import com.lighthouse.presentation.ui.security.pin.PinFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SecurityActivity : AppCompatActivity() {
@@ -31,18 +30,6 @@ class SecurityActivity : AppCompatActivity() {
                 navigate(directions)
             }
         }
-
-        val authCallback = object : AuthCallback {
-            override fun onAuthSuccess() {
-                Timber.tag("Auth").d("성공")
-            }
-
-            override fun onAuthFailure() {
-                Timber.tag("Auth").d("실패")
-            }
-        }
-
-        AuthManager(supportFragmentManager, authCallback).auth()
     }
 
     private fun navigate(directions: SecurityDirections) {
