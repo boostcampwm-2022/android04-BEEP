@@ -50,7 +50,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     private val biometricLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
-                Activity.RESULT_OK -> onAuthSuccess()
+                Activity.RESULT_OK -> authenticate()
                 else -> onAuthError()
             }
         }
@@ -108,7 +108,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
                 showDatePickerDialog()
             }
             is Event.UseGifticonButtonClicked -> {
-                authManager.auth(this, biometricLauncher, this)
+                authenticate()
             }
             is Event.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
@@ -189,6 +189,10 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         }
     }
 
+    private fun authenticate() {
+        authManager.auth(this, biometricLauncher, this)
+    }
+
     override fun onAuthSuccess() {
         Timber.tag("Auth").d("onAuthSuccess")
         showUseGifticonDialog()
@@ -200,6 +204,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     override fun onAuthError() {
         Timber.tag("Auth").d("onAuthError")
+        authenticate()
     }
 
     companion object {
