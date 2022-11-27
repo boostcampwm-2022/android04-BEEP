@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +23,8 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
-import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
+import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
+import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
@@ -91,12 +93,26 @@ class AddGifticonActivity : AppCompatActivity() {
     private val originImageDialog = OriginImageDialog()
 
     private val expiredAtDatePickerDialog by lazy {
-        SpinnerDatePicker(applicationContext) { _, year, month, dayOfMonth ->
-            val date = Calendar.getInstance(Locale.getDefault()).let {
-                it.set(year, month, dayOfMonth)
-                it.time
+        SpinnerDatePicker().apply {
+            setOnDatePickListener { year, month, dayOfMonth ->
+                val date = Calendar.getInstance(Locale.getDefault()).let {
+                    it.set(year, month - 1, dayOfMonth)
+                    it.time
+                }
+                viewModel.changeExpiredAt(date)
             }
-            viewModel.changeExpiredAt(date)
+        }
+    }
+
+    private val confirmationDialog by lazy {
+        val dialogTitle = getString(R.string.add_gifticon_confirmation_title)
+        val dialogMessage = getString(R.string.add_gifticon_confirmation_message)
+        ConfirmationDialog().apply {
+            title = dialogTitle
+            message = dialogMessage
+            setOnOkClickListener {
+                cancelAddGifticon()
+            }
         }
     }
 
@@ -108,8 +124,15 @@ class AddGifticonActivity : AppCompatActivity() {
             vm = viewModel
         }
 
+        setUpBackPressed()
         setUpRecyclerView()
         collectEvent()
+    }
+
+    private fun setUpBackPressed() {
+        onBackPressedDispatcher.addCallback {
+            viewModel.requestPopBackstack()
+        }
     }
 
     private fun setUpRecyclerView() {
@@ -124,6 +147,7 @@ class AddGifticonActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { events ->
                 when (events) {
                     is AddGifticonEvents.PopupBackStack -> cancelAddGifticon()
+                    is AddGifticonEvents.ShowConfirmation -> showConfirmationDialog()
                     is AddGifticonEvents.NavigateToGallery -> gotoGallery(events.list)
                     is AddGifticonEvents.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
                     is AddGifticonEvents.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
@@ -166,7 +190,11 @@ class AddGifticonActivity : AppCompatActivity() {
     private fun showExpiredAtDatePicker(date: Date) {
         expiredAtDatePickerDialog.apply {
             setDate(date)
-        }.show()
+        }.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
+    }
+
+    private fun showConfirmationDialog() {
+        confirmationDialog.show(supportFragmentManager, ConfirmationDialog::class.java.name)
     }
 
     private fun requestFocus(focus: AddGifticonFocus) {

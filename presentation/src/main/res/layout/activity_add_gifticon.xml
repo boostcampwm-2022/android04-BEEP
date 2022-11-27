@@ -38,7 +38,7 @@
                         android:layout_height="48dp"
                         android:layout_marginStart="4dp"
                         android:contentDescription="@string/add_gifticon_back_description"
-                        android:onClick="@{() -> vm.popBackstack()}"
+                        android:onClick="@{() -> vm.requestPopBackstack()}"
                         android:padding="12dp"
                         android:src="@drawable/ic_back"
                         app:layout_constraintBottom_toBottomOf="parent"

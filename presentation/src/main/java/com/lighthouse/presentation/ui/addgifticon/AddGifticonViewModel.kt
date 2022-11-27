@@ -280,9 +280,23 @@ class AddGifticonViewModel : ViewModel() {
         }
     }
 
-    fun popBackstack() {
+    fun requestPopBackstack() {
+        if (gifticonList.value.isEmpty()) {
+            popBackstack()
+        } else {
+            showConfirmation()
+        }
+    }
+
+    private fun popBackstack() {
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvents.PopupBackStack)
+        }
+    }
+
+    private fun showConfirmation() {
+        viewModelScope.launch {
+            _eventFlow.emit(AddGifticonEvents.ShowConfirmation)
         }
     }
 
