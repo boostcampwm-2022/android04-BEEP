@@ -20,6 +20,9 @@
     <string name="all_prev">이전</string>
     <string name="all_close_button">닫기</string>
 
+    <string name="confirmation_ok">확인</string>
+    <string name="confirmation_cancel">취소</string>
+
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
     <string name="main_menu_setting">설정</string>
@@ -63,6 +66,9 @@
     <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
     <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
+
+    <string name="add_gifticon_confirmation_title">정말 나가시겠습니까?</string>
+    <string name="add_gifticon_confirmation_message">등록중인 기프티콘이 존재합니다.</string>
 
     <string name="origin_image_description">기프티콘 원본 이미지</string>
 
