@@ -83,6 +83,8 @@ class AddGifticonViewModel : ViewModel() {
         it?.barcode
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val barcodeSelection = MutableStateFlow(0)
+
     val expiredAt = selectedGifticon.map {
         val date = it?.expiredAt
         if (date != null && date != EMPTY_DATE) {
@@ -226,10 +228,40 @@ class AddGifticonViewModel : ViewModel() {
         }
     }
 
-    fun changeBarcode(barcode: CharSequence) {
-        val updated = updateSelectedGifticon { it.copy(barcode = barcode.toString()) }
+    fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+        val newBarcode = charSequence.toString()
+        val oldBarcode = barcode.value ?: return
+        if (oldBarcode == newBarcode) {
+            return
+        }
+
+        var newValueText = newBarcode.filter { it.isDigit() }
+        val spaceCount = oldBarcode.substring(0, start + before).count { it == ' ' }
+        if (before == 1 && count == 0 && oldBarcode[start] == ' ') {
+            val numIndex = start - spaceCount
+            newValueText =
+                newValueText.substring(0, numIndex) + newValueText.substring(numIndex + 1, newValueText.length)
+        }
+
+        val newText = newValueText.chunked(4).joinToString(" ")
+        val updated = updateSelectedGifticon { it.copy(barcode = newText) }
         if (updated != null) {
             updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
+
+        barcodeSelection.value = if (oldBarcode.length == start) {
+            newText.length
+        } else {
+            val numIndex = start + count - spaceCount
+            var numCount = 0
+            var newSelection = 0
+            while (numCount < numIndex) {
+                if (newText[newSelection].isDigit()) {
+                    numCount += 1
+                }
+                newSelection += 1
+            }
+            newSelection
         }
     }
 
@@ -340,9 +372,9 @@ class AddGifticonViewModel : ViewModel() {
         return when {
             gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
-            gifticon.barcode.length != 12 && gifticon.barcode.length != 16 -> AddGifticonValid.INVALID_BARCODE
+            gifticon.barcode.length != 12 + 2 && gifticon.barcode.length != 16 + 3 -> AddGifticonValid.INVALID_BARCODE
             gifticon.expiredAt < today -> AddGifticonValid.INVALID_EXPIRED_AT
-            gifticon.isCashCard && gifticon.balance.isEmpty() -> AddGifticonValid.INVALID_BALANCE
+            gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             else -> AddGifticonValid.VALID
         }
     }
