@@ -6,5 +6,5 @@ import com.lighthouse.domain.model.BrandPlaceInfo
 
 interface BrandRepository {
     suspend fun getBrandPlaceInfo(brandName: String, x: Dms, y: Dms, size: Int): Result<List<BrandPlaceInfo>>
-    suspend fun isNearBrand(brandName: String, cardinalLocations: List<DmsLocation>): Result<Boolean>
+    suspend fun getNearByBrands(brandName: String, cardinalLocations: List<DmsLocation>): Result<Boolean>
 }

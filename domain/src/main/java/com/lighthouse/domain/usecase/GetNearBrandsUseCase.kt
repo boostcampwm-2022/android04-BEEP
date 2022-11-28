@@ -13,7 +13,7 @@ class GetNearBrandsUseCase @Inject constructor(
         y: Double
     ): List<String> {
         return brandNames.filter { brandName ->
-            brandRepository.isNearBrand(brandName, LocationConverter.getCardinalDirections(x, y)).getOrDefault(false)
+            brandRepository.getNearByBrands(brandName, LocationConverter.getCardinalDirections(x, y)).getOrDefault(false)
         }
     }
 }

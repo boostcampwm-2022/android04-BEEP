@@ -26,7 +26,7 @@ class BrandRepositoryImpl @Inject constructor(
             brandLocalSource.getBrands(x, y, brandName).mapCatching { it.toDomain() }.getOrDefault(emptyList())
         }
 
-    override suspend fun isNearBrand(brandName: String, cardinalLocations: List<DmsLocation>): Result<Boolean> {
+    override suspend fun getNearByBrands(brandName: String, cardinalLocations: List<DmsLocation>): Result<Boolean> {
         cardinalLocations.forEach { location ->
             val isNearBrand = brandLocalSource.isNearBrand(location.x, location.y, brandName)
             if (isNearBrand == null) {
