@@ -12,8 +12,10 @@ import com.lighthouse.presentation.databinding.FragmentSettingBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+@AndroidEntryPoint
 class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     private val binding: FragmentSettingBinding by viewBindings()
