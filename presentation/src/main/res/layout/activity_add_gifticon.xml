@@ -381,12 +381,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_balance_hint"
-                        android:imeOptions="actionNext"
                         android:inputType="number"
+                        android:imeOptions="actionNext"
                         android:lines="1"
-                        android:maxLength="7"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text)}"
-                        android:text="@{vm.balance}" />
+                        android:filters="@{vm.balanceFilters}"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
+                        android:text="@{vm.balance}"
+                        android:selection="@{vm.balanceSelection}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

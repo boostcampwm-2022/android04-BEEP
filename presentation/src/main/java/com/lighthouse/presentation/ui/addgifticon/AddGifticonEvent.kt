@@ -9,7 +9,7 @@ sealed class AddGifticonEvent {
 
     object PopupBackStack : AddGifticonEvent()
     object ShowConfirmation : AddGifticonEvent()
-    data class NavigateToGallery(val list: List<Long>) : AddGifticonEvent()
+    data class NavigateToGallery(val list: List<Long> = emptyList()) : AddGifticonEvent()
     data class NavigateToCropGifticon(val origin: Uri, val croppedRect: RectF) : AddGifticonEvent()
     data class ShowOriginGifticon(val origin: Uri) : AddGifticonEvent()
     data class ShowExpiredAtDatePicker(val date: Date) : AddGifticonEvent()

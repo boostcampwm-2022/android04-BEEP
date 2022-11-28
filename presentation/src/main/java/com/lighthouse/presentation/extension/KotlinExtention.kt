@@ -29,6 +29,10 @@ val screenWidth: Int
 val screenHeight: Int
     get() = Resources.getSystem().displayMetrics?.heightPixels ?: 0
 
+fun String.toDigit(): Int {
+    return filter { it.isDigit() }.toIntOrNull() ?: 0
+}
+
 fun Date.toYear(): Int {
     val calendar = Calendar.getInstance()
     calendar.time = this

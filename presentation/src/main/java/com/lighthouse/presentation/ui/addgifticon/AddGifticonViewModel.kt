@@ -2,10 +2,12 @@ package com.lighthouse.presentation.ui.addgifticon
 
 import android.graphics.RectF
 import android.net.Uri
+import android.text.InputFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toDigit
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.mapper.toAddGifticonItemUIModel
@@ -24,6 +26,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -38,6 +41,12 @@ class AddGifticonViewModel : ViewModel() {
 
     private val _eventFlow = MutableEventFlow<AddGifticonEvent>()
     val eventFlow = _eventFlow.asEventFlow()
+
+    init {
+        viewModelScope.launch {
+            _eventFlow.emit(AddGifticonEvent.NavigateToGallery())
+        }
+    }
 
     private val _displayList = MutableStateFlow<List<AddGifticonItemUIModel>>(listOf(AddGifticonItemUIModel.Gallery))
     val displayList = _displayList.asStateFlow()
@@ -83,9 +92,13 @@ class AddGifticonViewModel : ViewModel() {
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val balanceFormat = DecimalFormat("###,###,###")
+
     val balance = selectedGifticon.map {
         it?.balance
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val balanceSelection = MutableStateFlow(0)
 
     val memo = selectedGifticon.map {
         it?.memo
@@ -205,8 +218,56 @@ class AddGifticonViewModel : ViewModel() {
         updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
     }
 
-    fun changeBalance(balance: CharSequence) {
-        updateSelectedGifticon { it.copy(balance = balance.toString()) }
+    val balanceFilters = arrayOf(
+        InputFilter.LengthFilter(10),
+        InputFilter { source, _, _, _, dstStart, _ ->
+            return@InputFilter if (dstStart == 0) {
+                var zeroIndex = 0
+                for (char in source) {
+                    if (char != '0') {
+                        break
+                    }
+                    zeroIndex += 1
+                }
+                source.subSequence(zeroIndex, source.length)
+            } else {
+                source
+            }
+        }
+    )
+
+    fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+        val newBalance = charSequence.toString()
+        val oldBalance = balance.value ?: return
+        if (oldBalance == newBalance) {
+            return
+        }
+
+        var newValueText = newBalance.filter { it.isDigit() }
+        val unitCount = oldBalance.substring(0, start + before).count { it == ',' }
+        if (before == 1 && count == 0 && oldBalance[start] == ',') {
+            val numIndex = start - unitCount
+            newValueText =
+                newValueText.substring(0, numIndex) + newValueText.substring(numIndex + 1, newValueText.length)
+        }
+
+        val newText = balanceFormat.format(newValueText.toDigit())
+        updateSelectedGifticon { it.copy(balance = newText) }
+
+        balanceSelection.value = if (oldBalance.length == start) {
+            newText.length
+        } else {
+            val numIndex = start + count - unitCount
+            var numCount = 0
+            var newSelection = 0
+            while (numCount < numIndex) {
+                if (newText[newSelection].isDigit()) {
+                    numCount += 1
+                }
+                newSelection += 1
+            }
+            newSelection
+        }
     }
 
     fun changeMemo(memo: CharSequence) {
