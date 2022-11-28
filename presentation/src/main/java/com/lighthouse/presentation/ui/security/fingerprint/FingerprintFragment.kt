@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.lighthouse.presentation.R
@@ -22,7 +23,7 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallbac
     private val activityViewModel: SecurityViewModel by activityViewModels()
     private lateinit var biometricAuth: BiometricAuth
     private val binding: FragmentFingerprintBinding by viewBindings()
-   
+
     private val activityLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
@@ -61,7 +62,7 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallbac
         activityViewModel.setSecurityOption(SecurityOption.PIN)
     }
 
-    override fun onAuthError() {
+    override fun onAuthError(@StringRes StringId: Int?) {
         Timber.tag("Finger").d("Error")
         activityViewModel.setSecurityOption(SecurityOption.PIN)
     }

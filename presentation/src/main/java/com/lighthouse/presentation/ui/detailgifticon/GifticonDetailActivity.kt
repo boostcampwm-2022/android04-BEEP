@@ -4,10 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -33,7 +34,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import java.util.Date
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
@@ -236,9 +236,11 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         Timber.tag("Auth").d("onAuthCancel")
     }
 
-    override fun onAuthError() {
+    override fun onAuthError(@StringRes StringId: Int?) {
         Timber.tag("Auth").d("onAuthError")
+        // TODO: StringId가 null 이 아니라면 정의된 에러 메세지가 존재하는 경우입니다. null 체크하고 출력하면 어떨까요?
         authenticate()
+    }
 
     private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
         if (::gifticonInfoChangedSnackbar.isInitialized.not()) {

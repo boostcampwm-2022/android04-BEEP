@@ -35,7 +35,7 @@ class BiometricAuth(
             when (errorCode) {
                 BiometricPrompt.ERROR_NO_BIOMETRICS -> goBiometricSetting()
                 BiometricPrompt.ERROR_NEGATIVE_BUTTON -> authCallback.onAuthCancel()
-                else -> authCallback.onAuthError()
+                else -> authCallback.onAuthError(R.string.fingerprint_unknown_error)
             }
         }
     }
@@ -68,12 +68,11 @@ class BiometricAuth(
 
         when (biometricAvailable) {
             BiometricManager.BIOMETRIC_SUCCESS -> biometricPrompt.authenticate(promptInfo)
-//            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
-//            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
-//            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> goBiometricSetting()
-//            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unavailable)
-//            else -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unknown_error)
-            else -> authCallback.onAuthError()
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> goBiometricSetting()
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> authCallback.onAuthError(R.string.fingerprint_error_no_hardware)
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> authCallback.onAuthError(R.string.fingerprint_error_no_hardware)
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> authCallback.onAuthError(R.string.fingerprint_unavailable)
+            else -> authCallback.onAuthError(R.string.fingerprint_unknown_error)
         }
     }
 }
