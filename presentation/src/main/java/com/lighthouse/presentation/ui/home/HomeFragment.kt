@@ -48,25 +48,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         with(binding.rvNearGifticon) {
             adapter = nearGifticonAdapter
             addItemDecoration(itemDecoration)
-            val nearGifticon = homeViewModel.nearGifticon.value
-            if (nearGifticon is UiState.Success) {
-                nearGifticonAdapter.submitList(nearGifticon.item)
-            }
         }
         with(binding.rvExpireGifticon) {
             adapter = expireGifticonAdapter
             addItemDecoration(itemDecoration)
-            /*val allGifticon = homeViewModel.allGifticons.value
-            if (allGifticon.isNotEmpty()) {
-                expireGifticonAdapter.submitList(allGifticon)
-            }*/
         }
     }
 
     private fun setObserveViewModel() {
         repeatOnStarted {
             homeViewModel.allGifticons.collectLatest {
-                Timber.tag("TAG").d("${javaClass.simpleName} $it")
                 expireGifticonAdapter.submitList(it)
             }
         }

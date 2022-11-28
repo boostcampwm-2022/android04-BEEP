@@ -32,9 +32,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    private val gifticonListFragment by lazy { GifticonListFragment() }
-    private val homeFragment by lazy { HomeFragment() }
-    private val settingFragment by lazy { SettingFragment() }
+    private val gifticonListFragment by lazy {
+        supportFragmentManager.findFragmentByTag(GifticonListFragment::class.java.name) ?: GifticonListFragment()
+    }
+    private val homeFragment by lazy {
+        supportFragmentManager.findFragmentByTag(HomeFragment::class.java.name) ?: HomeFragment()
+    }
+    private val settingFragment by lazy {
+        supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name) ?: SettingFragment()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     if (fragment.isAdded) {
                         show(fragment)
                     } else {
-                        add(R.id.fl_container, fragment)
+                        add(R.id.fl_container, fragment, fragment.javaClass.name)
                     }
                 }
             }
