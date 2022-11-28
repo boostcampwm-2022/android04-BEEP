@@ -9,6 +9,7 @@ interface GifticonRepository {
 
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
     suspend fun saveGifticons(gifticons: List<Gifticon>)
+    suspend fun updateGifticon(gifticon: Gifticon)
 
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>
     suspend fun saveUsageHistory(gifticonId: String, usageHistory: UsageHistory)

@@ -25,6 +25,10 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
+    override suspend fun updateGifticon(gifticon: Gifticon) {
+        gifticonLocalDataSource.updateGifticon(gifticon.toGifticonEntity())
+    }
+
     override suspend fun saveGifticons(gifticons: List<Gifticon>) {
         gifticonLocalDataSource.insertGifticons(
             gifticons.map {

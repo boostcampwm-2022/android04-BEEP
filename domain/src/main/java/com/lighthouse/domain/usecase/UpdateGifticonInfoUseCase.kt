@@ -1,10 +1,14 @@
 package com.lighthouse.domain.usecase
 
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.repository.GifticonRepository
+import javax.inject.Inject
 
-class UpdateGifticonInfoUseCase {
+class UpdateGifticonInfoUseCase @Inject constructor(
+    private val gifticonRepository: GifticonRepository
+) {
 
-    operator fun invoke(gifticon: Gifticon): Result<Unit> {
-        return Result.success(Unit)
+    suspend operator fun invoke(gifticon: Gifticon) {
+        gifticonRepository.updateGifticon(gifticon)
     }
 }
