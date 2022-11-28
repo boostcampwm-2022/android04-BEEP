@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon) {
-    private val binding by viewBindings(DialogUseGifticonBinding::bind)
+    private val binding: DialogUseGifticonBinding by viewBindings()
     private val viewModel: GifticonDetailViewModel by activityViewModels()
 
     @Inject

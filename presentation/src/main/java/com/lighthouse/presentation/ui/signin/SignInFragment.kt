@@ -26,7 +26,7 @@ import com.lighthouse.presentation.ui.security.SecurityActivity
 
 class SignInFragment : Fragment() {
 
-    private val binding by viewBindings(FragmentSignInBinding::bind)
+    private val binding: FragmentSignInBinding by viewBindings()
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private val auth: FirebaseAuth = Firebase.auth

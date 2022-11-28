@@ -20,6 +20,9 @@
     <string name="all_prev">이전</string>
     <string name="all_close_button">닫기</string>
 
+    <string name="confirmation_ok">확인</string>
+    <string name="confirmation_cancel">취소</string>
+
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
     <string name="main_menu_setting">설정</string>
@@ -31,8 +34,7 @@
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
     <string name="add_gifticon_title">기프티콘 추가</string>
-    <string name="add_gifticon_empty">없음</string>
-    <string name="add_gifticon_registered">개 등록됨</string>
+    <string name="add_gifticon_registered">%d개 등록됨</string>
     <string name="add_gifticon_goto_gallery_description">갤러리 이동하기 버튼</string>
     <string name="add_gifticon_delete_description">등록된 이미지 삭제 버튼</string>
     <string name="add_gifticon_candidate_description">기프티콘 후보 버튼</string>
@@ -47,6 +49,8 @@
     <string name="add_gifticon_name_hint">쿠폰 이름을 입력하세요.</string>
     <string name="add_gifticon_brand_label">브랜드</string>
     <string name="add_gifticon_brand_hint">브랜드명을 입력하세요.</string>
+    <string name="add_gifticon_barcode_label">바코드</string>
+    <string name="add_gifticon_barcode_hint">바코드 번호을 입력하세요.</string>
     <string name="add_gifticon_expire_date_label">유효기간</string>
     <string name="add_gifticon_expire_date_hint">유효기간을 선택하세요.</string>
     <string name="add_gifticon_balance_label">잔액</string>
@@ -56,10 +60,22 @@
     <string name="add_gifticon_cancel">취소</string>
     <string name="add_gifticon_register">등록하기</string>
 
+    <string name="add_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
+    <string name="add_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
+    <string name="add_gifticon_invalid_barcode">바코드를 입력해주세요</string>
+    <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
+    <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
+    <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
+
+    <string name="add_gifticon_confirmation_title">정말 나가시겠습니까?</string>
+    <string name="add_gifticon_confirmation_message">등록중인 기프티콘이 존재합니다.</string>
+
+    <string name="origin_image_description">기프티콘 원본 이미지</string>
+
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>
     <string name="gallery_title">이미지 선택</string>
-    <string name="gallery_selected">개 선택됨</string>
+    <string name="gallery_selected">%d개 선택됨</string>
     <string name="gallery_confirm">완료</string>
 
     <string name="crop_gifticon_complete">완료</string>

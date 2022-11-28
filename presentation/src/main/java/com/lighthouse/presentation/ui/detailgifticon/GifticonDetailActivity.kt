@@ -18,7 +18,7 @@ import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
-import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
+import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -150,14 +150,14 @@ class GifticonDetailActivity : AppCompatActivity() {
         checkEditDialog.show()
     }
 
+    private val spinnerDatePicker = SpinnerDatePicker().apply {
+        setOnDatePickListener { year, month, dayOfMonth ->
+            Timber.tag("TEST").d("$year/$month/$dayOfMonth")
+        }
+    }
+
     private fun showDatePickerDialog() {
-        SpinnerDatePicker(
-            this,
-            viewModel.gifticon.value?.expireAt ?: Date()
-        ) { picker, year, month, dayOfMonth ->
-            viewModel.editExpireDate(year, month, dayOfMonth)
-            picker.dismiss()
-        }.show()
+        spinnerDatePicker.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
     }
 
     private fun showUseGifticonDialog() {

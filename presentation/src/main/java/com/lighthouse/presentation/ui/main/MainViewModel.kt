@@ -3,29 +3,34 @@ package com.lighthouse.presentation.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.ui.main.event.MainDirections
+import com.lighthouse.presentation.util.flow.MutableEventFlow
+import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    val directionsFlow = MutableSharedFlow<MainDirections>()
+    private val _eventFlow = MutableEventFlow<MainEvent>()
+    val eventFlow = _eventFlow.asEventFlow()
+
+    private val _pageFlow = MutableStateFlow<MainPage>(MainPage.Home)
+    val pageFlow = _pageFlow.asStateFlow()
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
     fun gotoAddGifticon() {
         viewModelScope.launch {
-            directionsFlow.emit(MainDirections.ADD_GIFTICON)
+            _eventFlow.emit(MainEvent.NavigateAddGifticon)
         }
     }
 
     fun gotoMap() {
         viewModelScope.launch {
-            directionsFlow.emit(MainDirections.MAP)
+            _eventFlow.emit(MainEvent.NavigateMap)
         }
     }
 
@@ -35,13 +40,13 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
         selectedMenuItem.value = itemId
         viewModelScope.launch {
-            val directions = when (itemId) {
-                R.id.menu_list -> MainDirections.LIST
-                R.id.menu_home -> MainDirections.HOME
-                R.id.menu_setting -> MainDirections.SETTING
+            val pages = when (itemId) {
+                R.id.menu_list -> MainPage.List
+                R.id.menu_home -> MainPage.Home
+                R.id.menu_setting -> MainPage.Setting
                 else -> null
             } ?: return@launch
-            directionsFlow.emit(directions)
+            _pageFlow.emit(pages)
         }
         return true
     }

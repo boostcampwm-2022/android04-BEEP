@@ -9,7 +9,7 @@ import com.lighthouse.presentation.databinding.FragmentStandardGifticonInfoBindi
 import com.lighthouse.presentation.ui.common.viewBindings
 
 class StandardGifticonInfoFragment : Fragment(R.layout.fragment_standard_gifticon_info) {
-    private val binding by viewBindings(FragmentStandardGifticonInfoBinding::bind)
+    private val binding: FragmentStandardGifticonInfoBinding by viewBindings()
     private val viewModel: GifticonDetailViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

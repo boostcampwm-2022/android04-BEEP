@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.lighthouse.presentation.ui.gallery.GalleryViewModel" />
@@ -17,14 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:liftOnScroll="true"
-            android:theme="@style/Theme.BEEP.Toolbar">
+            android:theme="@style/Theme.BEEP.Toolbar"
+            app:liftOnScroll="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:toolbarId="@id/cl_toolbar"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:toolbarId="@id/cl_toolbar">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_toolbar"
@@ -47,28 +48,17 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tv_selected_size"
+                        android:id="@+id/tv_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="@{vm.selectedSize}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                         android:textColor="?attr/colorOnSurface"
                         app:layout_constraintBottom_toBottomOf="@id/iv_back"
                         app:layout_constraintStart_toEndOf="@id/iv_back"
                         app:layout_constraintTop_toTopOf="@id/iv_back"
+                        app:setUIText="@{vm.titleText}"
                         tools:text="10" />
-
-                    <TextView
-                        android:id="@+id/tv_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{vm.selectedSizePostFix}"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:textColor="?attr/colorOnSurface"
-                        app:layout_constraintBaseline_toBaselineOf="@id/tv_selected_size"
-                        app:layout_constraintStart_toEndOf="@id/tv_selected_size"
-                        tools:text="@string/gallery_selected" />
 
                     <TextView
                         android:id="@+id/tv_confirm"

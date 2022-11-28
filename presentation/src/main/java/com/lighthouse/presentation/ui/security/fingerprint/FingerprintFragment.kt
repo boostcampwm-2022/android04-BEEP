@@ -19,7 +19,7 @@ import timber.log.Timber
 
 class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), FingerprintAuthCallback {
 
-    private val binding by viewBindings(FragmentFingerprintBinding::bind)
+    private val binding: FragmentFingerprintBinding by viewBindings()
     private lateinit var fingerprintAuthManager: FingerprintAuthManager
     private val activityLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
