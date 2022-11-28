@@ -13,7 +13,6 @@ data class AddGifticonUIModel(
     val isCashCard: Boolean,
     val balance: EditTextInfo,
     val memo: String,
-    val brandImage: CroppedImage,
     val thumbnailImage: CroppedImage
 ) {
     val uri: Uri

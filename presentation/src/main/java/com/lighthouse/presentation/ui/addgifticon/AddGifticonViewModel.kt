@@ -1,7 +1,5 @@
 package com.lighthouse.presentation.ui.addgifticon
 
-import android.graphics.RectF
-import android.net.Uri
 import android.text.InputFilter
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
@@ -27,7 +25,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.Calendar
@@ -220,14 +217,9 @@ class AddGifticonViewModel : ViewModel() {
         return false
     }
 
-    fun croppedImage(uri: Uri, rect: RectF) {
-        val image = CroppedImage(uri, rect)
-        updateSelectedDisplayGifticon { it.copy(thumbnailImage = image) }
-        updateSelectedGifticon { it.copy(thumbnailImage = image) }
-    }
-
-    fun croppedBrandImage(uri: Uri, rect: RectF) {
-        updateSelectedGifticon { it.copy(brandImage = CroppedImage(uri, rect)) }
+    fun croppedGifticonImage(croppedImage: CroppedImage) {
+        updateSelectedDisplayGifticon { it.copy(thumbnailImage = croppedImage) }
+        updateSelectedGifticon { it.copy(thumbnailImage = croppedImage) }
     }
 
     fun changeCashCard(checked: Boolean) {

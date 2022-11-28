@@ -169,15 +169,6 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image" />
 
-                <ImageView
-                    android:id="@+id/iv_brand"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="16dp"
-                    android:contentDescription="@string/add_gifticon_brand_description"
-                    app:layout_constraintStart_toStartOf="@id/guideline_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_origin_image" />
-
                 <TextView
                     android:id="@+id/tv_cash_card"
                     android:layout_width="wrap_content"
@@ -192,13 +183,13 @@
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch_cash_card"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="16dp"
                     android:checked="@{vm.isCashCard}"
                     android:enabled="@{vm.isSelected}"
                     android:onClick="@{() -> vm.requestCashCard()}"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_brand"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                    app:layout_constraintTop_toTopOf="@id/iv_brand"
+                    app:layout_constraintTop_toBottomOf="@id/tv_origin_image"
                     app:onCheckedChangeListener="@{(view, checked) -> vm.changeCashCard(checked)}" />
 
                 <TextView
@@ -209,7 +200,7 @@
                     android:text="@string/add_gifticon_name_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
-                    app:layout_constraintTop_toBottomOf="@id/iv_brand" />
+                    app:layout_constraintTop_toBottomOf="@id/switch_cash_card" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_name"

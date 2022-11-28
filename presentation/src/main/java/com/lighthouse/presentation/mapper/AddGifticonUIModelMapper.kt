@@ -29,8 +29,7 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(
     isCashCard: Boolean = false,
     balance: String = "",
     memo: String = "",
-    thumbnailImage: CroppedImage = CroppedImage(),
-    brandImage: CroppedImage = CroppedImage()
+    thumbnailImage: CroppedImage = CroppedImage()
 ): AddGifticonUIModel {
     return AddGifticonUIModel(
         id = id,
@@ -42,7 +41,6 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(
         isCashCard = isCashCard,
         balance = EditTextInfo(balance, balance.length),
         memo = memo,
-        thumbnailImage = thumbnailImage,
-        brandImage = brandImage
+        thumbnailImage = thumbnailImage
     )
 }
