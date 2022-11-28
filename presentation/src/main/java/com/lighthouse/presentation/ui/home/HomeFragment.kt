@@ -23,7 +23,6 @@ import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -96,10 +95,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun showSnackBar(@StringRes message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Timber.tag("TAG").d("${javaClass.simpleName} onDestroyView")
     }
 }

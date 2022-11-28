@@ -88,8 +88,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun gotoMap() {
-        val intent = Intent(this, MapActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, MapActivity::class.java))
     }
 
     private fun gotoAddGifticon() {

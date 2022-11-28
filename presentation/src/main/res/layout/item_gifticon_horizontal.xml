@@ -25,7 +25,6 @@
                 android:layout_height="120dp"
                 android:layout_marginStart="10dp"
                 android:adjustViewBounds="true"
-                android:elevation="4dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/test"
                 app:layout_constraintBottom_toBottomOf="parent"
