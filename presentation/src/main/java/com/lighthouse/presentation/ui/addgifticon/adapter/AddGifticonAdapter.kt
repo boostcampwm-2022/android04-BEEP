@@ -4,13 +4,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.adapter.BindableListAdapter
-import com.lighthouse.presentation.model.AddGifticonUIModel
 
 class AddGifticonAdapter(
     private val onClickGallery: () -> Unit,
-    private val onClickGifticon: (Int) -> Unit,
-    private val onDeleteGifticon: (Int) -> Unit
-) : BindableListAdapter<AddGifticonUIModel, RecyclerView.ViewHolder>(Diff) {
+    private val onClickGifticon: (AddGifticonItemUIModel.Gifticon) -> Unit,
+    private val onDeleteGifticon: (AddGifticonItemUIModel.Gifticon) -> Unit
+) : BindableListAdapter<AddGifticonItemUIModel, RecyclerView.ViewHolder>(diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -23,7 +22,7 @@ class AddGifticonAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = currentList[position]
         when {
-            holder is AddCandidateGifticonViewHolder && item is AddGifticonUIModel.Gifticon -> {
+            holder is AddCandidateGifticonViewHolder && item is AddGifticonItemUIModel.Gifticon -> {
                 holder.bind(item)
             }
         }
@@ -31,24 +30,24 @@ class AddGifticonAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (currentList[position]) {
-            AddGifticonUIModel.Gallery -> TYPE_GALLERY
-            is AddGifticonUIModel.Gifticon -> TYPE_GIFTICON
+            AddGifticonItemUIModel.Gallery -> TYPE_GALLERY
+            is AddGifticonItemUIModel.Gifticon -> TYPE_GIFTICON
         }
     }
 
     companion object {
-        private val Diff = object : DiffUtil.ItemCallback<AddGifticonUIModel>() {
-            override fun areItemsTheSame(oldItem: AddGifticonUIModel, newItem: AddGifticonUIModel): Boolean {
+        private val diff = object : DiffUtil.ItemCallback<AddGifticonItemUIModel>() {
+            override fun areItemsTheSame(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Boolean {
                 return when {
-                    oldItem is AddGifticonUIModel.Gallery && newItem is AddGifticonUIModel.Gallery -> true
-                    oldItem is AddGifticonUIModel.Gifticon && newItem is AddGifticonUIModel.Gifticon -> {
+                    oldItem is AddGifticonItemUIModel.Gallery && newItem is AddGifticonItemUIModel.Gallery -> true
+                    oldItem is AddGifticonItemUIModel.Gifticon && newItem is AddGifticonItemUIModel.Gifticon -> {
                         oldItem.id == newItem.id
                     }
                     else -> false
                 }
             }
 
-            override fun areContentsTheSame(oldItem: AddGifticonUIModel, newItem: AddGifticonUIModel): Boolean {
+            override fun areContentsTheSame(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Boolean {
                 return oldItem == newItem
             }
         }

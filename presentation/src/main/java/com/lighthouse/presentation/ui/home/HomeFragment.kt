@@ -25,7 +25,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val binding by viewBindings(FragmentHomeBinding::bind)
+    private val binding: FragmentHomeBinding by viewBindings()
     private val mainViewModel: MainViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private val nearGifticonAdapter = GifticonAdapter(GifticonViewHolderType.VERTICAL)

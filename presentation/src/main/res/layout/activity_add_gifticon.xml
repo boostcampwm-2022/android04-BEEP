@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -39,7 +38,7 @@
                         android:layout_height="48dp"
                         android:layout_marginStart="4dp"
                         android:contentDescription="@string/add_gifticon_back_description"
-                        android:onClick="@{() -> vm.popBackstack()}"
+                        android:onClick="@{() -> vm.requestPopBackstack()}"
                         android:padding="12dp"
                         android:src="@drawable/ic_back"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -70,51 +69,58 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
-                <TextView
-                    android:id="@+id/tv_registered_count"
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_start"
                     android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    android:layout_marginStart="16dp"
-                    android:gravity="center"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="1" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="32dp" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_end="32dp" />
 
                 <TextView
                     android:id="@+id/tv_registered"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_gifticon_registered"
+                    android:layout_height="38dp"
+                    android:gravity="center"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textStyle="bold"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_registered_count"
-                    app:layout_constraintStart_toEndOf="@id/tv_registered_count" />
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:setUIText="@{vm.registeredSizeText}" />
 
                 <TextView
                     android:id="@+id/tv_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/add_gifticon_delete_mode"
+                    android:onClick="@{() -> vm.changeDeleteMode()}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textStyle="bold"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_registered_count"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_registered"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:setUIText="@{vm.deleteModeText}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_gifticon"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@id/tv_registered_count"
-                    app:setItems="@{vm.displayList}"
-                    tools:listitem="@layout/item_add_candidate_gifticon" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_registered"
+                    app:setItems="@{vm.displayList}" />
 
                 <ImageView
                     android:id="@+id/iv_gifticon_image"
@@ -125,10 +131,11 @@
                     android:contentDescription="@string/add_gifticon_image_description"
                     android:onClick="@{() -> vm.gotoCropGifticon()}"
                     android:scaleType="centerCrop"
-                    app:imageURI="@{vm.currentGifticon.uri}"
+                    android:enabled="@{vm.isSelected}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_gifticon" />
+                    app:layout_constraintTop_toBottomOf="@id/rv_gifticon"
+                    app:loadUriWithoutCache="@{vm.thumbnailImage}" />
 
                 <TextView
                     android:id="@+id/tv_edit_gifticon_image"
@@ -145,28 +152,29 @@
 
                 <TextView
                     android:id="@+id/tv_origin_image"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
                     android:background="@color/gray"
                     android:gravity="center"
-                    android:padding="8dp"
+                    android:onClick="@{() -> vm.showOriginGifticon()}"
+                    android:padding="12dp"
                     android:text="@string/add_gifticon_confirm_origin_image"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textColor="@color/white"
                     android:textStyle="bold"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image" />
 
                 <ImageView
                     android:id="@+id/iv_brand"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/add_gifticon_brand_description"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_origin_image" />
 
                 <TextView
@@ -184,30 +192,34 @@
                     android:id="@+id/switch_cash_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:checked="@{vm.isCashCard}"
+                    android:enabled="@{vm.isSelected}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_brand"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/iv_brand" />
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintTop_toTopOf="@id/iv_brand"
+                    app:onCheckedChangeListener="@{(view, checked) -> vm.changeCashCard(checked)}" />
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/add_gifticon_name_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/iv_brand" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_name"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    app:boxBackgroundColor="@null"
                     app:endIconMode="clear_text"
+                    app:hintEnabled="false"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_name">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -216,7 +228,10 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_name_hint"
                         android:imeOptions="actionNext"
-                        android:lines="1" />
+                        android:inputType="textNoSuggestions"
+                        android:lines="1"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.changeGifticonName(text)}"
+                        android:text="@{vm.name}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -224,21 +239,23 @@
                     android:id="@+id/tv_brand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/add_gifticon_brand_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_name" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_brand"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    app:boxBackgroundColor="@null"
                     app:endIconMode="clear_text"
+                    app:hintEnabled="false"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_brand">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -247,7 +264,47 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_brand_hint"
                         android:imeOptions="actionNext"
-                        android:lines="1" />
+                        android:inputType="textNoSuggestions"
+                        android:lines="1"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBrandName(text)}"
+                        android:text="@{vm.brand}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_barcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/add_gifticon_barcode_label"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toBottomOf="@id/til_brand" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_barcode"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@null"
+                    app:endIconMode="clear_text"
+                    app:hintEnabled="false"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toBottomOf="@id/tv_barcode">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tiet_barcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_gifticon_barcode_hint"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:lines="1"
+                        android:maxLength="16"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text)}"
+                        android:text="@{vm.barcode}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -255,21 +312,26 @@
                     android:id="@+id/tv_expire_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/add_gifticon_expire_date_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/til_brand" />
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toBottomOf="@id/til_barcode" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_expire_date"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:endIconMode="clear_text"
+                    app:boxBackgroundColor="@null"
+                    app:endIconCheckable="true"
+                    app:endIconDrawable="@drawable/ic_add_gifticon_calendar"
+                    app:endIconMode="custom"
+                    app:endIconOnClickListener="@{() -> vm.showExpiredAtDatePicker()}"
+                    app:hintEnabled="false"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_expire_date">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -278,29 +340,38 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_expire_date_hint"
                         android:imeOptions="actionNext"
+                        android:inputType="date"
                         android:lines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.Group
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="tv_balance, til_balance"
+                    app:isVisible="@{vm.selectedGifticon.cashCard}" />
 
                 <TextView
                     android:id="@+id/tv_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/add_gifticon_balance_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_expire_date" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_balance"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    app:boxBackgroundColor="@null"
                     app:endIconMode="clear_text"
+                    app:hintEnabled="false"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_balance">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -309,7 +380,11 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_balance_hint"
                         android:imeOptions="actionNext"
-                        android:lines="1" />
+                        android:inputType="number"
+                        android:lines="1"
+                        android:maxLength="7"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text)}"
+                        android:text="@{vm.balance}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -317,21 +392,23 @@
                     android:id="@+id/tv_memo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/add_gifticon_memo_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_balance" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_memo"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    app:boxBackgroundColor="@null"
                     app:endIconMode="clear_text"
+                    app:hintEnabled="false"
+                    android:enabled="@{vm.isSelected}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_memo">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -339,26 +416,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_memo_hint"
-                        android:imeOptions="actionNext" />
+                        android:inputType="textNoSuggestions|textMultiLine"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.changeMemo(text)}"
+                        android:text="@{vm.memo}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/tv_register"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:background="?attr/colorPrimary"
                     android:gravity="center"
-                    android:padding="8dp"
+                    android:onClick="@{() -> vm.requestAddGifticon()}"
+                    android:padding="12dp"
                     android:text="@string/add_gifticon_register"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textColor="?attr/colorOnPrimary"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_memo" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

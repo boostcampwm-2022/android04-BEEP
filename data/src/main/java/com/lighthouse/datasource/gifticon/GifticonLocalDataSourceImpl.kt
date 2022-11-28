@@ -21,6 +21,10 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateGifticon(gifticon: GifticonEntity) {
+        gifticonDao.updateGifticon(gifticon)
+    }
+
     override suspend fun insertGifticons(gifticons: List<GifticonEntity>) {
         gifticonDao.insertGifticon(*gifticons.toTypedArray())
     }

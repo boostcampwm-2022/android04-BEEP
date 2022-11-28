@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import com.lighthouse.presentation.R
@@ -16,7 +15,6 @@ import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
-import com.lighthouse.presentation.ui.main.event.MainDirections
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,23 +44,40 @@ class MainActivity : AppCompatActivity() {
             vm = viewModel
         }
 
-        moveScreen(MainDirections.HOME)
-        setUpDirections()
+        collectEvent()
+        collectPage()
     }
 
-    private fun setUpDirections() {
+    private fun collectEvent() {
         repeatOnStarted {
-            viewModel.directionsFlow.collect { directions ->
-                navigate(directions)
+            viewModel.eventFlow.collect { directions ->
+                when (directions) {
+                    MainEvent.NavigateAddGifticon -> gotoAddGifticon()
+                    MainEvent.NavigateMap -> gotoMap()
+                }
             }
         }
     }
 
-    private fun navigate(directions: MainDirections) {
-        when (directions) {
-            MainDirections.ADD_GIFTICON -> gotoAddGifticon()
-            MainDirections.MAP -> gotoMap()
-            else -> moveScreen(directions)
+    private fun collectPage() {
+        repeatOnStarted {
+            viewModel.pageFlow.collect { page ->
+                val fragment = when (page) {
+                    MainPage.List -> gifticonListFragment
+                    MainPage.Home -> homeFragment
+                    MainPage.Setting -> settingFragment
+                }
+                supportFragmentManager.commit {
+                    if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
+                    if (fragment != homeFragment && homeFragment.isAdded) hide(homeFragment)
+                    if (fragment != settingFragment && settingFragment.isAdded) hide(settingFragment)
+                    if (fragment.isAdded) {
+                        show(fragment)
+                    } else {
+                        add(R.id.fl_container, fragment)
+                    }
+                }
+            }
         }
     }
 
@@ -77,25 +92,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         } else {
             permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-    }
-
-    private fun moveScreen(directions: MainDirections) {
-        val fragment = when (directions) {
-            MainDirections.LIST -> gifticonListFragment
-            MainDirections.HOME -> homeFragment
-            MainDirections.SETTING -> settingFragment
-            else -> null
-        } ?: return
-        supportFragmentManager.commit {
-            if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
-            if (fragment != homeFragment && homeFragment.isAdded) hide(homeFragment)
-            if (fragment != settingFragment && settingFragment.isAdded) hide(settingFragment)
-            if (fragment.isAdded) {
-                show(fragment)
-            } else {
-                add(R.id.fl_container, fragment)
-            }
         }
     }
 }

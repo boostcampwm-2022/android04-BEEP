@@ -1,15 +1,14 @@
 package com.lighthouse.presentation.ui.cropgifticon
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
+import android.graphics.RectF
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -17,11 +16,12 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityCropGifticonBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvent
+import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class CropGifticonActivity : AppCompatActivity() {
@@ -40,7 +40,6 @@ class CropGifticonActivity : AppCompatActivity() {
 
         setUpOnBackPressed()
         collectEvent()
-        collectMessage()
     }
 
     private fun setUpOnBackPressed() {
@@ -53,24 +52,17 @@ class CropGifticonActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventsFlow.collect { events ->
                 when (events) {
-                    is CropGifticonEvent.Crop -> requestCropImage()
-                    is CropGifticonEvent.Cancel -> cancelCropImage()
-                    is CropGifticonEvent.Complete -> completeCropImage(events.bitmap)
+                    is CropGifticonEvent.PopupBackStack -> cancelCropImage()
+                    is CropGifticonEvent.RequestCrop -> requestCropImage()
+                    is CropGifticonEvent.CompleteCrop -> completeCropImage(events.croppedBitmap, events.croppedRect)
+                    is CropGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
                 }
             }
         }
     }
 
-    private fun collectMessage() {
-        repeatOnStarted {
-            viewModel.messageFlow.collect { message ->
-                showSnackBar(message)
-            }
-        }
-    }
-
-    private fun showSnackBar(@StringRes resId: Int) {
-        Snackbar.make(binding.root, resId, Snackbar.LENGTH_SHORT).show()
+    private fun showSnackBar(uiText: UIText) {
+        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
     }
 
     private fun requestCropImage() {
@@ -84,15 +76,20 @@ class CropGifticonActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun completeCropImage(bitmap: Bitmap) {
+    private fun completeCropImage(croppedBitmap: Bitmap, croppedRect: RectF) {
         lifecycleScope.launch {
+            val file = getFileStreamPath(TEMP_FILE_PATH)
+            file.delete()
+
             withContext(Dispatchers.IO) {
-                openFileOutput(TEMP_FILE_PATH, Context.MODE_PRIVATE).use {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                FileOutputStream(file).use {
+                    croppedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
                 }
             }
+
             val intent = Intent().apply {
-                putExtra(Extras.CroppedImage, Uri.fromFile(getFileStreamPath(TEMP_FILE_PATH)))
+                putExtra(Extras.KEY_CROPPED_IMAGE, file.toUri())
+                putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
             }
             setResult(Activity.RESULT_OK, intent)
             finish()

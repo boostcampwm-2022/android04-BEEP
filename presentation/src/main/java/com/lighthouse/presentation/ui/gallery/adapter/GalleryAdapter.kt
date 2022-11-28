@@ -9,7 +9,7 @@ import com.lighthouse.presentation.model.GalleryUIModel
 class GalleryAdapter(
     private val selection: GallerySelection,
     onClickGallery: (GalleryUIModel.Gallery) -> Unit
-) : PagingDataAdapter<GalleryUIModel, RecyclerView.ViewHolder>(Diff) {
+) : PagingDataAdapter<GalleryUIModel, RecyclerView.ViewHolder>(diff) {
 
     private val onClickGallery: (GalleryUIModel.Gallery) -> Unit = { model ->
         selection.toggle(model)
@@ -45,7 +45,7 @@ class GalleryAdapter(
     }
 
     companion object {
-        private val Diff = object : DiffUtil.ItemCallback<GalleryUIModel>() {
+        private val diff = object : DiffUtil.ItemCallback<GalleryUIModel>() {
             override fun areItemsTheSame(oldItem: GalleryUIModel, newItem: GalleryUIModel): Boolean {
                 return when {
                     oldItem is GalleryUIModel.Header && newItem is GalleryUIModel.Header -> {
