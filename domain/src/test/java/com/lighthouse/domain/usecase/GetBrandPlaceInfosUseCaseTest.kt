@@ -1,3 +1,4 @@
+/*
 package com.lighthouse.domain.usecase
 
 import com.lighthouse.domain.DmsLocation
@@ -67,3 +68,4 @@ class GetBrandPlaceInfosUseCaseTest {
         )
     }
 }
+*/
