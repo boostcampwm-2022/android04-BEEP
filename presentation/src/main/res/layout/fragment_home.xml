@@ -56,7 +56,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_near_gifticon"
             android:layout_width="wrap_content"
-            android:layout_height="240dp"
+            android:layout_height="250dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -86,7 +86,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_expire_gifticon"
             android:layout_width="wrap_content"
-            android:layout_height="240dp"
+            android:layout_height="250dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
