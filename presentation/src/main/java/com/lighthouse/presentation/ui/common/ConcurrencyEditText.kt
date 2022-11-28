@@ -71,10 +71,13 @@ class ConcurrencyEditText @JvmOverloads constructor(
     private fun setTextChangedListener() {
         inputEditText.filters = arrayOf(
             InputFilter { source, start, end, dest, dstart, dend ->
-                Timber.tag("concurrency").d("source: $source, start: $start, end: $end, dest: $dest, dstart: $dstart, dend: $dend")
+                Timber.tag("concurrency")
+                    .d("source: $source, start: $start, end: $end, dest: $dest, dstart: $dstart, dend: $dend")
                 val totalString = dest.substring(0 until dstart) + source + dest.substring(dend)
                 val number = convertToNumber(totalString)
-                if ((dest.toString().isNotBlank() && number.isBlank()) || (number.isNotBlank() && number.toLong() > maxValue)) {
+                if ((dest.toString()
+                        .isNotBlank() && number.isBlank()) || (number.isNotBlank() && number.toLong() > maxValue)
+                ) {
                     Timber.tag("concurrency").d("source: $source")
                     return@InputFilter ""
                 } else {
@@ -82,8 +85,8 @@ class ConcurrencyEditText @JvmOverloads constructor(
                 }
             }
         )
-        inputEditText.doOnTextChanged { s, _, _, _ ->
-            val newString = s?.toString() ?: ""
+        inputEditText.doOnTextChanged { charSequence, _, _, _ ->
+            val newString = charSequence?.toString() ?: ""
             if (text == newString) return@doOnTextChanged
 
             val number = convertToNumber(newString)
