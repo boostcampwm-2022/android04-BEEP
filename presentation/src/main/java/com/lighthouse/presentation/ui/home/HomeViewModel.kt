@@ -12,9 +12,9 @@ import com.lighthouse.domain.usecase.SaveGifticonsUseCase
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.UUID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
@@ -44,8 +44,8 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _nearGifticon: MutableSharedFlow<UiState<List<Gifticon>>> = MutableSharedFlow()
-    val nearGifticon = _nearGifticon.asSharedFlow()
+    private val _nearGifticon: MutableStateFlow<UiState<List<Gifticon>>> = MutableStateFlow(UiState.Loading)
+    val nearGifticon = _nearGifticon.asStateFlow()
 
     init {
         val gifticonTestData = listOf(

@@ -37,6 +37,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         bottom = 4.dp
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setBindingAdapter()
         setObserveViewModel()
@@ -47,12 +51,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         with(binding.rvNearGifticon) {
             adapter = nearGifticonAdapter
             addItemDecoration(itemDecoration)
+            val nearGifticon = homeViewModel.nearGifticon.value
+            if (nearGifticon is UiState.Success) {
+                nearGifticonAdapter.submitList(nearGifticon.item)
+            }
         }
         with(binding.rvExpireGifticon) {
             adapter = expireGifticonAdapter
             addItemDecoration(itemDecoration)
         }
-        homeViewModel
     }
 
     private fun setObserveViewModel() {
