@@ -157,10 +157,12 @@
     <string name="pin_secure_not_use"><u>보안 설정 사용 안 함</u></string>
     <string name="pin_complete">PIN 설정을 완료했습니다</string>
     <string name="pin_internal_error">PIN 설정 중 오류가 발생했습니다. 잠시후 다시 시도해주세요.</string>
-
+    <string name="pin_input_description">PIN 번호를 입력하세요</string>
+    
     <string name="dialog_usage_history_date_label">일자</string>
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
+    
     <string name="gifticon_detail_info_changed_snackbar_text">기프티콘 정보가 변경되었습니다</string>
     <string name="gifticon_detail_info_changed_snackbar_action_text">되돌리기</string>
 
