@@ -2,6 +2,7 @@ package com.lighthouse.presentation.mapper
 
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
+import com.lighthouse.presentation.model.EditTextInfo
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import java.util.Date
@@ -36,10 +37,10 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(
         origin = uri,
         name = name,
         brandName = brandName,
-        barcode = barcode,
+        barcode = EditTextInfo(barcode, barcode.length),
         expiredAt = expiredAt,
         isCashCard = isCashCard,
-        balance = balance,
+        balance = EditTextInfo(balance, balance.length),
         memo = memo,
         thumbnailImage = thumbnailImage,
         brandImage = brandImage

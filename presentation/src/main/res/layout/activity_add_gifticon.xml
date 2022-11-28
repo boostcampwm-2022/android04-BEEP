@@ -233,7 +233,8 @@
                         android:inputType="textNoSuggestions"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeGifticonName(text)}"
-                        android:text="@{vm.name}" />
+                        android:text="@{vm.name}"
+                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -269,7 +270,8 @@
                         android:inputType="textNoSuggestions"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBrandName(text)}"
-                        android:text="@{vm.brand}" />
+                        android:text="@{vm.brand}"
+                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -306,8 +308,8 @@
                         android:lines="1"
                         android:maxLength="19"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
-                        android:selection="@{vm.barcodeSelection}"
-                        android:text="@{vm.barcode}" />
+                        app:setEditTextInfo="@{vm.barcode}"
+                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -350,8 +352,8 @@
                         android:inputType="number"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
-                        android:selection="@{vm.balanceSelection}"
-                        android:text="@{vm.balance}" />
+                        app:setEditTextInfo="@{vm.balance}"
+                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -363,7 +365,7 @@
                     android:text="@string/add_gifticon_expire_date_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
-                    app:layout_constraintTop_toBottomOf="@id/tv_balance" />
+                    app:layout_constraintTop_toBottomOf="@id/til_balance" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_expire_date"

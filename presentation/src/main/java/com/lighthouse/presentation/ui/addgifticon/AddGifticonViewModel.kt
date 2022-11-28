@@ -3,6 +3,7 @@ package com.lighthouse.presentation.ui.addgifticon
 import android.graphics.RectF
 import android.net.Uri
 import android.text.InputFilter
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
@@ -14,6 +15,7 @@ import com.lighthouse.presentation.mapper.toAddGifticonItemUIModel
 import com.lighthouse.presentation.mapper.toAddGifticonUIModel
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
+import com.lighthouse.presentation.model.EditTextInfo
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.util.flow.MutableEventFlow
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.Calendar
@@ -59,6 +62,11 @@ class AddGifticonViewModel : ViewModel() {
         list.find { it.id == id }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val expiredAtDate: Date?
+        get() = selectedGifticon.value?.expiredAt?.let {
+            if (it == EMPTY_DATE) today else it
+        }
+
     val isSelected = selectedGifticon.map {
         it != null
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
@@ -83,7 +91,11 @@ class AddGifticonViewModel : ViewModel() {
         it?.barcode
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val barcodeSelection = MutableStateFlow(0)
+    private val balanceFormat = DecimalFormat("###,###,###")
+
+    val balance = selectedGifticon.map {
+        it?.balance
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val expiredAt = selectedGifticon.map {
         val date = it?.expiredAt
@@ -93,14 +105,6 @@ class AddGifticonViewModel : ViewModel() {
             UIText.Empty
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    private val balanceFormat = DecimalFormat("###,###,###")
-
-    val balance = selectedGifticon.map {
-        it?.balance
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val balanceSelection = MutableStateFlow(0)
 
     val memo = selectedGifticon.map {
         it?.memo
@@ -197,6 +201,25 @@ class AddGifticonViewModel : ViewModel() {
         return newItem
     }
 
+    fun onActionNextListener(actionId: Int): Boolean {
+        val gifticon = selectedGifticon.value ?: return false
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            val event = when (checkGifticonValid(gifticon)) {
+                AddGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(AddGifticonFocus.GIFTICON_NAME)
+                AddGifticonValid.INVALID_BRAND_NAME -> AddGifticonEvent.RequestFocus(AddGifticonFocus.BRAND_NAME)
+                AddGifticonValid.INVALID_BARCODE -> AddGifticonEvent.RequestFocus(AddGifticonFocus.BARCODE)
+                AddGifticonValid.INVALID_BALANCE -> AddGifticonEvent.RequestFocus(AddGifticonFocus.BALANCE)
+                AddGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(expiredAtDate ?: today)
+                else -> AddGifticonEvent.RequestFocus(AddGifticonFocus.MEMO)
+            }
+            viewModelScope.launch {
+                _eventFlow.emit(event)
+            }
+            return true
+        }
+        return false
+    }
+
     fun croppedImage(uri: Uri, rect: RectF) {
         val image = CroppedImage(uri, rect)
         updateSelectedDisplayGifticon { it.copy(thumbnailImage = image) }
@@ -230,7 +253,7 @@ class AddGifticonViewModel : ViewModel() {
 
     fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
         val newBarcode = charSequence.toString()
-        val oldBarcode = barcode.value ?: return
+        val oldBarcode = barcode.value?.text ?: return
         if (oldBarcode == newBarcode) {
             return
         }
@@ -244,29 +267,22 @@ class AddGifticonViewModel : ViewModel() {
         }
 
         val newText = newValueText.chunked(4).joinToString(" ")
-        val updated = updateSelectedGifticon { it.copy(barcode = newText) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-
-        barcodeSelection.value = if (oldBarcode.length == start) {
+        val newSelection = if (oldBarcode.length == start) {
             newText.length
         } else {
             val numIndex = start + count - spaceCount
             var numCount = 0
-            var newSelection = 0
+            var selection = 0
             while (numCount < numIndex) {
-                if (newText[newSelection].isDigit()) {
+                if (newText[selection].isDigit()) {
                     numCount += 1
                 }
-                newSelection += 1
+                selection += 1
             }
-            newSelection
+            selection
         }
-    }
 
-    fun changeExpiredAt(expiredAt: Date) {
-        val updated = updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
+        val updated = updateSelectedGifticon { it.copy(barcode = EditTextInfo(newText, newSelection)) }
         if (updated != null) {
             updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
         }
@@ -292,7 +308,7 @@ class AddGifticonViewModel : ViewModel() {
 
     fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
         val newBalance = charSequence.toString()
-        val oldBalance = balance.value ?: return
+        val oldBalance = balance.value?.text ?: return
         if (oldBalance == newBalance) {
             return
         }
@@ -306,24 +322,31 @@ class AddGifticonViewModel : ViewModel() {
         }
 
         val newText = balanceFormat.format(newValueText.toDigit())
-        val updated = updateSelectedGifticon { it.copy(balance = newText) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-
-        balanceSelection.value = if (oldBalance.length == start) {
+        val newSelection = if (oldBalance.length == start) {
             newText.length
         } else {
             val numIndex = start + count - unitCount
             var numCount = 0
-            var newSelection = 0
+            var selection = 0
             while (numCount < numIndex) {
-                if (newText[newSelection].isDigit()) {
+                if (newText[selection].isDigit()) {
                     numCount += 1
                 }
-                newSelection += 1
+                selection += 1
             }
-            newSelection
+            selection
+        }
+
+        val updated = updateSelectedGifticon { it.copy(balance = EditTextInfo(newText, newSelection)) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
+    }
+
+    fun changeExpiredAt(expiredAt: Date) {
+        val updated = updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
         }
     }
 
@@ -372,9 +395,9 @@ class AddGifticonViewModel : ViewModel() {
         return when {
             gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
-            gifticon.barcode.length != 12 + 2 && gifticon.barcode.length != 16 + 3 -> AddGifticonValid.INVALID_BARCODE
+            gifticon.barcode.text.length != 12 + 2 && gifticon.barcode.text.length != 16 + 3 -> AddGifticonValid.INVALID_BARCODE
             gifticon.expiredAt < today -> AddGifticonValid.INVALID_EXPIRED_AT
-            gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
+            gifticon.isCashCard && gifticon.balance.text.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             else -> AddGifticonValid.VALID
         }
     }
@@ -393,10 +416,13 @@ class AddGifticonViewModel : ViewModel() {
 
     fun requestCashCard() {
         val gifticon = selectedGifticon.value ?: return
-        if (gifticon.isCashCard) {
-            viewModelScope.launch {
-                _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonFocus.BALANCE))
+        viewModelScope.launch {
+            val event = if (gifticon.isCashCard) {
+                AddGifticonEvent.RequestFocus(AddGifticonFocus.BALANCE)
+            } else {
+                AddGifticonEvent.RequestFocus(AddGifticonFocus.NONE)
             }
+            _eventFlow.emit(event)
         }
     }
 
@@ -475,10 +501,7 @@ class AddGifticonViewModel : ViewModel() {
     }
 
     fun showExpiredAtDatePicker() {
-        var expiredAt = selectedGifticon.value?.expiredAt ?: return
-        if (expiredAt == EMPTY_DATE) {
-            expiredAt = today
-        }
+        val expiredAt = expiredAtDate ?: return
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.ShowExpiredAtDatePicker(expiredAt))
         }

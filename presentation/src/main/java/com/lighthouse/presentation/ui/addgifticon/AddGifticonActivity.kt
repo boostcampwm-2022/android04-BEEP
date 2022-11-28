@@ -1,10 +1,12 @@
 package com.lighthouse.presentation.ui.addgifticon
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -198,14 +200,20 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun requestFocus(focus: AddGifticonFocus) {
-        when (focus) {
-            AddGifticonFocus.GIFTICON_NAME -> binding.tietName.requestFocus()
-            AddGifticonFocus.BRAND_NAME -> binding.tietBrand.requestFocus()
-            AddGifticonFocus.BARCODE -> binding.tietBarcode.requestFocus()
-            AddGifticonFocus.EXPIRED_AT -> binding.tietExpireDate.requestFocus()
-            AddGifticonFocus.BALANCE -> binding.tietBalance.requestFocus()
-            AddGifticonFocus.MEMO -> binding.tietMemo.requestFocus()
-            AddGifticonFocus.NONE -> binding.clContainer.requestFocus()
+        val focusView = when (focus) {
+            AddGifticonFocus.GIFTICON_NAME -> binding.tietName
+            AddGifticonFocus.BRAND_NAME -> binding.tietBrand
+            AddGifticonFocus.BARCODE -> binding.tietBarcode
+            AddGifticonFocus.BALANCE -> binding.tietBalance
+            AddGifticonFocus.MEMO -> binding.tietMemo
+            AddGifticonFocus.NONE -> binding.clContainer
+        }
+        focusView.requestFocus()
+        val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (focus != AddGifticonFocus.NONE) {
+            inputMethodService.showSoftInput(focusView, 0)
+        } else {
+            inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
