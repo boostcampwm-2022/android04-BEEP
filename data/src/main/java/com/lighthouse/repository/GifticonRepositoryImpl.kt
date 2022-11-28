@@ -7,6 +7,7 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
+import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -64,5 +65,27 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override suspend fun unUseGifticon(gifticonId: String) {
         gifticonLocalDataSource.unUseGifticon(gifticonId)
+    }
+
+    override fun getGifticonByBrand(brand: String) = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getGifticonByBrand(brand).collect { gifticons ->
+            if (gifticons.isEmpty()) {
+                emit(DbResult.Empty)
+            } else {
+                emit(DbResult.Success(gifticons.map { it.toDomain() }))
+            }
+        }
+    }
+
+    override fun getAllGifticon() = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getAllGifticons().collect { gifticons ->
+            if (gifticons.isEmpty()) {
+                emit(DbResult.Empty)
+            } else {
+                emit(DbResult.Success(gifticons.map { it.toDomain() }))
+            }
+        }
     }
 }
