@@ -24,8 +24,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class PinFragment : Fragment(R.layout.fragment_pin) {
 
-    private val binding by viewBindings(FragmentPinBinding::bind)
+    private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinSettingViewModel by viewModels()
+
     private val activityViewModel: SecurityViewModel by activityViewModels()
     private val shakeAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)

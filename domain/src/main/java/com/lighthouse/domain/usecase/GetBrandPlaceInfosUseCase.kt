@@ -3,8 +3,6 @@ package com.lighthouse.domain.usecase
 import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.repository.BrandRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetBrandPlaceInfosUseCase @Inject constructor(
@@ -16,14 +14,12 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
         x: Double,
         y: Double,
         size: Int
-    ): Flow<Result<List<BrandPlaceInfo>>> {
+    ): List<BrandPlaceInfo> {
         val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
 
-        return flow {
-            cardinalLocations.forEach { location ->
-                brandNames.forEach { brandName ->
-                    emit(brandRepository.getBrandPlaceInfo(brandName, location.x, location.y, size))
-                }
+        return cardinalLocations.flatMap { location ->
+            brandNames.flatMap { brandName ->
+                brandRepository.getBrandPlaceInfo(brandName, location.x, location.y, size).getOrThrow()
             }
         }
     }

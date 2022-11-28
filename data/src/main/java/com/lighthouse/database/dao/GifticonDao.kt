@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
 import com.lighthouse.database.entity.UsageHistoryEntity
@@ -50,6 +51,12 @@ interface GifticonDao {
      * */
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertUsageHistory(usageHistory: UsageHistoryEntity)
+
+    /**
+     * 기프티콘의 정보를 업데이트한다
+     * */
+    @Update
+    suspend fun updateGifticon(newGifticon: GifticonEntity)
 
     /**
      * 기프티콘을 사용 상태로 변경하고, 사용 기록에 추가한다

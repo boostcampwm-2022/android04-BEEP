@@ -1,6 +1,8 @@
 package com.lighthouse.presentation.ui.cropgifticon.view
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver.SCHEME_CONTENT
+import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,7 +12,6 @@ import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.Region
-import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -22,10 +23,16 @@ import androidx.core.graphics.minus
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.getBitmap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.min
 
 class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private val backgroundPaint by lazy {
         Paint().apply {
@@ -176,60 +183,69 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.onCropImageListener = onCropImageListener
     }
 
-    fun setOriginUri(uri: Uri?) {
-        originBitmap = when (uri?.scheme) {
-            SCHEME_CONTENT -> context.contentResolver.getBitmap(uri)
-            SCHEME_FILE -> BitmapFactory.decodeFile(uri.path)
-            else -> null
+    fun setCropInfo(info: CropImageInfo) {
+        coroutineScope.launch {
+            originBitmap = withContext(Dispatchers.IO) {
+                when (info.uri?.scheme) {
+                    SCHEME_CONTENT -> context.contentResolver.getBitmap(info.uri)
+                    SCHEME_FILE -> BitmapFactory.decodeFile(info.uri.path)
+                    else -> null
+                }
+            }
+            initRect(info.croppedRect)
+            applyMatrix(false)
         }
-
-        initRect()
     }
 
     fun cropImage() {
         val bitmap = originBitmap
         if (bitmap != null) {
-            val rect = RectF(curCropRect)
+            val croppedRect = RectF(curCropRect)
             mainMatrix.invert(mainInverseMatrix)
-            mainInverseMatrix.mapRect(rect)
+            mainInverseMatrix.mapRect(croppedRect)
 
             val croppedBitmap = Bitmap.createBitmap(
                 bitmap,
-                rect.left.toInt(),
-                rect.top.toInt(),
-                (rect.right - rect.left).toInt(),
-                (rect.bottom - rect.top).toInt()
+                croppedRect.left.toInt(),
+                croppedRect.top.toInt(),
+                (croppedRect.right - croppedRect.left).toInt(),
+                (croppedRect.bottom - croppedRect.top).toInt()
             )
-            onCropImageListener?.onCrop(croppedBitmap)
+            onCropImageListener?.onCrop(croppedBitmap, croppedRect)
         } else {
-            onCropImageListener?.onCrop(null)
+            onCropImageListener?.onCrop(null, null)
         }
     }
 
     // 새로운 이미지 등록시, Rect 초기화
-    private fun initRect() {
+    private fun initRect(croppedRect: RectF? = null) {
         mainMatrix.reset()
 
         val bitmap = originBitmap
         if (bitmap != null) {
             realImageRect.set(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
             curImageRect.set(realImageRect)
-            if (aspectRatioEnable) {
-                // AspectRatio 에 맞춰서 CropRect 를 변경 한다
-                val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
-                val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
 
-                val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
-                val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
-
-                curCropRect.set(
-                    aspectOffsetX,
-                    aspectOffsetY,
-                    aspectOffsetX + aspectWidth,
-                    aspectOffsetY + aspectHeight
-                )
+            if (croppedRect != null && croppedRect != RECT_F_EMPTY) {
+                curCropRect.set(croppedRect)
             } else {
-                curCropRect.set(realImageRect)
+                if (aspectRatioEnable) {
+                    // AspectRatio 에 맞춰서 CropRect 를 변경 한다
+                    val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
+                    val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
+
+                    val aspectOffsetX = (realImageRect.width() - aspectWidth) / 2
+                    val aspectOffsetY = (realImageRect.height() - aspectHeight) / 2
+
+                    curCropRect.set(
+                        aspectOffsetX,
+                        aspectOffsetY,
+                        aspectOffsetX + aspectWidth,
+                        aspectOffsetY + aspectHeight
+                    )
+                } else {
+                    curCropRect.set(realImageRect)
+                }
             }
         } else {
             realImageRect.set(RECT_F_EMPTY)
@@ -1002,9 +1018,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     companion object {
         private val RECT_F_EMPTY = RectF()
-
-        private const val SCHEME_CONTENT = "content"
-        private const val SCHEME_FILE = "file"
 
         private const val MIN_ZOOM = 1f
         private const val MAX_ZOOM = 4f

@@ -7,5 +7,5 @@ import com.lighthouse.presentation.ui.common.viewBindings
 
 class SettingFragment : Fragment(R.layout.fragment_setting) {
 
-    private val binding by viewBindings(FragmentSettingBinding::bind)
+    private val binding: FragmentSettingBinding by viewBindings()
 }

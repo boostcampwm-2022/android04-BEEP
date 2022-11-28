@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.binding.loadThumbnailByContentUri
 import com.lighthouse.presentation.databinding.ItemGalleryBinding
 import com.lighthouse.presentation.model.GalleryUIModel
 
@@ -22,5 +23,6 @@ class GalleryItemViewHolder(
             binding.selection = selection
         }
         binding.selection = selection
+        binding.ivThumbnail.loadThumbnailByContentUri(item.uri)
     }
 }

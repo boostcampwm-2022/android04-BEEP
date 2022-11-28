@@ -1,18 +1,12 @@
 package com.lighthouse.domain.usecase
 
-import com.google.common.truth.Truth
 import com.lighthouse.domain.DmsLocation
 import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
-import com.lighthouse.domain.model.CustomError
 import com.lighthouse.domain.repository.BrandRepository
-import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Test
-import org.junit.jupiter.api.DisplayName
 
 @ExperimentalCoroutinesApi
 class GetBrandPlaceInfosUseCaseTest {
@@ -25,41 +19,41 @@ class GetBrandPlaceInfosUseCaseTest {
         cardinalLocations = LocationConverter.getCardinalDirections(x, y)
     }
 
-    @Test
-    @DisplayName("[성공] 검색 결과를 갖고온다")
-    fun getBrandPlaceInfoSuccess() = runTest {
-        // given
-        val useCase = GetBrandPlaceInfosUseCase(brandRepository)
-        cardinalLocations.forEach { location ->
-            coEvery {
-                brandRepository.getBrandPlaceInfo(brandKeyword, location.x, location.y, 5)
-            } returns Result.success(brandPlaceInfoResults)
-        }
-
-        // when
-        val action = useCase(brandKeyword, x, y, 5).getOrThrow()
-
-        // then
-        Truth.assertThat(action).isEqualTo(brandResult)
-    }
-
-    @Test
-    @DisplayName("[실패] 검색 결과가 존재하지 않는다")
-    fun getBrandPlaceInfoNotFound() = runTest {
-        // given
-        val useCase = GetBrandPlaceInfosUseCase(brandRepository)
-        cardinalLocations.forEach { location ->
-            coEvery {
-                brandRepository.getBrandPlaceInfo(brandKeyword, location.x, location.y, 5)
-            } returns Result.success(emptyList())
-        }
-
-        // when
-        val action = useCase(brandKeyword, x, y, 5).exceptionOrNull()
-
-        // then
-        Truth.assertThat(action).isInstanceOf(CustomError.EmptyResults::class.java)
-    }
+//    @Test
+//    @DisplayName("[성공] 검색 결과를 갖고온다")
+//    fun getBrandPlaceInfoSuccess() = runTest {
+//        // given
+//        val useCase = GetBrandPlaceInfosUseCase(brandRepository)
+//        cardinalLocations.forEach { location ->
+//            coEvery {
+//                brandRepository.getBrandPlaceInfo(brandKeyword, location.x, location.y, 5)
+//            } returns Result.success(brandPlaceInfoResults)
+//        }
+//
+//        // when
+//        val action = useCase(brandKeyword, x, y, 5).getOrThrow()
+//
+//        // then
+//        Truth.assertThat(action).isEqualTo(brandResult)
+//    }
+//
+//    @Test
+//    @DisplayName("[실패] 검색 결과가 존재하지 않는다")
+//    fun getBrandPlaceInfoNotFound() = runTest {
+//        // given
+//        val useCase = GetBrandPlaceInfosUseCase(brandRepository)
+//        cardinalLocations.forEach { location ->
+//            coEvery {
+//                brandRepository.getBrandPlaceInfo(brandKeyword, location.x, location.y, 5)
+//            } returns Result.success(emptyList())
+//        }
+//
+//        // when
+//        val action = useCase(brandKeyword, x, y, 5).exceptionOrNull()
+//
+//        // then
+//        Truth.assertThat(action).isInstanceOf(CustomError.EmptyResults::class.java)
+//    }
 
     companion object {
         private const val x = 37.284

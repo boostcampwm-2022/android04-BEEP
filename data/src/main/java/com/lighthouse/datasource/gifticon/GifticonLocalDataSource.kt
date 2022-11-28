@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface GifticonLocalDataSource {
     fun getGifticon(id: String): Flow<Gifticon>
     suspend fun insertGifticons(gifticons: List<GifticonEntity>)
+    suspend fun updateGifticon(gifticon: GifticonEntity)
     suspend fun useGifticon(usageHistory: UsageHistoryEntity)
     suspend fun useCashCardGifticon(amount: Int, usageHistory: UsageHistoryEntity)
     suspend fun unUseGifticon(gifticonId: String)

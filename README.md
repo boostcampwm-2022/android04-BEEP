@@ -53,14 +53,14 @@
 
 |등록화면|이미지확인|갤러리|이미지편집|
 |:-----:|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108320-3505e4fb-8cd6-4260-886a-5eadf9e1afbe.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108312-04a0033a-5f10-4325-b940-a51c42b3c31c.png">|이미지 준비중|이미지 준비중|
-|구현중|구현중|구현중|구현중|
+|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108320-3505e4fb-8cd6-4260-886a-5eadf9e1afbe.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108312-04a0033a-5f10-4325-b940-a51c42b3c31c.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015611-52d291cc-1ac3-4014-a25f-8006055becab.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015793-3062337d-b79e-40d6-aaec-2c5779a1d4f3.png">|
+|구현중|구현중|구현중|구현완료|
 
 ### 목록 && 디테일
 
 |기프티콘 목록|삭제|브랜드검색|
-|:-----:|:-----:|:-----:
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108857-d82f37aa-aabb-4891-a262-6adbbd89fe3a.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108834-08413935-9c7a-4423-8b6b-0f58f30523e4.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108848-3119caab-f771-41d9-ac2f-92b2fe573a40.png">
+|:-----:|:-----:|:-----:|
+|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108857-d82f37aa-aabb-4891-a262-6adbbd89fe3a.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108834-08413935-9c7a-4423-8b6b-0f58f30523e4.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108848-3119caab-f771-41d9-ac2f-92b2fe573a40.png">|
 |구현중|구현중|구현중|
 
 
@@ -73,8 +73,8 @@
 ### 상세화면 - 상품
 
 |상세화면|지문인식|바코드|
-|:-----:|:-----:|:-----:
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111258-376b7476-8cd9-464d-8c36-78f335fc7e90.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111268-56bd8370-bb8e-4a2a-9fd1-cfe074261db6.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111265-589b1367-d6ca-4140-8494-424156bb1cfa.png">
+|:-----:|:-----:|:-----:|
+|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111258-376b7476-8cd9-464d-8c36-78f335fc7e90.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111268-56bd8370-bb8e-4a2a-9fd1-cfe074261db6.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111265-589b1367-d6ca-4140-8494-424156bb1cfa.png">|
 |구현중|구현중|구현중|
 
 ### 설정, 기프티콘 확인

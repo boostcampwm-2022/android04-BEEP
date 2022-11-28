@@ -6,19 +6,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
-import com.lighthouse.presentation.ui.common.dialog.SpinnerDatePicker
+import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.security.AuthCallback
@@ -29,6 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import java.util.Date
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
@@ -36,9 +41,14 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
 
+    private val standardGifticonInfo by lazy { StandardGifticonInfoFragment() }
+    private val cashCardGifticonInfo by lazy { CashCardGifticonInfoFragment() }
+
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
+    private lateinit var gifticonInfoChangedSnackbar: Snackbar
+    private lateinit var gifticonInfoNotChangedToast: Toast
 
     private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
 
@@ -75,6 +85,21 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
             }
         }
         repeatOnStarted {
+            viewModel.gifticon.collect { gifticon ->
+                gifticon?.let {
+                    if (it.isCashCard) {
+                        supportFragmentManager.commit {
+                            replace(binding.fcvGifticonInfo.id, cashCardGifticonInfo)
+                        }
+                    } else {
+                        supportFragmentManager.commit {
+                            replace(binding.fcvGifticonInfo.id, standardGifticonInfo)
+                        }
+                    }
+                }
+            }
+        }
+        repeatOnStarted {
             viewModel.mode.collect { mode ->
                 when (mode) {
                     GifticonDetailMode.UNUSED -> {
@@ -104,6 +129,13 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
             is Event.EditButtonClicked -> {
                 showCheckEditDialog()
             }
+            is Event.OnGifticonInfoChanged -> {
+                if (event.before == event.after) {
+                    showGifticonInfoNotChangedToast()
+                } else {
+                    showGifticonInfoChangedSnackBar(event.before)
+                }
+            }
             is Event.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
@@ -124,6 +156,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
                 .setTitle(getString(R.string.gifticon_detail_check_edit_dialog_title))
                 .setPositiveButton(getString(R.string.gifticon_detail_check_edit_dialog_positive_button)) { _, _ ->
                     viewModel.switchMode(GifticonDetailMode.EDIT)
+                    viewModel.startEdit()
                 }
                 .setNegativeButton(getString(R.string.gifticon_detail_check_edit_dialog_negative_button)) { dialog, _ ->
                     dialog.cancel()
@@ -133,13 +166,14 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         checkEditDialog.show()
     }
 
+    private val spinnerDatePicker = SpinnerDatePicker().apply {
+        setOnDatePickListener { year, month, dayOfMonth ->
+            Timber.tag("TEST").d("$year/$month/$dayOfMonth")
+        }
+    }
+
     private fun showDatePickerDialog() {
-        SpinnerDatePicker(
-            this
-        ) { picker, year, month, dayOfMonth ->
-            binding.tvExpireDate.text = getString(R.string.all_date, year, month, dayOfMonth)
-            picker.dismiss()
-        }.show()
+        spinnerDatePicker.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
     }
 
     private fun showUseGifticonDialog() {
@@ -205,9 +239,33 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     override fun onAuthError() {
         Timber.tag("Auth").d("onAuthError")
         authenticate()
+
+    private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
+        if (::gifticonInfoChangedSnackbar.isInitialized.not()) {
+            gifticonInfoChangedSnackbar = Snackbar.make(
+                binding.clGifticonDetail,
+                getString(R.string.gifticon_detail_info_changed_snackbar_text),
+                INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND
+            ).apply {
+                animationMode = Snackbar.ANIMATION_MODE_SLIDE
+            }
+        }
+        gifticonInfoChangedSnackbar.setAction(getString(R.string.gifticon_detail_info_changed_snackbar_action_text)) {
+            viewModel.rollbackChangedGifticonInfo(before)
+        }.also { snackbar ->
+            snackbar.show()
+        }
+    }
+
+    private fun showGifticonInfoNotChangedToast() {
+        if (::gifticonInfoNotChangedToast.isInitialized.not()) {
+            gifticonInfoNotChangedToast = Toast.makeText(this, "변경된 내용이 없습니다", Toast.LENGTH_SHORT)
+        }
+        gifticonInfoNotChangedToast.show()
     }
 
     companion object {
         const val INVALID_DIALOG_DEADLINE_SECOND = 5
+        const val INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND = 5000
     }
 }
