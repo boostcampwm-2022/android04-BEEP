@@ -21,7 +21,7 @@ class CropGifticonViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _eventsFlow = MutableEventFlow<CropGifticonEvents>()
+    private val _eventsFlow = MutableEventFlow<CropGifticonEvent>()
     val eventsFlow = _eventsFlow.asEventFlow()
 
     val cropInfo = CropImageInfo(
@@ -31,22 +31,22 @@ class CropGifticonViewModel @Inject constructor(
 
     fun cancelCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvents.PopupBackStack)
+            _eventsFlow.emit(CropGifticonEvent.PopupBackStack)
         }
     }
 
     fun requestCropImage() {
         viewModelScope.launch {
-            _eventsFlow.emit(CropGifticonEvents.RequestCrop)
+            _eventsFlow.emit(CropGifticonEvent.RequestCrop)
         }
     }
 
     fun onCropImageListener(croppedBitmap: Bitmap?, croppedRect: RectF) {
         viewModelScope.launch {
             if (croppedBitmap == null) {
-                _eventsFlow.emit(CropGifticonEvents.ShowSnackBar(UIText.StringResource(R.string.crop_gifticon_failed)))
+                _eventsFlow.emit(CropGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.crop_gifticon_failed)))
             } else {
-                _eventsFlow.emit(CropGifticonEvents.CompleteCrop(croppedBitmap, croppedRect))
+                _eventsFlow.emit(CropGifticonEvent.CompleteCrop(croppedBitmap, croppedRect))
             }
         }
     }

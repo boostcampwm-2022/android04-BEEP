@@ -52,10 +52,10 @@ class CropGifticonActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventsFlow.collect { events ->
                 when (events) {
-                    is CropGifticonEvents.PopupBackStack -> cancelCropImage()
-                    is CropGifticonEvents.RequestCrop -> requestCropImage()
-                    is CropGifticonEvents.CompleteCrop -> completeCropImage(events.croppedBitmap, events.croppedRect)
-                    is CropGifticonEvents.ShowSnackBar -> showSnackBar(events.uiText)
+                    is CropGifticonEvent.PopupBackStack -> cancelCropImage()
+                    is CropGifticonEvent.RequestCrop -> requestCropImage()
+                    is CropGifticonEvent.CompleteCrop -> completeCropImage(events.croppedBitmap, events.croppedRect)
+                    is CropGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
                 }
             }
         }

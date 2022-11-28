@@ -27,7 +27,7 @@ class GalleryViewModel @Inject constructor(
     getGalleryImagesUseCase: GetGalleryImagesUseCase
 ) : ViewModel() {
 
-    private val _eventsFlow = MutableEventFlow<GalleryEvents>()
+    private val _eventsFlow = MutableEventFlow<GalleryEvent>()
     val eventsFlow = _eventsFlow.asEventFlow()
 
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -72,13 +72,13 @@ class GalleryViewModel @Inject constructor(
 
     fun cancelPhotoSelection() {
         viewModelScope.launch {
-            _eventsFlow.emit(GalleryEvents.PopupBackStack)
+            _eventsFlow.emit(GalleryEvent.PopupBackStack)
         }
     }
 
     fun completePhotoSelection() {
         viewModelScope.launch {
-            _eventsFlow.emit(GalleryEvents.CompleteSelect)
+            _eventsFlow.emit(GalleryEvent.CompleteSelect)
         }
     }
 }

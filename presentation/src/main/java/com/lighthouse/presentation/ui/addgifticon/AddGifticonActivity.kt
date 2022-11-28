@@ -146,14 +146,14 @@ class AddGifticonActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventFlow.collect { events ->
                 when (events) {
-                    is AddGifticonEvents.PopupBackStack -> cancelAddGifticon()
-                    is AddGifticonEvents.ShowConfirmation -> showConfirmationDialog()
-                    is AddGifticonEvents.NavigateToGallery -> gotoGallery(events.list)
-                    is AddGifticonEvents.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
-                    is AddGifticonEvents.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
-                    is AddGifticonEvents.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
-                    is AddGifticonEvents.RequestFocus -> requestFocus(events.focus)
-                    is AddGifticonEvents.ShowSnackBar -> showSnackBar(events.uiText)
+                    is AddGifticonEvent.PopupBackStack -> cancelAddGifticon()
+                    is AddGifticonEvent.ShowConfirmation -> showConfirmationDialog()
+                    is AddGifticonEvent.NavigateToGallery -> gotoGallery(events.list)
+                    is AddGifticonEvent.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
+                    is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
+                    is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
+                    is AddGifticonEvent.RequestFocus -> requestFocus(events.focus)
+                    is AddGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
                 }
             }
         }

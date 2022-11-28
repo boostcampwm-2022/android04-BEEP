@@ -23,10 +23,16 @@ import androidx.core.graphics.minus
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.getBitmap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.min
 
 class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private val backgroundPaint by lazy {
         Paint().apply {
@@ -178,13 +184,17 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     fun setCropInfo(info: CropImageInfo) {
-        originBitmap = when (info.uri?.scheme) {
-            SCHEME_CONTENT -> context.contentResolver.getBitmap(info.uri)
-            SCHEME_FILE -> BitmapFactory.decodeFile(info.uri.path)
-            else -> null
+        coroutineScope.launch {
+            originBitmap = withContext(Dispatchers.IO) {
+                when (info.uri?.scheme) {
+                    SCHEME_CONTENT -> context.contentResolver.getBitmap(info.uri)
+                    SCHEME_FILE -> BitmapFactory.decodeFile(info.uri.path)
+                    else -> null
+                }
+            }
+            initRect(info.croppedRect)
+            applyMatrix(false)
         }
-
-        initRect(info.croppedRect)
     }
 
     fun cropImage() {

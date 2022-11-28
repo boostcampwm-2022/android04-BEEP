@@ -33,7 +33,7 @@ class AddGifticonViewModel : ViewModel() {
         it.time
     }
 
-    private val _eventFlow = MutableEventFlow<AddGifticonEvents>()
+    private val _eventFlow = MutableEventFlow<AddGifticonEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
     private val _displayList = MutableStateFlow<List<AddGifticonItemUIModel>>(listOf(AddGifticonItemUIModel.Gallery))
@@ -45,43 +45,43 @@ class AddGifticonViewModel : ViewModel() {
 
     val selectedGifticon = selectedId.combine(gifticonList) { id, list ->
         list.find { it.id == id }
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val isSelected = selectedGifticon.map {
         it != null
-    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val isCashCard = selectedGifticon.map {
         it?.isCashCard
-    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val thumbnailImage = selectedGifticon.map {
         it?.thumbnailImage?.uri ?: it?.origin
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val name = selectedGifticon.map {
         it?.name
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val brand = selectedGifticon.map {
         it?.brandName
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val barcode = selectedGifticon.map {
         it?.barcode
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val expiredAt = selectedGifticon.map {
         it?.expiredAt
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val balance = selectedGifticon.map {
         it?.balance
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val memo = selectedGifticon.map {
         it?.memo
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val registeredSizeText = gifticonList.map { list ->
         if (list.isEmpty()) {
@@ -89,12 +89,12 @@ class AddGifticonViewModel : ViewModel() {
         } else {
             UIText.StringResource(R.string.add_gifticon_registered, list.size)
         }
-    }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, UIText.Empty)
 
     private val _isDeleteMode = MutableStateFlow(false)
 
     fun changeDeleteMode() {
-        changeDeleteMode(!_isDeleteMode.value)
+        changeDeleteMode(_isDeleteMode.value.not())
     }
 
     private fun changeDeleteMode(newDeleteMode: Boolean) {
@@ -180,7 +180,7 @@ class AddGifticonViewModel : ViewModel() {
     fun changeCashCard(checked: Boolean) {
         if (checked) {
             viewModelScope.launch {
-                _eventFlow.emit(AddGifticonEvents.RequestFocus(AddGifticonFocus.BALANCE))
+                _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonFocus.BALANCE))
             }
         }
         updateSelectedGifticon { it.copy(isCashCard = checked) }
@@ -249,8 +249,8 @@ class AddGifticonViewModel : ViewModel() {
             when (valid) {
                 AddGifticonValid.VALID -> {}
                 else -> {
-                    _eventFlow.emit(AddGifticonEvents.ShowSnackBar(valid.text))
-                    _eventFlow.emit(AddGifticonEvents.RequestFocus(valid.focus))
+                    _eventFlow.emit(AddGifticonEvent.ShowSnackBar(valid.text))
+                    _eventFlow.emit(AddGifticonEvent.RequestFocus(valid.focus))
                 }
             }
         }
@@ -290,13 +290,13 @@ class AddGifticonViewModel : ViewModel() {
 
     private fun popBackstack() {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvents.PopupBackStack)
+            _eventFlow.emit(AddGifticonEvent.PopupBackStack)
         }
     }
 
     private fun showConfirmation() {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvents.ShowConfirmation)
+            _eventFlow.emit(AddGifticonEvent.ShowConfirmation)
         }
     }
 
@@ -305,7 +305,7 @@ class AddGifticonViewModel : ViewModel() {
 
         val list = _displayList.value.filterIsInstance<AddGifticonItemUIModel.Gifticon>().map { it.id }
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvents.NavigateToGallery(list))
+            _eventFlow.emit(AddGifticonEvent.NavigateToGallery(list))
         }
     }
 
@@ -315,7 +315,7 @@ class AddGifticonViewModel : ViewModel() {
         val gifticon = selectedGifticon.value ?: return
         viewModelScope.launch {
             _eventFlow.emit(
-                AddGifticonEvents.NavigateToCropGifticon(
+                AddGifticonEvent.NavigateToCropGifticon(
                     gifticon.origin,
                     gifticon.thumbnailImage.croppedRect
                 )
@@ -326,14 +326,14 @@ class AddGifticonViewModel : ViewModel() {
     fun showOriginGifticon() {
         val originUri = selectedGifticon.value?.origin ?: return
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvents.ShowOriginGifticon(originUri))
+            _eventFlow.emit(AddGifticonEvent.ShowOriginGifticon(originUri))
         }
     }
 
     fun showExpiredAtDatePicker() {
         val expiredAt = selectedGifticon.value?.expiredAt ?: return
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvents.ShowExpiredAtDatePicker(expiredAt))
+            _eventFlow.emit(AddGifticonEvent.ShowExpiredAtDatePicker(expiredAt))
         }
     }
 }

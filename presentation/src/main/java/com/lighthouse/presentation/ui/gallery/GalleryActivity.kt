@@ -82,8 +82,8 @@ class GalleryActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventsFlow.collect { events ->
                 when (events) {
-                    is GalleryEvents.CompleteSelect -> completePhotoSelection()
-                    is GalleryEvents.PopupBackStack -> cancelPhotoSelection()
+                    is GalleryEvent.CompleteSelect -> completePhotoSelection()
+                    is GalleryEvent.PopupBackStack -> cancelPhotoSelection()
                 }
             }
         }

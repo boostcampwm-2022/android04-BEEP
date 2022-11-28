@@ -14,23 +14,23 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    private val _eventFlow = MutableEventFlow<MainEvents>()
+    private val _eventFlow = MutableEventFlow<MainEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    private val _pageFlow = MutableStateFlow<MainPages>(MainPages.Home)
+    private val _pageFlow = MutableStateFlow<MainPage>(MainPage.Home)
     val pageFlow = _pageFlow.asStateFlow()
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
     fun gotoAddGifticon() {
         viewModelScope.launch {
-            _eventFlow.emit(MainEvents.NavigateAddGifticon)
+            _eventFlow.emit(MainEvent.NavigateAddGifticon)
         }
     }
 
     fun gotoMap() {
         viewModelScope.launch {
-            _eventFlow.emit(MainEvents.NavigateMap)
+            _eventFlow.emit(MainEvent.NavigateMap)
         }
     }
 
@@ -41,9 +41,9 @@ class MainViewModel @Inject constructor() : ViewModel() {
         selectedMenuItem.value = itemId
         viewModelScope.launch {
             val pages = when (itemId) {
-                R.id.menu_list -> MainPages.List
-                R.id.menu_home -> MainPages.Home
-                R.id.menu_setting -> MainPages.Setting
+                R.id.menu_list -> MainPage.List
+                R.id.menu_home -> MainPage.Home
+                R.id.menu_setting -> MainPage.Setting
                 else -> null
             } ?: return@launch
             _pageFlow.emit(pages)

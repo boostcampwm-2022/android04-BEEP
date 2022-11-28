@@ -49,12 +49,6 @@ class AddGifticonAdapter(
 
             override fun areContentsTheSame(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Boolean {
                 return oldItem == newItem
-//                return when {
-//                    oldItem is AddGifticonUIModel.Gallery && newItem is AddGifticonUIModel.Gallery -> true
-//                    oldItem is AddGifticonUIModel.Gifticon && newItem is AddGifticonUIModel.Gifticon -> {
-//                    }
-//                    else -> false
-//                }
             }
         }
 

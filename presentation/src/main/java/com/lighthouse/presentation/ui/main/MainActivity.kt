@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventFlow.collect { directions ->
                 when (directions) {
-                    MainEvents.NavigateAddGifticon -> gotoAddGifticon()
-                    MainEvents.NavigateMap -> gotoMap()
+                    MainEvent.NavigateAddGifticon -> gotoAddGifticon()
+                    MainEvent.NavigateMap -> gotoMap()
                 }
             }
         }
@@ -63,9 +63,9 @@ class MainActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.pageFlow.collect { page ->
                 val fragment = when (page) {
-                    MainPages.List -> gifticonListFragment
-                    MainPages.Home -> homeFragment
-                    MainPages.Setting -> settingFragment
+                    MainPage.List -> gifticonListFragment
+                    MainPage.Home -> homeFragment
+                    MainPage.Setting -> settingFragment
                 }
                 supportFragmentManager.commit {
                     if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
