@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragment(R.layout.fragment_pin) {
 
-    private val binding by viewBindings(FragmentPinBinding::bind)
+    private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinDialogViewModel by viewModels()
 
     private val shakeAnimation: Animation by lazy {
