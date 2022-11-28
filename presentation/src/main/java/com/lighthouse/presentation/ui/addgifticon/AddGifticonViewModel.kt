@@ -157,9 +157,12 @@ class AddGifticonViewModel : ViewModel() {
         }
     }
 
-    private fun updateSelectedDisplayGifticon(update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon) {
+    private fun updateSelectedDisplayGifticon(
+        srcIndex: Long? = selectedId.value,
+        update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
+    ) {
         val index = displayList.value.indexOfFirst {
-            it is AddGifticonItemUIModel.Gifticon && it.id == selectedId.value
+            it is AddGifticonItemUIModel.Gifticon && it.id == srcIndex
         }
         if (index == -1) {
             return
@@ -173,19 +176,23 @@ class AddGifticonViewModel : ViewModel() {
         _displayList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
     }
 
-    private fun updateSelectedGifticon(update: (AddGifticonUIModel) -> AddGifticonUIModel) {
-        val index = gifticonList.value.indexOfFirst { it.id == selectedId.value }
+    private fun updateSelectedGifticon(
+        srcIndex: Long? = selectedId.value,
+        update: (AddGifticonUIModel) -> AddGifticonUIModel
+    ): AddGifticonUIModel? {
+        val index = gifticonList.value.indexOfFirst { it.id == srcIndex }
         if (index == -1) {
-            return
+            return null
         }
         val oldList = gifticonList.value
         val oldItem = oldList[index]
         val newItem = update(oldItem)
         if (oldItem == newItem) {
-            return
+            return null
         }
         gifticonList.value =
             oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
+        return newItem
     }
 
     fun croppedImage(uri: Uri, rect: RectF) {
@@ -199,23 +206,38 @@ class AddGifticonViewModel : ViewModel() {
     }
 
     fun changeCashCard(checked: Boolean) {
-        updateSelectedGifticon { it.copy(isCashCard = checked) }
+        val updated = updateSelectedGifticon { it.copy(isCashCard = checked) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
     }
 
     fun changeGifticonName(name: CharSequence) {
-        updateSelectedGifticon { it.copy(name = name.toString()) }
+        val updated = updateSelectedGifticon { it.copy(name = name.toString()) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
     }
 
     fun changeBrandName(brandName: CharSequence) {
-        updateSelectedGifticon { it.copy(brandName = brandName.toString()) }
+        val updated = updateSelectedGifticon { it.copy(brandName = brandName.toString()) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
     }
 
     fun changeBarcode(barcode: CharSequence) {
-        updateSelectedGifticon { it.copy(barcode = barcode.toString()) }
+        val updated = updateSelectedGifticon { it.copy(barcode = barcode.toString()) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
     }
 
     fun changeExpiredAt(expiredAt: Date) {
-        updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
+        val updated = updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
     }
 
     val balanceFilters = arrayOf(
@@ -252,7 +274,10 @@ class AddGifticonViewModel : ViewModel() {
         }
 
         val newText = balanceFormat.format(newValueText.toDigit())
-        updateSelectedGifticon { it.copy(balance = newText) }
+        val updated = updateSelectedGifticon { it.copy(balance = newText) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
 
         balanceSelection.value = if (oldBalance.length == start) {
             newText.length
