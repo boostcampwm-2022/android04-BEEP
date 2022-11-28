@@ -194,6 +194,7 @@
                     android:layout_height="wrap_content"
                     android:checked="@{vm.isCashCard}"
                     android:enabled="@{vm.isSelected}"
+                    android:onClick="@{() -> vm.requestCashCard()}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_brand"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintTop_toTopOf="@id/iv_brand"
@@ -324,10 +325,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:boxBackgroundColor="@null"
-                    app:endIconCheckable="true"
                     app:endIconDrawable="@drawable/ic_add_gifticon_calendar"
                     app:endIconMode="custom"
-                    app:endIconOnClickListener="@{() -> vm.showExpiredAtDatePicker()}"
                     app:hintEnabled="false"
                     android:enabled="@{vm.isSelected}"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -338,10 +337,13 @@
                         android:id="@+id/tiet_expire_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:cursorVisible="false"
                         android:hint="@string/add_gifticon_expire_date_hint"
-                        android:imeOptions="actionNext"
-                        android:inputType="date"
-                        android:lines="1" />
+                        android:inputType="none"
+                        android:lines="1"
+                        android:onClick="@{() -> vm.showExpiredAtDatePicker()}"
+                        app:setUIText="@{vm.expiredAt}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
