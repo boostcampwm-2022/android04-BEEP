@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthManager @Inject constructor(
@@ -27,7 +26,7 @@ class AuthManager @Inject constructor(
         biometricLauncher: ActivityResultLauncher<Intent>,
         authCallback: AuthCallback
     ) {
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = CoroutineScope(Dispatchers.Main).launch {
             when (userPreference.securityOption.value) {
                 SecurityOption.NONE -> authCallback.onAuthSuccess()
                 SecurityOption.PIN -> authPin(activity.supportFragmentManager, authCallback)
@@ -36,26 +35,22 @@ class AuthManager @Inject constructor(
         }
     }
 
-    private suspend fun authPin(supportFragmentManager: FragmentManager, authCallback: AuthCallback) {
-        withContext(Dispatchers.Main) {
-            if (::pinDialog.isInitialized.not()) {
-                pinDialog = PinDialog(authCallback)
-            }
-            pinDialog.show(supportFragmentManager, PIN_TAG)
+    private fun authPin(supportFragmentManager: FragmentManager, authCallback: AuthCallback) {
+        if (::pinDialog.isInitialized.not()) {
+            pinDialog = PinDialog(authCallback)
         }
+        pinDialog.show(supportFragmentManager, PIN_TAG)
     }
 
-    private suspend fun authFingerprint(
+    private fun authFingerprint(
         activity: FragmentActivity,
         biometricLauncher: ActivityResultLauncher<Intent>,
         authCallback: AuthCallback
     ) {
-        withContext(Dispatchers.Main) {
-            if (::biometricAuth.isInitialized.not()) {
-                biometricAuth = BiometricAuth(activity, biometricLauncher, authCallback)
-            }
-            biometricAuth.authenticate()
+        if (::biometricAuth.isInitialized.not()) {
+            biometricAuth = BiometricAuth(activity, biometricLauncher, authCallback)
         }
+        biometricAuth.authenticate()
     }
 
     companion object {
