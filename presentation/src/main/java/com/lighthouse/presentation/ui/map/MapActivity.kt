@@ -14,7 +14,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.LocationConverter.toPolygonLatLng
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
@@ -36,7 +35,6 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Marker.DEFAULT_ICON
-import com.naver.maps.map.overlay.PolygonOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
@@ -133,7 +131,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         setObserveSearchData()
         setNaverMapZoom()
         setObserverMarkerData()
-        setNaverMapPolyLine()
     }
 
     private fun setObserveFocusMarker() {
@@ -283,29 +280,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun showSnackBar(@StringRes message: Int) {
         Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
     }
-
-    // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
-    private val polygonOverlay = PolygonOverlay()
-    private fun setNaverMapPolyLine() {
-        repeatOnStarted {
-            viewModel.userLocation.collect {
-                polygonOverlay.map = null
-                val x = it.first
-                val y = it.second
-                val toPolygonLatLng = toPolygonLatLng(x, y)
-
-                polygonOverlay.coords = listOf(
-                    LatLng(toPolygonLatLng[0].second, toPolygonLatLng[0].first),
-                    LatLng(toPolygonLatLng[1].second, toPolygonLatLng[1].first),
-                    LatLng(toPolygonLatLng[2].second, toPolygonLatLng[2].first),
-                    LatLng(toPolygonLatLng[3].second, toPolygonLatLng[3].first)
-                )
-                polygonOverlay.color = getColor(R.color.polygon)
-                polygonOverlay.map = naverMap
-            }
-        }
-    }
-    // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
 
     override fun onResume() {
         super.onResume()
