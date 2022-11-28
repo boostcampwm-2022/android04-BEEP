@@ -75,9 +75,7 @@ class ConcurrencyEditText @JvmOverloads constructor(
                     .d("source: $source, start: $start, end: $end, dest: $dest, dstart: $dstart, dend: $dend")
                 val totalString = dest.substring(0 until dstart) + source + dest.substring(dend)
                 val number = convertToNumber(totalString)
-                if ((dest.toString()
-                        .isNotBlank() && number.isBlank()) || (number.isNotBlank() && number.toLong() > maxValue)
-                ) {
+                if ((dest.toString().isNotBlank() && number.isBlank()) || (number.isNotBlank() && number.toLong() > maxValue)) {
                     Timber.tag("concurrency").d("source: $source")
                     return@InputFilter ""
                 } else {
