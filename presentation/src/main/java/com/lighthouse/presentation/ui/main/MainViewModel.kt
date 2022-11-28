@@ -7,6 +7,7 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,13 +17,10 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _eventFlow = MutableEventFlow<MainEvents>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    val selectedMenuItem = MutableStateFlow(R.id.menu_home)
+    private val _pageFlow = MutableStateFlow<MainPages>(MainPages.Home)
+    val pageFlow = _pageFlow.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            _eventFlow.emit(MainEvents.NavigateHome)
-        }
-    }
+    val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
     fun gotoAddGifticon() {
         viewModelScope.launch {
@@ -42,13 +40,13 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
         selectedMenuItem.value = itemId
         viewModelScope.launch {
-            val directions = when (itemId) {
-                R.id.menu_list -> MainEvents.NavigateList
-                R.id.menu_home -> MainEvents.NavigateHome
-                R.id.menu_setting -> MainEvents.NavigateSetting
+            val pages = when (itemId) {
+                R.id.menu_list -> MainPages.List
+                R.id.menu_home -> MainPages.Home
+                R.id.menu_setting -> MainPages.Setting
                 else -> null
             } ?: return@launch
-            _eventFlow.emit(directions)
+            _pageFlow.emit(pages)
         }
         return true
     }

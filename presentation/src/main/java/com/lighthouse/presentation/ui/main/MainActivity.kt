@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         collectEvent()
+        collectPage()
     }
 
     private fun collectEvent() {
@@ -53,7 +54,28 @@ class MainActivity : AppCompatActivity() {
                 when (directions) {
                     MainEvents.NavigateAddGifticon -> gotoAddGifticon()
                     MainEvents.NavigateMap -> gotoMap()
-                    else -> moveScreen(directions)
+                }
+            }
+        }
+    }
+
+    private fun collectPage() {
+        repeatOnStarted {
+            viewModel.pageFlow.collect { page ->
+                val fragment = when (page) {
+                    MainPages.List -> gifticonListFragment
+                    MainPages.Home -> homeFragment
+                    MainPages.Setting -> settingFragment
+                } ?: return@collect
+                supportFragmentManager.commit {
+                    if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
+                    if (fragment != homeFragment && homeFragment.isAdded) hide(homeFragment)
+                    if (fragment != settingFragment && settingFragment.isAdded) hide(settingFragment)
+                    if (fragment.isAdded) {
+                        show(fragment)
+                    } else {
+                        add(R.id.fl_container, fragment)
+                    }
                 }
             }
         }
@@ -70,25 +92,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         } else {
             permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-    }
-
-    private fun moveScreen(directions: MainEvents) {
-        val fragment = when (directions) {
-            MainEvents.NavigateList -> gifticonListFragment
-            MainEvents.NavigateHome -> homeFragment
-            MainEvents.NavigateSetting -> settingFragment
-            else -> null
-        } ?: return
-        supportFragmentManager.commit {
-            if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
-            if (fragment != homeFragment && homeFragment.isAdded) hide(homeFragment)
-            if (fragment != settingFragment && settingFragment.isAdded) hide(settingFragment)
-            if (fragment.isAdded) {
-                show(fragment)
-            } else {
-                add(R.id.fl_container, fragment)
-            }
         }
     }
 }
