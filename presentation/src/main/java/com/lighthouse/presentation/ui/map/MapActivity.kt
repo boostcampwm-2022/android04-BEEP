@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.map
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
@@ -19,9 +20,11 @@ import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenWidth
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
+import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.ui.map.event.MarkerClickEvent
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
@@ -49,7 +52,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var client: FusedLocationProviderClient
     private lateinit var fusedLocationSource: FusedLocationSource
     private val viewModel: MapViewModel by viewModels()
-    private val gifticonAdapter = GifticonAdapter(GifticonViewHolderType.HORIZONTAL)
+    private val gifticonAdapter = GifticonAdapter(GifticonViewHolderType.HORIZONTAL) { gifticon ->
+        startActivity(
+            Intent(this, GifticonDetailActivity::class.java).apply {
+                putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
+            }
+        )
+    }
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
 
     override fun onCreate(savedInstanceState: Bundle?) {
