@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -52,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
         collectEvent()
         collectPage()
+        collectFab()
+        collectBnv()
     }
 
     private fun collectEvent() {
@@ -72,16 +75,43 @@ class MainActivity : AppCompatActivity() {
                     MainPage.List -> gifticonListFragment
                     MainPage.Home -> homeFragment
                     MainPage.Setting -> settingFragment
+                    else -> null
                 }
-                supportFragmentManager.commit {
-                    if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
-                    if (fragment != homeFragment && homeFragment.isAdded) hide(homeFragment)
-                    if (fragment != settingFragment && settingFragment.isAdded) hide(settingFragment)
-                    if (fragment.isAdded) {
-                        show(fragment)
-                    } else {
-                        add(R.id.fl_container, fragment, fragment.javaClass.name)
+                fragment?.let { fg ->
+                    supportFragmentManager.commit {
+                        if (fg != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
+                        if (fg != homeFragment && homeFragment.isAdded) hide(homeFragment)
+                        if (fg != settingFragment && settingFragment.isAdded) hide(settingFragment)
+                        if (fg.isAdded) {
+                            show(fragment)
+                        } else {
+                            add(R.id.fl_container, fg)
+                        }
                     }
+                }
+            }
+        }
+    }
+
+    private fun collectFab() {
+        repeatOnStarted {
+            viewModel.fabFlow.collect { show ->
+                if (show) {
+                    binding.fabAddGifticon.show()
+                } else {
+                    binding.fabAddGifticon.hide()
+                }
+            }
+        }
+    }
+
+    private fun collectBnv() {
+        repeatOnStarted {
+            viewModel.bnvFlow.collect { show ->
+                if (show) {
+                    binding.bnv.visibility = View.VISIBLE
+                } else {
+                    binding.bnv.visibility = View.GONE
                 }
             }
         }
