@@ -16,17 +16,26 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
 
     private val binding: DialogConfirmationBinding by viewBindings()
 
-    var title: String = ""
-    var message: String = ""
+    private var initTitle: String? = null
+    private var initMessage: String? = null
+    private var initOkText: String? = null
+    private var initCancelText: String? = null
 
-    private val defaultOkText by lazy {
-        getString(R.string.confirmation_ok)
+    fun setTitle(title: String) {
+        initTitle = title
     }
-    var okText: String? = null
-    private val defaultCancelText by lazy {
-        getString(R.string.confirmation_cancel)
+
+    fun setMessage(message: String) {
+        initMessage = message
     }
-    var cancelText: String? = null
+
+    fun setOkText(okText: String) {
+        initOkText = okText
+    }
+
+    fun setCancelText(cancelText: String) {
+        initCancelText = cancelText
+    }
 
     private var onOkClickListener: OnClickListener? = null
     fun setOnOkClickListener(listener: (() -> Unit)?) {
@@ -55,10 +64,10 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
 
-            tvTitle.text = title
-            tvMessage.text = message
-            tvOk.text = okText ?: defaultOkText
-            tvCancel.text = cancelText ?: defaultCancelText
+            tvTitle.text = initTitle ?: tvTitle.text
+            tvMessage.text = initMessage ?: tvMessage.text
+            tvOk.text = initOkText ?: tvOk.text
+            tvCancel.text = initCancelText ?: tvCancel.text
         }
         setUpClickListener()
     }

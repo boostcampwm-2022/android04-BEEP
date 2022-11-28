@@ -76,7 +76,7 @@
                     android:padding="8dp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
-                    tools:text="@string/confirmation_cancel"/>
+                    android:text="@string/confirmation_cancel"/>
 
                 <TextView
                     android:id="@+id/tv_ok"
@@ -91,7 +91,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_message"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
-                    tools:text="@string/confirmation_ok"/>
+                    android:text="@string/confirmation_ok"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

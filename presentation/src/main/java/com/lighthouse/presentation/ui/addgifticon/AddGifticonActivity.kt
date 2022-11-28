@@ -105,11 +105,11 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private val confirmationDialog by lazy {
-        val dialogTitle = getString(R.string.add_gifticon_confirmation_title)
-        val dialogMessage = getString(R.string.add_gifticon_confirmation_message)
+        val title = getString(R.string.add_gifticon_confirmation_title)
+        val message = getString(R.string.add_gifticon_confirmation_message)
         ConfirmationDialog().apply {
-            title = dialogTitle
-            message = dialogMessage
+            setTitle(title)
+            setMessage(message)
             setOnOkClickListener {
                 cancelAddGifticon()
             }
