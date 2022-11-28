@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -81,6 +82,13 @@ class MapViewModel @Inject constructor(
     }
 
     private fun collectLocation() {
+        viewModelScope.launch {
+            getUserLocation.lastLocation().collectLatest { location ->
+                if (location == null) return@collectLatest
+                getBrandPlaceInfos(location.longitude, location.latitude)
+            }
+        }
+
         viewModelScope.launch {
             getUserLocation().collect { location ->
                 getBrandPlaceInfos(location.longitude, location.latitude)

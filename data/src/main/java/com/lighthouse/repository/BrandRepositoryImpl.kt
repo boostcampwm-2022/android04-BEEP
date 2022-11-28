@@ -29,11 +29,13 @@ class BrandRepositoryImpl @Inject constructor(
     override suspend fun isNearBrand(brandName: String, cardinalLocations: List<DmsLocation>): Result<Boolean> {
         cardinalLocations.forEach { location ->
             val isNearBrand = brandLocalSource.isNearBrand(location.x, location.y, brandName)
-            if (isNearBrand) return Result.success(true)
-
-            val result = getRemoteSourceData(brandName, location.x, location.y, DEFAULT_SIZE).exceptionOrNull()
-            if (result is BeepErrorData) {
-                return Result.failure(result.toDomain())
+            if (isNearBrand == null) {
+                val result = getRemoteSourceData(brandName, location.x, location.y, DEFAULT_SIZE).exceptionOrNull()
+                if (result is BeepErrorData) {
+                    return Result.failure(result.toDomain())
+                }
+            } else if (isNearBrand.isNotEmpty()) {
+                return Result.success(true)
             }
         }
         return Result.success(false)

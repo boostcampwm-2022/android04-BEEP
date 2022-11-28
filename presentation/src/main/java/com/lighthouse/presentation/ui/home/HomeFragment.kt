@@ -2,18 +2,24 @@ package com.lighthouse.presentation.ui.home
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentHomeBinding
 import com.lighthouse.presentation.extension.dp
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
+import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -33,6 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setBindingAdapter()
+        setObserveViewModel()
         binding.vm = mainViewModel
     }
 
@@ -46,5 +53,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             addItemDecoration(itemDecoration)
         }
         homeViewModel
+    }
+
+    private fun setObserveViewModel() {
+        repeatOnStarted {
+            homeViewModel.nearGifticon.collectLatest { state ->
+                when (state) {
+                    is UiState.Success -> updateNearGifticon(state.item)
+                    is UiState.Loading -> Unit // TODO 로딩화면 처리 필요
+                    is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
+                    is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
+                    is UiState.Failure -> showSnackBar(R.string.error_network_failure)
+                }
+            }
+        }
+    }
+
+    private fun updateNearGifticon(item: List<Gifticon>) {
+        nearGifticonAdapter.submitList(item)
+    }
+
+    private fun showSnackBar(@StringRes message: Int) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 }

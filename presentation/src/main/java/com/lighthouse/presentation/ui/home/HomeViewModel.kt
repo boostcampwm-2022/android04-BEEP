@@ -15,10 +15,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
 
@@ -44,11 +44,10 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _state: MutableSharedFlow<UiState<List<Gifticon>>> = MutableSharedFlow()
-    val state = _state.asSharedFlow()
+    private val _nearGifticon: MutableSharedFlow<UiState<List<Gifticon>>> = MutableSharedFlow()
+    val nearGifticon = _nearGifticon.asSharedFlow()
 
     init {
-        // TODO 테스트 더미 데이터
         val gifticonTestData = listOf(
             Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
             Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
@@ -63,6 +62,12 @@ class HomeViewModel @Inject constructor(
             saveGifticonUseCase(gifticonTestData)
         }
         viewModelScope.launch {
+            getUserLocation.lastLocation().collectLatest { location ->
+                if (location == null) return@collectLatest
+                getNearBrands(location.longitude, location.latitude)
+            }
+        }
+        viewModelScope.launch {
             getUserLocation().collect { location ->
                 getNearBrands(location.longitude, location.latitude)
             }
@@ -71,17 +76,18 @@ class HomeViewModel @Inject constructor(
 
     private fun getNearBrands(x: Double, y: Double) {
         viewModelScope.launch {
-            Timber.tag("TAG").d("${javaClass.simpleName} 시작 brands -> ${allBrands.value}")
-            _state.emit(UiState.Loading)
+            _nearGifticon.emit(UiState.Loading)
             runCatching { getNearBrandsUseCase(allBrands.value, x, y) }
                 .onSuccess { nearBrands ->
-                    Timber.tag("TAG").d("${javaClass.simpleName} nearBrands -> $nearBrands")
-                    allGifticons.value.filter { gifticon ->
+                    val nearGifticon = allGifticons.value.filter { gifticon ->
                         nearBrands.contains(gifticon.brand)
+                    }
+                    when (nearGifticon.isEmpty()) {
+                        true -> _nearGifticon.emit(UiState.NotFoundResults)
+                        false -> _nearGifticon.emit(UiState.Success(nearGifticon))
                     }
                 }
                 .onFailure { throwable ->
-                    Timber.tag("TAG").d("${javaClass.simpleName} map throw -> $throwable")
                     when (throwable) {
                         BeepError.NetworkFailure -> UiState.NetworkFailure
                         else -> UiState.Failure(throwable)

@@ -59,11 +59,11 @@ class BrandLocalDataSourceImpl @Inject constructor(
         )
     }
 
-    override suspend fun isNearBrand(x: Dms, y: Dms, brandName: String): Boolean {
+    override suspend fun isNearBrand(x: Dms, y: Dms, brandName: String): List<BrandLocationEntity>? {
         val sectionResults =
-            brandWithSectionDao.getBrands(combineSectionId(x.dmsToString(), y.dmsToString(), brandName)) ?: return false
+            brandWithSectionDao.getBrands(combineSectionId(x.dmsToString(), y.dmsToString(), brandName)) ?: return null
 
-        return sectionResults.brands.isEmpty().not()
+        return sectionResults.brands
     }
 
     companion object {

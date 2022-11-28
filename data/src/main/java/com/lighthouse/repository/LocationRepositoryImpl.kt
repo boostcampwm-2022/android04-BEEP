@@ -17,6 +17,7 @@ import com.lighthouse.domain.VertexLocation
 import com.lighthouse.domain.repository.LocationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
@@ -27,10 +28,22 @@ class LocationRepositoryImpl @Inject constructor(
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
+    private var lastLocation = MutableStateFlow<VertexLocation?>(null)
+    private var dmsLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
 
     init {
         setLocationClient()
+        initLastLocation()
+    }
+
+    private fun initLastLocation() {
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+            lastLocation.value = VertexLocation(location.longitude, location.latitude)
+            val x = LocationConverter.toMinDms(location.longitude)
+            val y = LocationConverter.toMinDms(location.latitude)
+            val currentLocation = DmsLocation(x, y)
+            dmsLocation = currentLocation
+        }
     }
 
     private fun setLocationClient() {
@@ -50,18 +63,18 @@ class LocationRepositoryImpl @Inject constructor(
         client.checkLocationSettings(builder.build())
     }
 
-    override fun getLastLocation() = callbackFlow {
+    override fun getLocationInterval() = callbackFlow {
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                val lastLocation = result.lastLocation ?: return
-                val x = LocationConverter.toMinDms(lastLocation.longitude)
-                val y = LocationConverter.toMinDms(lastLocation.latitude)
+                val lastLocationResult = result.lastLocation ?: return
+                val x = LocationConverter.toMinDms(lastLocationResult.longitude)
+                val y = LocationConverter.toMinDms(lastLocationResult.latitude)
                 val currentLocation = DmsLocation(x, y)
 
                 // 이전의 section에서 벗어난 경우에만 값 방출
-                if (prevLocation != currentLocation) {
-                    prevLocation = currentLocation
-                    trySend(VertexLocation(lastLocation.longitude, lastLocation.latitude))
+                if (dmsLocation != currentLocation) {
+                    dmsLocation = currentLocation
+                    trySend(VertexLocation(lastLocationResult.longitude, lastLocationResult.latitude))
                 }
             }
         }
@@ -70,15 +83,16 @@ class LocationRepositoryImpl @Inject constructor(
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
-        )
-            .addOnFailureListener { e ->
-                close(e)
-            }
+        ).addOnFailureListener { e ->
+            close(e)
+        }
 
         awaitClose { fusedLocationProviderClient.removeLocationUpdates(locationCallback) }
     }
 
+    override fun getLastLocation() = lastLocation
+
     companion object {
-        private const val LOCATION_INTERVAL = 100L
+        private const val LOCATION_INTERVAL = 1000L
     }
 }

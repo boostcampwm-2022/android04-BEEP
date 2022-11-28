@@ -7,5 +7,7 @@ class GetUserLocationUseCase @Inject constructor(
     private val repository: LocationRepository
 ) {
 
-    operator fun invoke() = repository.getLastLocation()
+    operator fun invoke() = repository.getLocationInterval()
+
+    fun lastLocation() = repository.getLastLocation()
 }
