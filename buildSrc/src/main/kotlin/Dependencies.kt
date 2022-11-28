@@ -122,6 +122,7 @@ object Libraries {
     private const val COMPOSE_ICONS = "androidx.compose.material:material-icons-extended"
     private const val COMPOSE_ACTIVITIES = "androidx.activity:activity-compose:${Versions.COMPOSE_ACTIVITIES}"
     private const val COMPOSE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.COMPOSE_VIEWMODEL}"
+    private const val COMPOSE_LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-compose:+"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -145,14 +146,13 @@ object Libraries {
         ZXING,
         VIEW_PAGER2,
         TIMBER,
-        // For Compose
-//        COMPOSE_BOM,
         COMPOSE_APP_COMPAT_THEME,
         COMPOSE_MATERIAL,
         COMPOSE_PREVIEW,
         COMPOSE_ICONS,
         COMPOSE_ACTIVITIES,
-        COMPOSE_VIEWMODEL
+        COMPOSE_VIEWMODEL,
+        COMPOSE_LIFECYCLE_RUNTIME
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
