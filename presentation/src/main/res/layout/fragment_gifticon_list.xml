@@ -67,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             app:chunkSize="3"
-            app:maxValue=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_test"
