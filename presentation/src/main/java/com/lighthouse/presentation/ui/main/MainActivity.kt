@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                     MainPages.List -> gifticonListFragment
                     MainPages.Home -> homeFragment
                     MainPages.Setting -> settingFragment
-                } ?: return@collect
+                }
                 supportFragmentManager.commit {
                     if (fragment != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
                     if (fragment != homeFragment && homeFragment.isAdded) hide(homeFragment)
