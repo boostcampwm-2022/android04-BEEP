@@ -6,10 +6,9 @@ import com.lighthouse.domain.repository.GifticonRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetGifticonsUseCase @Inject constructor(
+class GetAllGifticonsUseCase @Inject constructor(
     private val gifticonRepository: GifticonRepository
 ) {
-
     operator fun invoke(): Flow<DbResult<List<Gifticon>>> {
         return gifticonRepository.getAllGifticons()
     }

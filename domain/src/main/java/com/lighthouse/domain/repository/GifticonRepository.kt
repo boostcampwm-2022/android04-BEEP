@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface GifticonRepository {
 
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
+    fun getAllGifticons(): Flow<DbResult<List<Gifticon>>>
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
     suspend fun updateGifticon(gifticon: Gifticon)
 
@@ -18,5 +19,4 @@ interface GifticonRepository {
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory)
     suspend fun unUseGifticon(gifticonId: String)
     fun getGifticonByBrand(brand: String): Flow<DbResult<List<Gifticon>>>
-    fun getAllGifticon(): Flow<DbResult<List<Gifticon>>>
 }

@@ -50,6 +50,12 @@ object Versions {
 
     const val TIMBER = "4.7.1"
     const val DATASTORE = "1.1.0-alpha01"
+
+    const val APP_COMPAT_THEME = "0.25.1" // 컴포즈에서 AppTheme 을 사용
+    const val KOTLIN_COMPILER_EXTENSION = "1.3.2"
+    const val COMPOSE_BOM = "2022.10.00"
+    const val COMPOSE_ACTIVITIES = "1.5.1"
+    const val COMPOSE_VIEWMODEL = "2.5.1"
 }
 
 object Libraries {
@@ -108,6 +114,16 @@ object Libraries {
     private const val DATASTORE_CORE = "androidx.datastore:datastore-preferences-core:${Versions.DATASTORE}"
     private const val DATASTORE = "androidx.datastore:datastore-preferences:${Versions.DATASTORE}"
 
+    private const val COMPOSE_APP_COMPAT_THEME =
+        "com.google.accompanist:accompanist-appcompat-theme:${Versions.APP_COMPAT_THEME}"
+//    private const val COMPOSE_BOM = ""
+    private const val COMPOSE_MATERIAL = "androidx.compose.material:material"
+    private const val COMPOSE_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
+    private const val COMPOSE_ICONS = "androidx.compose.material:material-icons-extended"
+    private const val COMPOSE_ACTIVITIES = "androidx.activity:activity-compose:${Versions.COMPOSE_ACTIVITIES}"
+    private const val COMPOSE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.COMPOSE_VIEWMODEL}"
+    private const val COMPOSE_LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-compose:+"
+
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
         CORE_SPLASH,
@@ -129,7 +145,14 @@ object Libraries {
         GLIDE,
         ZXING,
         VIEW_PAGER2,
-        TIMBER
+        TIMBER,
+        COMPOSE_APP_COMPAT_THEME,
+        COMPOSE_MATERIAL,
+        COMPOSE_PREVIEW,
+        COMPOSE_ICONS,
+        COMPOSE_ACTIVITIES,
+        COMPOSE_VIEWMODEL,
+        COMPOSE_LIFECYCLE_RUNTIME
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
@@ -261,6 +284,14 @@ object Kapt {
     )
 }
 
+object DebugImpl {
+    private const val COMPOSE_PREVIEW_DEBUG = "androidx.compose.ui:ui-tooling"
+
+    val VIEW_LIBRARIES = arrayListOf(
+        COMPOSE_PREVIEW_DEBUG
+    )
+}
+
 fun DependencyHandler.kapt(list: List<String>) {
     list.forEach { dependency ->
         add("kapt", dependency)
@@ -288,5 +319,11 @@ fun DependencyHandler.annotationProcessor(list: List<String>) {
 fun DependencyHandler.testImplementation(list: List<String>) {
     list.forEach { dependency ->
         add("testImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.debugImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("debugImplementation", dependency)
     }
 }

@@ -19,6 +19,9 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE id = :id")
     fun getGifticon(id: String): Flow<GifticonEntity>
 
+    @Query("SELECT * FROM $GIFTICON_TABLE")
+    fun getAllGifticons(): Flow<List<GifticonEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGifticon(vararg gifticon: GifticonEntity)
 
@@ -89,7 +92,4 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
-
-    @Query("SELECT * FROM $GIFTICON_TABLE")
-    fun getAllGifticons(): Flow<List<GifticonEntity>>
 }

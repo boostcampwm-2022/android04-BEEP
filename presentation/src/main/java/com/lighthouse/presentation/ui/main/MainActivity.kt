@@ -30,6 +30,7 @@ import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

@@ -39,6 +39,11 @@ android {
 
     buildFeatures {
         dataBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.KOTLIN_COMPILER_EXTENSION
     }
 
     testOptions {
@@ -52,9 +57,13 @@ android {
 dependencies {
     implementation(project(":domain"))
 
+    val composeBom = platform("androidx.compose:compose-bom:${Versions.COMPOSE_BOM}")
+    implementation(composeBom)
+
     implementation(Libraries.VIEW_LIBRARIES)
     testImplementation(TestImpl.TEST_LIBRARIES)
     kapt(Kapt.VIEW_LIBRARIES)
+    debugImplementation(DebugImpl.VIEW_LIBRARIES)
     androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
     annotationProcessor(AnnotationProcessors.VIEW_LIBRARIES)
 }
