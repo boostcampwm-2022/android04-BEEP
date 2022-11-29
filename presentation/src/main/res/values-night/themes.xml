@@ -7,6 +7,8 @@
         <item name="colorOnPrimary">?attr/colorOnSurface</item>
         <item name="colorSecondary">@color/beep_pink_dark</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/white</item>
         <item name="android:statusBarColor">@color/on_surface_9</item>
     </style>
 
