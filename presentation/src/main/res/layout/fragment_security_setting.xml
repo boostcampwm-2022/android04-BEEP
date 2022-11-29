@@ -36,7 +36,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:onClick="@{() -> vm.showSecurityOptionDialog()}"
             android:text="보안 인증 수단 변경"
             app:layout_constraintTop_toBottomOf="@+id/ab_security_setting" />
 
