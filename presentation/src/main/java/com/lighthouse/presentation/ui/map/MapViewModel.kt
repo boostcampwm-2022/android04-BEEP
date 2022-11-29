@@ -1,41 +1,47 @@
 package com.lighthouse.presentation.ui.map
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.BeepError
+import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
+import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.UiState
-import com.lighthouse.presentation.util.UUID
+import com.lighthouse.presentation.util.TimeCalculator
+import com.lighthouse.presentation.util.flow.MutableEventFlow
+import com.lighthouse.presentation.util.flow.asEventFlow
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
+    getGifticonUseCase: GetGifticonsUseCase,
+    savedStateHandle: SavedStateHandle,
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
     private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
 
-    private val _state: MutableSharedFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableSharedFlow()
-    val state = _state.asSharedFlow()
+    private val _state: MutableEventFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableEventFlow()
+    val state = _state.asEventFlow()
 
-    var focusMarker = MutableStateFlow(Marker())
+    var recentSelectedMarker = Marker()
         private set
 
-    private val _markers = MutableSharedFlow<Set<Marker>>()
-    val markers = _markers.asSharedFlow()
+    var focusMarker = Marker()
+        private set
 
     private val _markerHolder = mutableSetOf<Marker>()
     val markerHolder: Set<Marker> = _markerHolder
@@ -43,61 +49,48 @@ class MapViewModel @Inject constructor(
     private val _brandInfos = mutableSetOf<BrandPlaceInfoUiModel>()
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
 
-    // TOOD 테스트 데이터들
-    val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "서브웨이", "세븐일레븐", "파파존스")
-    val gifticonTestData = listOf(
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BHC", "BHC", Date(122, 5, 10), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "서브웨이", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "서브웨이", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "파파존스", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
-    )
+    private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
-    var userLocation = MutableStateFlow(Pair(0.0, 0.0))
+    val allGifticons = gifticons.transform { gifticons ->
+        if (gifticons is DbResult.Success) {
+            emit(gifticons.data.sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) })
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    private val allBrands = allGifticons.transform { gifticons ->
+        emit(gifticons.map { it.brand }.distinct())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    private val _gifticonData = MutableStateFlow<List<Gifticon>>(emptyList())
+    val gifticonData = _gifticonData.asStateFlow()
 
     init {
-        collectLocation()
-    }
+        var isFirstLoadData = true
+        val nearBrands = savedStateHandle.get<List<BrandPlaceInfoUiModel>>(Extras.KEY_NEAR_BRANDS)
+        val nearGifticons = savedStateHandle.get<List<Gifticon>>(Extras.KEY_NEAR_GIFTICONS)
 
-    private fun collectLocation() {
-        viewModelScope.launch {
-            getUserLocation.lastLocation().collectLatest { location ->
-                if (location == null) return@collectLatest
-                getBrandPlaceInfos(location.longitude, location.latitude)
+        if (nearBrands.isNullOrEmpty() || nearGifticons.isNullOrEmpty()) {
+            isFirstLoadData = false
+        } else {
+            // homeActivity에서 받은 데이터가 있는 경우에만 실행
+            viewModelScope.launch {
+                _brandInfos.addAll(nearBrands)
+                _state.emit(UiState.Success(nearBrands))
+                updateGifticons()
             }
         }
+        collectLocation(isFirstLoadData)
+    }
 
+    private fun collectLocation(isFirstLoadData: Boolean) {
+        var isNeededFirstLoading = isFirstLoadData
         viewModelScope.launch {
             getUserLocation().collect { location ->
-                getBrandPlaceInfos(location.longitude, location.latitude)
-                userLocation.update {
-                    Pair(
-                        location.longitude,
-                        location.latitude
-                    )
+                if (isNeededFirstLoading) {
+                    isNeededFirstLoading = false
+                    return@collect
                 }
+                getBrandPlaceInfos(location.longitude, location.latitude)
             }
         }
     }
@@ -105,25 +98,26 @@ class MapViewModel @Inject constructor(
     private fun getBrandPlaceInfos(x: Double, y: Double) {
         viewModelScope.launch {
             _state.emit(UiState.Loading)
-            runCatching { getBrandPlaceInfosUseCase(brandList, x, y, SEARCH_SIZE) }
+            runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brandPlaceInfos ->
                     val diffBrandPlaceInfo = brandPlaceInfos.filter {
                         brandInfos.contains(it).not()
                     }
                     _brandInfos.addAll(brandPlaceInfos)
-                    if (brandInfos.isEmpty()) {
-                        _state.emit(UiState.NotFoundResults)
-                    } else {
-                        _state.emit(UiState.Success(diffBrandPlaceInfo))
+                    when (brandInfos.isEmpty()) {
+                        true -> _state.emit(UiState.NotFoundResults)
+                        false -> {
+                            _state.emit(UiState.Success(diffBrandPlaceInfo))
+                            updateGifticons()
+                        }
                     }
                 }
                 .onFailure { throwable ->
-                    Timber.tag("TAG").d("${javaClass.simpleName} map throw -> $throwable")
                     _state.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure
-                            else -> UiState.Failure(throwable)
+                            else -> UiState.Failure
                         }
                     )
                 }
@@ -131,22 +125,28 @@ class MapViewModel @Inject constructor(
     }
 
     fun updateFocusMarker(marker: Marker) {
-        viewModelScope.launch {
-            focusMarker.value = marker
-        }
+        recentSelectedMarker = marker
+        focusMarker = marker
     }
 
     fun updateMarkers(brandMarkers: List<Marker>) {
-        viewModelScope.launch {
-            _markerHolder.addAll(brandMarkers)
-            _markers.emit(markerHolder)
+        _markerHolder.addAll(brandMarkers)
+    }
+
+    fun updateGifticons() {
+        val brandName = focusMarker.captionText
+        _gifticonData.value = when (brandName.isEmpty()) {
+            true -> {
+                allGifticons.value.filter { gifticon ->
+                    brandInfos.map { it.brand }.contains(gifticon.brand)
+                }
+            }
+            false -> allGifticons.value.filter { it.brand == brandName }
         }
     }
 
-    fun updateBrandList() {
-        viewModelScope.launch {
-            _markers.emit(markerHolder)
-        }
+    fun resetMarker() {
+        focusMarker = Marker()
     }
 
     companion object {

@@ -10,4 +10,7 @@ object Extras {
     const val KEY_CROPPED_RECT = "Extra.CroppedRect"
 
     const val KEY_GIFTICON_ID = "Extra.GifticonDetail.KeyGifticonId"
+
+    const val KEY_NEAR_BRANDS = "Extra.Home.Brands"
+    const val KEY_NEAR_GIFTICONS = "Extra.Home.Gifticons"
 }

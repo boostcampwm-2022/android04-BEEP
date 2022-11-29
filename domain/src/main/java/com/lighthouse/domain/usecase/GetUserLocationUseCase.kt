@@ -8,6 +8,4 @@ class GetUserLocationUseCase @Inject constructor(
 ) {
 
     operator fun invoke() = repository.getLocationInterval()
-
-    fun lastLocation() = repository.getLastLocation()
 }

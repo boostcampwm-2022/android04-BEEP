@@ -21,7 +21,7 @@ enum class AddGifticonValid(val focus: AddGifticonFocus, val text: UIText) {
         UIText.StringResource(R.string.add_gifticon_invalid_barcode)
     ),
     INVALID_EXPIRED_AT(
-        AddGifticonFocus.EXPIRED_AT,
+        AddGifticonFocus.NONE,
         UIText.StringResource(R.string.add_gifticon_invalid_expired_at)
     ),
     INVALID_BALANCE(

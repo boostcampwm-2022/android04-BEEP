@@ -23,7 +23,6 @@ import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -56,7 +55,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setBindingAdapter()
         setObserveViewModel()
-        binding.vm = mainViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.mainVm = mainViewModel
+        binding.homeVm = homeViewModel
     }
 
     private fun setBindingAdapter() {
@@ -71,12 +72,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setObserveViewModel() {
-        repeatOnStarted {
-            homeViewModel.allGifticons.collectLatest {
-                expireGifticonAdapter.submitList(it)
-            }
-        }
-
         repeatOnStarted {
             homeViewModel.nearGifticon.collectLatest { state ->
                 when (state) {
@@ -96,10 +91,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun showSnackBar(@StringRes message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Timber.tag("TAG").d("${javaClass.simpleName} onDestroyView")
     }
 }

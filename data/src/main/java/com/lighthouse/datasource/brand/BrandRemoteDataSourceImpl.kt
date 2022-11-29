@@ -2,8 +2,8 @@ package com.lighthouse.datasource.brand
 
 import com.lighthouse.domain.Dms
 import com.lighthouse.domain.LocationConverter
-import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.model.BeepErrorData
+import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.network.NetworkApiService
 import java.net.UnknownHostException
 import javax.inject.Inject

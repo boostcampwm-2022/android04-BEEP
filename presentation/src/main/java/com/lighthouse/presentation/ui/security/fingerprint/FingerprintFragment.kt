@@ -15,6 +15,7 @@ import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.SecurityViewModel
+import com.lighthouse.presentation.ui.security.fingerprint.biometric.BiometricAuth
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import timber.log.Timber
 
