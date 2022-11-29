@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
@@ -31,8 +30,7 @@ class MapViewModel @Inject constructor(
     private val _state: MutableSharedFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableSharedFlow()
     val state = _state.asSharedFlow()
 
-    var focusMarker = MutableStateFlow(Marker())
-        private set
+    val focusMarker = MutableStateFlow(Marker())
 
     private val _markers = MutableSharedFlow<Set<Marker>>()
     val markers = _markers.asSharedFlow()
@@ -74,9 +72,6 @@ class MapViewModel @Inject constructor(
         Gifticon(UUID.generate(), "이름", "파파존스", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
     )
 
-    // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
-    var userLocation = MutableStateFlow(Pair(0.0, 0.0))
-
     init {
         collectLocation()
     }
@@ -92,12 +87,6 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             getUserLocation().collect { location ->
                 getBrandPlaceInfos(location.longitude, location.latitude)
-                userLocation.update {
-                    Pair(
-                        location.longitude,
-                        location.latitude
-                    )
-                }
             }
         }
     }

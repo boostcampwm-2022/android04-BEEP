@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +37,6 @@ class HomeViewModel @Inject constructor(
 
     val allGifticons = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            Timber.tag("TAG").d("${javaClass.simpleName} allGifticons -> $gifticons")
             emit(
                 gifticons.data
                     .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }

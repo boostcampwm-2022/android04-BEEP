@@ -3,16 +3,21 @@ package com.lighthouse.presentation.ui.main
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
+import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
 import com.lighthouse.presentation.ui.map.MapActivity
@@ -40,6 +45,21 @@ class MainActivity : AppCompatActivity() {
     }
     private val settingFragment by lazy {
         supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name) ?: SettingFragment()
+    }
+
+    private val locationPermissionDialog by lazy {
+        val title = getString(R.string.confirmation_title)
+        val message = getString(R.string.confirmation_location_message)
+        ConfirmationDialog().apply {
+            setTitle(title)
+            setMessage(message)
+            setOnOkClickListener {
+                val intent = Intent()
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                intent.data = Uri.fromParts("package", packageName, null)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,8 +108,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun gotoMap() {
-        val intent = Intent(this, MapActivity::class.java)
-        startActivity(intent)
+        if (isPermissionGranted()) {
+            startActivity(Intent(this, MapActivity::class.java))
+        } else {
+            requestPermissions(PERMISSIONS, REQUEST_PERMISSIONS_REQUEST_CODE)
+        }
+    }
+
+    private fun isPermissionGranted(): Boolean {
+        for (permission in PERMISSIONS) {
+            if (permission == Manifest.permission.ACCESS_BACKGROUND_LOCATION && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                continue
+            }
+            val result: Int = ContextCompat.checkSelfPermission(this, permission)
+            if (PackageManager.PERMISSION_GRANTED != result) {
+                return false
+            }
+        }
+        return true
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.isEmpty()) return // 사용자 상호작용이 없이 종료될때
+
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(Intent(this, MapActivity::class.java))
+            } else {
+                locationPermissionDialog.show(supportFragmentManager, ConfirmationDialog::class.java.name)
+            }
+        }
     }
 
     private fun gotoAddGifticon() {
@@ -99,5 +149,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+    }
+
+    companion object {
+        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 1981
+        private val PERMISSIONS =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 }
