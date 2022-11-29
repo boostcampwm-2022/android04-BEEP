@@ -195,11 +195,8 @@ object LocationConverter {
     fun locationDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val theta = lon1 - lon2
         var dist =
-            sin(decimalToRadian(lat1)) * sin(decimalToRadian(lat2)) + cos(decimalToRadian(lat1)) * cos(
-                decimalToRadian(
-                    lat2
-                )
-            ) * cos(decimalToRadian(theta))
+            sin(decimalToRadian(lat1)) * sin(decimalToRadian(lat2)) + cos(decimalToRadian(lat1)) *
+                cos(decimalToRadian(lat2)) * cos(decimalToRadian(theta))
         dist = acos(dist)
         dist = radianToDecimal(dist)
         dist *= 60 * 1.1515 * 1609.344

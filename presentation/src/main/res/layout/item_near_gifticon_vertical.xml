@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="gifticon"
+            type="com.lighthouse.presentation.model.GifticonUiModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="160dp"
+        android:layout_height="240dp"
+        app:cardCornerRadius="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_product"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/test"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_expire_at_label"
+                android:layout_width="52dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_primary_corner_4"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/BEEP.TextStyle.Caption.White"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:setDday="@{gifticon.expireAt}"
+                tools:text="D-31" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{gifticon.brand}"
+                android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_product"
+                tools:text="스타벅스" />
+
+            <TextView
+                android:id="@+id/tv_body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{gifticon.name}"
+                android:textAppearance="@style/BEEP.TextStyle.Subtitle1.OnPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                tools:text="카페 아메리카노 Tall" />
+
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:layout_marginEnd="4dp"
+                android:textAppearance="@style/BEEP.TextStyle.Body2.Primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_body"
+                app:setUIText="@{gifticon.distance}"
+                tools:text="300m" />
+
+            <TextView
+                android:id="@+id/tv_expire_at"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:layout_marginEnd="4dp"
+                android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:setExportedDate="@{gifticon.expireAt}"
+                tools:text="~ 2022-11-08" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

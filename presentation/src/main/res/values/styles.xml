@@ -19,6 +19,10 @@
 
     <style name="BEEP.TextStyle.Body2" parent="TextAppearance.MaterialComponents.Body2" />
 
+    <style name="BEEP.TextStyle.Body2.Primary">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
     <style name="BEEP.TextStyle.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">20sp</item>
     </style>
