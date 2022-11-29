@@ -26,7 +26,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Date
 
 @AndroidEntryPoint
 class GifticonDetailActivity : AppCompatActivity() {
