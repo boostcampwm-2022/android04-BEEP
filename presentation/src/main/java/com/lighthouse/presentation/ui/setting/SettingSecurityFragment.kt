@@ -14,6 +14,7 @@ import com.lighthouse.presentation.databinding.FragmentSecuritySettingBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting) {
@@ -32,10 +33,11 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting) {
                 dialog.dismiss()
             }
             .setPositiveButton("확인") { dialog, which ->
-                // TODO: which 저장
+                viewModel.saveSecurityOption(checkedSecurityOption)
                 dialog.dismiss()
             }.setSingleChoiceItems(securityOptionItems, checkedSecurityOption) { dialog, which ->
                 checkedSecurityOption = which
+                Timber.tag("OPTION").d(checkedSecurityOption.toString())
             }
     }
 
