@@ -21,17 +21,17 @@
     <string name="all_close_button">닫기</string>
 
     <string name="confirmation_ok">확인</string>
+    <string name="confirmation_title">권한 필요</string>
     <string name="confirmation_cancel">취소</string>
+    <string name="confirmation_location_message">위치 정보 권한이 필요합니다. \n[설정]->[권한]에서 "위치" 항목을 사용으로 설정해 주세요.</string>
 
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
     <string name="main_menu_setting">설정</string>
-
     <string name="main_order_recent">최신순</string>
     <string name="main_order_d_day">디데이순</string>
     <string name="main_filter_all">전체</string>
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
-    <string name="main_registration_completed">기프티콘 등록이 완료 되었습니다.</string>
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
     <string name="add_gifticon_title">기프티콘 추가</string>
@@ -59,17 +59,14 @@
     <string name="add_gifticon_memo_hint">메모를 남겨주세요.</string>
     <string name="add_gifticon_cancel">취소</string>
     <string name="add_gifticon_register">등록하기</string>
-
     <string name="add_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
     <string name="add_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_barcode">바코드를 입력해주세요</string>
     <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
     <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
-
-    <string name="add_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
-    <string name="add_gifticon_confirmation_cancel_message">등록중인 기프티콘이 존재합니다.</string>
-    <string name="add_gifticon_confirmation_delete_title">정말 삭제하시겠습니까?</string>
+    <string name="add_gifticon_confirmation_title">정말 나가시겠습니까?</string>
+    <string name="add_gifticon_confirmation_message">등록중인 기프티콘이 존재합니다.</string>
 
     <string name="origin_image_description">기프티콘 원본 이미지</string>
 
@@ -158,11 +155,18 @@
     <string name="pin_secure_not_use"><u>보안 설정 사용 안 함</u></string>
     <string name="pin_complete">PIN 설정을 완료했습니다</string>
     <string name="pin_internal_error">PIN 설정 중 오류가 발생했습니다. 잠시후 다시 시도해주세요.</string>
+    <string name="pin_input_description">PIN 번호를 입력하세요</string>
 
     <string name="dialog_usage_history_date_label">일자</string>
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
+
     <string name="gifticon_detail_info_changed_snackbar_text">기프티콘 정보가 변경되었습니다</string>
     <string name="gifticon_detail_info_changed_snackbar_action_text">되돌리기</string>
+
+    <string name="home_near_title">근처에서 사용할 수 있어요</string>
+    <string name="home_near_more_label">지도보기</string>
+    <string name="home_expire_title">사용 기한이 임박했어요!</string>
+    <string name="home_expire_more_label">더보기</string>
 
 </resources>

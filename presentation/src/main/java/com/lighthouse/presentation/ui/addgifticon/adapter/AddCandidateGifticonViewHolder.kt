@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.binding.loadUriWithoutCache
 import com.lighthouse.presentation.databinding.ItemAddCandidateGifticonBinding
 
 class AddCandidateGifticonViewHolder(
@@ -17,5 +18,6 @@ class AddCandidateGifticonViewHolder(
 
     fun bind(item: AddGifticonItemUIModel.Gifticon) {
         binding.dm = AddCandidateGifticonDisplayModel(item, onClick, onDelete)
+        binding.ivCandidate.loadUriWithoutCache(item.uri)
     }
 }

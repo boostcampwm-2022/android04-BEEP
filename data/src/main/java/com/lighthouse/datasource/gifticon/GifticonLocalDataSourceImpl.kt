@@ -52,4 +52,12 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override suspend fun insertUsageHistory(usageHistory: UsageHistoryEntity) {
         gifticonDao.insertUsageHistory(usageHistory)
     }
+
+    override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
+        return gifticonDao.getGifticonByBrand(brand)
+    }
+
+    override fun getAllGifticons(): Flow<List<GifticonEntity>> {
+        return gifticonDao.getAllGifticons()
+    }
 }

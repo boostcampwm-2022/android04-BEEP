@@ -7,11 +7,13 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
-import com.google.firebase.auth.FirebaseAuth
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.dao.BrandWithSectionDao
 import com.lighthouse.database.dao.GifticonDao
+import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.presentation.ui.security.AuthManager
+import com.lighthouse.presentation.util.UserPreference
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,10 +46,6 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
-
-    @Provides
-    @Singleton
     fun provideGifticonDao(
         database: BeepDatabase
     ): GifticonDao = database.gifticonDao()
@@ -64,5 +62,17 @@ object DatabaseModule {
         return PreferenceDataStoreFactory.create(
             produceFile = { context.preferencesDataStoreFile(USER_PREFERENCES) }
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserPreference(userPreferencesRepository: UserPreferencesRepository): UserPreference {
+        return UserPreference(userPreferencesRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthManger(userPreference: UserPreference): AuthManager {
+        return AuthManager(userPreference)
     }
 }

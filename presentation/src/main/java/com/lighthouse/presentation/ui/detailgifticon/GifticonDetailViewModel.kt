@@ -107,6 +107,7 @@ class GifticonDetailViewModel @Inject constructor(
     fun useGifticonButtonClicked() {
         when (mode.value) {
             GifticonDetailMode.UNUSED -> {
+                event(Event.UseGifticonButtonClicked)
                 viewModelScope.launch {
                     if (gifticon.value?.isCashCard == true) {
 //                        useCashCardGifticonUseCase(gifticonId, amountToUse.value) // TODO 이걸로 사용해야 함

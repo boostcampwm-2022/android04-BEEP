@@ -7,6 +7,7 @@ fun List<BrandPlaceInfo>.toPresentation(): List<BrandPlaceInfoUiModel> = map {
     BrandPlaceInfoUiModel(
         addressName = it.addressName,
         placeName = it.placeName,
+        categoryName = it.categoryName,
         placeUrl = it.placeUrl,
         brand = it.brand,
         x = it.x,

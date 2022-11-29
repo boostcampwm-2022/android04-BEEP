@@ -6,7 +6,6 @@
         <item name="colorPrimaryDark">@color/beep_pink</item>
         <item name="colorSecondary">@color/beep_pink</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorError">@color/error</item>
         <item name="materialButtonStyle">@style/BEEP.Component.Button</item>
         <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
     </style>

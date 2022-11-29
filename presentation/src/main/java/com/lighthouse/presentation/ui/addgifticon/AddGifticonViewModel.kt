@@ -4,7 +4,6 @@ import android.text.InputFilter
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.usecase.SaveGifticonsUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDate
 import com.lighthouse.presentation.extension.toDigit
@@ -12,7 +11,6 @@ import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.mapper.toAddGifticonItemUIModel
 import com.lighthouse.presentation.mapper.toAddGifticonUIModel
-import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.EditTextInfo
@@ -21,7 +19,6 @@ import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,12 +29,8 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Date
-import javax.inject.Inject
 
-@HiltViewModel
-class AddGifticonViewModel @Inject constructor(
-    private val saveGifticonsUseCase: SaveGifticonsUseCase
-) : ViewModel() {
+class AddGifticonViewModel : ViewModel() {
 
     private val today = Calendar.getInstance().let {
         it.set(Calendar.HOUR, 0)
@@ -441,11 +434,6 @@ class AddGifticonViewModel @Inject constructor(
             }
             when (valid) {
                 AddGifticonValid.VALID -> {
-                    val gifticons = gifticonList.value.map {
-                        it.toDomain()
-                    }
-                    saveGifticonsUseCase(gifticons)
-                    _eventFlow.emit(AddGifticonEvent.RegistrationCompleted)
                 }
                 else -> {
                     handleGifticonInvalid(valid)
@@ -458,7 +446,7 @@ class AddGifticonViewModel @Inject constructor(
         if (gifticonList.value.isEmpty()) {
             popBackstack()
         } else {
-            showCancelConfirmation()
+            showConfirmation()
         }
     }
 
@@ -468,15 +456,9 @@ class AddGifticonViewModel @Inject constructor(
         }
     }
 
-    private fun showCancelConfirmation() {
+    private fun showConfirmation() {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.ShowCancelConfirmation)
-        }
-    }
-
-    fun showDeleteConfirmation(gifticon: AddGifticonItemUIModel.Gifticon) {
-        viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.ShowDeleteConfirmation(gifticon))
+            _eventFlow.emit(AddGifticonEvent.ShowConfirmation)
         }
     }
 
