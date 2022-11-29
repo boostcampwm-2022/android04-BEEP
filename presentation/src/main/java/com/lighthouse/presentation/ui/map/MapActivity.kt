@@ -94,11 +94,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setInitAdapterData() {
         viewModel.updateGifticons()
-        /*repeatOnStarted {
+        repeatOnStarted {
             viewModel.allGifticons.collectLatest {
                 viewModel.updateGifticons()
             }
-        }*/
+        }
     }
 
     override fun onStart() {

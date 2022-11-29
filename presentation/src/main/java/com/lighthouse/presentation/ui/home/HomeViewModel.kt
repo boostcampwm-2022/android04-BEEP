@@ -7,7 +7,6 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
-import com.lighthouse.domain.usecase.GetNearBrandsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
@@ -17,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -27,15 +25,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     getGifticonUseCase: GetGifticonsUseCase,
     private val getUserLocation: GetUserLocationUseCase,
-    private val getNearBrandsUseCase: GetNearBrandsUseCase,
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
     private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
-
-    val test = getGifticonUseCase().onStart {
-        DbResult.Loading
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allBrands = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
