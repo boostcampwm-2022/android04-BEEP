@@ -20,14 +20,15 @@ import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PinFragment : Fragment(R.layout.fragment_pin) {
 
     private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinSettingViewModel by viewModels()
-
     private val activityViewModel: SecurityViewModel by activityViewModels()
+
     private val shakeAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
     }
@@ -66,7 +67,12 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         }
                         delay(1000L)
                         activityViewModel.setSecurityOption(SecurityOption.PIN)
-                        activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
+                        Timber.tag("REVISE").d("securityViewModel: ${activityViewModel.isRevise}")
+                        if (activityViewModel.isRevise) {
+                            requireActivity().finish()
+                        } else {
+                            activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
+                        }
                     }
                     PinSettingType.ERROR -> {
                         Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.LENGTH_SHORT)

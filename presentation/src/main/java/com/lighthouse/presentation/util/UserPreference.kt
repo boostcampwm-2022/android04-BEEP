@@ -17,6 +17,7 @@ class UserPreference @Inject constructor(
 
     val securityOption: StateFlow<SecurityOption> =
         userPreferencesRepository.getIntOption(UserPreferenceOption.SECURITY).map {
-            SecurityOption.values()[it]
+            val idx = if (it < 0) 0 else it
+            SecurityOption.values()[idx]
         }.stateIn(CoroutineScope(Dispatchers.Main), SharingStarted.Eagerly, SecurityOption.NONE)
 }

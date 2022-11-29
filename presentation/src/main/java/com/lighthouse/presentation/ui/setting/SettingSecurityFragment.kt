@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.setting
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -13,8 +14,8 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSecuritySettingBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
+import com.lighthouse.presentation.ui.security.SecurityActivity
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting) {
@@ -26,20 +27,7 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting) {
     private val securityOptionItems =
         arrayOf(SecurityOption.NONE.text, SecurityOption.PIN.text, SecurityOption.FINGERPRINT.text)
     private var checkedSecurityOption: Int = 0
-    private val securityOptionDialog: MaterialAlertDialogBuilder by lazy {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("보안 인증 옵션")
-            .setNeutralButton("취소") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton("확인") { dialog, which ->
-                viewModel.saveSecurityOption(checkedSecurityOption)
-                dialog.dismiss()
-            }.setSingleChoiceItems(securityOptionItems, checkedSecurityOption) { dialog, which ->
-                checkedSecurityOption = which
-                Timber.tag("OPTION").d(checkedSecurityOption.toString())
-            }
-    }
+    private var currentSecurityOption: Int = 0
 
     private lateinit var callback: OnBackPressedCallback
 
@@ -62,10 +50,33 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting) {
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         checkedSecurityOption = viewModel.securityOptionFlow.value.ordinal
+        currentSecurityOption = checkedSecurityOption
 
         binding.tvChangeSecurityOption.setOnClickListener {
-            securityOptionDialog.show()
+            // 옵션 변경 시 currentSecurityOption 바뀌기 때문에 매번 AlertDialog 을 만들어 사용합니다.
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("보안 인증 옵션")
+                .setNeutralButton("취소") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton("확인") { dialog, which ->
+                    if (checkedSecurityOption != currentSecurityOption) {
+                        viewModel.saveSecurityOption(checkedSecurityOption)
+                        when (checkedSecurityOption) {
+                            1 -> gotoPinSetting()
+                        }
+                    }
+                    dialog.dismiss()
+                }.setSingleChoiceItems(securityOptionItems, currentSecurityOption) { dialog, which ->
+                    checkedSecurityOption = which
+                }.show()
         }
+    }
+
+    private fun gotoPinSetting() {
+        val intent = Intent(requireContext(), SecurityActivity::class.java)
+        intent.putExtra("revise", true)
+        startActivity(intent)
     }
 
     override fun onDetach() {

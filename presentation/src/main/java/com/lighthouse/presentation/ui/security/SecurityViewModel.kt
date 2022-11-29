@@ -17,6 +17,7 @@ class SecurityViewModel @Inject constructor(
 ) : ViewModel() {
 
     val directionsFlow = MutableSharedFlow<SecurityDirections>()
+    var isRevise = false
 
     fun gotoOtherScreen(directions: SecurityDirections) {
         viewModelScope.launch {

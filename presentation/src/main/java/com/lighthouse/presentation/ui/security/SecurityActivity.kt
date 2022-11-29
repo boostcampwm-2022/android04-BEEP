@@ -24,6 +24,9 @@ class SecurityActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_security)
 
+        val isRevise = intent.getBooleanExtra("revise", false)
+        viewModel.isRevise = isRevise
+
         moveScreen(SecurityDirections.PIN)
         repeatOnStarted {
             viewModel.directionsFlow.collect { directions ->
