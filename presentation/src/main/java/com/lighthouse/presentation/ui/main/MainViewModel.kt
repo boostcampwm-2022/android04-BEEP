@@ -9,7 +9,10 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +25,24 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     private val _pageFlow = MutableStateFlow<MainPage>(MainPage.Home)
     val pageFlow = _pageFlow.asStateFlow()
+
+    val fabFlow = _pageFlow.map { page ->
+        when (page) {
+            MainPage.Home -> true
+            MainPage.List -> true
+            MainPage.Setting -> false
+            MainPage.Other -> false
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    val bnvFlow = _pageFlow.map { page ->
+        when (page) {
+            MainPage.Home -> true
+            MainPage.List -> true
+            MainPage.Setting -> true
+            MainPage.Other -> false
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
@@ -53,8 +74,8 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 R.id.menu_list -> MainPage.List
                 R.id.menu_home -> MainPage.Home
                 R.id.menu_setting -> MainPage.Setting
-                else -> null
-            } ?: return@launch
+                else -> MainPage.Other
+            }
             _pageFlow.emit(pages)
         }
         return true

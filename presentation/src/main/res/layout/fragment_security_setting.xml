@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.setting.SettingSecurityViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.setting.SettingSecurityFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ab_security_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tb_security_setting"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:title="@string/main_menu_setting"
+                app:titleCentered="true" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/tv_change_security_option"
+            style="@style/Theme.BEEP.SettingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:text="보안 인증 수단 변경"
+            app:layout_constraintTop_toBottomOf="@+id/ab_security_setting" />
+
+        <ImageView
+            android:id="@+id/iv_arrow_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/setting_security"
+            android:src="@drawable/ic_arrow_forward"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_change_security_option"
+            app:layout_constraintEnd_toEndOf="@+id/tv_change_security_option"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="@+id/tv_change_security_option"
+            app:layout_constraintTop_toTopOf="@+id/tv_change_security_option" />
+
+        <TextView
+            android:id="@+id/tv_change_pin"
+            style="@style/Theme.BEEP.SettingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:text="PIN 번호 변경"
+            app:layout_constraintTop_toBottomOf="@+id/tv_change_security_option" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
