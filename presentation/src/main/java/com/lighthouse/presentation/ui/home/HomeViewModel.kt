@@ -2,14 +2,17 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.LocationConverter
+import com.lighthouse.domain.VertexLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
+import com.lighthouse.presentation.mapper.toUiModel
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
+import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,15 +49,18 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _nearGifticon: MutableStateFlow<UiState<List<Gifticon>>> = MutableStateFlow(UiState.Loading)
+    private val _nearGifticon: MutableStateFlow<UiState<List<GifticonUiModel>>> = MutableStateFlow(UiState.Loading)
     val nearGifticon = _nearGifticon.asStateFlow()
 
     var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
         private set
 
+    private lateinit var recentLocation: VertexLocation
+
     init {
         viewModelScope.launch {
             getUserLocation().collect { location ->
+                recentLocation = location
                 getNearBrands(location.longitude, location.latitude)
             }
         }
@@ -66,9 +72,14 @@ class HomeViewModel @Inject constructor(
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { it.toPresentation() }
                 .onSuccess { brands ->
-                    nearBrandsInfo = brands
+                    nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
                     val gifticonFilterResult =
-                        allGifticons.value.filter { gifticon -> brands.map { it.brand }.contains(gifticon.brand) }
+                        allGifticons.value
+                            .filter { gifticon -> brands.map { it.brand }.contains(gifticon.brand) }
+                            .map { gifticon ->
+                                val brandInfo = brands.first { it.brand == gifticon.brand }
+                                gifticon.toUiModel(diffLocation(brandInfo, recentLocation))
+                            }
                     _nearGifticon.value = UiState.Success(gifticonFilterResult)
                 }
                 .onFailure { throwable ->
@@ -79,6 +90,16 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun diffLocation(
+        location: BrandPlaceInfoUiModel,
+        currentLocation: VertexLocation
+    ) = LocationConverter.locationDistance(
+        location.x.toDouble(),
+        location.y.toDouble(),
+        currentLocation.longitude,
+        currentLocation.latitude
+    )
 
     companion object {
         private const val SEARCH_SIZE = 15

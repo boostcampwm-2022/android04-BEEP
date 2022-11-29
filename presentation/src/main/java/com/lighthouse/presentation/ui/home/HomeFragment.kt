@@ -8,16 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentHomeBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
+import com.lighthouse.presentation.ui.home.adapter.NearGifticonAdapter
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
@@ -30,7 +31,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBindings()
     private val mainViewModel: MainViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
-    private val nearGifticonAdapter = GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
+    private val nearGifticonAdapter = NearGifticonAdapter { gifticon ->
         startActivity(
             Intent(requireContext(), GifticonDetailActivity::class.java).apply {
                 putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
@@ -85,7 +86,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun updateNearGifticon(item: List<Gifticon>) {
+    private fun updateNearGifticon(item: List<GifticonUiModel>) {
         nearGifticonAdapter.submitList(item)
     }
 
