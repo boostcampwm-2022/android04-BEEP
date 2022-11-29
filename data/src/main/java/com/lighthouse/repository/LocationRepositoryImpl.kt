@@ -110,7 +110,7 @@ class LocationRepositoryImpl @Inject constructor(
                     locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
                         LOCATION_INTERVAL,
-                        10.0f,
+                        LOCATION_DISTANCE,
                         it
                     )
                 }
@@ -154,5 +154,6 @@ class LocationRepositoryImpl @Inject constructor(
 
     companion object {
         private const val LOCATION_INTERVAL = 10000L
+        private const val LOCATION_DISTANCE = 200.0f
     }
 }
