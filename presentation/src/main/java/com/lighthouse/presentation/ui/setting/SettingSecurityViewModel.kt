@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SecuritySettingViewModel @Inject constructor(
+class SettingSecurityViewModel @Inject constructor(
     userPreference: UserPreference
 ) : ViewModel() {
 

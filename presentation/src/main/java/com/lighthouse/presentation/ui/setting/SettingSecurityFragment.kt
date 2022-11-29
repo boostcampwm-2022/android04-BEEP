@@ -18,11 +18,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SecuritySettingFragment : Fragment(R.layout.fragment_security_setting) {
+class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting) {
 
     private val binding: FragmentSecuritySettingBinding by viewBindings()
     private val activityViewModel: MainViewModel by activityViewModels()
-    private val viewModel: SecuritySettingViewModel by viewModels()
+    private val viewModel: SettingSecurityViewModel by viewModels()
 
     private lateinit var callback: OnBackPressedCallback
 

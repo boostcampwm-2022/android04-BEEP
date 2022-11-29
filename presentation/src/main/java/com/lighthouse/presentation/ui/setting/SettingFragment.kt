@@ -29,7 +29,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting), AuthCallback {
     private val viewModel: SettingViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
 
-    private val securitySettingFragment by lazy { SecuritySettingFragment() }
+    private val securitySettingFragment by lazy { SettingSecurityFragment() }
 
     @Inject
     lateinit var authManager: AuthManager

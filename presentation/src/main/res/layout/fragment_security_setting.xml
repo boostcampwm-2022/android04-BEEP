@@ -7,13 +7,13 @@
 
         <variable
             name="vm"
-            type="com.lighthouse.presentation.ui.setting.SecuritySettingViewModel" />
+            type="com.lighthouse.presentation.ui.setting.SettingSecurityViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.setting.SecuritySettingFragment">
+        tools:context=".ui.setting.SettingSecurityFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/ab_security_setting"
