@@ -24,7 +24,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         parentFragmentManager.commit {
             add(R.id.fcv_setting, settingMainFragment)
         }
-
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
