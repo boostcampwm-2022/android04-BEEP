@@ -2,7 +2,6 @@ package com.lighthouse.presentation.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.model.UserPreferenceOption
 import com.lighthouse.presentation.util.UserPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,18 +10,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor(
+class SecuritySettingViewModel @Inject constructor(
     userPreference: UserPreference
 ) : ViewModel() {
 
-    private val _optionFlow = MutableSharedFlow<UserPreferenceOption>()
-    val optionFlow = _optionFlow.asSharedFlow()
+    private val _securityOptionEventFlow = MutableSharedFlow<Unit>()
+    val securityOptionEventFlow = _securityOptionEventFlow.asSharedFlow()
 
     val securityOptionFlow = userPreference.securityOption
 
-    fun setSettingOption(option: UserPreferenceOption) {
+    fun showSecurityOptionDialog() {
         viewModelScope.launch {
-            _optionFlow.emit(option)
+            _securityOptionEventFlow.emit(Unit)
         }
     }
 }

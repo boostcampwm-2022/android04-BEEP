@@ -76,13 +76,13 @@
                 android:id="@+id/tv_security_option"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{vm.securityOptionFlow}"
+                android:text="@{vm.securityOptionFlow.text}"
                 style="@style/BEEP.TextStyle.Caption"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_security"
                 app:layout_constraintEnd_toEndOf="@+id/tv_security"
                 app:layout_constraintStart_toStartOf="@+id/tv_security"
                 app:layout_constraintTop_toTopOf="@+id/tv_security"
-                app:layout_constraintHorizontal_bias="0.9"
+                app:layout_constraintHorizontal_bias="0.85"
                 />
 
             <ImageView
@@ -90,10 +90,10 @@
                 android:src="@drawable/ic_arrow_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                app:layout_constraintHorizontal_bias="0.95"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_security"
                 app:layout_constraintEnd_toEndOf="@+id/tv_security"
-                app:layout_constraintStart_toStartOf="@+id/tv_security_option"
+                app:layout_constraintStart_toStartOf="@+id/tv_security"
                 app:layout_constraintTop_toTopOf="@+id/tv_security"
                 android:contentDescription="@string/setting_security"
                 />
