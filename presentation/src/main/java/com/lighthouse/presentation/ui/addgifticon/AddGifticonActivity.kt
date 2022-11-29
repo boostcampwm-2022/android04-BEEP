@@ -26,6 +26,7 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
+import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
@@ -59,7 +60,7 @@ class AddGifticonActivity : AppCompatActivity() {
             viewModel.selectGifticon(gifticon)
         },
         onDeleteGifticon = { gifticon ->
-            viewModel.deleteGifticon(gifticon)
+            viewModel.showDeleteConfirmation(gifticon)
         }
     )
 
@@ -115,15 +116,22 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private val confirmationDialog by lazy {
-        val title = getString(R.string.add_gifticon_confirmation_title)
-        val message = getString(R.string.add_gifticon_confirmation_message)
+    private val confirmationCancelDialog by lazy {
+        val title = getString(R.string.add_gifticon_confirmation_cancel_title)
+        val message = getString(R.string.add_gifticon_confirmation_cancel_message)
         ConfirmationDialog().apply {
             setTitle(title)
             setMessage(message)
             setOnOkClickListener {
                 cancelAddGifticon()
             }
+        }
+    }
+
+    private val confirmationDeleteDialog by lazy {
+        val title = getString(R.string.add_gifticon_confirmation_delete_title)
+        ConfirmationDialog().apply {
+            setTitle(title)
         }
     }
 
@@ -158,7 +166,8 @@ class AddGifticonActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { events ->
                 when (events) {
                     is AddGifticonEvent.PopupBackStack -> cancelAddGifticon()
-                    is AddGifticonEvent.ShowConfirmation -> showConfirmationDialog()
+                    is AddGifticonEvent.ShowCancelConfirmation -> showConfirmationCancelDialog()
+                    is AddGifticonEvent.ShowDeleteConfirmation -> showConfirmationDeleteDialog(events.gifticon)
                     is AddGifticonEvent.NavigateToGallery -> gotoGallery(events.list)
                     is AddGifticonEvent.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
                     is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
@@ -204,8 +213,16 @@ class AddGifticonActivity : AppCompatActivity() {
         }.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
     }
 
-    private fun showConfirmationDialog() {
-        confirmationDialog.show(supportFragmentManager, ConfirmationDialog::class.java.name)
+    private fun showConfirmationCancelDialog() {
+        confirmationCancelDialog.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
+    }
+
+    private fun showConfirmationDeleteDialog(gifticon: AddGifticonItemUIModel.Gifticon) {
+        confirmationDeleteDialog.apply {
+            setOnOkClickListener {
+                viewModel.deleteGifticon(gifticon)
+            }
+        }.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
     }
 
     private fun requestFocus(focus: AddGifticonFocus) {
@@ -231,6 +248,9 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val CONFIRMATION_CANCEL_DIALOG = "Tag.ConfirmationCancelDialog"
+        private const val CONFIRMATION_DELETE_DIALOG = "Tag.ConfirmationDeleteDialog"
+
         private const val TEMP_GIFTICON_PREFIX = "temp_gifticon_"
     }
 }

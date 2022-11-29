@@ -66,8 +66,9 @@
     <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
     <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
 
-    <string name="add_gifticon_confirmation_title">정말 나가시겠습니까?</string>
-    <string name="add_gifticon_confirmation_message">등록중인 기프티콘이 존재합니다.</string>
+    <string name="add_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
+    <string name="add_gifticon_confirmation_cancel_message">등록중인 기프티콘이 존재합니다.</string>
+    <string name="add_gifticon_confirmation_delete_title">정말 삭제하시겠습니까?</string>
 
     <string name="origin_image_description">기프티콘 원본 이미지</string>
 

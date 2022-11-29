@@ -446,7 +446,7 @@ class AddGifticonViewModel : ViewModel() {
         if (gifticonList.value.isEmpty()) {
             popBackstack()
         } else {
-            showConfirmation()
+            showCancelConfirmation()
         }
     }
 
@@ -456,9 +456,15 @@ class AddGifticonViewModel : ViewModel() {
         }
     }
 
-    private fun showConfirmation() {
+    private fun showCancelConfirmation() {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.ShowConfirmation)
+            _eventFlow.emit(AddGifticonEvent.ShowCancelConfirmation)
+        }
+    }
+
+    fun showDeleteConfirmation(gifticon: AddGifticonItemUIModel.Gifticon) {
+        viewModelScope.launch {
+            _eventFlow.emit(AddGifticonEvent.ShowDeleteConfirmation(gifticon))
         }
     }
 
