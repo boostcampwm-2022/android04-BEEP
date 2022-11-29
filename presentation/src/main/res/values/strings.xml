@@ -45,7 +45,6 @@
     <string name="add_gifticon_cash_card">금액권</string>
     <string name="add_gifticon_delete_mode">삭제하기</string>
     <string name="add_gifticon_edit_mode">편집하기</string>
-    <string name="add_gifticon_brand_description">기프티콘 브랜드 이미지</string>
     <string name="add_gifticon_name_label">이름</string>
     <string name="add_gifticon_name_hint">쿠폰 이름을 입력하세요.</string>
     <string name="add_gifticon_brand_label">브랜드</string>

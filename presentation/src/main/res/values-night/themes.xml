@@ -7,7 +7,7 @@
         <item name="colorOnPrimary">?attr/colorOnSurface</item>
         <item name="colorSecondary">@color/beep_pink_dark</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:statusBarColor">@color/on_surface_9</item>
     </style>
 
     <style name="Theme.BEEP.EditText" parent="Widget.AppCompat.EditText">

@@ -1,11 +1,14 @@
 package com.lighthouse.presentation.ui.addgifticon
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +23,7 @@ import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
@@ -33,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Calendar
@@ -68,25 +73,31 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val croppedUri =
-                result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java)
-                    ?: return@registerForActivityResult
-            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java)
-                ?: return@registerForActivityResult
+    private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
+        return if (result.resultCode == Activity.RESULT_OK) {
+            val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
+            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
 
-            val gifticon = viewModel.selectedGifticon.value ?: return@registerForActivityResult
-            val output = getFileStreamPath("Temp${gifticon.id}")
-
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    FileInputStream(croppedUri.path).copyTo(
-                        FileOutputStream(output)
-                    )
-                }
-                viewModel.croppedImage(output.toUri(), croppedRect)
+            withContext(Dispatchers.IO) {
+                FileInputStream(croppedUri.path).copyTo(
+                    FileOutputStream(output)
+                )
             }
+            CroppedImage(output.toUri(), croppedRect)
+        } else {
+            null
+        }
+    }
+
+    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val gifticon = viewModel.selectedGifticon.value ?: return@registerForActivityResult
+        val output = getFileStreamPath("$TEMP_GIFTICON_PREFIX${gifticon.id}")
+
+        lifecycleScope.launch {
+            val croppedImage = withContext(Dispatchers.IO) {
+                getCropResult(result, output)
+            } ?: return@launch
+            viewModel.croppedGifticonImage(croppedImage)
         }
     }
 
@@ -198,18 +209,28 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun requestFocus(focus: AddGifticonFocus) {
-        when (focus) {
-            AddGifticonFocus.GIFTICON_NAME -> binding.tietName.requestFocus()
-            AddGifticonFocus.BRAND_NAME -> binding.tietBrand.requestFocus()
-            AddGifticonFocus.BARCODE -> binding.tietBarcode.requestFocus()
-            AddGifticonFocus.EXPIRED_AT -> binding.tietExpireDate.requestFocus()
-            AddGifticonFocus.BALANCE -> binding.tietBalance.requestFocus()
-            AddGifticonFocus.MEMO -> binding.tietMemo.requestFocus()
-            AddGifticonFocus.NONE -> binding.clContainer.requestFocus()
+        val focusView = when (focus) {
+            AddGifticonFocus.GIFTICON_NAME -> binding.tietName
+            AddGifticonFocus.BRAND_NAME -> binding.tietBrand
+            AddGifticonFocus.BARCODE -> binding.tietBarcode
+            AddGifticonFocus.BALANCE -> binding.tietBalance
+            AddGifticonFocus.MEMO -> binding.tietMemo
+            AddGifticonFocus.NONE -> binding.clContainer
+        }
+        focusView.requestFocus()
+        val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (focus != AddGifticonFocus.NONE) {
+            inputMethodService.showSoftInput(focusView, 0)
+        } else {
+            inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
     private fun showSnackBar(uiText: UIText) {
         Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        private const val TEMP_GIFTICON_PREFIX = "temp_gifticon_"
     }
 }
