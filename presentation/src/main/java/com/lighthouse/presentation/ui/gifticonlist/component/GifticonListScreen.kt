@@ -20,9 +20,12 @@ import androidx.compose.material.Card
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -65,11 +69,20 @@ fun GifticonListScreen(
         color = Color.Transparent
     ) {
         Column {
-            BrandChipList(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp), brands = viewState.brands
-            )
+                    .padding(top = 24.dp)
+            ) {
+                BrandChipList(modifier = Modifier.weight(1f), brands = viewState.brands)
+                IconButton(
+                    modifier = Modifier,
+                    onClick = { /*TODO*/ }) {
+                    Image(
+                        Icons.Outlined.Tune,
+                        contentDescription = stringResource(R.string.gifticon_list_show_all_brand_chips_button)
+                    )
+                }
+            }
             GifticonList(gifticons = viewState.gifticons, Modifier.padding(top = 64.dp))
         }
     }
@@ -157,7 +170,9 @@ private fun BrandChipList(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        item {
+        val chipCountToShow = 3
+
+        item { // "전체" 칩
             val entireChipBrand = Brand(
                 name = stringResource(id = R.string.main_filter_all),
                 count = brands.sumOf { it.count }
@@ -167,7 +182,7 @@ private fun BrandChipList(
                 onBrandSelected(selectedBrands)
             }
         }
-        items(brands) { brand ->
+        items(brands.subList(0, minOf(chipCountToShow, brands.size))) { brand ->
             BrandChip(brand) {
                 if (selectedBrands.contains(it)) {
                     selectedBrands.remove(it)
@@ -205,7 +220,7 @@ private fun BrandChip(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = brand.name, modifier = modifier)
+            Text(text = brand.name, modifier = modifier, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
                 text = brand.count.toString(),
                 modifier = modifier.padding(start = 4.dp),
