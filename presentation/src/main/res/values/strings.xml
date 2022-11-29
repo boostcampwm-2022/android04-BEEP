@@ -28,12 +28,10 @@
     <string name="main_menu_list">목록</string>
     <string name="main_menu_home">홈</string>
     <string name="main_menu_setting">설정</string>
-
     <string name="main_order_recent">최신순</string>
     <string name="main_order_d_day">디데이순</string>
     <string name="main_filter_all">전체</string>
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
-    <string name="main_registration_completed">기프티콘 등록이 완료 되었습니다.</string>
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
     <string name="add_gifticon_title">기프티콘 추가</string>
@@ -47,6 +45,7 @@
     <string name="add_gifticon_cash_card">금액권</string>
     <string name="add_gifticon_delete_mode">삭제하기</string>
     <string name="add_gifticon_edit_mode">편집하기</string>
+    <string name="add_gifticon_brand_description">기프티콘 브랜드 이미지</string>
     <string name="add_gifticon_name_label">이름</string>
     <string name="add_gifticon_name_hint">쿠폰 이름을 입력하세요.</string>
     <string name="add_gifticon_brand_label">브랜드</string>
@@ -61,17 +60,14 @@
     <string name="add_gifticon_memo_hint">메모를 남겨주세요.</string>
     <string name="add_gifticon_cancel">취소</string>
     <string name="add_gifticon_register">등록하기</string>
-
     <string name="add_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
     <string name="add_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_barcode">바코드를 입력해주세요</string>
     <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
     <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
-
-    <string name="add_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
-    <string name="add_gifticon_confirmation_cancel_message">등록중인 기프티콘이 존재합니다.</string>
-    <string name="add_gifticon_confirmation_delete_title">정말 삭제하시겠습니까?</string>
+    <string name="add_gifticon_confirmation_title">정말 나가시겠습니까?</string>
+    <string name="add_gifticon_confirmation_message">등록중인 기프티콘이 존재합니다.</string>
 
     <string name="origin_image_description">기프티콘 원본 이미지</string>
 

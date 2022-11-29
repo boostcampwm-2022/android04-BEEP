@@ -219,7 +219,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:afterTextChanged="@{(text) -> vm.editMemo(text.toString())}"
-            android:background="@drawable/bg_gifticon_memo"
+            android:background="@drawable/bg_gifticon_detail_memo"
             android:enabled="@{vm.mode == mode.EDIT}"
             android:gravity="top"
             android:hint="@string/gifticon_detail_memo_description"

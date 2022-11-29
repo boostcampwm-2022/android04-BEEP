@@ -1,6 +1,6 @@
 package com.lighthouse.presentation.ui.addgifticon.adapter
 
-import com.lighthouse.presentation.R
+import android.view.View
 
 class AddCandidateGifticonDisplayModel(
     val item: AddGifticonItemUIModel.Gifticon,
@@ -8,16 +8,9 @@ class AddCandidateGifticonDisplayModel(
     private val onDelete: (AddGifticonItemUIModel.Gifticon) -> Unit
 ) {
 
-    val badgeVisibility = when {
-        item.isDelete || item.isValid.not() -> true
-        else -> false
-    }
+    val closeVisibility = if (item.isDelete) View.VISIBLE else View.GONE
 
-    val badgeResId = when {
-        item.isDelete -> R.drawable.ic_item_delete
-        item.isValid.not() -> R.drawable.ic_item_invalid
-        else -> null
-    }
+    val badgeVisibility = if (item.isDelete.not() && item.isValid.not()) View.VISIBLE else View.GONE
 
     fun onClickItem() {
         if (item.isDelete) {

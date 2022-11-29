@@ -12,7 +12,6 @@ data class GifticonEntity(
     @ColumnInfo(name = "id")
     val id: String,
     @ColumnInfo(name = "user_id") val userId: String,
-    @ColumnInfo(name = "has_image") val hasImage: Boolean,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "brand") val brand: String,
     @ColumnInfo(name = "expire_at") val expireAt: Date,

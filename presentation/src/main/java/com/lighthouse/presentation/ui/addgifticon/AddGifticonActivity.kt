@@ -1,14 +1,11 @@
 package com.lighthouse.presentation.ui.addgifticon
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,10 +20,8 @@ import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
-import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
@@ -38,7 +33,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Calendar
@@ -60,7 +54,7 @@ class AddGifticonActivity : AppCompatActivity() {
             viewModel.selectGifticon(gifticon)
         },
         onDeleteGifticon = { gifticon ->
-            viewModel.showDeleteConfirmation(gifticon)
+            viewModel.deleteGifticon(gifticon)
         }
     )
 
@@ -74,31 +68,25 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
-        return if (result.resultCode == Activity.RESULT_OK) {
-            val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
-            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
-
-            withContext(Dispatchers.IO) {
-                FileInputStream(croppedUri.path).copyTo(
-                    FileOutputStream(output)
-                )
-            }
-            CroppedImage(output.toUri(), croppedRect)
-        } else {
-            null
-        }
-    }
-
     private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val gifticon = viewModel.selectedGifticon.value ?: return@registerForActivityResult
-        val output = getFileStreamPath("$TEMP_GIFTICON_PREFIX${gifticon.id}")
+        if (result.resultCode == Activity.RESULT_OK) {
+            val croppedUri =
+                result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java)
+                    ?: return@registerForActivityResult
+            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java)
+                ?: return@registerForActivityResult
 
-        lifecycleScope.launch {
-            val croppedImage = withContext(Dispatchers.IO) {
-                getCropResult(result, output)
-            } ?: return@launch
-            viewModel.croppedGifticonImage(croppedImage)
+            val gifticon = viewModel.selectedGifticon.value ?: return@registerForActivityResult
+            val output = getFileStreamPath("Temp${gifticon.id}")
+
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    FileInputStream(croppedUri.path).copyTo(
+                        FileOutputStream(output)
+                    )
+                }
+                viewModel.croppedImage(output.toUri(), croppedRect)
+            }
         }
     }
 
@@ -116,22 +104,15 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private val confirmationCancelDialog by lazy {
-        val title = getString(R.string.add_gifticon_confirmation_cancel_title)
-        val message = getString(R.string.add_gifticon_confirmation_cancel_message)
+    private val confirmationDialog by lazy {
+        val title = getString(R.string.add_gifticon_confirmation_title)
+        val message = getString(R.string.add_gifticon_confirmation_message)
         ConfirmationDialog().apply {
             setTitle(title)
             setMessage(message)
             setOnOkClickListener {
                 cancelAddGifticon()
             }
-        }
-    }
-
-    private val confirmationDeleteDialog by lazy {
-        val title = getString(R.string.add_gifticon_confirmation_delete_title)
-        ConfirmationDialog().apply {
-            setTitle(title)
         }
     }
 
@@ -166,15 +147,13 @@ class AddGifticonActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { events ->
                 when (events) {
                     is AddGifticonEvent.PopupBackStack -> cancelAddGifticon()
-                    is AddGifticonEvent.ShowCancelConfirmation -> showConfirmationCancelDialog()
-                    is AddGifticonEvent.ShowDeleteConfirmation -> showConfirmationDeleteDialog(events.gifticon)
+                    is AddGifticonEvent.ShowConfirmation -> showConfirmationDialog()
                     is AddGifticonEvent.NavigateToGallery -> gotoGallery(events.list)
                     is AddGifticonEvent.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
                     is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
                     is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
                     is AddGifticonEvent.RequestFocus -> requestFocus(events.focus)
                     is AddGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
-                    is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
             }
         }
@@ -182,11 +161,6 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private fun cancelAddGifticon() {
         setResult(Activity.RESULT_CANCELED)
-        finish()
-    }
-
-    private fun completeAddGifticon() {
-        setResult(Activity.RESULT_OK)
         finish()
     }
 
@@ -219,44 +193,23 @@ class AddGifticonActivity : AppCompatActivity() {
         }.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
     }
 
-    private fun showConfirmationCancelDialog() {
-        confirmationCancelDialog.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
-    }
-
-    private fun showConfirmationDeleteDialog(gifticon: AddGifticonItemUIModel.Gifticon) {
-        confirmationDeleteDialog.apply {
-            setOnOkClickListener {
-                viewModel.deleteGifticon(gifticon)
-            }
-        }.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
+    private fun showConfirmationDialog() {
+        confirmationDialog.show(supportFragmentManager, ConfirmationDialog::class.java.name)
     }
 
     private fun requestFocus(focus: AddGifticonFocus) {
-        val focusView = when (focus) {
-            AddGifticonFocus.GIFTICON_NAME -> binding.tietName
-            AddGifticonFocus.BRAND_NAME -> binding.tietBrand
-            AddGifticonFocus.BARCODE -> binding.tietBarcode
-            AddGifticonFocus.BALANCE -> binding.tietBalance
-            AddGifticonFocus.MEMO -> binding.tietMemo
-            AddGifticonFocus.NONE -> binding.clContainer
-        }
-        focusView.requestFocus()
-        val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (focus != AddGifticonFocus.NONE) {
-            inputMethodService.showSoftInput(focusView, 0)
-        } else {
-            inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        when (focus) {
+            AddGifticonFocus.GIFTICON_NAME -> binding.tietName.requestFocus()
+            AddGifticonFocus.BRAND_NAME -> binding.tietBrand.requestFocus()
+            AddGifticonFocus.BARCODE -> binding.tietBarcode.requestFocus()
+            AddGifticonFocus.EXPIRED_AT -> binding.tietExpireDate.requestFocus()
+            AddGifticonFocus.BALANCE -> binding.tietBalance.requestFocus()
+            AddGifticonFocus.MEMO -> binding.tietMemo.requestFocus()
+            AddGifticonFocus.NONE -> binding.clContainer.requestFocus()
         }
     }
 
     private fun showSnackBar(uiText: UIText) {
         Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
-    }
-
-    companion object {
-        private const val CONFIRMATION_CANCEL_DIALOG = "Tag.ConfirmationCancelDialog"
-        private const val CONFIRMATION_DELETE_DIALOG = "Tag.ConfirmationDeleteDialog"
-
-        private const val TEMP_GIFTICON_PREFIX = "temp_gifticon_"
     }
 }
