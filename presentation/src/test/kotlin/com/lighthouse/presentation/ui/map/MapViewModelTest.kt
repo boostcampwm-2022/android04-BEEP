@@ -2,6 +2,7 @@
 package com.lighthouse.presentation.ui.map
 
 import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
