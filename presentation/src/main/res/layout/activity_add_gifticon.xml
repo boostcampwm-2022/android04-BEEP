@@ -148,7 +148,9 @@
                     android:padding="8dp"
                     android:text="@string/add_gifticon_edit_image"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="?attr/colorSurface"
                     android:textStyle="bold"
+                    android:background="@color/on_surface_50"
                     app:layout_constraintBottom_toBottomOf="@id/iv_gifticon_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
                     app:layout_constraintStart_toStartOf="@id/iv_gifticon_image" />
