@@ -30,6 +30,15 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
+    override fun getAllGifticons(): Flow<DbResult<List<Gifticon>>> = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getAllGifticons().collect {
+            emit(DbResult.Success(it))
+        }
+    }.catch { e ->
+        emit(DbResult.Failure(e))
+    }
+
     override suspend fun updateGifticon(gifticon: Gifticon) {
         gifticonLocalDataSource.updateGifticon(gifticon.toGifticonEntity())
     }
@@ -77,17 +86,6 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getGifticonByBrand(brand: String) = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getGifticonByBrand(brand).collect { gifticons ->
-            if (gifticons.isEmpty()) {
-                emit(DbResult.Empty)
-            } else {
-                emit(DbResult.Success(gifticons.map { it.toDomain() }))
-            }
-        }
-    }
-
-    override fun getAllGifticon() = flow {
-        emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllGifticons().collect { gifticons ->
             if (gifticons.isEmpty()) {
                 emit(DbResult.Empty)
             } else {
