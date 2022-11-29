@@ -4,13 +4,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import com.lighthouse.domain.model.GifticonForAddition
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import javax.inject.Inject
 import kotlin.math.min
@@ -28,34 +32,36 @@ class GifticonImageSource @Inject constructor(
         }
 
         val originUri = Uri.parse(gifticon.originUri) ?: return
-        val inputOrigin = context.contentResolver.openInputStream(originUri) ?: return
-
         val outputOrigin = context.getFileStreamPath("$ORIGIN_PREFIX$id")
+
+        val inputOrigin = context.contentResolver.openInputStream(originUri) ?: return
         val sampleSize = calculateSampleSize(inputOrigin)
-        val sampledOrigin = decodeSampledBitmap(inputOrigin, sampleSize) ?: return
-        saveBitmap(sampledOrigin, CompressFormat.JPEG, 70, outputOrigin)
+
+        val sampledOrigin = decodeSampledBitmap(originUri, sampleSize) ?: return
+        saveBitmap(sampledOrigin, CompressFormat.JPEG, QUALITY, outputOrigin)
         sampledOrigin.recycle()
 
         val inputCropped = File(gifticon.croppedUri)
         val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id")
-        if (inputCropped.exists()) {
-            val sampledCropped = decodeSampledBitmap(inputCropped, sampleSize)
-            saveBitmap(sampledCropped, CompressFormat.JPEG, 70, outputCropped)
-            sampledCropped.recycle()
+        val cropped = if (inputCropped.exists()) {
+            decodeBitmap(inputCropped).also {
+                inputCropped.delete()
+            }
         } else {
             val originBitmap = BitmapFactory.decodeFile(outputOrigin.path)
             val minSize = min(originBitmap.width, originBitmap.height)
-            val cropped = Bitmap.createBitmap(
+            Bitmap.createBitmap(
                 originBitmap,
                 (originBitmap.width - minSize) / 2,
                 (originBitmap.height - minSize) / 2,
                 minSize,
                 minSize
             )
-            originBitmap.recycle()
-            saveBitmap(cropped, CompressFormat.JPEG, 100, outputCropped)
-            cropped.recycle()
         }
+        val sampledCropped = Bitmap.createScaledBitmap(cropped, CROPPED_IMAGE_SIZE, CROPPED_IMAGE_SIZE, false)
+        saveBitmap(sampledCropped, CompressFormat.JPEG, QUALITY, outputCropped)
+        sampledCropped.recycle()
+        cropped.recycle()
     }
 
     private fun calculateSampleSize(inputStream: InputStream): Int {
@@ -73,26 +79,24 @@ class GifticonImageSource @Inject constructor(
         return inSampleSize
     }
 
-    private suspend fun decodeSampledBitmap(inputStream: InputStream, sampleSize: Int): Bitmap? {
+    private suspend fun decodeSampledBitmap(originUri: Uri, sampleSize: Int): Bitmap? {
         return withContext(Dispatchers.IO) {
-            BitmapFactory.decodeStream(
-                inputStream,
-                null,
-                BitmapFactory.Options().apply {
-                    inSampleSize = sampleSize
+            try {
+                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, originUri))
+                } else {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, originUri)
                 }
-            )
+                Bitmap.createScaledBitmap(bitmap, bitmap.width / sampleSize, bitmap.height / sampleSize, false)
+            } catch (e: IOException) {
+                null
+            }
         }
     }
 
-    private suspend fun decodeSampledBitmap(file: File, sampleSize: Int): Bitmap {
+    private suspend fun decodeBitmap(file: File): Bitmap {
         return withContext(Dispatchers.IO) {
-            BitmapFactory.decodeFile(
-                file.path,
-                BitmapFactory.Options().apply {
-                    inSampleSize = sampleSize
-                }
-            )
+            BitmapFactory.decodeFile(file.path)
         }
     }
 
@@ -107,5 +111,8 @@ class GifticonImageSource @Inject constructor(
     companion object {
         private const val ORIGIN_PREFIX = "origin"
         private const val CROPPED_PREFIX = "cropped"
+
+        private const val QUALITY = 70
+        private const val CROPPED_IMAGE_SIZE = 200
     }
 }
