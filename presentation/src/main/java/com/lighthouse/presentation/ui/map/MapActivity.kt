@@ -38,6 +38,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @SuppressLint("MissingPermission")
 @AndroidEntryPoint
@@ -105,13 +106,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun updateGifticonList(markerClickEvent: MarkerClickEvent) {
-        val couponList = viewModel.gifticonTestData.filter { gifticon ->
-            when (markerClickEvent) {
-                is MarkerClickEvent.AllGifticon -> viewModel.brandList.contains(gifticon.brand)
-                is MarkerClickEvent.BrandGifticon -> gifticon.brand == markerClickEvent.brandName
-            }
+        val allGifticon = viewModel.allGifticons.value
+        val gifticons = when (markerClickEvent) {
+            is MarkerClickEvent.AllGifticon -> allGifticon
+            is MarkerClickEvent.BrandGifticon -> allGifticon.filter { it.brand == markerClickEvent.brandName }
         }
-        gifticonAdapter.submitList(couponList)
+        gifticonAdapter.submitList(gifticons)
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -204,6 +204,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setObserveSearchData() {
         repeatOnStarted {
             viewModel.state.collectLatest { state ->
+//                Timber.tag("TAG").d("${javaClass.simpleName} state -> $state")
                 when (state) {
                     is UiState.Success -> updateBrandMarker(state.item)
                     is UiState.Loading -> Unit // TODO 로딩화면 처리 필요

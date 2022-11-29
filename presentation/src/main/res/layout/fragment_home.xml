@@ -6,8 +6,12 @@
     <data>
 
         <variable
-            name="vm"
+            name="mainVm"
             type="com.lighthouse.presentation.ui.main.MainViewModel" />
+
+        <variable
+            name="homeVm"
+            type="com.lighthouse.presentation.ui.home.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onClickListener="@{() -> vm.gotoMap()}"
+            android:onClickListener="@{() -> mainVm.gotoMap(homeVm.allGifticons, homeVm.nearBrandsInfo)}"
             android:padding="8dp"
             android:text="@string/home_near_more_label"
             android:textAlignment="gravity"
@@ -84,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onClickListener="@{() -> vm.gotoList()}"
+            android:onClickListener="@{() -> mainVm.gotoList()}"
             android:padding="8dp"
             android:text="@string/home_expire_more_label"
             android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
@@ -101,6 +105,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="@id/gl_start"
             app:layout_constraintTop_toBottomOf="@id/tv_expire_title"
+            app:setItems="@{homeVm.allGifticons}"
             tools:listitem="@layout/item_gifticon_vertical" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
@@ -23,6 +26,7 @@ import com.lighthouse.presentation.ui.home.HomeFragment
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -78,8 +82,8 @@ class MainActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventFlow.collect { directions ->
                 when (directions) {
-                    MainEvent.NavigateAddGifticon -> gotoAddGifticon()
-                    MainEvent.NavigateMap -> gotoMap()
+                    is MainEvent.NavigateAddGifticon -> gotoAddGifticon()
+                    is MainEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
                 }
             }
         }
@@ -107,9 +111,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun gotoMap() {
+    private fun gotoMap(gifticons: List<Gifticon>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
         if (isPermissionGranted()) {
-            startActivity(Intent(this, MapActivity::class.java))
+            startActivity(
+                Intent(this, MapActivity::class.java).apply {
+                    putExtra(Extras.KEY_NEAR_BRANDS, ArrayList(nearBrandsInfo))
+                    putExtra(Extras.KEY_NEAR_GIFTICONS, ArrayList(gifticons))
+                }
+            )
         } else {
             requestPermissions(PERMISSIONS, REQUEST_PERMISSIONS_REQUEST_CODE)
         }

@@ -2,13 +2,16 @@ package com.lighthouse.presentation.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,9 +31,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun gotoMap() {
+    fun gotoMap(gifticons: List<Gifticon>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
+//        Timber.tag("TAG").d("${javaClass.simpleName} gifticons -> $gifticons")
+//        Timber.tag("TAG").d("${javaClass.simpleName} nearBrandsInfo -> $nearBrandsInfo")
         viewModelScope.launch {
-            _eventFlow.emit(MainEvent.NavigateMap)
+            _eventFlow.emit(MainEvent.NavigateMap(gifticons, nearBrandsInfo))
         }
     }
 

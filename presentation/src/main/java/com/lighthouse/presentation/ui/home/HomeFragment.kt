@@ -55,7 +55,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setBindingAdapter()
         setObserveViewModel()
-        binding.vm = mainViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.mainVm = mainViewModel
+        binding.homeVm = homeViewModel
     }
 
     private fun setBindingAdapter() {
@@ -70,12 +72,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setObserveViewModel() {
-        repeatOnStarted {
-            homeViewModel.allGifticons.collectLatest {
-                expireGifticonAdapter.submitList(it)
-            }
-        }
-
         repeatOnStarted {
             homeViewModel.nearGifticon.collectLatest { state ->
                 when (state) {
