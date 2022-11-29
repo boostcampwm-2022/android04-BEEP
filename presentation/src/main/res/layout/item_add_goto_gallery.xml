@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/iv_goto_gallery"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@color/on_surface_12"
+        app:tint="?attr/colorOnSurface"
+        android:contentDescription="@string/add_gifticon_goto_gallery_description"
+        android:padding="12dp"
+        android:src="@drawable/ic_add_goto_gallery" />
+</layout>

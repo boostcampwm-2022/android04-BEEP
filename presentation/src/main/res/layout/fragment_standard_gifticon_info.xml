@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
+
+        <import
+            alias="mode"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailMode" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_product_name_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/tv_product_name"
+            android:text="@string/gifticon_detail_product_name_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/tv_product_name"
+            style="@style/Theme.BEEP.EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:afterTextChanged="@{(text) -> vm.editProductName(text.toString())}"
+            android:background="@null"
+            android:ellipsize="end"
+            android:enabled="@{vm.mode == mode.EDIT}"
+            android:importantForAutofill="no"
+            android:inputType="textAutoComplete"
+            android:maxLines="1"
+            android:text="@{vm.gifticon.name}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
+            tools:text="딸기마카롱설빙" />
+
+        <TextView
+            android:id="@+id/tv_brand_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:labelFor="@id/tv_brand"
+            android:text="@string/gifticon_detail_product_brand_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_name" />
+
+        <EditText
+            android:id="@+id/et_brand"
+            style="@style/Theme.BEEP.EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:afterTextChanged="@{(text) -> vm.editBrand(text.toString())}"
+            android:background="@null"
+            android:ellipsize="end"
+            android:enabled="@{vm.mode == mode.EDIT}"
+            android:importantForAutofill="no"
+            android:inputType="textAutoComplete"
+            android:maxLines="1"
+            android:text="@{vm.gifticon.brand}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
+            tools:text="설빙" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tv_expire_at_label,tv_expire_at"
+            app:isVisible="@{!vm.gifticon.used}"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_expire_at_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/gifticon_detail_product_expire_date_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_brand" />
+
+        <TextView
+            android:id="@+id/tv_expire_at"
+            style="@style/Theme.BEEP.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:enabled="@{vm.mode==mode.EDIT}"
+            android:onClick="@{() -> vm.expireDateClicked()}"
+            app:dateFormat="@{vm.tempGifticon.expireAt ?? vm.gifticon.expireAt}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_expire_at_label"
+            tools:text="2023.07.03" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_unused"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date"
+            app:isVisible="@{vm.gifticon.used}"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_used_address_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/gifticon_detail_used_address_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_brand" />
+
+        <TextView
+            android:id="@+id/tv_used_address"
+            style="@style/BEEP.TextStyle.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{vm.latestUsageHistory.address}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"
+            tools:text="서울시 용산구 백범로 90라길 올리브영" />
+
+        <TextView
+            android:id="@+id/tv_used_date_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/gifticon_detail_used_date_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_used_address" />
+
+        <TextView
+            android:id="@+id/tv_used_date"
+            style="@style/BEEP.TextStyle.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:dateFormat="@{vm.latestUsageHistory.date}"
+            app:layout_constraintStart_toStartOf="@id/tv_used_date_label"
+            app:layout_constraintTop_toBottomOf="@id/tv_used_date_label"
+            tools:text="2022.11.08" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tv_used_date,tv_expire_at" />
+
+        <EditText
+            android:id="@+id/et_memo"
+            style="@style/Theme.BEEP.EditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:afterTextChanged="@{(text) -> vm.editMemo(text.toString())}"
+            android:background="@drawable/bg_gifticon_memo"
+            android:enabled="@{vm.mode == mode.EDIT}"
+            android:gravity="top"
+            android:hint="@string/gifticon_detail_memo_description"
+            android:importantForAutofill="no"
+            android:inputType="none"
+            android:minHeight="150dp"
+            android:padding="16dp"
+            android:text="@{vm.gifticon.memo}"
+            android:textAppearance="@style/BEEP.TextStyle.Body1"
+            android:textColorHint="#616161"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            tools:text="adfasdfasdfasdfasdf"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

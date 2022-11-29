@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="dm"
+            type="com.lighthouse.presentation.ui.addgifticon.adapter.AddCandidateGifticonDisplayModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/iv_candidate"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/surface_1"
+            android:contentDescription="@string/add_gifticon_goto_gallery_description"
+            android:onClickListener="@{() -> dm.onClickItem()}"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadUriWithoutCache="@{dm.item.uri}" />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:contentDescription="@string/add_gifticon_delete_description"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:visibility="invisible"
+            app:imageResource="@{dm.badgeResId}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:isVisible="@{dm.badgeVisibility}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

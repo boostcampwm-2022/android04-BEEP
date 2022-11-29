@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
+
+        <import
+            alias="mode"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailMode" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/cl_gifticon_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ab_gifticon_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tb_gifticon_detail"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:title="@string/gifticon_detail_gifticon_detail_title"
+                app:titleCentered="true" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ScrollView
+            android:id="@+id/sv_gifticon_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:nestedScrollingEnabled="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.1" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.9" />
+
+                <ImageView
+                    android:id="@+id/iv_product_image"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/gifticon_detail_product_image_description"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@mipmap/ic_launcher" />
+
+                <ImageView
+                    android:id="@+id/iv_share_button"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/gifticon_detail_share_gifticon_button_description"
+                    android:onClick="@{() -> vm.shareButtonClicked()}"
+                    android:src="@drawable/ic_share"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintTop_toBottomOf="@id/iv_product_image"
+                    app:tint="@color/gray" />
+
+                <ImageView
+                    android:id="@+id/iv_edit_button"
+                    isVisible="@{vm.mode == mode.UNUSED}"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/gifticon_detail_edit_gifticon_button_description"
+                    android:onClick="@{() -> vm.editButtonClicked()}"
+                    android:src="@drawable/ic_mode_edit"
+                    app:layout_constraintEnd_toStartOf="@id/iv_share_button"
+                    app:layout_constraintTop_toTopOf="@id/iv_share_button"
+                    app:tint="@color/gray" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fcv_gifticon_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/tv_shared_info"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@id/iv_share_button"
+                    tools:layout="@layout/fragment_standard_gifticon_info" />
+
+                <TextView
+                    android:id="@+id/tv_shared_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@id/btn_use_gifticon"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@id/fcv_gifticon_info"
+                    app:layout_constraintVertical_bias="1"
+                    tools:text="ⓘ 2022년 11월 8일에 공유된 기프티콘 입니다." />
+
+                <Button
+                    android:id="@+id/btn_use_gifticon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:onClick="@{() -> vm.useGifticonButtonClicked()}"
+                    android:text="@string/gifticon_detail_use_gifticon_button_text"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@id/tv_shared_info"
+                    app:layout_constraintVertical_bias="1.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_scroll_down_for_use_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="60dp"
+            android:alpha="0.78"
+            android:elevation="1dp"
+            android:onClick="@{() -> vm.scrollDownForUseButtonClicked()}"
+            android:text="@string/gifticon_detail_scroll_down_for_use_button_text"
+            app:chipIcon="@drawable/ic_double_arrow_down" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -1,9 +1,47 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.BEEP" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+
+    <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/beep_pink</item>
+        <item name="colorSecondary">@color/beep_pink</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialButtonStyle">@style/BEEP.Component.Button</item>
+        <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
     </style>
 
-    <style name="Theme.BEEP" parent="Base.Theme.BEEP" />
+    <style name="Theme.BEEP.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="materialButtonStyle">@style/BEEP.Component.Button</item>
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="Theme.BEEP.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@drawable/tc_on_primary_disabled</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Body1</item>
+    </style>
+
+    <style name="Theme.BEEP.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@drawable/tc_on_primary_disabled</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Body1</item>
+    </style>
+
+    <style name="Theme.BEEP.Toolbar" parent="Theme.BEEP">
+        <item name="colorPrimary">?attr/colorSurface</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Theme.BEEP.DatePicker" parent="android:Theme.DeviceDefault.Light.Dialog">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:datePickerStyle">@style/BEEP.Component.SpinnerDatePicker</item>
+    </style>
+
+    <style name="Theme.BEEP.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/beep_pink</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_beep</item>
+        <item name="postSplashScreenTheme">@style/Theme.BEEP</item>
+    </style>
 </resources>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_usage_date_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:gravity="center"
+            android:text="@string/dialog_usage_history_date_label"
+            app:layout_constraintEnd_toStartOf="@id/tv_usage_address_label"
+            app:layout_constraintHorizontal_weight="0.9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_usage_address_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dialog_usage_history_address_label"
+            app:layout_constraintEnd_toStartOf="@id/tv_usage_amount_label"
+            app:layout_constraintHorizontal_weight="1.3"
+            app:layout_constraintStart_toEndOf="@id/tv_usage_date_label"
+            app:layout_constraintTop_toTopOf="@id/tv_usage_date_label" />
+
+        <TextView
+            android:id="@+id/tv_usage_amount_label"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dialog_usage_history_amount_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="0.8"
+            app:layout_constraintStart_toEndOf="@id/tv_usage_address_label"
+            app:layout_constraintTop_toTopOf="@id/tv_usage_date_label" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_usage_date_label" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_usage_history"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintVertical_bias="0"
+            app:setItems="@{vm.usageHistory}"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_usage_history" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

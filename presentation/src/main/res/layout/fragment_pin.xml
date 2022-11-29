@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.security.pin.PinViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_pin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.security.pin.PinFragment">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_pin_prev"
+            style="@style/BEEP.Component.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:onClick="@{() -> vm.goPreviousStep()}"
+            android:text="@string/all_prev"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_pin_description"
+            style="@style/BEEP.TextStyle.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pin_initial_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
+
+        <ImageView
+            android:id="@+id/iv_pin_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="32dp"
+            android:contentDescription="@string/pin"
+            android:src="@{vm.pinString.length &lt; 1 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:layout_constraintEnd_toStartOf="@+id/iv_pin_1"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
+
+        <ImageView
+            android:id="@+id/iv_pin_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:contentDescription="@string/pin"
+            android:src="@{vm.pinString.length &lt; 2 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:layout_constraintEnd_toEndOf="@id/iv_pin_2"
+            app:layout_constraintStart_toEndOf="@+id/iv_pin_0"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
+
+        <ImageView
+            android:id="@+id/iv_pin_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:contentDescription="@string/pin"
+            android:src="@{vm.pinString.length &lt; 3 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:layout_constraintEnd_toStartOf="@+id/iv_pin_3"
+            app:layout_constraintStart_toEndOf="@+id/iv_pin_1"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
+
+        <ImageView
+            android:id="@+id/iv_pin_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:contentDescription="@string/pin"
+            android:src="@{vm.pinString.length &lt; 4 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:layout_constraintEnd_toStartOf="@+id/iv_pin_4"
+            app:layout_constraintStart_toEndOf="@+id/iv_pin_2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
+
+        <ImageView
+            android:id="@+id/iv_pin_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:contentDescription="@string/pin"
+            android:src="@{vm.pinString.length &lt; 5 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:layout_constraintEnd_toStartOf="@+id/iv_pin_5"
+            app:layout_constraintStart_toEndOf="@+id/iv_pin_3"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
+
+        <ImageView
+            android:id="@+id/iv_pin_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="100dp"
+            android:contentDescription="@string/pin"
+            android:src="@{vm.pinString.length &lt; 6 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_pin_4"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
+
+        <ImageView
+            android:id="@+id/iv_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="28dp"
+            android:src="@drawable/ic_check"
+            android:visibility="invisible"
+            android:contentDescription="@string/pin"
+            app:layout_constraintStart_toEndOf="@+id/iv_pin_5"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
+            app:tint="@color/point_green" />
+
+        <TextView
+            android:id="@+id/tv_secure_not_use"
+            style="@style/BEEP.TextStyle.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:text="@string/pin_secure_not_use"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_num_1"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(1)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_one"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_4"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/tv_num_2"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(2)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_two"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_5"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_3"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/tv_num_3"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(3)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_three"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/tv_num_4"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(4)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_four"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_7"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_1" />
+
+        <TextView
+            android:id="@+id/tv_num_5"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(5)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_five"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_8"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_6"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_4"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_2" />
+
+        <TextView
+            android:id="@+id/tv_num_6"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(6)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_six"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_5"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_3" />
+
+        <TextView
+            android:id="@+id/tv_num_7"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(7)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_seven"
+            app:layout_constraintBottom_toTopOf="@+id/tv_empty"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_4" />
+
+        <TextView
+            android:id="@+id/tv_num_8"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(8)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_eight"
+            app:layout_constraintBottom_toTopOf="@+id/tv_num_0"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_9"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_7"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_5" />
+
+        <TextView
+            android:id="@+id/tv_num_9"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(9)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_nine"
+            app:layout_constraintBottom_toTopOf="@+id/iv_backspace"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_8"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_6" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/BEEP.TextStyle.H5"
+            android:paddingVertical="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_num_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_7" />
+
+        <TextView
+            android:id="@+id/tv_num_0"
+            style="@style/BEEP.TextStyle.H5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="@{() -> vm.inputPin(0)}"
+            android:paddingVertical="16dp"
+            android:text="@string/pin_zero"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_backspace"
+            app:layout_constraintStart_toEndOf="@+id/tv_empty"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_8" />
+
+        <ImageView
+            android:id="@+id/iv_backspace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_backspace"
+            android:gravity="center"
+            android:onClick="@{() -> vm.removePin()}"
+            android:paddingVertical="20dp"
+            android:src="@drawable/ic_pin_backspace"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_0"
+            app:layout_constraintTop_toBottomOf="@+id/tv_num_9"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

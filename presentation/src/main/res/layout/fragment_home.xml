@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="mainVm"
+            type="com.lighthouse.presentation.ui.main.MainViewModel" />
+
+        <variable
+            name="homeVm"
+            type="com.lighthouse.presentation.ui.home.HomeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <TextView
+            android:id="@+id/tv_near_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_near_title"
+            android:textAppearance="@style/BEEP.TextStyle.H5"
+            app:layout_constraintStart_toStartOf="@id/gl_start"
+            app:layout_constraintTop_toTopOf="@id/gl_top" />
+
+        <TextView
+            android:id="@+id/tv_near_more_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:onClickListener="@{() -> mainVm.gotoMap(homeVm.allGifticons, homeVm.nearBrandsInfo)}"
+            android:padding="8dp"
+            android:text="@string/home_near_more_label"
+            android:textAlignment="gravity"
+            android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
+            app:layout_constraintBottom_toBottomOf="@id/tv_near_title"
+            app:layout_constraintEnd_toEndOf="@id/gl_end"
+            app:layout_constraintTop_toTopOf="@id/tv_near_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_near_gifticon"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="@id/gl_start"
+            app:layout_constraintTop_toBottomOf="@id/tv_near_title"
+            tools:listitem="@layout/item_gifticon_vertical" />
+
+        <TextView
+            android:id="@+id/tv_expire_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/home_expire_title"
+            android:textAppearance="@style/BEEP.TextStyle.H5"
+            app:layout_constraintStart_toStartOf="@id/gl_start"
+            app:layout_constraintTop_toBottomOf="@+id/rv_near_gifticon" />
+
+        <TextView
+            android:id="@+id/tv_expire_more_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:onClickListener="@{() -> mainVm.gotoList()}"
+            android:padding="8dp"
+            android:text="@string/home_expire_more_label"
+            android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
+            app:layout_constraintBottom_toBottomOf="@id/tv_expire_title"
+            app:layout_constraintEnd_toEndOf="@id/gl_end"
+            app:layout_constraintTop_toTopOf="@id/tv_expire_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_expire_gifticon"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="@id/gl_start"
+            app:layout_constraintTop_toBottomOf="@id/tv_expire_title"
+            app:setItems="@{homeVm.allGifticons}"
+            tools:listitem="@layout/item_gifticon_vertical" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

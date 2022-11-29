@@ -1,0 +1,22 @@
+test:
+  - domain/src/test/**/*
+  - presentation/src/test/**/*
+  - presentation/src/androidTest/**/*
+  - data/src/test/**/*
+
+chore:
+  - app/*.gradle
+  - build.gradle
+  - buildSrc/**/*
+
+style:
+  - presentation/src/main/res/**/*
+
+feat:
+  - app/**/*
+  - data/src/**/*
+  - domain/src/**/*
+  - presentation/src/main/java/**/*
+
+docs:
+  - README.md
