@@ -1,5 +1,6 @@
 package com.lighthouse.domain.model
 
+import java.io.Serializable
 import java.util.Date
 
 data class Gifticon(
@@ -14,4 +15,4 @@ data class Gifticon(
     val balance: Int,
     val memo: String,
     val isUsed: Boolean
-)
+) : Serializable

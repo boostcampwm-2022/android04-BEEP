@@ -4,6 +4,7 @@ package com.lighthouse.domain.usecase
 import com.lighthouse.domain.DmsLocation
 import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.repository.BrandRepository
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

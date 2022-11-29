@@ -1,3 +1,4 @@
+/*
 package com.lighthouse.presentation.ui.map
 
 import com.lighthouse.domain.model.BrandPlaceInfo
@@ -91,3 +92,4 @@ class MapViewModelTest {
         private val brandPlaceInfo: List<BrandPlaceInfo> = listOf(BrandPlaceInfo("서울 중구", "스타벅스", "", "", "", ""))
     }
 }
+*/

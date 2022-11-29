@@ -10,6 +10,7 @@ fun List<BrandLocationEntity>.toDomain(): List<BrandPlaceInfo> = this.map { bran
         addressName = brandLocationEntity.addressName,
         placeName = brandLocationEntity.placeName,
         placeUrl = brandLocationEntity.placeUrl,
+        categoryName = brandLocationEntity.categoryName,
         brand = brandLocationEntity.brand,
         x = brandLocationEntity.x,
         y = brandLocationEntity.y
@@ -26,6 +27,7 @@ fun List<BrandPlaceInfo>.toEntity(): List<BrandLocationEntity> {
             sectionId = id,
             addressName = brandPlaceInfo.addressName,
             placeName = brandPlaceInfo.placeName,
+            categoryName = brandPlaceInfo.categoryName,
             placeUrl = brandPlaceInfo.placeUrl,
             brand = brandPlaceInfo.brand,
             x = brandPlaceInfo.x,
