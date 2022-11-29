@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -42,9 +45,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.flowlayout.FlowRow
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
@@ -54,12 +60,24 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 import timber.log.Timber
 import java.util.Date
 
+data class GifticonListComponentState(
+    val showDialog: Boolean = false
+)
+
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GifticonListScreen(
     viewModel: GifticonListViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
+    val componentState = remember {
+        mutableStateOf(
+            GifticonListComponentState(
+                showDialog = false
+            )
+        )
+    }
+
     Timber.tag("GifticonList").d("${viewState.brands}")
     Surface(
         modifier = Modifier
@@ -76,7 +94,10 @@ fun GifticonListScreen(
                 BrandChipList(modifier = Modifier.weight(1f), brands = viewState.brands)
                 IconButton(
                     modifier = Modifier,
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        componentState.value = componentState.value.copy(showDialog = true)
+                    }
+                ) {
                     Image(
                         Icons.Outlined.Tune,
                         contentDescription = stringResource(R.string.gifticon_list_show_all_brand_chips_button)
@@ -84,6 +105,15 @@ fun GifticonListScreen(
                 }
             }
             GifticonList(gifticons = viewState.gifticons, Modifier.padding(top = 64.dp))
+        }
+        if (componentState.value.showDialog) {
+            AllBrandChipsDialog(
+                brands = viewState.brands,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onDismiss = { componentState.value = componentState.value.copy(showDialog = false) }
+            )
         }
     }
 }
@@ -195,6 +225,34 @@ private fun BrandChipList(
     }
 }
 
+@Composable
+fun AllBrandChipsDialog(
+    brands: List<Brand> = emptyList(),
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit = {}
+) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties()
+    ) {
+        Surface(
+            modifier = modifier
+                .width(300.dp)
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(12.dp),
+            color = Color.White
+        ) {
+            FlowRow(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                brands.forEach {
+                    BrandChip(brand = it)
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BrandChip(
@@ -210,6 +268,7 @@ private fun BrandChip(
             selected = selected.not()
             onSelect(brand)
         },
+        modifier = modifier.wrapContentWidth(),
         colors = ChipDefaults.filterChipColors(
             backgroundColor = colorResource(id = R.color.black).copy(alpha = 0.1f),
             selectedBackgroundColor = colorResource(id = R.color.beep_pink),
@@ -220,10 +279,10 @@ private fun BrandChip(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = brand.name, modifier = modifier, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(text = brand.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
                 text = brand.count.toString(),
-                modifier = modifier.padding(start = 4.dp),
+                modifier = Modifier.padding(start = 4.dp),
                 color = colorResource(id = R.color.gray_500)
             )
         }
