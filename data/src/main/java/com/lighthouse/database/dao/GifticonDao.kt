@@ -92,7 +92,4 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
-
-    @Query("SELECT * FROM $GIFTICON_TABLE")
-    fun getAllGifticons(): Flow<List<GifticonEntity>>
 }
