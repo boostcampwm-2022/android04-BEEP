@@ -102,39 +102,6 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private val originImageDialog = OriginImageDialog()
-
-    private val expiredAtDatePickerDialog by lazy {
-        SpinnerDatePicker().apply {
-            setOnDatePickListener { year, month, dayOfMonth ->
-                val date = Calendar.getInstance(Locale.getDefault()).let {
-                    it.set(year, month - 1, dayOfMonth)
-                    it.time
-                }
-                viewModel.changeExpiredAt(date)
-            }
-        }
-    }
-
-    private val confirmationCancelDialog by lazy {
-        val title = getString(R.string.add_gifticon_confirmation_cancel_title)
-        val message = getString(R.string.add_gifticon_confirmation_cancel_message)
-        ConfirmationDialog().apply {
-            setTitle(title)
-            setMessage(message)
-            setOnOkClickListener {
-                cancelAddGifticon()
-            }
-        }
-    }
-
-    private val confirmationDeleteDialog by lazy {
-        val title = getString(R.string.add_gifticon_confirmation_delete_title)
-        ConfirmationDialog().apply {
-            setTitle(title)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_gifticon)
@@ -206,7 +173,7 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun showOriginGifticonDialog(uri: Uri) {
-        originImageDialog.apply {
+        OriginImageDialog().apply {
             arguments = Bundle().apply {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
@@ -214,17 +181,36 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun showExpiredAtDatePicker(date: Date) {
-        expiredAtDatePickerDialog.apply {
+        SpinnerDatePicker().apply {
+            setOnDatePickListener { year, month, dayOfMonth ->
+                val newDate = Calendar.getInstance(Locale.getDefault()).let {
+                    it.set(year, month - 1, dayOfMonth)
+                    it.time
+                }
+                viewModel.changeExpiredAt(newDate)
+            }
+        }.apply {
             setDate(date)
         }.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
     }
 
     private fun showConfirmationCancelDialog() {
-        confirmationCancelDialog.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
+        val title = getString(R.string.add_gifticon_confirmation_cancel_title)
+        val message = getString(R.string.add_gifticon_confirmation_cancel_message)
+        ConfirmationDialog().apply {
+            setTitle(title)
+            setMessage(message)
+            setOnOkClickListener {
+                cancelAddGifticon()
+            }
+        }.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
     }
 
     private fun showConfirmationDeleteDialog(gifticon: AddGifticonItemUIModel.Gifticon) {
-        confirmationDeleteDialog.apply {
+        val title = getString(R.string.add_gifticon_confirmation_delete_title)
+        ConfirmationDialog().apply {
+            setTitle(title)
+        }.apply {
             setOnOkClickListener {
                 viewModel.deleteGifticon(gifticon)
             }
