@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="vm"
             type="com.lighthouse.presentation.ui.map.MapViewModel" />
@@ -34,10 +35,10 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            app:setViewPagerItems="@{vm.allGifticons}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:setViewPagerItems="@{vm.gifticonData}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

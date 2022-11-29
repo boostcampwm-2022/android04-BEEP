@@ -15,7 +15,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.lighthouse.domain.Dms
 import com.lighthouse.domain.DmsLocation
@@ -57,12 +56,6 @@ class LocationRepositoryImpl @Inject constructor(
                 priority = Priority.PRIORITY_HIGH_ACCURACY
                 maxWaitTime = LOCATION_INTERVAL
             }
-
-            val builder = LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
-
-            val client = LocationServices.getSettingsClient(context)
-            client.checkLocationSettings(builder.build())
         }
     }
 
@@ -115,7 +108,12 @@ class LocationRepositoryImpl @Inject constructor(
                     )
                 }
             }
+            lastLocation.collect {
+                lastLocation.value?.let { trySend(it) }
+            }
         }
+
+        // TODO 함수 하나로 합칠 수 있으니 합쳐 둘 것
         awaitClose {
             gpsListener?.let { locationManager.removeUpdates(it) }
             fusedLocationProviderClient?.removeLocationUpdates(locationCallback)
@@ -149,8 +147,6 @@ class LocationRepositoryImpl @Inject constructor(
         }
         return true
     }
-
-    override fun getLastLocation() = lastLocation
 
     companion object {
         private const val LOCATION_INTERVAL = 10000L

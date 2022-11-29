@@ -20,9 +20,6 @@ fun <T> setItems(view: RecyclerView, data: T?) {
 @BindingAdapter("setViewPagerItems")
 fun <T> setViewPagerItems(view: ViewPager2, data: T?) {
     data ?: return
-
-    view.adapter
-
     when (val listAdapter = view.adapter) {
         is BindableAdapter<*> -> {
             (listAdapter as BindableAdapter<T>).setData(data) {

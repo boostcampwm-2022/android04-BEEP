@@ -5,5 +5,5 @@ sealed class UiState<out T> {
     data class Success<out T>(val item: T) : UiState<T>()
     object NetworkFailure : UiState<Nothing>()
     object NotFoundResults : UiState<Nothing>()
-    data class Failure(val throwable: Throwable) : UiState<Nothing>()
+    object Failure : UiState<Nothing>()
 }
