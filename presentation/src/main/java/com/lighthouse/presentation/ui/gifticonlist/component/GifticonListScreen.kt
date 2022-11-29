@@ -1,0 +1,303 @@
+package com.lighthouse.presentation.ui.gifticonlist.component
+
+import android.content.Intent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FilterChip
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lighthouse.domain.model.Brand
+import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
+import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
+import timber.log.Timber
+import java.util.Date
+
+@OptIn(ExperimentalLifecycleComposeApi::class)
+@Composable
+fun GifticonListScreen(
+    viewModel: GifticonListViewModel = viewModel()
+) {
+    val viewState by viewModel.state.collectAsStateWithLifecycle()
+    Timber.tag("GifticonList").d("${viewState.brands}")
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.05f))
+            .padding(horizontal = 16.dp),
+        color = Color.Transparent
+    ) {
+        Column {
+            BrandChipList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp), brands = viewState.brands
+            )
+            GifticonList(gifticons = viewState.gifticons, Modifier.padding(top = 64.dp))
+        }
+    }
+}
+
+@Composable
+fun GifticonList(gifticons: List<Gifticon>, modifier: Modifier = Modifier) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = modifier
+    ) {
+        items(gifticons) { gifticon ->
+            GifticonItem(gifticon = gifticon)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun GifticonItem(gifticon: Gifticon) {
+
+    val context = LocalContext.current
+    val cornerSize = 8.dp
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize)),
+        onClick = {
+            context.startActivity(
+                Intent(context, GifticonDetailActivity::class.java).apply {
+                    putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
+                }
+            )
+        }) {
+        Row {
+            Image(
+                painter = painterResource(id = R.mipmap.ic_launcher),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(Alignment.CenterVertically)
+                    .aspectRatio(1f)
+            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "D-31",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(cornerSize))
+                        .background(colorResource(id = R.color.beep_pink))
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .align(Alignment.End),
+                    color = Color.White,
+                    style = MaterialTheme.typography.caption
+                )
+                Text(
+                    text = gifticon.name
+                )
+                Text(
+                    text = gifticon.brand
+                )
+                Text(
+                    text = "3,460원",
+                    color = colorResource(R.color.beep_pink)
+                )
+                Text(
+                    text = "~ 2022-11-23",
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(bottom = 16.dp, end = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BrandChipList(
+    modifier: Modifier = Modifier,
+    brands: List<Brand> = emptyList(),
+    onBrandSelected: (HashSet<Brand>) -> Unit = {},
+) {
+    val selectedBrands = remember { hashSetOf<Brand>() }
+    Timber.tag("Compose").d("$brands")
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        item {
+            val entireChipBrand = Brand(
+                name = stringResource(id = R.string.main_filter_all),
+                count = brands.sumOf { it.count }
+            )
+            BrandChip(brand = entireChipBrand, initialSelected = true) {
+                selectedBrands.clear()
+                onBrandSelected(selectedBrands)
+            }
+        }
+        items(brands) { brand ->
+            BrandChip(brand) {
+                if (selectedBrands.contains(it)) {
+                    selectedBrands.remove(it)
+                } else {
+                    selectedBrands.add(it)
+                }
+                onBrandSelected(selectedBrands)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun BrandChip(
+    brand: Brand,
+    modifier: Modifier = Modifier,
+    initialSelected: Boolean = false,
+    onSelect: (Brand) -> Unit = {}
+) {
+    var selected by remember { mutableStateOf(initialSelected) }
+    FilterChip(
+        selected = selected,
+        onClick = {
+            selected = selected.not()
+            onSelect(brand)
+        },
+        colors = ChipDefaults.filterChipColors(
+            backgroundColor = colorResource(id = R.color.black).copy(alpha = 0.1f),
+            selectedBackgroundColor = colorResource(id = R.color.beep_pink),
+            selectedContentColor = Color.White
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = brand.name, modifier = modifier)
+            Text(
+                text = brand.count.toString(),
+                modifier = modifier.padding(start = 4.dp),
+                color = colorResource(id = R.color.gray_500)
+            )
+        }
+    }
+}
+
+val sampleGifticonItems = listOf(
+    Gifticon(
+        id = "sample1",
+        userId = "mangbaam",
+        name = "별다방 아메리카노",
+        brand = "스타벅스",
+        expireAt = Date(),
+        barcode = "808346588450",
+        isCashCard = false,
+        balance = 0,
+        memo = "",
+        isUsed = false
+    ),
+    Gifticon(
+        id = "sample2",
+        userId = "mangbaam",
+        name = "5만원권",
+        brand = "GS25",
+        expireAt = Date(),
+        barcode = "808346588450",
+        isCashCard = true,
+        balance = 50000,
+        memo = "",
+        isUsed = false
+    ),
+    Gifticon(
+        id = "sample3",
+        userId = "mangbaam",
+        name = "어머니는 외계인",
+        brand = "베스킨라빈스",
+        expireAt = Date(),
+        barcode = "808346588450",
+        isCashCard = false,
+        balance = 0,
+        memo = "",
+        isUsed = true
+    ),
+    Gifticon(
+        id = "sample4",
+        userId = "mangbaam",
+        name = "3만원권",
+        brand = "e마트",
+        expireAt = Date(),
+        barcode = "808346588450",
+        isCashCard = true,
+        balance = 0,
+        memo = "",
+        isUsed = true
+    )
+)
+
+@Preview
+@Composable
+fun ChipPreview() {
+    BrandChip(Brand("스타벅스", 10))
+}
+
+@Preview
+@Composable
+fun BrandChipsPreview() {
+    BrandChipList(
+        brands = listOf(
+            Brand("스타벅스", 10),
+            Brand("베스킨라빈스", 12),
+            Brand("맘스터치", 1),
+            Brand("김밥천국", 3),
+            Brand("투썸", 7),
+        )
+    )
+}
+
+@Preview(widthDp = 320)
+@Composable
+fun GifticonItemPreview() {
+    GifticonItem(
+        sampleGifticonItems[0]
+    )
+}
+
+@Preview
+@Composable
+fun GifticonListPreview() {
+    GifticonList(
+        sampleGifticonItems
+    )
+}
