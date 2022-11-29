@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface GifticonRepository {
 
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
+    fun getAllGifticons(): Flow<DbResult<List<Gifticon>>>
     suspend fun saveGifticons(gifticons: List<Gifticon>)
     suspend fun updateGifticon(gifticon: Gifticon)
 

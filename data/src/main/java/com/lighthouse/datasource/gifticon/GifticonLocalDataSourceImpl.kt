@@ -9,6 +9,7 @@ import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toGifticon
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 
 class GifticonLocalDataSourceImpl @Inject constructor(
@@ -17,7 +18,14 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override fun getGifticon(id: String): Flow<Gifticon> {
         return gifticonDao.getGifticon(id).map { entity ->
-            entity.toGifticon()
+            entity.toGifticon() // TODO toDomain 으로 이름 변경
+        }
+    }
+
+    override fun getAllGifticons(): Flow<List<Gifticon>> {
+        return gifticonDao.getAllGifticons().map { list ->
+            Timber.tag("GifticonList").d("$list")
+            list.map { it.toGifticon() } // TODO toDomain 으로 이름 변경
         }
     }
 

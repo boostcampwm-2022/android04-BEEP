@@ -7,9 +7,11 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
@@ -19,6 +21,17 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getGifticon(id: String): Flow<DbResult<Gifticon>> = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getGifticon(id).collect {
+            emit(DbResult.Success(it))
+        }
+    }.catch { e ->
+        emit(DbResult.Failure(e))
+    }
+
+    override fun getAllGifticons(): Flow<DbResult<List<Gifticon>>> = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getAllGifticons().collect {
+            Timber.tag("GifticonList").d("$it")
+            delay(100)
             emit(DbResult.Success(it))
         }
     }.catch { e ->
