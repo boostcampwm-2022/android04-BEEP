@@ -6,6 +6,7 @@ import java.util.Date
 data class AddGifticonUIModel(
     val id: Long,
     val origin: Uri,
+    val hasImage: Boolean,
     val name: String,
     val brandName: String,
     val barcode: EditTextInfo,

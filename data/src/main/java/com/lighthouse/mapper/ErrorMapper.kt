@@ -1,8 +1,9 @@
 package com.lighthouse.mapper
 
-import com.lighthouse.domain.model.BeepError
-import com.lighthouse.model.BeepErrorData
+import com.lighthouse.domain.model.CustomError
+import com.lighthouse.model.CustomErrorData
 
-internal fun BeepErrorData.toDomain(): BeepError = when (this) {
-    is BeepErrorData.NetworkFailure -> BeepError.NetworkFailure
+internal fun CustomErrorData.toDomain(): CustomError = when (this) {
+    is CustomErrorData.NetworkFailure -> CustomError.NetworkFailure
+    is CustomErrorData.NotFoundBrandPlaceInfos -> CustomError.EmptyResults
 }

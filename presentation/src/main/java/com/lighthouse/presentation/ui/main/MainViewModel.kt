@@ -34,12 +34,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun gotoList() {
-        viewModelScope.launch {
-            _pageFlow.emit(MainPage.List)
-        }
-    }
-
     fun gotoMenuItem(itemId: Int): Boolean {
         if (selectedMenuItem.value == itemId) {
             return true

@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security.fingerprint
+package com.lighthouse.presentation.ui.security.fingerprint.biometric
 
 import android.content.Intent
 import android.os.Build
@@ -8,13 +8,12 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.ui.security.AuthCallback
 
 class BiometricAuth(
     private val activity: FragmentActivity,
     private val biometricLauncher: ActivityResultLauncher<Intent>,
-    private val authCallback: AuthCallback
-) {
+    private val fingerprintAuthCallback: FingerprintAuthCallback
+) : FingerprintAuth {
 
     private val promptInfo: BiometricPrompt.PromptInfo by lazy {
         BiometricPrompt.PromptInfo.Builder().apply {
@@ -27,15 +26,15 @@ class BiometricAuth(
     private val authenticationCallback = object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
             super.onAuthenticationSucceeded(result)
-            authCallback.onAuthSuccess()
+            fingerprintAuthCallback.onBiometricAuthSuccess()
         }
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
             super.onAuthenticationError(errorCode, errString)
             when (errorCode) {
                 BiometricPrompt.ERROR_NO_BIOMETRICS -> goBiometricSetting()
-                BiometricPrompt.ERROR_NEGATIVE_BUTTON -> authCallback.onAuthCancel()
-                else -> authCallback.onAuthError(R.string.fingerprint_unknown_error)
+                BiometricPrompt.ERROR_NEGATIVE_BUTTON -> fingerprintAuthCallback.onBiometricAuthCancel()
+                else -> fingerprintAuthCallback.onBiometricAuthError()
             }
         }
     }
@@ -58,7 +57,7 @@ class BiometricAuth(
         biometricLauncher.launch(enrollIntent)
     }
 
-    fun authenticate() {
+    override fun authenticate() {
         val biometricManager = BiometricManager.from(activity.applicationContext)
         val biometricAvailable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
@@ -68,11 +67,11 @@ class BiometricAuth(
 
         when (biometricAvailable) {
             BiometricManager.BIOMETRIC_SUCCESS -> biometricPrompt.authenticate(promptInfo)
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_error_no_hardware)
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> goBiometricSetting()
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> authCallback.onAuthError(R.string.fingerprint_error_no_hardware)
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> authCallback.onAuthError(R.string.fingerprint_error_no_hardware)
-            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> authCallback.onAuthError(R.string.fingerprint_unavailable)
-            else -> authCallback.onAuthError(R.string.fingerprint_unknown_error)
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unavailable)
+            else -> fingerprintAuthCallback.onMessagePublished(R.string.fingerprint_unknown_error)
         }
     }
 }

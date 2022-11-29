@@ -19,34 +19,26 @@
             android:layout_height="0dp"
             android:background="@color/surface_1"
             android:contentDescription="@string/add_gifticon_goto_gallery_description"
+            android:onClickListener="@{() -> dm.onClickItem()}"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="centerCrop"
-            android:onClickListener="@{() -> dm.onClickItem()}"/>
+            app:loadUriWithoutCache="@{dm.item.uri}" />
 
         <ImageView
             android:id="@+id/iv_delete"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:contentDescription="@string/add_gifticon_delete_description"
-            android:src="@drawable/ic_add_delete_gifticon"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{dm.closeVisibility}" />
-
-        <View
-            android:id="@+id/view_warning_badge"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="3dp"
-            android:background="@drawable/ic_add_warning_badge"
             android:visibility="invisible"
+            app:imageResource="@{dm.badgeResId}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{dm.badgeVisibility}"/>
+            app:isVisible="@{dm.badgeVisibility}"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

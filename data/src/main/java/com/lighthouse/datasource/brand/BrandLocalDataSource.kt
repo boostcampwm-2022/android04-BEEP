@@ -11,6 +11,4 @@ interface BrandLocalDataSource {
     suspend fun insertBrands(brandPlaceInfos: List<BrandPlaceInfo>, x: Dms, y: Dms, brandName: String)
 
     suspend fun insertSection(x: Dms, y: Dms, brandName: String)
-
-    suspend fun isNearBrand(x: Dms, y: Dms, brandName: String): List<BrandLocationEntity>?
 }

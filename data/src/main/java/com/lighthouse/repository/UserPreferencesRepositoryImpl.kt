@@ -9,22 +9,18 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import com.lighthouse.domain.model.UserPreferenceOption
 import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.util.CryptoObjectHelper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class UserPreferencesRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferencesRepository {
     override suspend fun setPinString(pinString: String): Result<Unit> = runCatching {
-        withContext(Dispatchers.IO) {
-            dataStore.edit { preferences ->
-                val cryptoResult = CryptoObjectHelper.encrypt(pinString)
-                preferences[PIN] = cryptoResult.first
-                preferences[IV] = cryptoResult.second
-            }
+        dataStore.edit { preferences ->
+            val cryptoResult = CryptoObjectHelper.encrypt(pinString)
+            preferences[PIN] = cryptoResult.first
+            preferences[IV] = cryptoResult.second
         }
     }
 
@@ -36,15 +32,13 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setIntOption(option: UserPreferenceOption, value: Int): Result<Unit> = runCatching {
-        withContext(Dispatchers.IO) {
-            val key = when (option) {
-                UserPreferenceOption.SECURITY -> SECURITY
-                else -> throw Exception("Unsupportable Option : Not Int")
-            }
+        val key = when (option) {
+            UserPreferenceOption.SECURITY -> SECURITY
+            else -> throw Exception("Unsupportable Option : Not Int")
+        }
 
-            dataStore.edit { preferences ->
-                preferences[key] = value
-            }
+        dataStore.edit { preferences ->
+            preferences[key] = value
         }
     }
 
@@ -60,16 +54,14 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setBooleanOption(option: UserPreferenceOption, value: Boolean): Result<Unit> = runCatching {
-        withContext(Dispatchers.IO) {
-            val key = when (option) {
-                UserPreferenceOption.NOTIFICATION -> NOTIFICATION
-                UserPreferenceOption.LOCATION -> LOCATION
-                else -> throw Exception("Unsupportable Option : Not Boolean")
-            }
+        val key = when (option) {
+            UserPreferenceOption.NOTIFICATION -> NOTIFICATION
+            UserPreferenceOption.LOCATION -> LOCATION
+            else -> throw Exception("Unsupportable Option : Not Boolean")
+        }
 
-            dataStore.edit { preferences ->
-                preferences[key] = value
-            }
+        dataStore.edit { preferences ->
+            preferences[key] = value
         }
     }
 

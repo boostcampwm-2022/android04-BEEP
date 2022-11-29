@@ -8,7 +8,6 @@ internal fun List<BrandPlaceInfoDataContainer.BrandPlaceInfoData>.toDomain(brand
         BrandPlaceInfo(
             addressName = it.addressName,
             placeName = it.placeName,
-            categoryName = it.categoryGroupName,
             placeUrl = it.placeUrl,
             brand = brandName,
             x = it.x,

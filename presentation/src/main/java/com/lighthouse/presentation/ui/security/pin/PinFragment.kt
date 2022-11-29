@@ -16,7 +16,6 @@ import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityViewModel
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
-import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,8 +24,7 @@ import kotlinx.coroutines.launch
 class PinFragment : Fragment(R.layout.fragment_pin) {
 
     private val binding: FragmentPinBinding by viewBindings()
-    private val viewModel: PinSettingViewModel by viewModels()
-
+    private val viewModel: PinViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
     private val shakeAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
@@ -65,7 +63,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                             startAnimation(fadeUpAnimation)
                         }
                         delay(1000L)
-                        activityViewModel.setSecurityOption(SecurityOption.PIN)
                         activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
                     }
                     PinSettingType.ERROR -> {
@@ -80,7 +77,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         }
 
         binding.tvSecureNotUse.setOnClickListener {
-            activityViewModel.setSecurityOption(SecurityOption.NONE)
             val intent = Intent(requireContext(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

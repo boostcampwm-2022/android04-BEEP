@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.ui.map
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -18,12 +18,9 @@ import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenWidth
-import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
-import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
-import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
-import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
+import com.lighthouse.presentation.ui.map.adapter.MapGifticonAdapter
 import com.lighthouse.presentation.ui.map.event.MarkerClickEvent
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.naver.maps.geometry.LatLng
@@ -33,7 +30,8 @@ import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.Marker.DEFAULT_ICON
+import com.naver.maps.map.overlay.PolygonOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,13 +47,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var client: FusedLocationProviderClient
     private lateinit var fusedLocationSource: FusedLocationSource
     private val viewModel: MapViewModel by viewModels()
-    private val gifticonAdapter = GifticonAdapter(GifticonViewHolderType.HORIZONTAL) { gifticon ->
-        startActivity(
-            Intent(this, GifticonDetailActivity::class.java).apply {
-                putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
-            }
-        )
-    }
+    private val gifticonAdapter = MapGifticonAdapter()
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +64,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setAdapter() {
         val pagerWidth = 300.dp
-        val pageMarginPx = 24.dp
+        val pageMarginPx = 20.dp
         val offsetPx = screenWidth - pageMarginPx - pagerWidth
         with(binding.vpGifticon) {
             adapter = gifticonAdapter
@@ -82,9 +74,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             addItemDecoration(
                 ListSpaceItemDecoration(
-                    space = 48.dp,
-                    start = 24.dp,
-                    end = 24.dp
+                    space = 50.dp,
+                    start = 25.dp,
+                    end = 25.dp
                 )
             )
         }
@@ -130,13 +122,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         setObserveSearchData()
         setNaverMapZoom()
         setObserverMarkerData()
+        setNaverMapPolyLine()
     }
 
     private fun setObserveFocusMarker() {
         repeatOnStarted {
             viewModel.focusMarker.collectLatest { marker ->
-                marker.iconTintColor = getColor(R.color.beep_pink)
-                marker.captionColor = getColor(R.color.beep_pink)
+                marker.iconTintColor = Color.BLUE
                 marker.zIndex = 1
                 val location = marker.position
                 moveMapCamera(location.longitude, location.latitude)
@@ -250,8 +242,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         with(marker) {
             position = latLng
-            icon = setMarkerIcon(brandPlaceSearchResult.categoryName)
-            iconTintColor = getColor(R.color.point_green)
+            width = Marker.SIZE_AUTO
+            height = Marker.SIZE_AUTO
             tag = brandPlaceSearchResult.placeUrl
             captionText = brandPlaceSearchResult.brand
             isHideCollidedSymbols = true
@@ -267,31 +259,42 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setMarkerIcon(categoryName: String): OverlayImage {
-        return when (categoryName) {
-            CATEGORY_MART -> OverlayImage.fromResource(R.drawable.ic_marker_market)
-            CATEGORY_CONVENIENCE -> OverlayImage.fromResource(R.drawable.ic_marker_convenience)
-            CATEGORY_CULTURE -> OverlayImage.fromResource(R.drawable.ic_marker_culture)
-            CATEGORY_ACCOMMODATION -> OverlayImage.fromResource(R.drawable.ic_marker_accommodation)
-            CATEGORY_RESTAURANT -> OverlayImage.fromResource(R.drawable.ic_marker_restaurant)
-            CATEGORY_CAFE -> OverlayImage.fromResource(R.drawable.ic_marker_cafe)
-            else -> OverlayImage.fromResource(R.drawable.ic_marker_base)
-        }
-    }
-
     private fun isSameMarker(marker: Marker) =
         marker.position.longitude == viewModel.focusMarker.value.position.longitude &&
             marker.position.latitude == viewModel.focusMarker.value.position.latitude
 
     private fun resetFocusMarker(marker: Marker) {
         marker.zIndex = 0
-        marker.iconTintColor = getColor(R.color.point_green)
-        marker.captionColor = getColor(R.color.black)
+        marker.icon = DEFAULT_ICON
+        marker.iconTintColor = Color.TRANSPARENT
     }
 
     private fun showSnackBar(@StringRes message: Int) {
         Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
     }
+
+    // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
+    private val polygonOverlay = PolygonOverlay()
+    private fun setNaverMapPolyLine() {
+        repeatOnStarted {
+//            viewModel.userLocation.collect {
+//                polygonOverlay.map = null
+//                val x = it.first
+//                val y = it.second
+//                val toPolygonLatLng = toPolygonLatLng(x, y)
+//
+//                polygonOverlay.coords = listOf(
+//                    LatLng(toPolygonLatLng[0].second, toPolygonLatLng[0].first),
+//                    LatLng(toPolygonLatLng[1].second, toPolygonLatLng[1].first),
+//                    LatLng(toPolygonLatLng[2].second, toPolygonLatLng[2].first),
+//                    LatLng(toPolygonLatLng[3].second, toPolygonLatLng[3].first)
+//                )
+//                polygonOverlay.color = getColor(R.color.polygon)
+//                polygonOverlay.map = naverMap
+//            }
+        }
+    }
+    // TODO 릴리즈 단계에서는 사라져야할 함수입니다.
 
     override fun onResume() {
         super.onResume()
@@ -325,11 +328,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
-        private const val CATEGORY_MART = "대형마트"
-        private const val CATEGORY_CONVENIENCE = "편의점"
-        private const val CATEGORY_CULTURE = "문화시설"
-        private const val CATEGORY_ACCOMMODATION = "숙박"
-        private const val CATEGORY_RESTAURANT = "음식점"
-        private const val CATEGORY_CAFE = "카페"
     }
 }

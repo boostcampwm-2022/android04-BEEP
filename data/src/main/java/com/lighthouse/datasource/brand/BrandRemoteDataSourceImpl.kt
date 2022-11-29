@@ -2,8 +2,8 @@ package com.lighthouse.datasource.brand
 
 import com.lighthouse.domain.Dms
 import com.lighthouse.domain.LocationConverter
-import com.lighthouse.model.BeepErrorData
 import com.lighthouse.model.BrandPlaceInfoDataContainer
+import com.lighthouse.model.CustomErrorData
 import com.lighthouse.network.NetworkApiService
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class BrandRemoteDataSourceImpl @Inject constructor(
         val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, vertex, size).documents }
         return when (val exception = result.exceptionOrNull()) {
             null -> result
-            is UnknownHostException -> Result.failure(BeepErrorData.NetworkFailure)
+            is UnknownHostException -> Result.failure(CustomErrorData.NetworkFailure)
             else -> Result.failure(exception)
         }
     }

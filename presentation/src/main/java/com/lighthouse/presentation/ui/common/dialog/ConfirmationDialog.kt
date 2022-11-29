@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.DialogConfirmationBinding
@@ -63,12 +64,25 @@ class ConfirmationDialog : DialogFragment(R.layout.dialog_confirmation) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-
-            tvTitle.text = initTitle ?: tvTitle.text
-            tvMessage.text = initMessage ?: tvMessage.text
-            tvOk.text = initOkText ?: tvOk.text
-            tvCancel.text = initCancelText ?: tvCancel.text
         }
+
+        binding.tvTitle.apply {
+            text = initTitle ?: text
+            isVisible = text != ""
+        }
+        binding.tvMessage.apply {
+            text = initMessage ?: text
+            isVisible = text != ""
+        }
+        binding.tvOk.apply {
+            text = initOkText ?: text
+            isVisible = text != ""
+        }
+        binding.tvCancel.apply {
+            text = initCancelText ?: text
+            isVisible = text != ""
+        }
+
         setUpClickListener()
     }
 

@@ -140,6 +140,7 @@ object Libraries {
         MOSHI_ADAPTERS,
         CONVERTER_MOSHI,
         HILT,
+        FIREBASE_AUTH_KTX,
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
         WORK_MANAGER,
@@ -164,7 +165,8 @@ object Libraries {
         ROOM_KTX,
         TIMBER,
         DATASTORE,
-        DATASTORE_CORE
+        DATASTORE_CORE,
+        FIREBASE_AUTH_KTX
     )
 }
 

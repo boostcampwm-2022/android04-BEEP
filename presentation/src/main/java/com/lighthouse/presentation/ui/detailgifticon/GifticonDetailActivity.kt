@@ -1,14 +1,9 @@
 package com.lighthouse.presentation.ui.detailgifticon
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -26,17 +21,14 @@ import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
-import com.lighthouse.presentation.ui.security.AuthCallback
-import com.lighthouse.presentation.ui.security.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
+class GifticonDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
@@ -54,16 +46,6 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     private val btnUseGifticon by lazy { binding.btnUseGifticon }
     private val chip by lazy { binding.chipScrollDownForUseButton }
-
-    @Inject
-    lateinit var authManager: AuthManager
-    private val biometricLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                Activity.RESULT_OK -> authenticate()
-                else -> onAuthError()
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,7 +122,8 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
                 showDatePickerDialog()
             }
             is Event.UseGifticonButtonClicked -> {
-                authenticate()
+                // TODO 보안 인증
+                showUseGifticonDialog()
             }
             is Event.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
@@ -221,25 +204,6 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
             dialog.dismiss()
             cancel()
         }
-    }
-
-    private fun authenticate() {
-        authManager.auth(this, biometricLauncher, this)
-    }
-
-    override fun onAuthSuccess() {
-        Timber.tag("Auth").d("onAuthSuccess")
-        showUseGifticonDialog()
-    }
-
-    override fun onAuthCancel() {
-        Timber.tag("Auth").d("onAuthCancel")
-    }
-
-    override fun onAuthError(@StringRes StringId: Int?) {
-        Timber.tag("Auth").d("onAuthError")
-        // TODO: StringId가 null 이 아니라면 정의된 에러 메세지가 존재하는 경우입니다. null 체크하고 출력하면 어떨까요?
-        authenticate()
     }
 
     private fun showGifticonInfoChangedSnackBar(before: Gifticon) {

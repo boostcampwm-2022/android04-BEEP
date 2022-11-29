@@ -1,9 +1,10 @@
 package com.lighthouse.domain.model
 
-sealed class BeepError(
+sealed class CustomError(
     override val message: String? = null,
     override val cause: Throwable? = null
 ) : Exception(message, cause) {
 
-    object NetworkFailure : BeepError()
+    object NetworkFailure : CustomError()
+    object EmptyResults : CustomError()
 }
