@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -45,36 +44,33 @@ class MapViewModel @Inject constructor(
     // TOOD 테스트 데이터들
     val brandList = listOf("스타벅스", "베스킨라빈스", "BHC", "BBQ", "GS25", "CU", "서브웨이", "세븐일레븐", "파파존스")
     val gifticonTestData = listOf(
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BHC", "BHC", Date(122, 5, 10), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "서브웨이", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "서브웨이", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-        Gifticon(UUID.generate(), "이름", "파파존스", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
+        Gifticon(UUID.generate(), "이름", hasImage = false, "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "스타벅스", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "BHC", "BHC", Date(122, 5, 10), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "BBQ", "BBQ", Date(150, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "GS25", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "CU", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "서브웨이", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "서브웨이", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "세븐일레븐", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
+        Gifticon(UUID.generate(), "이름", hasImage = false, "파파존스", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
     )
-
-    // TODO 현재 네이버맵에 폴리라인 그려줄려고 있는 객체입니다.
-    var userLocation = MutableStateFlow(Pair(0.0, 0.0))
 
     init {
         collectLocation()
@@ -84,12 +80,12 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             getUserLocation().collect { location ->
                 getBrandPlaceInfos(location.longitude, location.latitude)
-                userLocation.update {
-                    Pair(
-                        location.longitude,
-                        location.latitude
-                    )
-                }
+//                userLocation.update {
+//                    Pair(
+//                        location.longitude,
+//                        location.latitude
+//                    )
+//                }
             }
         }
     }

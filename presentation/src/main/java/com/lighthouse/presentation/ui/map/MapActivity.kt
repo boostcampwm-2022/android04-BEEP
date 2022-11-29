@@ -13,7 +13,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.LocationConverter.toPolygonLatLng
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
@@ -278,21 +277,21 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val polygonOverlay = PolygonOverlay()
     private fun setNaverMapPolyLine() {
         repeatOnStarted {
-            viewModel.userLocation.collect {
-                polygonOverlay.map = null
-                val x = it.first
-                val y = it.second
-                val toPolygonLatLng = toPolygonLatLng(x, y)
-
-                polygonOverlay.coords = listOf(
-                    LatLng(toPolygonLatLng[0].second, toPolygonLatLng[0].first),
-                    LatLng(toPolygonLatLng[1].second, toPolygonLatLng[1].first),
-                    LatLng(toPolygonLatLng[2].second, toPolygonLatLng[2].first),
-                    LatLng(toPolygonLatLng[3].second, toPolygonLatLng[3].first)
-                )
-                polygonOverlay.color = getColor(R.color.polygon)
-                polygonOverlay.map = naverMap
-            }
+//            viewModel.userLocation.collect {
+//                polygonOverlay.map = null
+//                val x = it.first
+//                val y = it.second
+//                val toPolygonLatLng = toPolygonLatLng(x, y)
+//
+//                polygonOverlay.coords = listOf(
+//                    LatLng(toPolygonLatLng[0].second, toPolygonLatLng[0].first),
+//                    LatLng(toPolygonLatLng[1].second, toPolygonLatLng[1].first),
+//                    LatLng(toPolygonLatLng[2].second, toPolygonLatLng[2].first),
+//                    LatLng(toPolygonLatLng[3].second, toPolygonLatLng[3].first)
+//                )
+//                polygonOverlay.color = getColor(R.color.polygon)
+//                polygonOverlay.map = naverMap
+//            }
         }
     }
     // TODO 릴리즈 단계에서는 사라져야할 함수입니다.

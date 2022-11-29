@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.main
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
@@ -17,6 +19,7 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
+import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,9 +35,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    private val gifticonListFragment by lazy { GifticonListFragment() }
-    private val homeFragment by lazy { HomeFragment() }
-    private val settingFragment by lazy { SettingFragment() }
+    private val gifticonListFragment by lazy {
+        supportFragmentManager.findFragmentByTag(GifticonListFragment::class.java.name) ?: GifticonListFragment()
+    }
+    private val homeFragment by lazy {
+        supportFragmentManager.findFragmentByTag(HomeFragment::class.java.name) ?: HomeFragment()
+    }
+    private val settingFragment by lazy {
+        supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name) ?: SettingFragment()
+    }
+
+    private val addGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            showSnackBar(UIText.StringResource(R.string.main_registration_completed))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     if (fragment.isAdded) {
                         show(fragment)
                     } else {
-                        add(R.id.fl_container, fragment)
+                        add(R.id.fl_container, fragment, fragment.javaClass.name)
                     }
                 }
             }
@@ -89,9 +104,13 @@ class MainActivity : AppCompatActivity() {
     private fun gotoAddGifticon() {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(this, AddGifticonActivity::class.java)
-            startActivity(intent)
+            addGifticon.launch(intent)
         } else {
             permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+    }
+
+    private fun showSnackBar(uiText: UIText) {
+        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
     }
 }

@@ -1,5 +1,7 @@
 package com.lighthouse.di
 
+import com.lighthouse.datasource.auth.AuthDataSource
+import com.lighthouse.datasource.auth.AuthDataSourceImpl
 import com.lighthouse.datasource.brand.BrandLocalDataSource
 import com.lighthouse.datasource.brand.BrandLocalDataSourceImpl
 import com.lighthouse.datasource.brand.BrandRemoteDataSource
@@ -8,12 +10,14 @@ import com.lighthouse.datasource.gallery.GalleryImageLocalSource
 import com.lighthouse.datasource.gallery.GalleryImageLocalSourceImpl
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSourceImpl
+import com.lighthouse.domain.repository.AuthRepository
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.domain.repository.LocationRepository
 import com.lighthouse.domain.repository.SecurityRepository
 import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.repository.AuthRepositoryImpl
 import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
 import com.lighthouse.repository.GifticonRepositoryImpl
@@ -31,6 +35,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class SingletonScopedDataModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthDataSource(
+        source: AuthDataSourceImpl
+    ): AuthDataSource
 
     @Binds
     @Singleton
@@ -55,6 +65,12 @@ abstract class SingletonScopedDataModule {
     abstract fun bindGalleryLocalDataSource(
         source: GalleryImageLocalSourceImpl
     ): GalleryImageLocalSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        repository: AuthRepositoryImpl
+    ): AuthRepository
 
     @Binds
     @Singleton

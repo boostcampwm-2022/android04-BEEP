@@ -130,7 +130,7 @@
                     android:layout_width="160dp"
                     android:layout_height="160dp"
                     android:layout_marginTop="8dp"
-                    android:background="@color/surface_1"
+                    android:background="@color/on_surface_12"
                     android:contentDescription="@string/add_gifticon_image_description"
                     android:enabled="@{vm.isSelected}"
                     android:onClick="@{() -> vm.gotoCropGifticon()}"

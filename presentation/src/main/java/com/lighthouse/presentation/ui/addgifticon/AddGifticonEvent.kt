@@ -10,6 +10,7 @@ sealed class AddGifticonEvent {
 
     object PopupBackStack : AddGifticonEvent()
     object ShowCancelConfirmation : AddGifticonEvent()
+    object RegistrationCompleted : AddGifticonEvent()
     data class ShowDeleteConfirmation(val gifticon: AddGifticonItemUIModel.Gifticon) : AddGifticonEvent()
     data class NavigateToGallery(val list: List<Long> = emptyList()) : AddGifticonEvent()
     data class NavigateToCropGifticon(val origin: Uri, val croppedRect: RectF) : AddGifticonEvent()

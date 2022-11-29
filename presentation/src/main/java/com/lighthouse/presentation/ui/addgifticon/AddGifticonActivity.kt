@@ -174,6 +174,7 @@ class AddGifticonActivity : AppCompatActivity() {
                     is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
                     is AddGifticonEvent.RequestFocus -> requestFocus(events.focus)
                     is AddGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
+                    is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
             }
         }
@@ -181,6 +182,11 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private fun cancelAddGifticon() {
         setResult(Activity.RESULT_CANCELED)
+        finish()
+    }
+
+    private fun completeAddGifticon() {
+        setResult(Activity.RESULT_OK)
         finish()
     }
 

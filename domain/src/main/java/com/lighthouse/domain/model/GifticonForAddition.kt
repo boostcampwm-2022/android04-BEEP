@@ -2,16 +2,15 @@ package com.lighthouse.domain.model
 
 import java.util.Date
 
-data class Gifticon(
-    val id: String,
-    val userId: String,
+data class GifticonForAddition(
     val hasImage: Boolean,
     val name: String,
-    val brand: String,
-    val expireAt: Date,
+    val brandName: String,
     val barcode: String,
+    val expiredAt: Date,
     val isCashCard: Boolean,
     val balance: Int,
-    val memo: String,
-    val isUsed: Boolean
+    val originUri: String,
+    val croppedUri: String,
+    val memo: String
 )

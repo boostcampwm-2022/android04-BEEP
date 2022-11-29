@@ -31,6 +31,7 @@
     <string name="main_order_d_day">디데이순</string>
     <string name="main_filter_all">전체</string>
     <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
+    <string name="main_registration_completed">기프티콘 등록이 완료 되었습니다.</string>
 
     <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
     <string name="add_gifticon_title">기프티콘 추가</string>
