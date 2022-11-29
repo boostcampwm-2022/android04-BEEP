@@ -32,8 +32,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
     }
 
     fun gotoMap(gifticons: List<Gifticon>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
-//        Timber.tag("TAG").d("${javaClass.simpleName} gifticons -> $gifticons")
-//        Timber.tag("TAG").d("${javaClass.simpleName} nearBrandsInfo -> $nearBrandsInfo")
         viewModelScope.launch {
             _eventFlow.emit(MainEvent.NavigateMap(gifticons, nearBrandsInfo))
         }

@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.security.fingerprint
+package com.lighthouse.presentation.ui.security.fingerprint.biometric
 
 import android.content.Intent
 import android.os.Build

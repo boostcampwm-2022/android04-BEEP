@@ -7,6 +7,7 @@ fun GifticonEntity.toDomain(): Gifticon {
     return Gifticon(
         id = id,
         userId = userId,
+        hasImage = hasImage,
         name = name,
         brand = brand,
         expireAt = expireAt,

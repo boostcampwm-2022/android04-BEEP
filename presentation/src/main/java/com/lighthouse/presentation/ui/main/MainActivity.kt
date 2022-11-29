@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.main
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
@@ -25,6 +27,7 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragment
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
+import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -49,6 +52,12 @@ class MainActivity : AppCompatActivity() {
     }
     private val settingFragment by lazy {
         supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name) ?: SettingFragment()
+    }
+
+    private val addGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            showSnackBar(UIText.StringResource(R.string.main_registration_completed))
+        }
     }
 
     private val locationPermissionDialog by lazy {
@@ -154,10 +163,14 @@ class MainActivity : AppCompatActivity() {
     private fun gotoAddGifticon() {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(this, AddGifticonActivity::class.java)
-            startActivity(intent)
+            addGifticon.launch(intent)
         } else {
             permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+    }
+
+    private fun showSnackBar(uiText: UIText) {
+        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
     }
 
     companion object {

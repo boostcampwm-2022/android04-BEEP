@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.lighthouse.presentation.ui.security.fingerprint.BiometricAuth
+import com.lighthouse.presentation.ui.security.fingerprint.biometric.BiometricAuth
 import com.lighthouse.presentation.ui.security.pin.PinDialog
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import com.lighthouse.presentation.util.UserPreference
