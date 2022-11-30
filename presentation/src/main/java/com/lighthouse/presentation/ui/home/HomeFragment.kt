@@ -32,19 +32,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private val nearGifticonAdapter = NearGifticonAdapter { gifticon ->
-        startActivity(
-            Intent(requireContext(), GifticonDetailActivity::class.java).apply {
-                putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
-            }
-        )
+        gotoGifticonDetail(gifticon.id)
     }
     private val expireGifticonAdapter = GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
+        gotoGifticonDetail(gifticon.id)
+    }
+
+    private fun gotoGifticonDetail(id: String) {
         startActivity(
             Intent(requireContext(), GifticonDetailActivity::class.java).apply {
-                putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
+                putExtra(Extras.KEY_GIFTICON_ID, id)
             }
         )
     }
+
     private val itemDecoration = ListSpaceItemDecoration(
         space = 8.dp,
         start = 4.dp,

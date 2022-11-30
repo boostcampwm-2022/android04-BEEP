@@ -81,7 +81,7 @@ class HomeViewModel @Inject constructor(
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
-                    val nearGifticon = brands.mapNotNull { placeInfo ->
+                    val nearGifticon = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
                         allGifticons.value[placeInfo.brand]?.first()?.toUiModel(diffLocation(placeInfo, recentLocation))
                     }.sortedBy { it.distance }
                     _nearGifticon.value = UiState.Success(nearGifticon)
