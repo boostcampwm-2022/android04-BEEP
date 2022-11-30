@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:text="보안 인증 수단 변경"
+            android:text="@string/security_setting_option_change"
             app:layout_constraintTop_toBottomOf="@+id/ab_security_setting" />
 
         <ImageView
@@ -58,8 +58,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:text="PIN 번호 변경"
+            android:text="@string/security_setting_change_pin"
             app:layout_constraintTop_toBottomOf="@+id/tv_change_security_option" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:onClick="@{null}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_change_pin" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,6 @@ class AuthManager @Inject constructor(
     private val userPreference: UserPreference
 ) {
     private lateinit var job: Job
-    private lateinit var pinDialog: PinDialog
     private lateinit var biometricAuth: BiometricAuth
 
     fun auth(
@@ -36,10 +35,7 @@ class AuthManager @Inject constructor(
     }
 
     private fun authPin(supportFragmentManager: FragmentManager, authCallback: AuthCallback) {
-        if (::pinDialog.isInitialized.not()) {
-            pinDialog = PinDialog(authCallback)
-        }
-        pinDialog.show(supportFragmentManager, PIN_TAG)
+        PinDialog(authCallback).show(supportFragmentManager, PIN_TAG)
     }
 
     private fun authFingerprint(

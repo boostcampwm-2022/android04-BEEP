@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.security.pin
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -20,7 +21,6 @@ import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class PinFragment : Fragment(R.layout.fragment_pin) {
@@ -41,6 +41,10 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+
+        if (activityViewModel.isRevise) {
+            binding.tvSecureNotUse.visibility = View.INVISIBLE
+        }
 
         lifecycleScope.launch {
             viewModel.pinMode.collect {
@@ -66,11 +70,13 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                             startAnimation(fadeUpAnimation)
                         }
                         delay(1000L)
-                        activityViewModel.setSecurityOption(SecurityOption.PIN)
-                        Timber.tag("REVISE").d("securityViewModel: ${activityViewModel.isRevise}")
                         if (activityViewModel.isRevise) {
-                            requireActivity().finish()
+                            requireActivity().apply {
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
                         } else {
+                            activityViewModel.setSecurityOption(SecurityOption.PIN)
                             activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
                         }
                     }

@@ -24,8 +24,7 @@ class SecurityActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_security)
 
-        val isRevise = intent.getBooleanExtra("revise", false)
-        viewModel.isRevise = isRevise
+        viewModel.isRevise = intent.getBooleanExtra("revise", false)
 
         moveScreen(SecurityDirections.PIN)
         repeatOnStarted {
