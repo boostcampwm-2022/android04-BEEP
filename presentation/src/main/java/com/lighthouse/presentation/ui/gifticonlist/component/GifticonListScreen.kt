@@ -30,9 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -98,7 +95,6 @@ fun GifticonListScreen(
             AllBrandChipsDialog(
                 brands = viewState.brands,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(16.dp),
                 onDismiss = { viewModel.dismissEntireBrandsDialog() }
             )
@@ -176,14 +172,13 @@ fun GifticonItem(gifticon: Gifticon) {
     }
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 private fun BrandChipList(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
-    onBrandSelected: (HashSet<Brand>) -> Unit = {},
+    viewModel: GifticonListViewModel = viewModel()
 ) {
-    val selectedBrands = remember { hashSetOf<Brand>() }
-    Timber.tag("Compose").d("$brands")
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -195,20 +190,12 @@ private fun BrandChipList(
                 name = stringResource(id = R.string.main_filter_all),
                 count = brands.sumOf { it.count }
             )
-            BrandChip(brand = entireChipBrand, initialSelected = true) {
-                selectedBrands.clear()
-                onBrandSelected(selectedBrands)
+            BrandChip(brand = entireChipBrand) {
+                viewModel.clearFilter()
             }
         }
         items(brands.subList(0, minOf(chipCountToShow, brands.size))) { brand ->
-            BrandChip(brand) {
-                if (selectedBrands.contains(it)) {
-                    selectedBrands.remove(it)
-                } else {
-                    selectedBrands.add(it)
-                }
-                onBrandSelected(selectedBrands)
-            }
+            BrandChip(brand)
         }
     }
 }
@@ -241,20 +228,21 @@ fun AllBrandChipsDialog(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 private fun BrandChip(
     brand: Brand,
     modifier: Modifier = Modifier,
-    initialSelected: Boolean = false,
-    onSelect: (Brand) -> Unit = {}
+    viewModel: GifticonListViewModel = viewModel(),
+    onClick: (Brand) -> Unit = {}
 ) {
-    var selected by remember { mutableStateOf(initialSelected) }
+    val viewState by viewModel.state.collectAsStateWithLifecycle()
+
     FilterChip(
-        selected = selected,
+        selected = brand in viewState.selectedFilter,
         onClick = {
-            selected = selected.not()
-            onSelect(brand)
+            viewModel.toggleFilterSelection(brand)
+            onClick(brand)
         },
         modifier = modifier.wrapContentWidth(),
         colors = ChipDefaults.filterChipColors(

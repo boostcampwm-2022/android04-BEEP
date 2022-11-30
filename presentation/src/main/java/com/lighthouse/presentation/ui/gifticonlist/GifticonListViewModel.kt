@@ -77,4 +77,18 @@ class GifticonListViewModel @Inject constructor(
     fun dismissEntireBrandsDialog() {
         _state.value = state.value.copy(entireBrandsDialogShown = false)
     }
+
+    fun toggleFilterSelection(brand: Brand) {
+        val selected = state.value.selectedFilter
+        if (brand in state.value.selectedFilter) {
+            selected.remove(brand)
+        } else {
+            selected.add(brand)
+        }
+        _state.value = state.value.copy(selectedFilter = selected)
+    }
+
+    fun clearFilter() {
+        _state.value = state.value.copy(selectedFilter = hashSetOf())
+    }
 }
