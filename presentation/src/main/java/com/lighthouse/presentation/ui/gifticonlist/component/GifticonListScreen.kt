@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -227,8 +226,8 @@ private fun BrandChipList(
 
 @Composable
 fun AllBrandChipsDialog(
-    brands: List<Brand> = emptyList(),
     modifier: Modifier = Modifier,
+    brands: List<Brand> = emptyList(),
     onDismiss: () -> Unit = {}
 ) {
     Dialog(
@@ -237,13 +236,13 @@ fun AllBrandChipsDialog(
     ) {
         Surface(
             modifier = modifier
-                .width(300.dp)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(12.dp),
             color = Color.White
         ) {
             FlowRow(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                mainAxisSpacing = 10.dp
             ) {
                 brands.forEach {
                     BrandChip(brand = it)
@@ -377,5 +376,22 @@ fun GifticonItemPreview() {
 fun GifticonListPreview() {
     GifticonList(
         sampleGifticonItems
+    )
+}
+
+@Preview
+@Composable
+fun BrandChipsDialogPreview() {
+    AllBrandChipsDialog(
+        brands = listOf(
+            Brand(name = "스타벅스", count = 18),
+            Brand(name = "베스킨라빈스", count = 18),
+            Brand(name = "BHC", count = 18),
+            Brand(name = "GS25", count = 18),
+            Brand(name = "CU", count = 18),
+            Brand(name = "서브웨이", count = 18),
+            Brand(name = "세븐일레븐", count = 18),
+            Brand(name = "파파존스", count = 18)
+        )
     )
 }
