@@ -15,6 +15,7 @@ import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
+import com.lighthouse.presentation.util.flow.MutableEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,6 +31,9 @@ class HomeViewModel @Inject constructor(
     private val getUserLocation: GetUserLocationUseCase,
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
+
+    var homeEvent: MutableEventFlow<HomeEvent> = MutableEventFlow()
+        private set
 
     private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
@@ -49,7 +53,11 @@ class HomeViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     val expiredGifticon = allGifticons.transform { gifticons ->
-        if (gifticons.isEmpty()) return@transform
+        if (gifticons.isEmpty()) {
+            homeEvent.emit(HomeEvent.NavigateDataNotExists)
+            return@transform
+        }
+        homeEvent.emit(HomeEvent.NavigateDataExists)
         val gifticonFlatten = gifticons.values.flatten()
         val gifticonSize =
             if (gifticonFlatten.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) gifticonFlatten.size else EXPIRED_GIFTICON_LIST_MAX_SIZE

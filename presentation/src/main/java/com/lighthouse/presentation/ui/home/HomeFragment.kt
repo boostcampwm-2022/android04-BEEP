@@ -31,8 +31,9 @@ import timber.log.Timber
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val binding: FragmentHomeBinding by viewBindings()
+    private val homeViewModel: HomeViewModel by viewModels({ requireParentFragment() })
     private val mainViewModel: MainViewModel by activityViewModels()
-    private val homeViewModel: HomeViewModel by viewModels()
+
     private val nearGifticonAdapter = NearGifticonAdapter { gifticon ->
         gotoGifticonDetail(gifticon.id)
     }
@@ -56,11 +57,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setBindingAdapter()
-        setObserveViewModel()
+        super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainVm = mainViewModel
         binding.homeVm = homeViewModel
+        setBindingAdapter()
+        setObserveViewModel()
     }
 
     private fun setBindingAdapter() {

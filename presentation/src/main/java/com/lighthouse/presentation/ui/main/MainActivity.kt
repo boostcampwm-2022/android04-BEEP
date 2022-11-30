@@ -25,7 +25,7 @@ import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
-import com.lighthouse.presentation.ui.home.HomeFragment
+import com.lighthouse.presentation.ui.home.HomeFragmentContainer
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import com.lighthouse.presentation.util.resource.UIText
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.findFragmentByTag(GifticonListFragment::class.java.name) ?: GifticonListFragment()
     }
     private val homeFragment by lazy {
-        supportFragmentManager.findFragmentByTag(HomeFragment::class.java.name) ?: HomeFragment()
+        supportFragmentManager.findFragmentByTag(HomeFragmentContainer::class.java.name) ?: HomeFragmentContainer()
     }
     private val settingFragment by lazy {
         supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name) ?: SettingFragment()
