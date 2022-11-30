@@ -41,8 +41,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             app:layout_constraintBottom_toTopOf="@id/tv_register"
             app:layout_constraintEnd_toEndOf="@id/gl_end"
             app:layout_constraintStart_toStartOf="@id/gl_start"
@@ -51,7 +51,7 @@
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/lottie_not_found" />
 
-        <TextView
+        <Button
             android:id="@+id/tv_register"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
