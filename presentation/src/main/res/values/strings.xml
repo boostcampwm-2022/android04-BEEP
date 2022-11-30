@@ -142,6 +142,7 @@
     <string name="error_network_failure">알 수 없는 오류가 생겼습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="error_not_found_results">검색 결과가 존재하지 않습니다.</string>
     <string name="error_network_error">네트워크 연결을 확인해주세요.</string>
+    <string name="error_location_not_permit">위치 권한이 설정돼 있지 않습니다.</string>
 
     <string name="pin_one">1</string>
     <string name="pin_two">2</string>

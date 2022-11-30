@@ -111,6 +111,8 @@ class LocationRepositoryImpl @Inject constructor(
             lastLocation.collect {
                 lastLocation.value?.let { trySend(it) }
             }
+        } else {
+            trySend(null)
         }
 
         // TODO 함수 하나로 합칠 수 있으니 합쳐 둘 것

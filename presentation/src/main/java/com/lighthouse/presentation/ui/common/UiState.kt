@@ -6,4 +6,5 @@ sealed class UiState<out T> {
     object NetworkFailure : UiState<Nothing>()
     object NotFoundResults : UiState<Nothing>()
     object Failure : UiState<Nothing>()
+    object NotLocationPermission : UiState<Nothing>()
 }

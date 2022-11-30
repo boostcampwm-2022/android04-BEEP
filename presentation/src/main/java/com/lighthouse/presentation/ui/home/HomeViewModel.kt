@@ -41,11 +41,10 @@ class HomeViewModel @Inject constructor(
 
     val allGifticons = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            emit(
-                gifticons.data
-                    .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }
-                    .groupBy { it.brand }
-            )
+            val gifticonGroup = gifticons.data
+                .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }
+                .groupBy { it.brand }
+            emit(gifticonGroup)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
@@ -68,6 +67,10 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getUserLocation().collect { location ->
+                if (location == null) {
+                    _nearGifticon.value = UiState.NotLocationPermission
+                    return@collect
+                }
                 recentLocation = location
                 getNearBrands(location.longitude, location.latitude)
             }
@@ -84,13 +87,15 @@ class HomeViewModel @Inject constructor(
                     val nearGifticon = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
                         allGifticons.value[placeInfo.brand]?.first()?.toUiModel(diffLocation(placeInfo, recentLocation))
                     }.sortedBy { it.distance }
-                    _nearGifticon.value = UiState.Success(nearGifticon)
+                    _nearGifticon.emit(UiState.Success(nearGifticon))
                 }
                 .onFailure { throwable ->
-                    _nearGifticon.value = when (throwable) {
-                        BeepError.NetworkFailure -> UiState.NetworkFailure
-                        else -> UiState.Failure
-                    }
+                    _nearGifticon.emit(
+                        when (throwable) {
+                            BeepError.NetworkFailure -> UiState.NetworkFailure
+                            else -> UiState.Failure
+                        }
+                    )
                 }
         }
     }

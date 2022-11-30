@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,6 +25,7 @@ import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -48,7 +50,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val itemDecoration = ListSpaceItemDecoration(
         space = 8.dp,
-        start = 4.dp,
         top = 4.dp,
         end = 24.dp,
         bottom = 4.dp
@@ -78,20 +79,39 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             homeViewModel.nearGifticon.collectLatest { state ->
                 when (state) {
                     is UiState.Success -> updateNearGifticon(state.item)
-                    is UiState.Loading -> Unit // TODO 로딩화면 처리 필요
+                    is UiState.Loading -> startShimmer()
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
                     is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
+                    is UiState.NotLocationPermission -> guideLocationPermission()
                 }
             }
         }
     }
 
+    private fun guideLocationPermission() {
+        stopShimmer()
+        // TODO 확인용 입니다. 나중에 지워질 예정이에요.
+        Timber.tag("TAG").d("${javaClass.simpleName} 위치 권한이 허용 돼 있지 않다~")
+    }
+
+    private fun startShimmer() {
+        binding.shimmer.isVisible = true
+        binding.shimmer.startShimmer()
+    }
+
     private fun updateNearGifticon(item: List<GifticonUiModel>) {
         nearGifticonAdapter.submitList(item)
+        stopShimmer()
     }
 
     private fun showSnackBar(@StringRes message: Int) {
+        stopShimmer()
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun stopShimmer() {
+        binding.shimmer.stopShimmer()
+        binding.shimmer.isVisible = false
     }
 }

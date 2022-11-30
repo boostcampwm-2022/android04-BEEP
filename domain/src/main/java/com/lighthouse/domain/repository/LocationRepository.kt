@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocationRepository {
 
-    fun getLocationInterval(): Flow<VertexLocation>
+    fun getLocationInterval(): Flow<VertexLocation?>
 }
