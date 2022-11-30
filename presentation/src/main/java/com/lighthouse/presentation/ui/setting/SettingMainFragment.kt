@@ -48,9 +48,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
 
     private fun gotoSecuritySetting() {
         activityViewModel.gotoMenuItem(-1)
-        // val currFragment = parentFragmentManager.primaryNavigationFragment
         parentFragmentManager.commit {
-            replace(R.id.fcv_setting, settingSecurityFragment, "SSF")
+            add(R.id.fcv_setting, settingSecurityFragment, "SSF")
         }
     }
 

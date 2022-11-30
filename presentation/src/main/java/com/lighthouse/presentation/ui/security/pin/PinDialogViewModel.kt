@@ -5,6 +5,7 @@ import com.lighthouse.domain.usecase.GetCorrespondWithPinUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,22 +14,31 @@ class PinDialogViewModel @Inject constructor(
 ) : PinViewModel() {
 
     init {
+        Timber.tag("WHY").d("PinDialogViewModel: init")
         _pinMode.value = PinSettingType.CONFIRM
+        _pinString.value = ""
     }
 
     override fun goPreviousStep() {
     }
 
     override fun goNextStep() {
+        Timber.tag("WHY").d("PinDialogViewModel: goNextStep 호출 ${pinString.value} ${pinMode.value}")
         viewModelScope.launch {
+            Timber.tag("WHY").d("PinDialogViewModel: 여기")
             if (getCorrespondWithPinUseCase(pinString.value)) {
                 _pinMode.value = PinSettingType.COMPLETE
             } else {
                 _pinMode.value = PinSettingType.WRONG
-                delay(1000L)
-                _pinString.value = ""
-                _pinMode.value = PinSettingType.CONFIRM
             }
+            delay(1000L)
+            _pinString.value = ""
+            _pinMode.value = PinSettingType.CONFIRM
         }
+    }
+
+    override fun onCleared() {
+        Timber.tag("WHY").d("PinDialogViewModel: onCleared")
+        super.onCleared()
     }
 }

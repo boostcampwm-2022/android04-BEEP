@@ -40,6 +40,7 @@ class AuthManager @Inject constructor(
             pinDialog = PinDialog(authCallback)
         }
         pinDialog.show(supportFragmentManager, PIN_TAG)
+        // PinDialog(authCallback).show(supportFragmentManager, PIN_TAG)
     }
 
     private fun authFingerprint(

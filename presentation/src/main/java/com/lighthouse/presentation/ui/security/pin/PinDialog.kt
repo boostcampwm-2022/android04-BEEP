@@ -1,21 +1,24 @@
 package com.lighthouse.presentation.ui.security.pin
 
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.security.AuthCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragment(R.layout.fragment_pin) {
@@ -33,12 +36,13 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.tag("WHY").d("Dialog: onViewCreated")
         binding.vm = viewModel
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.btnPinPrev.visibility = View.INVISIBLE
 
         initBottomSheetDialog(view)
-        lifecycleScope.launch {
+        repeatOnStarted {
             viewModel.pinMode.collect { mode ->
                 when (mode) {
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
@@ -51,9 +55,9 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
                             visibility = View.VISIBLE
                             startAnimation(fadeUpAnimation)
                         }
+                        authCallback.onAuthSuccess()
                         delay(1000L)
                         dismiss()
-                        authCallback.onAuthSuccess()
                     }
                     else -> {}
                 }
@@ -74,5 +78,50 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
         binding.ivPin3.startAnimation(shakeAnimation)
         binding.ivPin4.startAnimation(shakeAnimation)
         binding.ivPin5.startAnimation(shakeAnimation)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.tag("WHY").d("Dialog: onCreate")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Timber.tag("WHY").d("Dialog: onCreateView")
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.tag("WHY").d("Dialog: onResume")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Timber.tag("WHY").d("Dialog: onStart")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.tag("WHY").d("Dialog: onDestroy")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.tag("WHY").d("Dialog: onPause")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Timber.tag("WHY").d("Dialog: onDetach")
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Timber.tag("WHY").d("Dialog: onAttach")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.tag("WHY").d("Dialog: onDestroyView")
     }
 }

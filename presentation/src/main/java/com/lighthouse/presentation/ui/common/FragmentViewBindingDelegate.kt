@@ -47,7 +47,7 @@ class FragmentViewBindingDelegate<VB : ViewBinding>(
 
         val lifecycle = fragment.viewLifecycleOwner.lifecycle
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            throw IllegalStateException("Fragment 의 View가 제거 됬을땐 Binding을 가져오면 안된다.")
+            throw IllegalStateException("Fragment 의 View 가 제거 됐을 땐 Binding 을 가져오면 안 된다.")
         }
 
         val value = bindMethod.invoke(null, thisRef.requireView()) as VB

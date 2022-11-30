@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.security.pin
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -66,11 +67,14 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                             startAnimation(fadeUpAnimation)
                         }
                         delay(1000L)
-                        activityViewModel.setSecurityOption(SecurityOption.PIN)
                         Timber.tag("REVISE").d("securityViewModel: ${activityViewModel.isRevise}")
                         if (activityViewModel.isRevise) {
-                            requireActivity().finish()
+                            requireActivity().apply {
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
                         } else {
+                            activityViewModel.setSecurityOption(SecurityOption.PIN)
                             activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
                         }
                     }
