@@ -59,23 +59,12 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 import timber.log.Timber
 import java.util.Date
 
-data class GifticonListComponentState(
-    val showDialog: Boolean = false
-)
-
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GifticonListScreen(
     viewModel: GifticonListViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
-    val componentState = remember {
-        mutableStateOf(
-            GifticonListComponentState(
-                showDialog = false
-            )
-        )
-    }
 
     Timber.tag("GifticonList").d("${viewState.brands}")
     Surface(
@@ -94,7 +83,7 @@ fun GifticonListScreen(
                 IconButton(
                     modifier = Modifier,
                     onClick = {
-                        componentState.value = componentState.value.copy(showDialog = true)
+                        viewModel.showEntireBrandsDialog()
                     }
                 ) {
                     Image(
@@ -105,13 +94,13 @@ fun GifticonListScreen(
             }
             GifticonList(gifticons = viewState.gifticons, Modifier.padding(top = 64.dp))
         }
-        if (componentState.value.showDialog) {
+        if (viewState.entireBrandsDialogShown) {
             AllBrandChipsDialog(
                 brands = viewState.brands,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                onDismiss = { componentState.value = componentState.value.copy(showDialog = false) }
+                onDismiss = { viewModel.dismissEntireBrandsDialog() }
             )
         }
     }

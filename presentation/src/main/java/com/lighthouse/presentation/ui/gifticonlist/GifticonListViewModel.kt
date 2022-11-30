@@ -69,4 +69,12 @@ class GifticonListViewModel @Inject constructor(
             }
         }
     }
+
+    fun showEntireBrandsDialog() {
+        _state.value = state.value.copy(entireBrandsDialogShown = true)
+    }
+
+    fun dismissEntireBrandsDialog() {
+        _state.value = state.value.copy(entireBrandsDialogShown = false)
+    }
 }
