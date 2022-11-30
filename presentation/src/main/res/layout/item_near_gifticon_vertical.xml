@@ -82,7 +82,7 @@
                 android:textAppearance="@style/BEEP.TextStyle.Body2.Primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_body"
-                app:setUIText="@{gifticon.distance}"
+                app:setUIText="@{gifticon.uiText}"
                 tools:text="300m" />
 
             <TextView

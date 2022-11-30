@@ -44,9 +44,17 @@ class HomeViewModel @Inject constructor(
             emit(
                 gifticons.data
                     .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }
-                    .sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) }
+                    .groupBy { it.brand }
             )
         }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+
+    val expiredGifticon = allGifticons.transform { gifticons ->
+        emit(
+            gifticons.values
+                .flatten()
+                .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }
+        )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _nearGifticon: MutableStateFlow<UiState<List<GifticonUiModel>>> = MutableStateFlow(UiState.Loading)
@@ -70,17 +78,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _nearGifticon.emit(UiState.Loading)
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
-                .mapCatching { it.toPresentation() }
+                .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
-                    val gifticonFilterResult =
-                        allGifticons.value
-                            .filter { gifticon -> brands.map { it.brand }.contains(gifticon.brand) }
-                            .map { gifticon ->
-                                val brandInfo = brands.first { it.brand == gifticon.brand }
-                                gifticon.toUiModel(diffLocation(brandInfo, recentLocation))
-                            }
-                    _nearGifticon.value = UiState.Success(gifticonFilterResult)
+                    val nearGifticon = brands.mapNotNull { placeInfo ->
+                        allGifticons.value[placeInfo.brand]?.first()?.toUiModel(diffLocation(placeInfo, recentLocation))
+                    }.sortedBy { it.distance }
+                    _nearGifticon.value = UiState.Success(nearGifticon)
                 }
                 .onFailure { throwable ->
                     _nearGifticon.value = when (throwable) {

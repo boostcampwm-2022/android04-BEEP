@@ -51,9 +51,9 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun gotoMap(gifticons: List<Gifticon>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
+    fun gotoMap(gifticons: Map<String, List<Gifticon>>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
         viewModelScope.launch {
-            _eventFlow.emit(MainEvent.NavigateMap(gifticons, nearBrandsInfo))
+            _eventFlow.emit(MainEvent.NavigateMap(gifticons.values.flatten(), nearBrandsInfo))
         }
     }
 

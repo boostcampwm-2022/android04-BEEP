@@ -12,5 +12,6 @@ data class GifticonUiModel(
     val expireAt: Date,
     val balance: Int,
     val isUsed: Boolean,
-    val distance: UIText.StringResource
+    val distance: Int,
+    val uiText: UIText.StringResource
 )

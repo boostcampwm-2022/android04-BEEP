@@ -15,18 +15,24 @@ fun Gifticon.toUiModel(distance: Double): GifticonUiModel {
         expireAt = this.expireAt,
         balance = this.balance,
         isUsed = this.isUsed,
-        distance = calculateDistance(distance)
+        distance = calculate(distance),
+        uiText = setDistanceToUiText(distance)
     )
 }
 
+private const val MINIMUM_CRITERIA_MITER = 10
 private const val MINIMUM_MITER = 100
 
-private fun calculateDistance(distance: Double): UIText.StringResource {
-    val div = distance.toInt() / MINIMUM_MITER
-    val meter = div * MINIMUM_MITER
+private fun setDistanceToUiText(distance: Double): UIText.StringResource {
+    val meter = calculate(distance)
 
     return when (meter > MINIMUM_MITER) {
         true -> UIText.StringResource(R.string.home_near_gifticon_distance, meter)
         false -> UIText.StringResource(R.string.home_near_gifticon_announce)
     }
+}
+
+private fun calculate(distance: Double): Int {
+    val div = distance.toInt() / MINIMUM_CRITERIA_MITER
+    return div * MINIMUM_CRITERIA_MITER
 }
