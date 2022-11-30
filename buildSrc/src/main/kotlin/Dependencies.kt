@@ -56,6 +56,8 @@ object Versions {
     const val COMPOSE_BOM = "2022.10.00"
     const val COMPOSE_ACTIVITIES = "1.5.1"
     const val COMPOSE_VIEWMODEL = "2.5.1"
+
+    const val SHIMMER = "0.5.0"
 }
 
 object Libraries {
@@ -116,13 +118,14 @@ object Libraries {
 
     private const val COMPOSE_APP_COMPAT_THEME =
         "com.google.accompanist:accompanist-appcompat-theme:${Versions.APP_COMPAT_THEME}"
-//    private const val COMPOSE_BOM = ""
     private const val COMPOSE_MATERIAL = "androidx.compose.material:material"
     private const val COMPOSE_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
     private const val COMPOSE_ICONS = "androidx.compose.material:material-icons-extended"
     private const val COMPOSE_ACTIVITIES = "androidx.activity:activity-compose:${Versions.COMPOSE_ACTIVITIES}"
     private const val COMPOSE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.COMPOSE_VIEWMODEL}"
     private const val COMPOSE_LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-compose:+"
+
+    private const val SHIMMER = "com.facebook.shimmer:shimmer:${Versions.SHIMMER}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -152,7 +155,8 @@ object Libraries {
         COMPOSE_ICONS,
         COMPOSE_ACTIVITIES,
         COMPOSE_VIEWMODEL,
-        COMPOSE_LIFECYCLE_RUNTIME
+        COMPOSE_LIFECYCLE_RUNTIME,
+        SHIMMER
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
