@@ -6,35 +6,34 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetAllGifticonsUseCase
+import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class GifticonListViewModel @Inject constructor(
-    getAllGifticonsUseCase: GetAllGifticonsUseCase
+    getAllGifticonsUseCase: GetAllGifticonsUseCase,
+    private val getFilteredGifticonsUseCase: GetFilteredGifticonsUseCase
 ) : ViewModel() {
 
-    private val gifticons: StateFlow<List<Gifticon>> = getAllGifticonsUseCase().transform {
+    private val allGifticons: StateFlow<List<Gifticon>> = getAllGifticonsUseCase().transform {
         if (it is DbResult.Success) {
-            Timber.tag("GifticonList").d("gifticons: ${it.data}")
             emit(it.data)
-        } else if (it is DbResult.Failure) {
-            Timber.tag("GifticonList").d("fail: ${it.throwable}")
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val brands: StateFlow<List<Brand>> = gifticons.map { gifticons ->
+    private val brands: StateFlow<List<Brand>> = allGifticons.map { gifticons ->
         gifticons.groupBy {
             it.brand
         }.map { (brand, list) ->
@@ -42,53 +41,75 @@ class GifticonListViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val loading = MutableStateFlow(false)
-
-    private val _state = MutableStateFlow(GifticonListViewState())
-    val state = _state.asStateFlow()
+    private val filter = MutableStateFlow(setOf<String>())
+    private val sortBy = MutableStateFlow(GifticonSortBy.DEADLINE)
+    private val gifticons = MutableStateFlow<DbResult<List<Gifticon>>>(DbResult.Loading)
+    private val entireBrandsDialogShown = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
-            loading.value = true
-            combine(
-                gifticons,
-                brands,
-                loading
-            ) { gifticons, brands, refreshing ->
-                GifticonListViewState(
-                    gifticons = gifticons,
-                    loading = refreshing,
-                    brands = brands
-                )
-            }.catch { throwable ->
-                loading.value = false
-                throw throwable // TODO 어떻게 처리할 지 고민해보자
-            }.collect {
-                loading.value = false
-                _state.value = it
+            filter.flatMapLatest {
+                getFilteredGifticonsUseCase(it)
+            }.collect { dbResult ->
+                gifticons.value = dbResult
             }
         }
     }
 
+    val state = combine(
+        sortBy,
+        gifticons,
+        brands,
+        entireBrandsDialogShown,
+        filter
+    ) { sortBy, dbResult, brands, entireBrandsDialogShown, filter ->
+        when (dbResult) {
+            is DbResult.Success -> {
+                GifticonListViewState(
+                    sortBy = sortBy,
+                    gifticons = dbResult.data,
+                    brands = brands,
+                    entireBrandsDialogShown = entireBrandsDialogShown,
+                    selectedFilter = filter,
+                    loading = false
+                )
+            }
+            is DbResult.Loading -> {
+                val gifticons = gifticons.value.let {
+                    if (it is DbResult.Success) it.data else emptyList()
+                }
+                GifticonListViewState(
+                    sortBy = sortBy,
+                    gifticons = gifticons,
+                    brands = brands,
+                    entireBrandsDialogShown = entireBrandsDialogShown,
+                    selectedFilter = filter,
+                    loading = true
+                )
+            }
+            else -> {
+                GifticonListViewState()
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, GifticonListViewState(loading = true))
+
     fun showEntireBrandsDialog() {
-        _state.value = state.value.copy(entireBrandsDialogShown = true)
+        entireBrandsDialogShown.value = true
     }
 
     fun dismissEntireBrandsDialog() {
-        _state.value = state.value.copy(entireBrandsDialogShown = false)
+        entireBrandsDialogShown.value = false
     }
 
     fun toggleFilterSelection(brand: Brand) {
-        val selected = state.value.selectedFilter
-        if (brand in state.value.selectedFilter) {
-            selected.remove(brand)
+        filter.value = if (brand.name in state.value.selectedFilter) {
+            filter.value.minus(brand.name)
         } else {
-            selected.add(brand)
+            filter.value.plus(brand.name)
         }
-        _state.value = state.value.copy(selectedFilter = selected)
     }
 
     fun clearFilter() {
-        _state.value = state.value.copy(selectedFilter = hashSetOf())
+        filter.value = emptySet()
     }
 }

@@ -45,6 +45,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.lighthouse.domain.model.Brand
@@ -64,6 +65,10 @@ fun GifticonListScreen(
     val viewState by viewModel.state.collectAsStateWithLifecycle()
 
     Timber.tag("GifticonList").d("${viewState.brands}")
+    viewState.selectedFilter.forEach {
+        Timber.tag("Compose").d("GifticonListScreen - $it")
+    }
+    Timber.tag("Compose").d("--END1")
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -76,7 +81,12 @@ fun GifticonListScreen(
                 modifier = Modifier
                     .padding(top = 24.dp)
             ) {
-                BrandChipList(modifier = Modifier.weight(1f), brands = viewState.brands)
+                BrandChipList(
+                    modifier = Modifier.weight(1f),
+                    brands = viewState.brands,
+                    viewModel = viewModel,
+                    selectedFilters = viewState.selectedFilter
+                )
                 IconButton(
                     modifier = Modifier,
                     onClick = {
@@ -89,14 +99,20 @@ fun GifticonListScreen(
                     )
                 }
             }
-            GifticonList(gifticons = viewState.gifticons, Modifier.padding(top = 64.dp))
+            GifticonList(
+                gifticons = viewState.gifticons,
+                Modifier.padding(top = 64.dp)
+            )
         }
         if (viewState.entireBrandsDialogShown) {
             AllBrandChipsDialog(
                 brands = viewState.brands,
                 modifier = Modifier
                     .padding(16.dp),
-                onDismiss = { viewModel.dismissEntireBrandsDialog() }
+                selectedFilters = viewState.selectedFilter,
+                onDismiss = {
+                    viewModel.dismissEntireBrandsDialog()
+                }
             )
         }
     }
@@ -172,13 +188,18 @@ fun GifticonItem(gifticon: Gifticon) {
     }
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 private fun BrandChipList(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
-    viewModel: GifticonListViewModel = viewModel()
+    viewModel: GifticonListViewModel = viewModel(),
+    selectedFilters: Set<String> = emptySet()
 ) {
+    Timber.tag("Compose").d("BrandChipList: ${viewModel.viewModelScope.coroutineContext}")
+    selectedFilters.forEach {
+        Timber.tag("Compose").d("BrandChipList - selected: $it")
+    }
+    Timber.tag("Compose").d("---END")
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -190,12 +211,20 @@ private fun BrandChipList(
                 name = stringResource(id = R.string.main_filter_all),
                 count = brands.sumOf { it.count }
             )
-            BrandChip(brand = entireChipBrand) {
+            BrandChip(
+                brand = entireChipBrand,
+                selected = selectedFilters.isEmpty()
+            ) {
                 viewModel.clearFilter()
             }
         }
         items(brands.subList(0, minOf(chipCountToShow, brands.size))) { brand ->
-            BrandChip(brand)
+            BrandChip(
+                brand = brand,
+                selected = selectedFilters.contains(brand.name)
+            ) {
+                viewModel.toggleFilterSelection(brand)
+            }
         }
     }
 }
@@ -204,8 +233,12 @@ private fun BrandChipList(
 fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
+    selectedFilters: Set<String> = emptySet(),
+    viewModel: GifticonListViewModel = viewModel(),
     onDismiss: () -> Unit = {}
 ) {
+    Timber.tag("Compose").d("AllBrandChipsDialog: ${viewModel.viewModelScope.coroutineContext}")
+
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties()
@@ -221,27 +254,29 @@ fun AllBrandChipsDialog(
                 mainAxisSpacing = 10.dp
             ) {
                 brands.forEach {
-                    BrandChip(brand = it)
+                    BrandChip(
+                        brand = it,
+                        selected = selectedFilters.contains(it.name)
+                    ) { selected ->
+                        viewModel.toggleFilterSelection(selected)
+                    }
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BrandChip(
     brand: Brand,
     modifier: Modifier = Modifier,
-    viewModel: GifticonListViewModel = viewModel(),
+    selected: Boolean = false,
     onClick: (Brand) -> Unit = {}
 ) {
-    val viewState by viewModel.state.collectAsStateWithLifecycle()
-
     FilterChip(
-        selected = brand in viewState.selectedFilter,
+        selected = selected,
         onClick = {
-            viewModel.toggleFilterSelection(brand)
             onClick(brand)
         },
         modifier = modifier.wrapContentWidth(),

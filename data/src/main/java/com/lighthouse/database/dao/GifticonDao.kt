@@ -22,6 +22,9 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE")
     fun getAllGifticons(): Flow<List<GifticonEntity>>
 
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand IN(:filters)")
+    fun getFilteredGifticons(filters: Set<String>): Flow<List<GifticonEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGifticon(vararg gifticon: GifticonEntity)
 

@@ -8,7 +8,7 @@ data class GifticonListViewState(
     val gifticons: List<Gifticon> = emptyList(),
     val loading: Boolean = false,
     val brands: List<Brand> = emptyList(),
-    val selectedFilter: HashSet<Brand> = hashSetOf(),
+    val selectedFilter: Set<String> = emptySet(),
     val entireBrandsDialogShown: Boolean = false,
     val errorMessage: String? = null
 )
