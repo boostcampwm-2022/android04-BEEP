@@ -10,6 +10,7 @@ import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
 import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
+import com.lighthouse.domain.model.Brand
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
@@ -24,6 +25,9 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand IN(:filters)")
     fun getFilteredGifticons(filters: Set<String>): Flow<List<GifticonEntity>>
+
+    @Query("SELECT brand AS name, COUNT(*) AS count FROM $GIFTICON_TABLE GROUP BY brand ORDER BY count")
+    fun getAllBrands(): Flow<List<Brand>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGifticon(vararg gifticon: GifticonEntity)

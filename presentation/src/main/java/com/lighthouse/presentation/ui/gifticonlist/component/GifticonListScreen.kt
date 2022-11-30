@@ -204,7 +204,7 @@ private fun BrandChipList(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        val chipCountToShow = 3
+        val chipCountToShow = 7
 
         item { // "전체" 칩
             val entireChipBrand = Brand(

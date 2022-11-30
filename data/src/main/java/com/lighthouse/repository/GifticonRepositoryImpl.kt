@@ -5,6 +5,7 @@ import com.lighthouse.database.mapper.toGifticonEntity
 import com.lighthouse.database.mapper.toUsageHistoryEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
+import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
@@ -42,6 +43,15 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getFilteredGifticons(filter: Set<String>): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getFilteredGifticons(filter).collect {
+            emit(DbResult.Success(it))
+        }
+    }.catch { e ->
+        emit(DbResult.Failure(e))
+    }
+
+    override fun getAllBrands(): Flow<DbResult<List<Brand>>> = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getAllBrands().collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->

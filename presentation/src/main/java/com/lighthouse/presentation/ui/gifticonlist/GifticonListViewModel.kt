@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.usecase.GetAllGifticonsUseCase
+import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -23,21 +22,13 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class GifticonListViewModel @Inject constructor(
-    getAllGifticonsUseCase: GetAllGifticonsUseCase,
+    getAllBrandsUseCase: GetAllBrandsUseCase,
     private val getFilteredGifticonsUseCase: GetFilteredGifticonsUseCase
 ) : ViewModel() {
 
-    private val allGifticons: StateFlow<List<Gifticon>> = getAllGifticonsUseCase().transform {
+    private val brands: StateFlow<List<Brand>> = getAllBrandsUseCase().transform {
         if (it is DbResult.Success) {
             emit(it.data)
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-    private val brands: StateFlow<List<Brand>> = allGifticons.map { gifticons ->
-        gifticons.groupBy {
-            it.brand
-        }.map { (brand, list) ->
-            Brand(brand, list.size)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -75,6 +66,7 @@ class GifticonListViewModel @Inject constructor(
                 )
             }
             is DbResult.Loading -> {
+                // TODO Shimmer UI
                 val gifticons = gifticons.value.let {
                     if (it is DbResult.Success) it.data else emptyList()
                 }

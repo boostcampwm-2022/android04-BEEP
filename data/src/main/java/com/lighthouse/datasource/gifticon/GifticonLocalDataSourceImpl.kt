@@ -4,6 +4,7 @@ import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.mapper.toUsageHistory
+import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toDomain
@@ -31,6 +32,10 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         return gifticonDao.getFilteredGifticons(filter).map { list ->
             list.map { it.toDomain() }
         }
+    }
+
+    override fun getAllBrands(): Flow<List<Brand>> {
+        return gifticonDao.getAllBrands()
     }
 
     override suspend fun updateGifticon(gifticon: GifticonEntity) {
