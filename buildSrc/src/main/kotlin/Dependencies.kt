@@ -58,6 +58,7 @@ object Versions {
     const val COMPOSE_VIEWMODEL = "2.5.1"
 
     const val SHIMMER = "0.5.0"
+    const val LOTTIE = "5.2.0"
 }
 
 object Libraries {
@@ -126,6 +127,7 @@ object Libraries {
     private const val COMPOSE_LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-compose:+"
 
     private const val SHIMMER = "com.facebook.shimmer:shimmer:${Versions.SHIMMER}"
+    private const val LOTTIE = "com.airbnb.android:lottie:${Versions.LOTTIE}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
@@ -156,7 +158,8 @@ object Libraries {
         COMPOSE_ACTIVITIES,
         COMPOSE_VIEWMODEL,
         COMPOSE_LIFECYCLE_RUNTIME,
-        SHIMMER
+        SHIMMER,
+        LOTTIE
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
