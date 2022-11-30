@@ -50,11 +50,11 @@ class HomeViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     val expiredGifticon = allGifticons.transform { gifticons ->
-        emit(
-            gifticons.values
-                .flatten()
-                .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }
-        )
+        if (gifticons.isEmpty()) return@transform
+        val gifticonFlatten = gifticons.values.flatten()
+        val gifticonSize =
+            if (gifticonFlatten.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) gifticonFlatten.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
+        emit(gifticonFlatten.slice(0 until gifticonSize))
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _nearGifticon: MutableStateFlow<UiState<List<GifticonUiModel>>> = MutableStateFlow(UiState.Loading)
@@ -107,5 +107,6 @@ class HomeViewModel @Inject constructor(
 
     companion object {
         private const val SEARCH_SIZE = 15
+        private const val EXPIRED_GIFTICON_LIST_MAX_SIZE = 7
     }
 }
