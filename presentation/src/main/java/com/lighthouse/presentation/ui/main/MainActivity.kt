@@ -8,11 +8,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
@@ -30,7 +30,6 @@ import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -118,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         if (fg.isAdded) {
                             show(fragment)
                         } else {
-                            add(R.id.fl_container, fg)
+                            add(R.id.fl_container, fg, fg.javaClass.name)
                         }
                     }
                 }
@@ -141,11 +140,7 @@ class MainActivity : AppCompatActivity() {
     private fun collectBnv() {
         repeatOnStarted {
             viewModel.bnvFlow.collect { show ->
-                if (show) {
-                    binding.bnv.visibility = View.VISIBLE
-                } else {
-                    binding.bnv.visibility = View.GONE
-                }
+                binding.bnv.isVisible = show
             }
         }
     }
