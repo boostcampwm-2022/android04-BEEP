@@ -104,4 +104,8 @@ class GifticonListViewModel @Inject constructor(
     fun clearFilter() {
         filter.value = emptySet()
     }
+
+    fun sort(newSortBy: GifticonSortBy) {
+        sortBy.value = newSortBy
+    }
 }
