@@ -24,8 +24,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/test"
                 android:scaleType="centerCrop"
+                android:src="@drawable/test"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,6 @@
                 android:layout_height="28dp"
                 android:background="@drawable/bg_primary_corner_4"
                 android:gravity="center"
-                android:textAlignment="center"
                 android:textAppearance="@style/BEEP.TextStyle.Caption.White"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -54,8 +53,8 @@
                 android:lines="1"
                 android:text="@{gifticon.brand}"
                 android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_product"
                 tools:text="스타벅스" />
 
