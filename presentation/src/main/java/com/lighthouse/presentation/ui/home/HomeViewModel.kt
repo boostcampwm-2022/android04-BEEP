@@ -99,11 +99,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun diffLocation(
-        location: BrandPlaceInfoUiModel,
+        brandLocation: BrandPlaceInfoUiModel,
         currentLocation: VertexLocation
     ) = LocationConverter.locationDistance(
-        location.x.toDouble(),
-        location.y.toDouble(),
+        brandLocation.x.toDouble(),
+        brandLocation.y.toDouble(),
         currentLocation.longitude,
         currentLocation.latitude
     )
