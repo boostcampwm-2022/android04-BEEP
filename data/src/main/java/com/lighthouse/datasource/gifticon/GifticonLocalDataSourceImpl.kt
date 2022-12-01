@@ -22,21 +22,20 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllGifticons(): Flow<List<Gifticon>> {
-        return gifticonDao.getAllGifticons().map { list ->
+    override fun getAllGifticons(userId: String): Flow<List<Gifticon>> {
+        return gifticonDao.getAllGifticons(userId).map { list ->
             list.map { it.toDomain() }
         }
     }
 
-    override fun getFilteredGifticons(filter: Set<String>): Flow<List<Gifticon>> {
-        return gifticonDao.getFilteredGifticons(filter).map { list ->
+    override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<List<Gifticon>> {
+        return gifticonDao.getFilteredGifticons(userId, filter).map { list ->
             list.map { it.toDomain() }
         }
     }
 
     override fun getAllBrands(userId: String): Flow<List<Brand>> {
-//        return gifticonDao.getAllBrands(userId)
-        return gifticonDao.getAllBrands("이름") // TODO remove FAKE
+        return gifticonDao.getAllBrands(userId)
     }
 
     override suspend fun updateGifticon(gifticon: GifticonEntity) {

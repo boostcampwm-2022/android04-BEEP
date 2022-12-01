@@ -31,18 +31,18 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllGifticons(): Flow<DbResult<List<Gifticon>>> = flow {
+    override fun getAllGifticons(userId: String): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllGifticons().collect {
+        gifticonLocalDataSource.getAllGifticons(userId).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
         emit(DbResult.Failure(e))
     }
 
-    override fun getFilteredGifticons(filter: Set<String>): Flow<DbResult<List<Gifticon>>> = flow {
+    override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalDataSource.getFilteredGifticons(filter).collect {
+        gifticonLocalDataSource.getFilteredGifticons(userId, filter).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->

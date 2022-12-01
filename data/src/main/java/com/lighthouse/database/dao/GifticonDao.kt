@@ -20,11 +20,11 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE id = :id")
     fun getGifticon(id: String): Flow<GifticonEntity>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE")
-    fun getAllGifticons(): Flow<List<GifticonEntity>>
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId")
+    fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand IN(:filters)")
-    fun getFilteredGifticons(filters: Set<String>): Flow<List<GifticonEntity>>
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters)")
+    fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query(
         "SELECT brand AS name, COUNT(*) AS count FROM $GIFTICON_TABLE " +
