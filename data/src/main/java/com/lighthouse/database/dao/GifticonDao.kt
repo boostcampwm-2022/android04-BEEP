@@ -26,8 +26,12 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand IN(:filters)")
     fun getFilteredGifticons(filters: Set<String>): Flow<List<GifticonEntity>>
 
-    @Query("SELECT brand AS name, COUNT(*) AS count FROM $GIFTICON_TABLE GROUP BY brand ORDER BY count DESC")
-    fun getAllBrands(): Flow<List<Brand>>
+    @Query(
+        "SELECT brand AS name, COUNT(*) AS count FROM $GIFTICON_TABLE " +
+                "WHERE user_id = :userId " +
+                "GROUP BY brand ORDER BY count DESC"
+    )
+    fun getAllBrands(userId: String): Flow<List<Brand>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGifticon(vararg gifticon: GifticonEntity)

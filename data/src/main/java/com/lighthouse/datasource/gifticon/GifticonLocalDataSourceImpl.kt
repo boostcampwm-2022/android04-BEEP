@@ -34,8 +34,9 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllBrands(): Flow<List<Brand>> {
-        return gifticonDao.getAllBrands()
+    override fun getAllBrands(userId: String): Flow<List<Brand>> {
+//        return gifticonDao.getAllBrands(userId)
+        return gifticonDao.getAllBrands("이름") // TODO remove FAKE
     }
 
     override suspend fun updateGifticon(gifticon: GifticonEntity) {

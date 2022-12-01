@@ -11,7 +11,7 @@ interface GifticonLocalDataSource {
     fun getGifticon(id: String): Flow<Gifticon>
     fun getAllGifticons(): Flow<List<Gifticon>>
     fun getFilteredGifticons(filter: Set<String>): Flow<List<Gifticon>>
-    fun getAllBrands(): Flow<List<Brand>>
+    fun getAllBrands(userId: String): Flow<List<Brand>>
 
     suspend fun insertGifticons(gifticons: List<GifticonEntity>)
     suspend fun updateGifticon(gifticon: GifticonEntity)

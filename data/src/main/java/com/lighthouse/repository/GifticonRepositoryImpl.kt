@@ -49,9 +49,9 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllBrands(): Flow<DbResult<List<Brand>>> = flow {
+    override fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllBrands().collect {
+        gifticonLocalDataSource.getAllBrands(userId).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->

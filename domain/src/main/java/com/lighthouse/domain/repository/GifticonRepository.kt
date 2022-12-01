@@ -12,7 +12,7 @@ interface GifticonRepository {
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
     fun getAllGifticons(): Flow<DbResult<List<Gifticon>>>
     fun getFilteredGifticons(filter: Set<String>): Flow<DbResult<List<Gifticon>>>
-    fun getAllBrands(): Flow<DbResult<List<Brand>>>
+    fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
 
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
     suspend fun updateGifticon(gifticon: Gifticon)
