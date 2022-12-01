@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,9 +51,9 @@ class MainViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun gotoMap(gifticons: List<Gifticon>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
+    fun gotoMap(gifticons: Map<String, List<Gifticon>>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
         viewModelScope.launch {
-            _eventFlow.emit(MainEvent.NavigateMap(gifticons, nearBrandsInfo))
+            _eventFlow.emit(MainEvent.NavigateMap(gifticons.values.flatten(), nearBrandsInfo))
         }
     }
 
