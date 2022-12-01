@@ -5,17 +5,16 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.security.AuthCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragment(R.layout.fragment_pin) {
@@ -34,11 +33,10 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        binding.lifecycleOwner = this
-        binding.btnPinPrev.visibility = View.INVISIBLE
+        binding.lifecycleOwner = viewLifecycleOwner
 
         initBottomSheetDialog(view)
-        lifecycleScope.launch {
+        repeatOnStarted {
             viewModel.pinMode.collect { mode ->
                 when (mode) {
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
@@ -51,9 +49,9 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
                             visibility = View.VISIBLE
                             startAnimation(fadeUpAnimation)
                         }
+                        authCallback.onAuthSuccess()
                         delay(1000L)
                         dismiss()
-                        authCallback.onAuthSuccess()
                     }
                     else -> {}
                 }
