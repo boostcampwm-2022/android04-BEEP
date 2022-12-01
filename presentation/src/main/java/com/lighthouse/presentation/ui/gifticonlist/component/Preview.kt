@@ -76,7 +76,7 @@ fun BrandChipsPreview() {
             Brand("베스킨라빈스", 12),
             Brand("맘스터치", 1),
             Brand("김밥천국", 3),
-            Brand("투썸", 7),
+            Brand("투썸", 7)
         )
     )
 }

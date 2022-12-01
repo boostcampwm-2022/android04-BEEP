@@ -28,9 +28,9 @@ interface GifticonDao {
 
     @Query(
         "SELECT brand AS name, COUNT(*) AS count " +
-                "FROM $GIFTICON_TABLE " +
-                "WHERE user_id = :userId " +
-                "GROUP BY brand ORDER BY count DESC"
+            "FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId " +
+            "GROUP BY brand ORDER BY count DESC"
     )
     fun getAllBrands(userId: String): Flow<List<Brand>>
 
