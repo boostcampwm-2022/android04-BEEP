@@ -11,10 +11,9 @@ import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.Calendar
 import javax.inject.Inject
 
-class GifticonLocalDataSourceImpl @Inject constructor(
+class GifticonLocalFakeDataSourceImpl @Inject constructor(
     private val gifticonDao: GifticonDao
 ) : GifticonLocalDataSource {
 
@@ -25,19 +24,19 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     }
 
     override fun getAllGifticons(userId: String): Flow<List<Gifticon>> {
-        return gifticonDao.getAllGifticons(userId).map { list ->
+        return gifticonDao.getAllGifticons("이름").map { list ->
             list.map { it.toDomain() }
         }
     }
 
     override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<List<Gifticon>> {
-        return gifticonDao.getFilteredGifticons(userId, filter).map { list ->
+        return gifticonDao.getFilteredGifticons("이름", filter).map { list ->
             list.map { it.toDomain() }
         }
     }
 
     override fun getAllBrands(userId: String): Flow<List<Brand>> {
-        return gifticonDao.getAllBrands(userId)
+        return gifticonDao.getAllBrands("이름")
     }
 
     override suspend fun updateGifticon(gifticon: Gifticon) {
@@ -74,15 +73,5 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
         return gifticonDao.getGifticonByBrand(brand)
-    }
-
-    override fun hasVariableGifticon(): Flow<Boolean> {
-        val today = Calendar.getInstance().let {
-            it.set(Calendar.HOUR, 0)
-            it.set(Calendar.MINUTE, 0)
-            it.set(Calendar.SECOND, 0)
-            it.time
-        }
-        return gifticonDao.hasVariableGifticon(today)
     }
 }

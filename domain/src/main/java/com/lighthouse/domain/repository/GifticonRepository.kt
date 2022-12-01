@@ -1,5 +1,6 @@
 package com.lighthouse.domain.repository
 
+import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
@@ -9,7 +10,10 @@ import kotlinx.coroutines.flow.Flow
 interface GifticonRepository {
 
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
-    fun getAllGifticons(): Flow<DbResult<List<Gifticon>>>
+    fun getAllGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
+    fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<DbResult<List<Gifticon>>>
+    fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
+
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
     suspend fun updateGifticon(gifticon: Gifticon)
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>
