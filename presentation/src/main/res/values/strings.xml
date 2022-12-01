@@ -191,7 +191,15 @@
     <string name="home_near_more_label">지도보기</string>
     <string name="home_expire_title">사용 기한이 임박했어요!</string>
     <string name="home_expire_more_label">더보기</string>
+
+    <string name="security_setting_option_change">보안 인증 수단 변경</string>
+    <string name="security_setting_change_pin">PIN 번호 변경</string>
+    <string name="security_setting_change_success">보안 설정을 변경했습니다.</string>
+    <string name="security_setting_change_failure">보안 설정 변경에 실패했습니다.</string>
+    <string name="security_setting_change_cancel">보안 설정 변경을 취소했습니다.</string>
+
     <string name="home_near_gifticon_distance">%dm</string>
     <string name="home_near_gifticon_announce">근처에 존재합니다.</string>
+
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
 </resources>
