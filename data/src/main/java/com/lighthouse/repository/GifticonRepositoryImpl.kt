@@ -8,6 +8,7 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.mapper.toDomain
@@ -31,18 +32,18 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllGifticons(userId: String): Flow<DbResult<List<Gifticon>>> = flow {
+    override fun getAllGifticons(userId: String, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getAllGifticons(userId).collect { // TODO remove FAKE
+        gifticonLocalFakeDataSource.getAllGifticons(userId, sortBy).collect { // TODO remove FAKE
             emit(DbResult.Success(it))
         }
     }.catch { e ->
         emit(DbResult.Failure(e))
     }
 
-    override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<DbResult<List<Gifticon>>> = flow {
+    override fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getFilteredGifticons(userId, filter).collect { // TODO remove FAKE
+        gifticonLocalFakeDataSource.getFilteredGifticons(userId, filter, sortBy).collect { // TODO remove FAKE
             emit(DbResult.Success(it))
         }
     }.catch { e ->
