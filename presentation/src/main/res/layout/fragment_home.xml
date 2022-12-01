@@ -99,10 +99,12 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <TextView
+            android:id="@+id/tv_not_allow_location_permission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="위치 권한을 허용해주세요"
             android:textAlignment="center"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/rv_near_gifticon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

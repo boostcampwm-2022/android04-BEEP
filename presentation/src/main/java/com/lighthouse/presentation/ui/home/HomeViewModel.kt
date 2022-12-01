@@ -18,9 +18,13 @@ import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -35,7 +39,7 @@ class HomeViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
-    private val permission = hasLocationPermissionsUseCase()
+    private var locationFlow: Job? = null
 
     private val _eventFlow = MutableEventFlow<HomeEvent>()
     val eventFlow = _eventFlow.asEventFlow()
@@ -67,26 +71,29 @@ class HomeViewModel @Inject constructor(
     private val _nearGifticon: MutableStateFlow<UiState<List<GifticonUiModel>>> = MutableStateFlow(UiState.Loading)
     val nearGifticon = _nearGifticon.asStateFlow()
 
-    var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
-        private set
+    private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
     private lateinit var recentLocation: VertexLocation
 
+    val hasLocationPermission =
+        hasLocationPermissionsUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     init {
         viewModelScope.launch {
-            getUserLocationUseCase().collect { location ->
-                Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
-                recentLocation = location
-                getNearBrands(location.longitude, location.latitude)
+            hasLocationPermission.collectLatest { result ->
+                Timber.tag("TAG").d("${javaClass.simpleName} result -> $result")
+                if (result) observeLocationFlow()
             }
         }
+    }
 
-        // TODO 테스트용
-        viewModelScope.launch {
-            permission.collect {
-                Timber.tag("TAG").d("${javaClass.simpleName} permission collect -> $it")
-            }
-        }
+    private fun observeLocationFlow() {
+        if (locationFlow?.isActive == true) return
+
+        locationFlow = getUserLocationUseCase().onEach { location ->
+            recentLocation = location
+            getNearBrands(location.longitude, location.latitude)
+        }.launchIn(viewModelScope)
     }
 
     private fun getNearBrands(x: Double, y: Double) {
@@ -97,7 +104,8 @@ class HomeViewModel @Inject constructor(
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
                     val nearGifticon = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
-                        gifticonsMap.value[placeInfo.brand]?.first()?.toPresentation(diffLocation(placeInfo, recentLocation))
+                        gifticonsMap.value[placeInfo.brand]?.first()
+                            ?.toPresentation(diffLocation(placeInfo, recentLocation))
                     }.sortedBy { it.distance }
                     _nearGifticon.emit(UiState.Success(nearGifticon))
                 }

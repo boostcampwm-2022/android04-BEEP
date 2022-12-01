@@ -203,7 +203,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
                     is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
-                    is UiState.NotLocationPermission -> showSnackBar(R.string.error_location_not_permit)
                 }
             }
         }

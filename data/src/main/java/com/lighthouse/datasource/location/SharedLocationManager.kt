@@ -13,18 +13,25 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.lighthouse.domain.VertexLocation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
 import timber.log.Timber
 
 @SuppressLint("MissingPermission")
 class SharedLocationManager constructor(
     private val context: Context
 ) {
-    private val _receivingLocationUpdates = MutableStateFlow(false)
-    val receivingLocationUpdates = _receivingLocationUpdates.asStateFlow()
+    val receivingLocationUpdates = flow {
+        val result = context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
+            context.hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        emit(result)
+    }
 
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -44,7 +51,7 @@ class SharedLocationManager constructor(
             }
         }
 
-        if (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION).not() ||
+        if (context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION).not() &&
             context.hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION).not()
         ) close()
 
@@ -57,19 +64,18 @@ class SharedLocationManager constructor(
             close(e)
         }.addOnSuccessListener {
             Timber.tag("TAG").d("${javaClass.simpleName} Start Location Updates")
-            _receivingLocationUpdates.value = true
         }
 
         awaitClose {
             Timber.tag("TAG").d("${javaClass.simpleName} Stopping Location Updates")
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
-    }
+    }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed())
 
     fun locationFlow() = locationUpdates
 
     companion object {
-        private const val LOCATION_INTERVAL = 1000L
+        private const val LOCATION_INTERVAL = 30000L
     }
 }
 

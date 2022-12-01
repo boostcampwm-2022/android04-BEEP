@@ -86,7 +86,6 @@ class MapViewModel @Inject constructor(
         var isNeededFirstLoading = isFirstLoadData
         viewModelScope.launch {
             getUserLocation().collect { location ->
-                if (location == null) return@collect
                 if (isNeededFirstLoading) {
                     isNeededFirstLoading = false
                     return@collect

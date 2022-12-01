@@ -127,7 +127,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
                     is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
-                    is UiState.NotLocationPermission -> guideLocationPermission()
                 }
             }
         }
@@ -137,6 +136,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 when (directions) {
                     is HomeEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
                 }
+            }
+        }
+
+        repeatOnStarted {
+            homeViewModel.hasLocationPermission.collectLatest { hasPermission ->
+                if (hasPermission.not()) guideLocationPermission()
             }
         }
     }
@@ -175,6 +180,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun guideLocationPermission() {
         stopShimmer()
+        binding.tvNotAllowLocationPermission.isVisible = true
         // TODO 확인용 입니다. 나중에 지워질 예정이에요.
         Timber.tag("TAG").d("${javaClass.simpleName} 위치 권한이 허용 돼 있지 않다~")
     }
@@ -197,6 +203,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun stopShimmer() {
         binding.shimmer.stopShimmer()
         binding.shimmer.isVisible = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.tag("TAG").d("$this onDestroyView")
     }
 
     companion object {
