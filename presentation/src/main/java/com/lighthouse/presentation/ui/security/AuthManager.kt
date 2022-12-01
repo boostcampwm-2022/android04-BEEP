@@ -8,29 +8,21 @@ import com.lighthouse.presentation.ui.security.fingerprint.biometric.BiometricAu
 import com.lighthouse.presentation.ui.security.pin.PinDialog
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import com.lighthouse.presentation.util.UserPreference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthManager @Inject constructor(
     private val userPreference: UserPreference
 ) {
-    private lateinit var job: Job
-    private lateinit var biometricAuth: BiometricAuth
 
     fun auth(
         activity: FragmentActivity,
         biometricLauncher: ActivityResultLauncher<Intent>,
         authCallback: AuthCallback
     ) {
-        job = CoroutineScope(Dispatchers.Main).launch {
-            when (userPreference.securityOption.value) {
-                SecurityOption.NONE -> authCallback.onAuthSuccess()
-                SecurityOption.PIN -> authPin(activity.supportFragmentManager, authCallback)
-                SecurityOption.FINGERPRINT -> authFingerprint(activity, biometricLauncher, authCallback)
-            }
+        when (userPreference.securityOption.value) {
+            SecurityOption.NONE -> authCallback.onAuthSuccess()
+            SecurityOption.PIN -> authPin(activity.supportFragmentManager, authCallback)
+            SecurityOption.FINGERPRINT -> authFingerprint(activity, biometricLauncher, authCallback)
         }
     }
 
@@ -38,15 +30,12 @@ class AuthManager @Inject constructor(
         PinDialog(authCallback).show(supportFragmentManager, PIN_TAG)
     }
 
-    private fun authFingerprint(
+    fun authFingerprint(
         activity: FragmentActivity,
         biometricLauncher: ActivityResultLauncher<Intent>,
         authCallback: AuthCallback
     ) {
-        if (::biometricAuth.isInitialized.not()) {
-            biometricAuth = BiometricAuth(activity, biometricLauncher, authCallback)
-        }
-        biometricAuth.authenticate()
+        BiometricAuth(activity, biometricLauncher, authCallback).authenticate()
     }
 
     companion object {

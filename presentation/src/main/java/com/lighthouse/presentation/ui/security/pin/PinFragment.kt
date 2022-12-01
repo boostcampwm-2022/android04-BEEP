@@ -9,10 +9,10 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityViewModel
@@ -20,7 +20,6 @@ import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PinFragment : Fragment(R.layout.fragment_pin) {
@@ -41,12 +40,9 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        binding.tvSecureNotUse.visibility = if (activityViewModel.isRevise) View.INVISIBLE else View.VISIBLE
 
-        if (activityViewModel.isRevise) {
-            binding.tvSecureNotUse.visibility = View.INVISIBLE
-        }
-
-        lifecycleScope.launch {
+        repeatOnStarted {
             viewModel.pinMode.collect {
                 when (it) {
                     PinSettingType.INITIAL -> {

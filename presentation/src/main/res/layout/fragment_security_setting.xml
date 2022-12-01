@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.lighthouse.presentation.ui.setting.SettingSecurityViewModel" />
+            type="com.lighthouse.presentation.ui.setting.SettingViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
