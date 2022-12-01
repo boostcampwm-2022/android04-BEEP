@@ -9,6 +9,7 @@
     <string name="all_cancel">취소</string>
     <string name="all_d_day_more_than_year">D-365+</string>
     <string name="all_d_day_expired">만료</string>
+    <string name="all_d_very_day">D-Day</string>
     <string name="all_expired_date">~ %4d.%02d.%02d</string>
     <string name="all_date">%4d.%02d.%02d</string>
     <string name="all_yes">네</string>

@@ -8,9 +8,6 @@ import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.presentation.util.UUID
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
 
@@ -37,9 +34,9 @@ class BeepApplication : Application() {
             GifticonEntity(UUID.generate(), "이름", false, "이름", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
         )
 
-        CoroutineScope(Dispatchers.Main).launch {
+        /*CoroutineScope(Dispatchers.Main).launch {
             dao.insertGifticon(*gifticonTestData.toTypedArray())
-        }
+        }*/
     }
 }
 

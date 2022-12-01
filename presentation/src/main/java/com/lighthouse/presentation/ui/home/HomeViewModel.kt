@@ -46,7 +46,7 @@ class HomeViewModel @Inject constructor(
     val allGifticons = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             val gifticonGroup = gifticons.data
-                .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) > 0 }
+                .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) >= 0 }
                 .groupBy { it.brand }
             emit(gifticonGroup)
         }
