@@ -13,4 +13,6 @@ object Extras {
 
     const val KEY_NEAR_BRANDS = "Extra.Home.Brands"
     const val KEY_NEAR_GIFTICONS = "Extra.Home.Gifticons"
+
+    const val KEY_PIN_REVISE = "Extra.Pin.Revise"
 }

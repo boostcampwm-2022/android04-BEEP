@@ -34,7 +34,6 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.btnPinPrev.visibility = View.INVISIBLE
 
         initBottomSheetDialog(view)
         repeatOnStarted {
