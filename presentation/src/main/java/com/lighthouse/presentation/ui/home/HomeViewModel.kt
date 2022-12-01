@@ -9,11 +9,14 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
+import com.lighthouse.domain.usecase.HasLocationPermissionsUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
+import com.lighthouse.presentation.util.flow.MutableEventFlow
+import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,14 +24,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getGifticonUseCase: GetGifticonsUseCase,
-    private val getUserLocation: GetUserLocationUseCase,
+    hasLocationPermissionsUseCase: HasLocationPermissionsUseCase,
+    private val getUserLocationUseCase: GetUserLocationUseCase,
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
+
+    private val permission = hasLocationPermissionsUseCase()
+
+    private val _eventFlow = MutableEventFlow<HomeEvent>()
+    val eventFlow = _eventFlow.asEventFlow()
 
     private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
@@ -38,7 +48,7 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val gifticonsMap = gifticons.transform { gifticons ->
+    private val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             val gifticonGroup = gifticons.data
                 .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) >= 0 }
@@ -64,13 +74,17 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getUserLocation().collect { location ->
-                if (location == null) {
-                    _nearGifticon.value = UiState.NotLocationPermission
-                    return@collect
-                }
+            getUserLocationUseCase().collect { location ->
+                Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
                 recentLocation = location
                 getNearBrands(location.longitude, location.latitude)
+            }
+        }
+
+        // TODO 테스트용
+        viewModelScope.launch {
+            permission.collect {
+                Timber.tag("TAG").d("${javaClass.simpleName} permission collect -> $it")
             }
         }
     }
@@ -107,6 +121,12 @@ class HomeViewModel @Inject constructor(
         currentLocation.longitude,
         currentLocation.latitude
     )
+
+    fun gotoMap() {
+        viewModelScope.launch {
+            _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten(), nearBrandsInfo))
+        }
+    }
 
     companion object {
         private const val SEARCH_SIZE = 15

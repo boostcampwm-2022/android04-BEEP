@@ -2,10 +2,8 @@ package com.lighthouse.presentation.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.HasVariableGifticonUseCase
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,12 +52,6 @@ class MainViewModel @Inject constructor(
     fun gotoAddGifticon() {
         viewModelScope.launch {
             _eventFlow.emit(MainEvent.NavigateAddGifticon)
-        }
-    }
-
-    fun gotoMap(gifticons: Map<String, List<Gifticon>>, nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
-        viewModelScope.launch {
-            _eventFlow.emit(MainEvent.NavigateMap(gifticons.values.flatten(), nearBrandsInfo))
         }
     }
 

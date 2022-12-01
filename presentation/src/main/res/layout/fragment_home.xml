@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onClickListener="@{() -> mainVm.gotoMap(homeVm.gifticonsMap, homeVm.nearBrandsInfo)}"
+            android:onClickListener="@{() -> homeVm.gotoMap()}"
             android:padding="8dp"
             android:text="@string/home_near_more_label"
             android:textAlignment="gravity"
@@ -89,12 +89,24 @@
                 android:orientation="horizontal">
 
                 <include layout="@layout/item_gifticon_vertical_loading" />
+
                 <include layout="@layout/item_gifticon_vertical_loading" />
+
                 <include layout="@layout/item_gifticon_vertical_loading" />
 
             </LinearLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="위치 권한을 허용해주세요"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/rv_near_gifticon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_near_title" />
 
         <TextView
             android:id="@+id/tv_expire_title"
