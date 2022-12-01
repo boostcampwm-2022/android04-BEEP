@@ -184,23 +184,6 @@ object LocationConverter {
     fun convertToDD(dms: Dms) =
         dms.degree.toDouble() + (dms.minutes.toDouble() / 60.0) + (dms.seconds.toDouble() / 3600.0)
 
-    fun toPolygonLatLng(x: Double, y: Double): ArrayList<Pair<Double, Double>> {
-        val tempX = toMinDms(x)
-        val tempY = toMinDms(y)
-
-        val tempList = arrayListOf<Pair<Double, Double>>()
-        // 왼쪽 아래
-        tempList.add(Pair(convertToDD(calculateTime(-gap, tempX)), convertToDD(calculateTime(-gap, tempY))))
-        // 왼쪽 위
-        tempList.add(Pair(convertToDD(calculateTime(-gap, tempX)), convertToDD(calculateTime(gap * 2, tempY))))
-        // 오른쪽 위
-        tempList.add(Pair(convertToDD(calculateTime(gap * 2, tempX)), convertToDD(calculateTime(gap * 2, tempY))))
-        // 오른쪽 아래
-        tempList.add(Pair(convertToDD(calculateTime(gap * 2, tempX)), convertToDD(calculateTime(-gap, tempY))))
-
-        return tempList
-    }
-
     /** 참고 : https://www.geodatasource.com/developers/java
      * 두 좌표 사이의 거리를 구하는 함수
      * @param lat1 기준 x
@@ -212,7 +195,8 @@ object LocationConverter {
     fun locationDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val theta = lon1 - lon2
         var dist =
-            sin(decimalToRadian(lat1)) * sin(decimalToRadian(lat2)) + cos(decimalToRadian(lat1)) * cos(decimalToRadian(lat2)) * cos(decimalToRadian(theta))
+            sin(decimalToRadian(lat1)) * sin(decimalToRadian(lat2)) + cos(decimalToRadian(lat1)) *
+                cos(decimalToRadian(lat2)) * cos(decimalToRadian(theta))
         dist = acos(dist)
         dist = radianToDecimal(dist)
         dist *= 60 * 1.1515 * 1609.344

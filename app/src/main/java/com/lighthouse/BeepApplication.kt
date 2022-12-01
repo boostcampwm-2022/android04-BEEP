@@ -31,10 +31,10 @@ class BeepApplication : Application() {
             GifticonEntity(UUID.generate(), "이름", false, "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
             GifticonEntity(UUID.generate(), "이름", false, "이름", "BHC", Date(122, 5, 10), "bar", true, 1, "memo", true),
             GifticonEntity(UUID.generate(), "이름", false, "이름", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "CU", Date(20, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "서브웨이", Date(20, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "세븐일레븐", Date(20, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "파파존스", Date(20, 10, 20), "bar", true, 1, "memo", true)
+            GifticonEntity(UUID.generate(), "이름", false, "이름", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
+            GifticonEntity(UUID.generate(), "이름", false, "이름", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
+            GifticonEntity(UUID.generate(), "이름", false, "이름", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
+            GifticonEntity(UUID.generate(), "이름", false, "이름", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
         )
 
         CoroutineScope(Dispatchers.Main).launch {
