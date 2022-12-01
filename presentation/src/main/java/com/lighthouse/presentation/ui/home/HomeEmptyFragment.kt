@@ -9,7 +9,6 @@ import com.lighthouse.presentation.databinding.FragmentHomeEmptyBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeEmptyFragment : Fragment(R.layout.fragment_home_empty) {
@@ -21,6 +20,5 @@ class HomeEmptyFragment : Fragment(R.layout.fragment_home_empty) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = mainViewModel
-        Timber.tag("TAG").d("${javaClass.simpleName} 데이터가 존재하지 않아서 HomeDataNotFragment 이동")
     }
 }

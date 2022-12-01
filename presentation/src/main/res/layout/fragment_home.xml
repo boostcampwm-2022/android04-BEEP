@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onClickListener="@{() -> mainVm.gotoMap(homeVm.allGifticons, homeVm.nearBrandsInfo)}"
+            android:onClickListener="@{() -> mainVm.gotoMap(homeVm.gifticonsMap, homeVm.nearBrandsInfo)}"
             android:padding="8dp"
             android:text="@string/home_near_more_label"
             android:textAlignment="gravity"

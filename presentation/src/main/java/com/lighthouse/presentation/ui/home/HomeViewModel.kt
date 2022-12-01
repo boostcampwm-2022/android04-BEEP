@@ -10,12 +10,10 @@ import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
-import com.lighthouse.presentation.mapper.toUiModel
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
-import com.lighthouse.presentation.util.flow.MutableEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,9 +30,6 @@ class HomeViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
-    var homeEvent: MutableEventFlow<HomeEvent> = MutableEventFlow()
-        private set
-
     private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allBrands = gifticons.transform { gifticons ->
@@ -43,7 +38,7 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val allGifticons = gifticons.transform { gifticons ->
+    val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             val gifticonGroup = gifticons.data
                 .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) >= 0 }
@@ -52,12 +47,7 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    val expiredGifticon = allGifticons.transform { gifticons ->
-        if (gifticons.isEmpty()) {
-            homeEvent.emit(HomeEvent.NavigateDataNotExists)
-            return@transform
-        }
-        homeEvent.emit(HomeEvent.NavigateDataExists)
+    val expiredGifticon = gifticonsMap.transform { gifticons ->
         val gifticonFlatten = gifticons.values.flatten()
         val gifticonSize =
             if (gifticonFlatten.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) gifticonFlatten.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
@@ -93,7 +83,7 @@ class HomeViewModel @Inject constructor(
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
                     val nearGifticon = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
-                        allGifticons.value[placeInfo.brand]?.first()?.toUiModel(diffLocation(placeInfo, recentLocation))
+                        gifticonsMap.value[placeInfo.brand]?.first()?.toPresentation(diffLocation(placeInfo, recentLocation))
                     }.sortedBy { it.distance }
                     _nearGifticon.emit(UiState.Success(nearGifticon))
                 }

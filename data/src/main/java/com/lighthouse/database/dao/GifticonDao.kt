@@ -12,6 +12,7 @@ import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import java.util.Date
 
 @Dao
 interface GifticonDao {
@@ -92,4 +93,7 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
+
+    @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0)")
+    fun hasVariableGifticon(time: Date): Flow<Boolean>
 }

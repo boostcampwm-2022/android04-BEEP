@@ -5,7 +5,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.util.resource.UIText
 
-fun Gifticon.toUiModel(distance: Double): GifticonUiModel {
+fun Gifticon.toPresentation(distance: Double): GifticonUiModel {
     return GifticonUiModel(
         id = this.id,
         userId = this.userId,

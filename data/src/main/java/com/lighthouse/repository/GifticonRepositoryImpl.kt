@@ -93,4 +93,14 @@ class GifticonRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun hasVariableGifticon() = flow {
+        gifticonLocalDataSource.hasVariableGifticon().collect() { hasVariableGifticon ->
+            if (hasVariableGifticon) {
+                emit(true)
+            } else {
+                emit(false)
+            }
+        }
+    }
 }
