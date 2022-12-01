@@ -29,6 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toConcurrency
+import com.lighthouse.presentation.extension.toDday
+import com.lighthouse.presentation.extension.toExpireDate
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 
@@ -72,7 +75,7 @@ fun GifticonItem(gifticon: Gifticon) {
             )
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "D-31",
+                    text = gifticon.expireAt.toDday(context),
                     modifier = Modifier
                         .clip(RoundedCornerShape(cornerSize))
                         .background(colorResource(id = R.color.beep_pink))
@@ -88,11 +91,11 @@ fun GifticonItem(gifticon: Gifticon) {
                     text = gifticon.brand
                 )
                 Text(
-                    text = "3,460원",
+                    text = gifticon.balance.toConcurrency(context, true),
                     color = colorResource(R.color.beep_pink)
                 )
                 Text(
-                    text = "~ 2022-11-23",
+                    text = gifticon.expireAt.toExpireDate(context),
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(bottom = 16.dp, end = 16.dp)
