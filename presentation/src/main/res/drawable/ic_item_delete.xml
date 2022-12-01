@@ -5,7 +5,8 @@
         android:height="12dp">
         <shape
             android:shape="oval">
-            <solid android:color="@color/on_surface_50" />
+            <solid
+                android:color="@color/on_surface_50" />
         </shape>
     </item>
     <item
