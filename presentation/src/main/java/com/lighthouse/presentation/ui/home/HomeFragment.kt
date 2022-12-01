@@ -13,6 +13,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentHomeBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extension.screenWidth
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
@@ -51,6 +52,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val itemDecoration = ListSpaceItemDecoration(
         space = 8.dp,
+        start = (screenWidth * 0.05).toFloat(),
         top = 4.dp,
         end = 24.dp,
         bottom = 4.dp

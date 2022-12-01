@@ -69,7 +69,7 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_near_title"
             tools:listitem="@layout/item_gifticon_vertical" />
 
@@ -126,7 +126,7 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expire_title"
             app:setItems="@{homeVm.expiredGifticon}"
             tools:listitem="@layout/item_gifticon_vertical" />
