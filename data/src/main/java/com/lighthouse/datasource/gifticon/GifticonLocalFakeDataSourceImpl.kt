@@ -10,6 +10,7 @@ import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -73,5 +74,9 @@ class GifticonLocalFakeDataSourceImpl @Inject constructor(
 
     override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
         return gifticonDao.getGifticonByBrand(brand)
+    }
+
+    override fun hasVariableGifticon(): Flow<Boolean> {
+        return emptyFlow()
     }
 }
