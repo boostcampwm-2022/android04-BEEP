@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.gifticonlist
+package com.lighthouse.presentation.model
 
 import androidx.annotation.StringRes
 import com.lighthouse.presentation.R

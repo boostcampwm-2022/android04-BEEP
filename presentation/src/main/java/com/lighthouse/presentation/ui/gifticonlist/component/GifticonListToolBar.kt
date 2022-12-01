@@ -20,14 +20,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.model.GifticonSortBy
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
-import com.lighthouse.presentation.ui.gifticonlist.GifticonSortBy
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -51,10 +52,16 @@ fun GifticonAppBar(
                         }.align(Alignment.Center),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = stringResource(id = sortBy.stringRes))
+                    Text(
+                        text = stringResource(id = sortBy.stringRes),
+                        color = Color.White,
+                        style = MaterialTheme.typography.h5
+                    )
                     Icon(
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = stringResource(R.string.gifticon_list_toolbar_dropdown_icon_description)
+                        contentDescription = stringResource(R.string.gifticon_list_toolbar_dropdown_icon_description),
+                        tint = Color.White
                     )
                 }
             }
