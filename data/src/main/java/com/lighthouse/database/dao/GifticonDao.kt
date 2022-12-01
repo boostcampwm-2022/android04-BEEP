@@ -27,7 +27,8 @@ interface GifticonDao {
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query(
-        "SELECT brand AS name, COUNT(*) AS count FROM $GIFTICON_TABLE " +
+        "SELECT brand AS name, COUNT(*) AS count " +
+                "FROM $GIFTICON_TABLE " +
                 "WHERE user_id = :userId " +
                 "GROUP BY brand ORDER BY count DESC"
     )

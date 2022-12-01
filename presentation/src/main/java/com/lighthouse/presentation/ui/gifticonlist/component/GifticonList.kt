@@ -47,7 +47,6 @@ fun GifticonList(gifticons: List<Gifticon>, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GifticonItem(gifticon: Gifticon) {
-
     val context = LocalContext.current
     val cornerSize = 8.dp
 
@@ -60,7 +59,8 @@ fun GifticonItem(gifticon: Gifticon) {
                     putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
                 }
             )
-        }) {
+        }
+    ) {
         Row {
             Image(
                 painter = painterResource(id = R.mipmap.ic_launcher),
