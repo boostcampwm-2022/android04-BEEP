@@ -1,8 +1,6 @@
 package com.lighthouse.repository
 
 import com.lighthouse.database.mapper.toEntity
-import com.lighthouse.database.mapper.toGifticonEntity
-import com.lighthouse.database.mapper.toUsageHistoryEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
 import com.lighthouse.datasource.gifticon.GifticonLocalFakeDataSourceImpl
@@ -61,7 +59,7 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateGifticon(gifticon: Gifticon) {
-        gifticonLocalDataSource.updateGifticon(gifticon.toGifticonEntity())
+        gifticonLocalDataSource.updateGifticon(gifticon)
     }
 
     override suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>) {
@@ -89,15 +87,15 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveUsageHistory(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.insertUsageHistory(usageHistory.toUsageHistoryEntity(gifticonId))
+        gifticonLocalDataSource.insertUsageHistory(gifticonId, usageHistory)
     }
 
     override suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.useGifticon(usageHistory.toUsageHistoryEntity(gifticonId))
+        gifticonLocalDataSource.useGifticon(gifticonId, usageHistory)
     }
 
     override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.useCashCardGifticon(amount, usageHistory.toUsageHistoryEntity(gifticonId))
+        gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, usageHistory)
     }
 
     override suspend fun unUseGifticon(gifticonId: String) {

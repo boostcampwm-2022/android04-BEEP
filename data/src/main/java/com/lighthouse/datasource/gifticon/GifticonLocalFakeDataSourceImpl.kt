@@ -2,8 +2,9 @@ package com.lighthouse.datasource.gifticon
 
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
-import com.lighthouse.database.entity.UsageHistoryEntity
+import com.lighthouse.database.mapper.toGifticonEntity
 import com.lighthouse.database.mapper.toUsageHistory
+import com.lighthouse.database.mapper.toUsageHistoryEntity
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
@@ -38,20 +39,20 @@ class GifticonLocalFakeDataSourceImpl @Inject constructor(
         return gifticonDao.getAllBrands("이름")
     }
 
-    override suspend fun updateGifticon(gifticon: GifticonEntity) {
-        gifticonDao.updateGifticon(gifticon)
+    override suspend fun updateGifticon(gifticon: Gifticon) {
+        gifticonDao.updateGifticon(gifticon.toGifticonEntity())
     }
 
     override suspend fun insertGifticons(gifticons: List<GifticonEntity>) {
         gifticonDao.insertGifticon(*gifticons.toTypedArray())
     }
 
-    override suspend fun useGifticon(usageHistory: UsageHistoryEntity) {
-        gifticonDao.useGifticonTransaction(usageHistory)
+    override suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory) {
+        gifticonDao.useGifticonTransaction(usageHistory.toUsageHistoryEntity(gifticonId))
     }
 
-    override suspend fun useCashCardGifticon(amount: Int, usageHistory: UsageHistoryEntity) {
-        gifticonDao.useCashCardGifticonTransaction(amount, usageHistory)
+    override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory) {
+        gifticonDao.useCashCardGifticonTransaction(amount, usageHistory.toUsageHistoryEntity(gifticonId))
     }
 
     override suspend fun unUseGifticon(gifticonId: String) {
@@ -66,8 +67,8 @@ class GifticonLocalFakeDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertUsageHistory(usageHistory: UsageHistoryEntity) {
-        gifticonDao.insertUsageHistory(usageHistory)
+    override suspend fun insertUsageHistory(gifticonId: String, usageHistory: UsageHistory) {
+        gifticonDao.insertUsageHistory(usageHistory.toUsageHistoryEntity(gifticonId))
     }
 
     override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
