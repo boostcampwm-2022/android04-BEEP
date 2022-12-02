@@ -30,24 +30,21 @@
 |------|---|---|------|
 |<img src="https://user-images.githubusercontent.com/53300830/203104186-2454f77f-4cab-485f-972b-22236a3d28ca.jpg" width="120" />|<img src="https://user-images.githubusercontent.com/44221447/203118314-c1a7ae71-d746-4399-bbef-2e7e71452b9c.jpg" width="120" />|<img src="https://user-images.githubusercontent.com/44221447/203118604-8b31cda6-70c9-4119-a636-0ac36b6c60a0.jpg" width="120" />|<img src="https://user-images.githubusercontent.com/53300830/203106749-8e92660f-87bd-4655-b39f-352dcc989c49.png" width="120" />|
 
-
 ## 기능 소개
 
 ### 회원가입 && 로그인
-
 
 |스플래시|로그인|지문|PIN 설정|
 |:-----:|:-----:|:-----:|:-----:|
 |<img width=200 src="https://user-images.githubusercontent.com/53300830/203107188-59a7dda5-3fc3-4ffe-888e-e5f74b1ebdc8.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107180-8e674ed5-2156-4d1b-bb9f-40bc968fd62d.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107192-ec5cf9ef-e14b-4a99-81b1-f2e624ccb1dc.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107196-211d1c54-b2fb-426e-a600-b8b952db6c8f.png">|
 |구현중|구현중|구현중|구현중|
 
-
 ### 메인 && 지도
 
-|메인화면|지도|
-|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107992-6865e77f-b859-4b2d-92a5-f3a0359c2211.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107998-302d96a0-1bb5-4523-99fb-d54f56824d7d.png">|
-|구현중|구현중|
+|                                                            메인화면                                                             |지도|
+|:---------------------------------------------------------------------------------------------------------------------------:|:-----:|
+| <img width=200 src="https://user-images.githubusercontent.com/53300830/203107992-6865e77f-b859-4b2d-92a5-f3a0359c2211.png"> |<img width=200 src="https://user-images.githubusercontent.com/53300830/203107998-302d96a0-1bb5-4523-99fb-d54f56824d7d.png">|
+|                                                            구현완료                                                             |                                                            구현완료                                                             |
 
 ### 기프티콘 추가
 
@@ -63,8 +60,8 @@
 |<img width=200 src="https://user-images.githubusercontent.com/53300830/203108857-d82f37aa-aabb-4891-a262-6adbbd89fe3a.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108834-08413935-9c7a-4423-8b6b-0f58f30523e4.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108848-3119caab-f771-41d9-ac2f-92b2fe573a40.png">|
 |구현중|구현중|구현중|
 
-
 ### 상세화면 - 금액권
+
 |상세화면|지문인식|바코드|사용완료|사용기록|
 |:-----:|:-----:|:-----:|:-----:|:-----:|
 |<img width=200 src="https://user-images.githubusercontent.com/53300830/203110310-0f9d3c64-bcdd-45fd-b789-5cb657b42c70.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111268-56bd8370-bb8e-4a2a-9fd1-cfe074261db6.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110314-84c10bdc-0f7b-46d7-aab3-4f882d3eca2d.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110304-024a4b0c-78dd-485b-be7b-47c765259931.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110309-d851a284-0adc-491b-97c8-dc5c70e74523.png">|
