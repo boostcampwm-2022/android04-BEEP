@@ -62,9 +62,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             setTitle(title)
             setMessage(message)
             setOnOkClickListener {
-                val intent = Intent()
-                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                intent.data = Uri.fromParts("package", requireActivity().packageName, null)
+                val intent = Intent().apply {
+                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    data = Uri.fromParts("package", requireActivity().packageName, null)
+                }
                 getResultImage.launch(intent)
             }
         }
