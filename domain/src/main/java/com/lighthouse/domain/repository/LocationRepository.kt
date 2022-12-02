@@ -7,4 +7,5 @@ interface LocationRepository {
 
     fun getLocations(): Flow<VertexLocation>
     fun hasLocationUpdates(): Flow<Boolean>
+    fun updateLocationPermission(hasPermission: Boolean)
 }

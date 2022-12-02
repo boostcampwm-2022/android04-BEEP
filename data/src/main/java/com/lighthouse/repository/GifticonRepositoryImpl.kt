@@ -33,7 +33,7 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override fun getAllGifticons(userId: String): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getAllGifticons(userId).collect { // TODO remove FAKE
+        gifticonLocalDataSource.getAllGifticons(userId).collect { // TODO remove FAKE
             emit(DbResult.Success(it))
         }
     }.catch { e ->
@@ -113,8 +113,8 @@ class GifticonRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun hasVariableGifticon() = flow {
-        gifticonLocalDataSource.hasVariableGifticon().collect() { hasVariableGifticon ->
+    override fun hasVariableGifticon(userId: String) = flow {
+        gifticonLocalDataSource.hasVariableGifticon(userId).collect() { hasVariableGifticon ->
             if (hasVariableGifticon) {
                 emit(true)
             } else {

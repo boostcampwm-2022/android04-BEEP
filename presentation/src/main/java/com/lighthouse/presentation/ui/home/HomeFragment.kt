@@ -48,6 +48,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var getResultImage: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (isPermissionGranted()) {
+                Timber.tag("TAG").d("${javaClass.simpleName} 외부 설정에서 허용을 하고 왔다.")
+                homeViewModel.changeLocationPermission(true)
+            } else {
+                Timber.tag("TAG").d("${javaClass.simpleName} 외부 설정에서 허용을 하고 오지 않았다.")
             }
         }
 
@@ -71,7 +75,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val locationPermissionLauncher =
         registerForActivityResult(contract) { results ->
             if (results.all { it.value }) {
+                Timber.tag("TAG").d("${javaClass.simpleName} 권한을 허용해줬다.")
+                homeViewModel.changeLocationPermission(true)
                 gotoMap()
+            } else {
+                Timber.tag("TAG").d("${javaClass.simpleName} 하나라도 안됐다")
             }
         }
 
@@ -125,7 +133,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     is UiState.Success -> updateNearGifticon(state.item)
                     is UiState.Loading -> startShimmer()
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
-                    is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
+                    is UiState.NotFoundResults -> guideNotFoundResults()
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
                 }
             }
@@ -179,6 +187,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun guideLocationPermission() {
+        Timber.tag("TAG").d("${javaClass.simpleName} guideLocation")
         stopShimmer()
         binding.tvNotAllowLocationPermission.isVisible = true
         // TODO 확인용 입니다. 나중에 지워질 예정이에요.
@@ -193,6 +202,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun updateNearGifticon(item: List<GifticonUiModel>) {
         nearGifticonAdapter.submitList(item)
         stopShimmer()
+    }
+
+    private fun guideNotFoundResults() {
     }
 
     private fun showSnackBar(@StringRes message: Int) {

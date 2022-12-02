@@ -10,6 +10,7 @@ import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.domain.usecase.HasLocationPermissionsUseCase
+import com.lighthouse.domain.usecase.UpdateLocationPermissionUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
@@ -36,7 +37,8 @@ class HomeViewModel @Inject constructor(
     getGifticonUseCase: GetGifticonsUseCase,
     hasLocationPermissionsUseCase: HasLocationPermissionsUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase,
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
+    private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
 ) : ViewModel() {
 
     private var locationFlow: Job? = null
@@ -75,8 +77,7 @@ class HomeViewModel @Inject constructor(
 
     private lateinit var recentLocation: VertexLocation
 
-    val hasLocationPermission =
-        hasLocationPermissionsUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val hasLocationPermission = hasLocationPermissionsUseCase()
 
     init {
         viewModelScope.launch {
@@ -88,9 +89,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeLocationFlow() {
+        Timber.tag("TAG").d("${javaClass.simpleName} observeLocationFlow ${locationFlow?.isActive}")
         if (locationFlow?.isActive == true) return
 
         locationFlow = getUserLocationUseCase().onEach { location ->
+            Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
             recentLocation = location
             getNearBrands(location.longitude, location.latitude)
         }.launchIn(viewModelScope)
@@ -134,6 +137,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten(), nearBrandsInfo))
         }
+    }
+
+    fun changeLocationPermission(hasLocationPermission: Boolean) {
+        updateLocationPermissionUseCase(hasLocationPermission)
     }
 
     companion object {

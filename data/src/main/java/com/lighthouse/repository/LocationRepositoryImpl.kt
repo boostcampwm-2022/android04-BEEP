@@ -11,4 +11,7 @@ class LocationRepositoryImpl @Inject constructor(
 
     override fun hasLocationUpdates(): Flow<Boolean> = sharedLocationManager.receivingLocationUpdates
     override fun getLocations() = sharedLocationManager.locationFlow()
+    override fun updateLocationPermission(hasPermission: Boolean) {
+        sharedLocationManager.changePermission(hasPermission)
+    }
 }
