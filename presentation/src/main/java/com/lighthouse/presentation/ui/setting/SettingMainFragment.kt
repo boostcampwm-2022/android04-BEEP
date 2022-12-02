@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSettingMainBinding
 import com.lighthouse.presentation.ui.common.viewBindings
@@ -48,9 +49,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
 
     private fun gotoSecuritySetting() {
         activityViewModel.gotoMenuItem(-1)
-        // val currFragment = parentFragmentManager.primaryNavigationFragment
         parentFragmentManager.commit {
-            replace(R.id.fcv_setting, settingSecurityFragment, "SSF")
+            add(R.id.fcv_setting, settingSecurityFragment)
         }
     }
 
@@ -63,10 +63,11 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     }
 
     override fun onAuthCancel() {
-        TODO("Not yet implemented")
     }
 
     override fun onAuthError(StringId: Int?) {
-        TODO("Not yet implemented")
+        StringId?.let {
+            Snackbar.make(requireView(), getString(it), Snackbar.LENGTH_SHORT).show()
+        }
     }
 }
