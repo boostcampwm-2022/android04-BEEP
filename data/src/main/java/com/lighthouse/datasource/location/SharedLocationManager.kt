@@ -33,6 +33,13 @@ class SharedLocationManager constructor(
     var receivingLocationUpdates = MutableStateFlow(hasLocationPermission())
         private set
 
+    fun locationFlow() = locationUpdates
+
+    fun changePermission(hasPermission: Boolean) {
+        receivingLocationUpdates.value = hasPermission
+        if (hasPermission) setProviderRequest()
+    }
+
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private val locationRequest = LocationRequest.create().apply {
         interval = LOCATION_INTERVAL
@@ -102,13 +109,6 @@ class SharedLocationManager constructor(
         val x = LocationConverter.toMinDms(lastLocationResult.longitude)
         val y = LocationConverter.toMinDms(lastLocationResult.latitude)
         return DmsLocation(x, y)
-    }
-
-    fun locationFlow() = locationUpdates
-
-    fun changePermission(hasPermission: Boolean) {
-        receivingLocationUpdates.value = hasPermission
-        if (hasPermission) setProviderRequest()
     }
 
     companion object {
