@@ -32,14 +32,14 @@
 
 ## 기능 소개
 
-### 회원가입 && 로그인
+### 회원가입 & 로그인
 
 |스플래시|로그인|지문|PIN 설정|
 |:-----:|:-----:|:-----:|:-----:|
 |<img width=200 src="https://user-images.githubusercontent.com/53300830/203107188-59a7dda5-3fc3-4ffe-888e-e5f74b1ebdc8.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107180-8e674ed5-2156-4d1b-bb9f-40bc968fd62d.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107192-ec5cf9ef-e14b-4a99-81b1-f2e624ccb1dc.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107196-211d1c54-b2fb-426e-a600-b8b952db6c8f.png">|
 |구현중|구현중|구현중|구현중|
 
-### 메인 && 지도
+### 메인 & 지도
 
 |                                                            메인화면                                                             |지도|
 |:---------------------------------------------------------------------------------------------------------------------------:|:-----:|
@@ -53,7 +53,7 @@
 |<img width=200 src="https://user-images.githubusercontent.com/53300830/203108320-3505e4fb-8cd6-4260-886a-5eadf9e1afbe.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108312-04a0033a-5f10-4325-b940-a51c42b3c31c.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015611-52d291cc-1ac3-4014-a25f-8006055becab.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015793-3062337d-b79e-40d6-aaec-2c5779a1d4f3.png">|
 |구현중|구현중|구현중|구현완료|
 
-### 목록 && 디테일
+### 목록 & 디테일
 
 |기프티콘 목록|삭제|브랜드검색|
 |:-----:|:-----:|:-----:|
