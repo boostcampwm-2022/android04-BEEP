@@ -10,8 +10,8 @@ import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import java.util.Calendar
 import javax.inject.Inject
 
 class GifticonLocalFakeDataSourceImpl @Inject constructor(
@@ -76,7 +76,13 @@ class GifticonLocalFakeDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonByBrand(brand)
     }
 
-    override fun hasVariableGifticon(): Flow<Boolean> {
-        return emptyFlow()
+    override fun hasVariableGifticon(userId: String): Flow<Boolean> {
+        val today = Calendar.getInstance().let {
+            it.set(Calendar.HOUR, 0)
+            it.set(Calendar.MINUTE, 0)
+            it.set(Calendar.SECOND, 0)
+            it.time
+        }
+        return gifticonDao.hasVariableGifticon("이름", today)
     }
 }

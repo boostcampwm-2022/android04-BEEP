@@ -76,13 +76,13 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonByBrand(brand)
     }
 
-    override fun hasVariableGifticon(): Flow<Boolean> {
+    override fun hasVariableGifticon(userId: String): Flow<Boolean> {
         val today = Calendar.getInstance().let {
             it.set(Calendar.HOUR, 0)
             it.set(Calendar.MINUTE, 0)
             it.set(Calendar.SECOND, 0)
             it.time
         }
-        return gifticonDao.hasVariableGifticon(today)
+        return gifticonDao.hasVariableGifticon(userId, today)
     }
 }

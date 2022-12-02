@@ -106,6 +106,6 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
 
-    @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0)")
-    fun hasVariableGifticon(time: Date): Flow<Boolean>
+    @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)")
+    fun hasVariableGifticon(userId: String, time: Date): Flow<Boolean>
 }

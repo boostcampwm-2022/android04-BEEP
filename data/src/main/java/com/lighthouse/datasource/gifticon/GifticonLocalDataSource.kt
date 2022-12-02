@@ -20,5 +20,5 @@ interface GifticonLocalDataSource {
     fun getUsageHistory(gifticonId: String): Flow<List<UsageHistory>>
     suspend fun insertUsageHistory(gifticonId: String, usageHistory: UsageHistory)
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
-    fun hasVariableGifticon(): Flow<Boolean>
+    fun hasVariableGifticon(userId: String): Flow<Boolean>
 }
