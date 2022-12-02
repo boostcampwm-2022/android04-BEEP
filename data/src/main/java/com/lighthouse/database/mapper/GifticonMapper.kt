@@ -3,8 +3,8 @@ package com.lighthouse.database.mapper
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.domain.util.currentTime
 import com.lighthouse.util.UUID
-import java.util.Date
 
 fun Gifticon.toEntity(): GifticonEntity {
     return GifticonEntity(
@@ -26,7 +26,7 @@ fun Gifticon.toEntity(): GifticonEntity {
 fun GifticonForAddition.toEntity(userId: String): GifticonEntity {
     return GifticonEntity(
         id = UUID.generate(),
-        createdAt = Date(),
+        createdAt = currentTime,
         userId = userId,
         hasImage = hasImage,
         name = name,
