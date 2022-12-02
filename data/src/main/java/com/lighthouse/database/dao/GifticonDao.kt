@@ -20,13 +20,13 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE id = :id")
     fun getGifticon(id: String): Flow<GifticonEntity>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY created_at DESC")
     fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY expire_at")
     fun getAllGifticonsSortByDeadline(userId: String): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters)")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters) ORDER BY created_at DESC")
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters) ORDER BY expire_at")

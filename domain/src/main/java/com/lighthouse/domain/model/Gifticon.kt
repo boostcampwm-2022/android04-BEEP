@@ -5,6 +5,7 @@ import java.util.Date
 
 data class Gifticon(
     val id: String,
+    val createdAt: Date,
     val userId: String,
     val hasImage: Boolean,
     val name: String,
