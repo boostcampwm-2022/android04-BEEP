@@ -11,7 +11,7 @@ data class GifticonEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: String,
-    @ColumnInfo(name = "created_at") val createdAt: Long,
+    @ColumnInfo(name = "created_at") val createdAt: Date,
     @ColumnInfo(name = "user_id") val userId: String,
     @ColumnInfo(name = "has_image") val hasImage: Boolean,
     @ColumnInfo(name = "name") val name: String,

@@ -29,7 +29,7 @@ class BeepApplication : Application() {
         val gifticonTestData = listOf(
             GifticonEntity(
                 UUID.generate(),
-                0,
+                Date(),
                 "이름",
                 false,
                 "아메리카노",
@@ -43,7 +43,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                5000,
+                Date(),
                 "이름",
                 false,
                 "어머니는 외계인",
@@ -57,7 +57,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                7000,
+                Date(),
                 "이름",
                 false,
                 "핫후라이드",
@@ -71,7 +71,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                10000,
+                Date(),
                 "이름",
                 false,
                 "바나나맛 우유",
@@ -85,7 +85,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                123123123,
+                Date(),
                 "이름",
                 false,
                 "30,000원",
@@ -99,7 +99,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                1313132,
+                Date(),
                 "이름",
                 false,
                 "이름",
@@ -113,7 +113,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                44442222,
+                Date(),
                 "이름",
                 false,
                 "5,000원",
@@ -127,7 +127,7 @@ class BeepApplication : Application() {
             ),
             GifticonEntity(
                 UUID.generate(),
-                12312313131,
+                Date(),
                 "이름",
                 false,
                 "5만원",

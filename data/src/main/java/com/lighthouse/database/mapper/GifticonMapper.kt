@@ -26,7 +26,7 @@ fun Gifticon.toEntity(): GifticonEntity {
 fun GifticonForAddition.toEntity(userId: String): GifticonEntity {
     return GifticonEntity(
         id = UUID.generate(),
-        createdAt = Date().time,
+        createdAt = Date(),
         userId = userId,
         hasImage = hasImage,
         name = name,
