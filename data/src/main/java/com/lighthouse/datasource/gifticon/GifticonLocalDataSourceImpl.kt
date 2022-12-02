@@ -7,6 +7,7 @@ import com.lighthouse.database.mapper.toUsageHistory
 import com.lighthouse.database.mapper.toUsageHistoryEntity
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
@@ -23,14 +24,22 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllGifticons(userId: String): Flow<List<Gifticon>> {
-        return gifticonDao.getAllGifticons(userId).map { list ->
+    override fun getAllGifticons(userId: String, sortBy: SortBy): Flow<List<Gifticon>> {
+        val gifticons = when (sortBy) {
+            SortBy.DEADLINE -> gifticonDao.getAllGifticonsSortByDeadline(userId)
+            SortBy.RECENT -> gifticonDao.getAllGifticons(userId)
+        }
+        return gifticons.map { list ->
             list.map { it.toDomain() }
         }
     }
 
-    override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<List<Gifticon>> {
-        return gifticonDao.getFilteredGifticons(userId, filter).map { list ->
+    override fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy): Flow<List<Gifticon>> {
+        val gifticons = when (sortBy) {
+            SortBy.DEADLINE -> gifticonDao.getFilteredGifticonsSortByDeadline(userId, filter)
+            SortBy.RECENT -> gifticonDao.getFilteredGifticons(userId, filter)
+        }
+        return gifticons.map { list ->
             list.map { it.toDomain() }
         }
     }

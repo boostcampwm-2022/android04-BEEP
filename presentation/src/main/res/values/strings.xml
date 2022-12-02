@@ -201,4 +201,5 @@
     <string name="home_near_gifticon_distance">%dm</string>
     <string name="home_near_gifticon_announce">근처에 존재합니다.</string>
 
+    <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
 </resources>

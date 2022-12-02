@@ -3,13 +3,14 @@ package com.lighthouse.datasource.gifticon
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonLocalDataSource {
     fun getGifticon(id: String): Flow<Gifticon>
-    fun getAllGifticons(userId: String): Flow<List<Gifticon>>
-    fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<List<Gifticon>>
+    fun getAllGifticons(userId: String, sortBy: SortBy = SortBy.DEADLINE): Flow<List<Gifticon>>
+    fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy = SortBy.DEADLINE): Flow<List<Gifticon>>
     fun getAllBrands(userId: String): Flow<List<Brand>>
 
     suspend fun insertGifticons(gifticons: List<GifticonEntity>)

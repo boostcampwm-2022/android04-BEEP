@@ -4,14 +4,20 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonRepository {
 
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
-    fun getAllGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
-    fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<DbResult<List<Gifticon>>>
+    fun getAllGifticons(userId: String, sortBy: SortBy = SortBy.DEADLINE): Flow<DbResult<List<Gifticon>>>
+    fun getFilteredGifticons(
+        userId: String,
+        filter: Set<String>,
+        sortBy: SortBy = SortBy.DEADLINE
+    ): Flow<DbResult<List<Gifticon>>>
+
     fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
 
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
