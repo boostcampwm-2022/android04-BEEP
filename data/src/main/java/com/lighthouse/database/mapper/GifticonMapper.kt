@@ -5,7 +5,7 @@ import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.util.UUID
 
-fun Gifticon.toGifticonEntity(): GifticonEntity {
+fun Gifticon.toEntity(): GifticonEntity {
     return GifticonEntity(
         id = id,
         userId = userId,
