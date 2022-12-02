@@ -25,19 +25,19 @@ class GifticonLocalFakeDataSourceImpl @Inject constructor(
     }
 
     override fun getAllGifticons(userId: String): Flow<List<Gifticon>> {
-        return gifticonDao.getAllGifticons("이름").map { list ->
+        return gifticonDao.getAllGifticons("Guest").map { list ->
             list.map { it.toDomain() }
         }
     }
 
     override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<List<Gifticon>> {
-        return gifticonDao.getFilteredGifticons("이름", filter).map { list ->
+        return gifticonDao.getFilteredGifticons("Guest", filter).map { list ->
             list.map { it.toDomain() }
         }
     }
 
     override fun getAllBrands(userId: String): Flow<List<Brand>> {
-        return gifticonDao.getAllBrands("이름")
+        return gifticonDao.getAllBrands("Guest")
     }
 
     override suspend fun updateGifticon(gifticon: Gifticon) {
@@ -83,6 +83,6 @@ class GifticonLocalFakeDataSourceImpl @Inject constructor(
             it.set(Calendar.SECOND, 0)
             it.time
         }
-        return gifticonDao.hasVariableGifticon("이름", today)
+        return gifticonDao.hasVariableGifticon("Guest", today)
     }
 }
