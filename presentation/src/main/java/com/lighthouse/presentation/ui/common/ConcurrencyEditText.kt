@@ -91,6 +91,7 @@ class ConcurrencyEditText @JvmOverloads constructor(
             if (number.isBlank()) return@doOnTextChanged
 
             text = numberFormat.format(number.toInt())
+            value = number.toIntOrNull() ?: 0
             inputEditText.setText(text.ifBlank { EMPTY_TEXT })
             inputEditText.setSelection(text.length) // 커서를 맨 뒤로 설정
             Timber.tag("concurrency").d("text: $text")
