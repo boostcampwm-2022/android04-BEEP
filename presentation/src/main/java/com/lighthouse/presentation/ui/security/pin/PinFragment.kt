@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.security.pin
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,10 +9,10 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityViewModel
@@ -19,15 +20,14 @@ import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PinFragment : Fragment(R.layout.fragment_pin) {
 
     private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinSettingViewModel by viewModels()
-
     private val activityViewModel: SecurityViewModel by activityViewModels()
+
     private val shakeAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
     }
@@ -40,8 +40,9 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        binding.tvSecureNotUse.visibility = if (activityViewModel.isRevise) View.INVISIBLE else View.VISIBLE
 
-        lifecycleScope.launch {
+        repeatOnStarted {
             viewModel.pinMode.collect {
                 when (it) {
                     PinSettingType.INITIAL -> {
@@ -65,8 +66,15 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                             startAnimation(fadeUpAnimation)
                         }
                         delay(1000L)
-                        activityViewModel.setSecurityOption(SecurityOption.PIN)
-                        activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
+                        if (activityViewModel.isRevise) {
+                            requireActivity().apply {
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
+                        } else {
+                            activityViewModel.setSecurityOption(SecurityOption.PIN)
+                            activityViewModel.gotoOtherScreen(SecurityDirections.FINGERPRINT)
+                        }
                     }
                     PinSettingType.ERROR -> {
                         Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.LENGTH_SHORT)

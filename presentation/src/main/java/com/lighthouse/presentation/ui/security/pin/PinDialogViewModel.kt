@@ -14,6 +14,7 @@ class PinDialogViewModel @Inject constructor(
 
     init {
         _pinMode.value = PinSettingType.CONFIRM
+        _pinString.value = ""
     }
 
     override fun goPreviousStep() {
@@ -25,10 +26,10 @@ class PinDialogViewModel @Inject constructor(
                 _pinMode.value = PinSettingType.COMPLETE
             } else {
                 _pinMode.value = PinSettingType.WRONG
-                delay(1000L)
-                _pinString.value = ""
-                _pinMode.value = PinSettingType.CONFIRM
             }
+            delay(1000L)
+            _pinString.value = ""
+            _pinMode.value = PinSettingType.CONFIRM
         }
     }
 }
