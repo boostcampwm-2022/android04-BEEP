@@ -110,7 +110,10 @@ class HomeViewModel @Inject constructor(
                         gifticonsMap.value[placeInfo.brand]?.first()
                             ?.toPresentation(diffLocation(placeInfo, recentLocation))
                     }.sortedBy { it.distance }
-                    _nearGifticon.emit(UiState.Success(nearGifticon))
+                    when (nearGifticon.isEmpty()) {
+                        true -> _nearGifticon.emit(UiState.NotFoundResults)
+                        false -> _nearGifticon.emit(UiState.Success(nearGifticon))
+                    }
                 }
                 .onFailure { throwable ->
                     _nearGifticon.emit(
@@ -141,6 +144,12 @@ class HomeViewModel @Inject constructor(
 
     fun changeLocationPermission(hasLocationPermission: Boolean) {
         updateLocationPermissionUseCase(hasLocationPermission)
+    }
+
+    fun requestLocationPermission() {
+        viewModelScope.launch {
+            _eventFlow.emit(HomeEvent.RequestLocationPermissionCheck)
+        }
     }
 
     companion object {

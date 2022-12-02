@@ -129,11 +129,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun setObserveViewModel() {
         repeatOnStarted {
             homeViewModel.nearGifticon.collectLatest { state ->
+                Timber.tag("TAG").d("${javaClass.simpleName} UiState -> $state")
                 when (state) {
                     is UiState.Success -> updateNearGifticon(state.item)
                     is UiState.Loading -> startShimmer()
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
-                    is UiState.NotFoundResults -> guideNotFoundResults()
+                    is UiState.NotFoundResults -> guideNotFoundNearBrands()
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
                 }
             }
@@ -143,13 +144,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             homeViewModel.eventFlow.collectLatest { directions ->
                 when (directions) {
                     is HomeEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
+                    is HomeEvent.RequestLocationPermissionCheck -> launchPermission()
                 }
             }
         }
 
         repeatOnStarted {
             homeViewModel.hasLocationPermission.collectLatest { hasPermission ->
-                if (hasPermission.not()) guideLocationPermission()
+                if (hasPermission.not()) stopShimmer()
+                binding.tvNotAllowLocationPermission.isVisible = hasPermission.not()
+                binding.btnLocationPermissionCheck.isVisible = hasPermission.not()
             }
         }
     }
@@ -158,8 +162,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         gifticons: List<Gifticon> = emptyList(),
         nearBrandsInfo: List<BrandPlaceInfoUiModel> = emptyList()
     ) {
+        when (isPermissionGranted()) {
+            true -> startMapActivity(nearBrandsInfo, gifticons)
+            else -> launchPermission()
+        }
+    }
+
+    private fun launchPermission() {
         when {
-            isPermissionGranted() -> startMapActivity(nearBrandsInfo, gifticons)
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 locationPermissionDialog.show(parentFragmentManager, ConfirmationDialog::class.java.name)
             }
@@ -186,25 +196,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         return true
     }
 
-    private fun guideLocationPermission() {
-        Timber.tag("TAG").d("${javaClass.simpleName} guideLocation")
-        stopShimmer()
-        binding.tvNotAllowLocationPermission.isVisible = true
-        // TODO 확인용 입니다. 나중에 지워질 예정이에요.
-        Timber.tag("TAG").d("${javaClass.simpleName} 위치 권한이 허용 돼 있지 않다~")
-    }
-
     private fun startShimmer() {
+        binding.tvEmptyNearBrands.isVisible = false
         binding.shimmer.isVisible = true
         binding.shimmer.startShimmer()
     }
 
     private fun updateNearGifticon(item: List<GifticonUiModel>) {
+        binding.tvEmptyNearBrands.isVisible = false
         nearGifticonAdapter.submitList(item)
         stopShimmer()
     }
 
-    private fun guideNotFoundResults() {
+    private fun guideNotFoundNearBrands() {
+        binding.tvEmptyNearBrands.isVisible = true
+        nearGifticonAdapter.submitList(emptyList())
+        stopShimmer()
     }
 
     private fun showSnackBar(@StringRes message: Int) {
@@ -215,11 +222,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun stopShimmer() {
         binding.shimmer.stopShimmer()
         binding.shimmer.isVisible = false
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Timber.tag("TAG").d("$this onDestroyView")
     }
 
     companion object {
