@@ -1,12 +1,14 @@
 package com.lighthouse
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.room.Room
+import androidx.work.Configuration
 import com.lighthouse.beep.BuildConfig
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.entity.GifticonEntity
-import com.lighthouse.presentation.notification.NotificationHelper
+import com.lighthouse.presentation.notification.NotificationWorkManager
 import com.lighthouse.presentation.util.UUID
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -14,9 +16,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Date
+import javax.inject.Inject
 
 @HiltAndroidApp
-class BeepApplication : Application() {
+class BeepApplication : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
     override fun onCreate() {
         super.onCreate()
 
@@ -146,8 +153,13 @@ class BeepApplication : Application() {
             dao.insertGifticon(*gifticonTestData.toTypedArray())
         }
 
-        val notificationHelper = NotificationHelper(this).applyNotification()
+        NotificationWorkManager(this)
     }
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 }
 
 class CustomTimberTree : Timber.DebugTree() {

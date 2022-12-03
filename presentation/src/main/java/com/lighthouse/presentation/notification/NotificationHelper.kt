@@ -39,7 +39,7 @@ class NotificationHelper @Inject constructor(
         }
     }
 
-    fun applyNotification() {
+    fun applyNotification(name: String, notifyId: Int) { // 일단 이름만
         val intent = Intent(context, GifticonDetailActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(Extras.KEY_GIFTICON_ID, "ae6d967d-3f98-4c73-a117-5148c5f06b47")
@@ -54,10 +54,10 @@ class NotificationHelper @Inject constructor(
         val builder = NotificationCompat.Builder(context, Extras.NOTIFICATION_CHANNEL)
             .setSmallIcon(R.drawable.ic_splash_beep)
             .setContentTitle("사용기한이 임박한 기프티콘이 있습니다!")
-            .setContentText("{기프티콘 이름}의 만료일이 00일 남았습니다")
+            .setContentText("$name 의 만료일이 00일 남았습니다")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
 
-        notificationManager.notify(4152, builder.build())
+        notificationManager.notify(notifyId, builder.build())
     }
 }

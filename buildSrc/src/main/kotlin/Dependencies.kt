@@ -31,6 +31,7 @@ object Versions {
 
     const val HILT = "2.44"
     const val INJECT = "1"
+    const val HILT_WORK = "1.0.0"
 
     const val NAVER_MAP = "3.16.0"
     const val PLAY_SERVICES_LOCATION = "20.0.0"
@@ -105,6 +106,7 @@ object Libraries {
 
     private const val HILT = "com.google.dagger:hilt-android:${Versions.HILT}"
     private const val INJECT = "javax.inject:javax.inject:${Versions.INJECT}"
+    private const val HILT_WORK = "androidx.hilt:hilt-work:${Versions.HILT_WORK}"
 
     private const val NAVER_MAP = "com.naver.maps:map-sdk:${Versions.NAVER_MAP}"
     private const val PLAY_SERVICES_LOCATION =
@@ -120,6 +122,7 @@ object Libraries {
 
     private const val COMPOSE_APP_COMPAT_THEME =
         "com.google.accompanist:accompanist-appcompat-theme:${Versions.APP_COMPAT_THEME}"
+
 
     private const val COMPOSE_MATERIAL = "androidx.compose.material:material"
     private const val COMPOSE_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
@@ -141,6 +144,7 @@ object Libraries {
         COROUTINE_CORE,
         COROUTINE_ANDROID,
         HILT,
+        HILT_WORK,
         VIEWMODEL_KTX,
         FRAGMENT_KTX,
         PAGING_RUNTIME_KTX,
@@ -164,7 +168,8 @@ object Libraries {
         COMPOSE_ACCOMPANIST_FLOWLAYOUT,
         COMPOSE_LIFECYCLE_RUNTIME,
         SHIMMER,
-        LOTTIE
+        LOTTIE,
+        WORK_MANAGER
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
@@ -175,6 +180,7 @@ object Libraries {
         MOSHI_ADAPTERS,
         CONVERTER_MOSHI,
         HILT,
+        HILT_WORK,
         FIREBASE_AUTH_KTX,
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
@@ -192,6 +198,8 @@ object Libraries {
     )
     val APP_LIBRARIES = arrayListOf(
         HILT,
+        HILT_WORK,
+        WORK_MANAGER,
         RETROFIT,
         MOSHI_KOTLIN,
         MOSHI_ADAPTERS,
@@ -275,22 +283,26 @@ object AnnotationProcessors {
 
 object Kapt {
     private const val HILT = "com.google.dagger:hilt-android-compiler:${Versions.HILT}"
+    private const val HILT_WORK = "androidx.hilt:hilt-compiler:${Versions.HILT_WORK}"
 
     private const val ROOM_COMPILER = "androidx.room:room-compiler:${Versions.ROOM}"
     private const val MOSHI_KOTLIN_CODEGEN = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.MOSHI}"
 
     val VIEW_LIBRARIES = arrayListOf(
-        HILT
+        HILT,
+        HILT_WORK
     )
 
     val DATA_LIBRARIES = arrayListOf(
         ROOM_COMPILER,
         MOSHI_KOTLIN_CODEGEN,
-        HILT
+        HILT,
+        HILT_WORK
     )
 
     val APP_LIBRARIES = arrayListOf(
         HILT,
+        HILT_WORK,
         ROOM_COMPILER,
         MOSHI_KOTLIN_CODEGEN
     )
