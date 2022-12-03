@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.byteArrayPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lighthouse.domain.model.UserPreferenceOption
 import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.util.CryptoObjectHelper
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class UserPreferencesRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferencesRepository {
+
     override suspend fun setPinString(pinString: String): Result<Unit> = runCatching {
         withContext(Dispatchers.IO) {
             dataStore.edit { preferences ->
@@ -86,10 +89,11 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        val PIN = byteArrayPreferencesKey("pin")
-        val IV = byteArrayPreferencesKey("iv")
-        val SECURITY = intPreferencesKey("security")
-        val NOTIFICATION = booleanPreferencesKey("notification")
-        val LOCATION = booleanPreferencesKey("location")
+        private val uid = Firebase.auth.currentUser?.uid ?: "user"
+        val PIN = byteArrayPreferencesKey("${uid}pin")
+        val IV = byteArrayPreferencesKey("${uid}iv")
+        val SECURITY = intPreferencesKey("${uid}security")
+        val NOTIFICATION = booleanPreferencesKey("${uid}notification")
+        val LOCATION = booleanPreferencesKey("${uid}location")
     }
 }
