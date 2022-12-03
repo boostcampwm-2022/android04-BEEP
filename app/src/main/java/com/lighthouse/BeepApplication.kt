@@ -6,6 +6,7 @@ import com.lighthouse.beep.BuildConfig
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.entity.GifticonEntity
+import com.lighthouse.presentation.notification.NotificationHelper
 import com.lighthouse.presentation.util.UUID
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -144,6 +145,8 @@ class BeepApplication : Application() {
         CoroutineScope(Dispatchers.Main).launch {
             dao.insertGifticon(*gifticonTestData.toTypedArray())
         }
+
+        val notificationHelper = NotificationHelper(this).applyNotification()
     }
 }
 
