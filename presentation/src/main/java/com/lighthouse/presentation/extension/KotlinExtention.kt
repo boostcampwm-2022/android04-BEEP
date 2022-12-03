@@ -30,3 +30,15 @@ val screenHeight: Int
 fun String.toDigit(): Int {
     return filter { it.isDigit() }.toIntOrNull() ?: 0
 }
+
+fun String.toNumber(): String {
+    return (filter { it.isDigit() }.toLongOrNull() ?: 0L).toString()
+}
+
+fun String.toNumberFormat(): String {
+    return toNumber()
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
+}
