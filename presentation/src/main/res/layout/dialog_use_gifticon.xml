@@ -127,15 +127,14 @@
                 app:layout_constraintTop_toTopOf="@id/chip_amount_1"
                 tools:text="전액" />
 
-            <com.lighthouse.presentation.ui.common.ConcurrencyTextField
+            <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/ctf_amount_to_use"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="@id/guid_end"
                 app:layout_constraintStart_toStartOf="@id/guid_start"
-                app:layout_constraintTop_toBottomOf="@id/chip_amount_1"
-                app:value="@{vm.amountToUse}" />
+                app:layout_constraintTop_toBottomOf="@id/chip_amount_1" />
 
             <TextView
                 android:id="@+id/tv_balance"
