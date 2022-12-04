@@ -9,11 +9,12 @@ import com.lighthouse.presentation.databinding.FragmentCashCardGifticonInfoBindi
 import com.lighthouse.presentation.ui.common.viewBindings
 
 class CashCardGifticonInfoFragment : Fragment(R.layout.fragment_cash_card_gifticon_info) {
-    private val binding: FragmentCashCardGifticonInfoBinding by viewBindings()
+    val binding: FragmentCashCardGifticonInfoBinding by viewBindings()
     private val viewModel: GifticonDetailViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
