@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="ConcurrencyTextField">
         <attr name="suffixText" format="reference|string" />
-        <attr name="enabled" format="boolean" />
+        <attr name="enable" format="boolean" />
         <attr name="value" format="integer" />
     </declare-styleable>
 </resources>

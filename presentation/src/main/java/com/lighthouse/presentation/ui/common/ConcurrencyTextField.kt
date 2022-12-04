@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AbstractComposeView
+import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.common.compose.ConcurrencyField
 
 class ConcurrencyTextField @JvmOverloads constructor(
@@ -19,6 +20,16 @@ class ConcurrencyTextField @JvmOverloads constructor(
     var value by mutableStateOf(0)
     var enable by mutableStateOf(false)
     private var listener: ValueListener? = null
+
+    init {
+        attrs?.let {
+            context.obtainStyledAttributes(it, R.styleable.ConcurrencyTextField).run {
+                value = getInt(R.styleable.ConcurrencyTextField_value, 0)
+                enable = getBoolean(R.styleable.ConcurrencyTextField_enable, false)
+                recycle()
+            }
+        }
+    }
 
     @Composable
     override fun Content() {
