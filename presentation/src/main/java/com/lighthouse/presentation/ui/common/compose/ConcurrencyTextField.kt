@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toNumber
 import com.lighthouse.presentation.extension.toNumberFormat
+import com.lighthouse.presentation.ui.common.compose.ConcurrencyFormatVisualTransformation.Companion.MAX_LENGTH
 import timber.log.Timber
 
 @Composable
@@ -35,14 +36,14 @@ fun ConcurrencyField(
         onValueChange = {
             Timber.tag("Custom").d("TextField text: $it")
             it.filterNot { c -> c == ',' || c == '.' }
-                .substring(minOf(10 + suffixText.length, it.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
+                .substring(minOf(MAX_LENGTH + suffixText.length, it.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
             it.toNumber()
             if (it.isBlank()) {
                 onValueChanged(0)
                 text = ""
                 return@BasicTextField
             }
-            if (it.length >= 10) {
+            if (it.length >= MAX_LENGTH) {
                 return@BasicTextField
             }
             onValueChanged(it.toNumber().toIntOrNull() ?: 0)
@@ -90,6 +91,7 @@ class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : Visua
 
     companion object {
         const val CHUNK_SIZE = 3
+        const val MAX_LENGTH = 10
     }
 }
 
