@@ -209,6 +209,9 @@
 
     <string name="sign_in_guest">게스트로 시작하기</string>
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
+    <string name="security_not_set">보안 수단 미설정</string>
+    <string name="security_not_set_description">소중한 기프티콘을 지킬 수 있는 보안을 설정하시겠어요?</string>
+    <string name="all_not_use">사용 안 함</string>
 
     <string name="notification_title">만료 임박 기프티콘 알림</string>
     <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>

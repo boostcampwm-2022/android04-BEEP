@@ -12,4 +12,6 @@ interface UserPreferencesRepository {
 
     suspend fun setBooleanOption(option: UserPreferenceOption, value: Boolean): Result<Unit>
     fun getBooleanOption(option: UserPreferenceOption): Flow<Boolean>
+
+    fun isSecurityStored(): Flow<Boolean>
 }

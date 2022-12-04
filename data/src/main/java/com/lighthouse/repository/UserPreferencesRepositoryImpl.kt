@@ -21,6 +21,10 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferencesRepository {
 
+    override fun isSecurityStored(): Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences.contains(SECURITY)
+    }
+
     override suspend fun setPinString(pinString: String): Result<Unit> = runCatching {
         withContext(Dispatchers.IO) {
             dataStore.edit { preferences ->
