@@ -27,14 +27,118 @@ class BeepApplication : Application() {
         val dao = room.gifticonDao()
 
         val gifticonTestData = listOf(
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "스타벅스", Date(120, 20, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "베스킨라빈스", Date(122, 11, 15), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "BHC", Date(122, 5, 10), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "GS25", Date(160, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "CU", Date(160, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "서브웨이", Date(160, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "세븐일레븐", Date(160, 10, 20), "bar", true, 1, "memo", true),
-            GifticonEntity(UUID.generate(), "이름", false, "이름", "파파존스", Date(160, 10, 20), "bar", true, 1, "memo", true)
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "아메리카노",
+                "스타벅스",
+                Date(120, 20, 20),
+                "123456781234",
+                false,
+                0,
+                "memo",
+                false
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "어머니는 외계인",
+                "베스킨라빈스",
+                Date(122, 11, 15),
+                "1111222233334444",
+                false,
+                0,
+                "memo",
+                false
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "핫후라이드",
+                "BHC",
+                Date(122, 5, 10),
+                "13131324242411",
+                false,
+                1,
+                "memo",
+                false
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "바나나맛 우유",
+                "GS25",
+                Date(160, 10, 20),
+                "777799997777",
+                false,
+                1,
+                "memo",
+                true
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "30,000원",
+                "CU",
+                Date(160, 10, 20),
+                "123123123123",
+                true,
+                1,
+                "memo",
+                false
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "이탈리안BMT+스위트칠리+홀스래디시",
+                "서브웨이",
+                Date(160, 10, 20),
+                "224244242211",
+                true,
+                1,
+                "memo",
+                true
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "5,000원",
+                "세븐일레븐",
+                Date(160, 10, 20),
+                "123131231231",
+                true,
+                5000,
+                "memo",
+                false
+            ),
+            GifticonEntity(
+                UUID.generate(),
+                Date(),
+                "Guest",
+                false,
+                "5만원",
+                "파파존스",
+                Date(160, 10, 20),
+                "1111222233334444",
+                true,
+                38000,
+                "memo",
+                false
+            )
         )
 
         CoroutineScope(Dispatchers.Main).launch {
