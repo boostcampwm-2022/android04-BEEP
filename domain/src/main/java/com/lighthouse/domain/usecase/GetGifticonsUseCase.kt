@@ -16,4 +16,8 @@ class GetGifticonsUseCase @Inject constructor(
     operator fun invoke(): Flow<DbResult<List<Gifticon>>> {
         return gifticonRepository.getAllGifticons(userId)
     }
+
+    fun getUsableGifticons(): Flow<DbResult<List<Gifticon>>> {
+        return gifticonRepository.getUsableGifticons(userId)
+    }
 }

@@ -3,7 +3,6 @@ package com.lighthouse.repository
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
-import com.lighthouse.datasource.gifticon.GifticonLocalFakeDataSourceImpl
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -19,7 +18,6 @@ import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
     private val gifticonLocalDataSource: GifticonLocalDataSource,
-    private val gifticonLocalFakeDataSource: GifticonLocalFakeDataSourceImpl, // TODO remove FAKE
     private val gifticonImageSource: GifticonImageSource
 ) : GifticonRepository {
 
@@ -34,16 +32,20 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override fun getAllGifticons(userId: String, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getAllGifticons(userId, sortBy).collect { // TODO remove FAKE
+        gifticonLocalDataSource.getAllGifticons(userId, sortBy).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
         emit(DbResult.Failure(e))
     }
 
-    override fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> = flow {
+    override fun getFilteredGifticons(
+        userId: String,
+        filter: Set<String>,
+        sortBy: SortBy
+    ): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getFilteredGifticons(userId, filter, sortBy).collect { // TODO remove FAKE
+        gifticonLocalDataSource.getFilteredGifticons(userId, filter, sortBy).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
@@ -52,7 +54,7 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getAllBrands(userId).collect { // TODO remove FAKE
+        gifticonLocalDataSource.getAllBrands(userId).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
@@ -106,6 +108,23 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getGifticonByBrand(brand: String) = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getGifticonByBrand(brand).collect { gifticons ->
+            if (gifticons.isEmpty()) {
+                emit(DbResult.Empty)
+            } else {
+                emit(DbResult.Success(gifticons.map { it.toDomain() }))
+            }
+        }
+    }
+
+    override fun hasUsableGifticon(userId: String) = flow {
+        gifticonLocalDataSource.hasUsableGifticon(userId).collect() { hasUsableGifticon ->
+            emit(hasUsableGifticon)
+        }
+    }
+
+    override fun getUsableGifticons(userId: String) = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getUsableGifticons(userId).collect { gifticons ->
             if (gifticons.isEmpty()) {
                 emit(DbResult.Empty)
             } else {

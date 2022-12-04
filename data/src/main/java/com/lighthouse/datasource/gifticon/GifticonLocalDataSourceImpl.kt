@@ -9,6 +9,7 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
+import com.lighthouse.domain.util.today
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -82,5 +83,13 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
         return gifticonDao.getGifticonByBrand(brand)
+    }
+
+    override fun hasUsableGifticon(userId: String): Flow<Boolean> {
+        return gifticonDao.hasUsableGifticon(userId, today)
+    }
+
+    override fun getUsableGifticons(userId: String): Flow<List<GifticonEntity>> {
+        return gifticonDao.getAllUsableGifticons(userId, today)
     }
 }

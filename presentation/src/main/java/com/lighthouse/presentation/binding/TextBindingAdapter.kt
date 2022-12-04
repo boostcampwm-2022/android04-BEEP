@@ -20,6 +20,7 @@ fun setExportedDate(view: TextView, date: Date) {
 fun setDday(view: TextView, date: Date) {
     val dDay = TimeCalculator.formatDdayToInt(date.time)
     view.text = when {
+        dDay == MIN_DAY -> view.context.getString(R.string.all_d_very_day)
         dDay in MIN_DAY until MAX_DAY -> String.format(view.context.getString(R.string.all_d_day), dDay)
         dDay < MIN_DAY -> view.context.getString(R.string.all_d_day_expired)
         else -> view.context.getString(R.string.all_d_day_more_than_year)
