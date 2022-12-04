@@ -3,8 +3,8 @@ package com.lighthouse.presentation.ui.security
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.model.UserPreferenceOption
-import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,12 +14,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecurityViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository,
+    private val saveSecurityOptionUseCase: SaveSecurityOptionUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val directionsFlow = MutableSharedFlow<SecurityDirections>()
-    val isRevise = savedStateHandle.get<Boolean>("revise") ?: false
+    val isRevise = savedStateHandle.get<Boolean>(Extras.KEY_PIN_REVISE) ?: false
 
     fun gotoOtherScreen(directions: SecurityDirections) {
         viewModelScope.launch {
@@ -29,7 +29,7 @@ class SecurityViewModel @Inject constructor(
 
     fun setSecurityOption(securityOption: SecurityOption) {
         viewModelScope.launch {
-            userPreferencesRepository.setIntOption(UserPreferenceOption.SECURITY, securityOption.ordinal)
+            saveSecurityOptionUseCase(securityOption.ordinal)
         }
     }
 }

@@ -12,7 +12,7 @@ import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.dao.BrandWithSectionDao
 import com.lighthouse.database.dao.GifticonDao
-import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.presentation.ui.security.AuthManager
 import com.lighthouse.presentation.util.UserPreference
 import dagger.Module
@@ -71,8 +71,8 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideUserPreference(userPreferencesRepository: UserPreferencesRepository): UserPreference {
-        return UserPreference(userPreferencesRepository)
+    fun provideUserPreference(getSecurityOptionUseCase: GetSecurityOptionUseCase): UserPreference {
+        return UserPreference(getSecurityOptionUseCase)
     }
 
     @Singleton

@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -20,6 +21,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSignInBinding
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
@@ -36,8 +38,7 @@ class SignInFragment : Fragment() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 
                 try {
-                    val account = task.getResult(ApiException::class.java)
-                    account.idToken?.let { signInWithGoogle(it) }
+                    signInWithGoogle(task.getResult(ApiException::class.java))
                 } catch (e: ApiException) {
                     Snackbar.make(requireView(), getString(R.string.signin_google_fail), Snackbar.LENGTH_SHORT).show()
                 }
@@ -72,14 +73,23 @@ class SignInFragment : Fragment() {
         }
     }
 
-    private fun signInWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
-                gotoSecurity()
-            } else {
-                Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
+    private fun signInWithGoogle(account: GoogleSignInAccount) {
+        account.email?.let { email ->
+            auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { task ->
+                val isInitial = task.result.signInMethods?.size == 0
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
+                    if (signInTask.isSuccessful) {
+                        Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
+                        if (isInitial) {
+                            gotoSecurity()
+                        } else {
+                            gotoMain()
+                        }
+                    } else {
+                        Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -93,7 +103,7 @@ class SignInFragment : Fragment() {
     private fun gotoSecurity() {
         val intent = Intent(requireContext(), SecurityActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        intent.putExtra("revise", false)
+        intent.putExtra(Extras.KEY_PIN_REVISE, false)
         startActivity(intent)
     }
 }
