@@ -395,7 +395,7 @@ class AddGifticonViewModel @Inject constructor(
             gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
             gifticon.barcode.text.length != 12 + 2 && gifticon.barcode.text.length != 16 + 3 -> AddGifticonValid.INVALID_BARCODE
-            gifticon.expiredAt < today -> AddGifticonValid.INVALID_EXPIRED_AT
+            gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
             gifticon.isCashCard && gifticon.balance.text.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             else -> AddGifticonValid.VALID
         }

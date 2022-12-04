@@ -35,7 +35,7 @@ class NearGifticonAdapter(
         }
 
         fun bind(gifticon: GifticonUiModel) {
-            binding.gifticon = gifticon
+            binding.gifticon = NearGifticonDisplayModel(gifticon)
         }
     }
 

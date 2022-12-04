@@ -27,14 +27,12 @@ import com.lighthouse.repository.UserPreferencesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class SingletonScopedDataModule {
+abstract class DataModule {
 
     @Binds
     @Singleton
@@ -101,14 +99,9 @@ abstract class SingletonScopedDataModule {
     abstract fun bindUserPreferencesRepository(
         repository: UserPreferencesRepositoryImpl
     ): UserPreferencesRepository
-}
-
-@Module
-@InstallIn(ActivityRetainedComponent::class)
-abstract class ViewModelScopedDataModule {
 
     @Binds
-    @ActivityRetainedScoped
+    @Singleton
     abstract fun bindLocationRepository(
         repository: LocationRepositoryImpl
     ): LocationRepository

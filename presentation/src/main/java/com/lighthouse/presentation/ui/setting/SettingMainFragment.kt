@@ -10,12 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSettingMainBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
+import com.lighthouse.presentation.ui.signin.SignInActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -45,6 +48,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.tvSecurity.setOnClickListener { authenticate() }
+        binding.tvSignOut.setOnClickListener { signOut() }
     }
 
     private fun gotoSecuritySetting() {
@@ -56,6 +60,13 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
 
     private fun authenticate() {
         authManager.auth(requireActivity(), biometricLauncher, this)
+    }
+
+    private fun signOut() {
+        Firebase.auth.signOut()
+        val intent = Intent(requireContext(), SignInActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onAuthSuccess() {

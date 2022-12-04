@@ -7,13 +7,12 @@
 
         <variable
             name="gifticon"
-            type="com.lighthouse.presentation.model.GifticonUiModel" />
+            type="com.lighthouse.presentation.ui.home.adapter.NearGifticonDisplayModel" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="160dp"
-        android:layout_height="240dp"
-        app:cardCornerRadius="4dp">
+        android:layout_height="240dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,7 +40,7 @@
                 android:textAppearance="@style/BEEP.TextStyle.Caption.White"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:setDday="@{gifticon.expireAt}"
+                app:setDday="@{gifticon.item.expireAt}"
                 tools:text="D-31" />
 
             <TextView
@@ -52,7 +51,7 @@
                 android:layout_marginTop="6dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@{gifticon.brand}"
+                android:text="@{gifticon.item.brand}"
                 android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +65,7 @@
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@{gifticon.name}"
+                android:text="@{gifticon.item.name}"
                 android:textAppearance="@style/BEEP.TextStyle.Subtitle1.OnPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_title"
@@ -82,7 +81,7 @@
                 android:textAppearance="@style/BEEP.TextStyle.Body2.Primary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_body"
-                app:setUIText="@{gifticon.uiText}"
+                app:setUIText="@{gifticon.distance()}"
                 tools:text="300m" />
 
             <TextView
@@ -94,9 +93,9 @@
                 android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:setExportedDate="@{gifticon.expireAt}"
+                app:setExportedDate="@{gifticon.item.expireAt}"
                 tools:text="~ 2022-11-08" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

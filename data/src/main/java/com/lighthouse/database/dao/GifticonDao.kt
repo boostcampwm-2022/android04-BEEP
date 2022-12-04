@@ -13,6 +13,7 @@ import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY
 import com.lighthouse.domain.model.Brand
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import java.util.Date
 
 @Dao
 interface GifticonDao {
@@ -22,6 +23,9 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY created_at DESC")
     fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
+
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time")
+    fun getAllUsableGifticons(userId: String, time: Date): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY expire_at")
     fun getAllGifticonsSortByDeadline(userId: String): Flow<List<GifticonEntity>>
@@ -110,4 +114,7 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
+
+    @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)")
+    fun hasUsableGifticon(userId: String, time: Date): Flow<Boolean>
 }

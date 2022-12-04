@@ -57,6 +57,9 @@ object Versions {
     const val COMPOSE_ACTIVITIES = "1.5.1"
     const val COMPOSE_VIEWMODEL = "2.5.1"
     const val COMPOSE_ACCOMPANIST = "0.28.0"
+
+    const val SHIMMER = "0.5.0"
+    const val LOTTIE = "5.2.0"
 }
 
 object Libraries {
@@ -126,6 +129,9 @@ object Libraries {
     private const val COMPOSE_LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-compose:+"
     private const val COMPOSE_ACCOMPANIST_FLOWLAYOUT = "com.google.accompanist:accompanist-flowlayout:${Versions.COMPOSE_ACCOMPANIST}"
 
+    private const val SHIMMER = "com.facebook.shimmer:shimmer:${Versions.SHIMMER}"
+    private const val LOTTIE = "com.airbnb.android:lottie:${Versions.LOTTIE}"
+
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
         CORE_SPLASH,
@@ -155,7 +161,10 @@ object Libraries {
         COMPOSE_ACTIVITIES,
         COMPOSE_VIEWMODEL,
         COMPOSE_LIFECYCLE_RUNTIME,
-        COMPOSE_ACCOMPANIST_FLOWLAYOUT
+        COMPOSE_ACCOMPANIST_FLOWLAYOUT,
+        COMPOSE_LIFECYCLE_RUNTIME,
+        SHIMMER,
+        LOTTIE
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,

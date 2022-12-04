@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase
+package com.lighthouse.domain.usecase.setting
 
 import com.lighthouse.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.first
