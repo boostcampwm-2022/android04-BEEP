@@ -2,10 +2,9 @@ package com.lighthouse.presentation.ui.signin
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -26,7 +25,7 @@ import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
 
-class SignInFragment : Fragment() {
+class SignInFragment : Fragment(R.layout.fragment_sign_in) {
 
     private val binding: FragmentSignInBinding by viewBindings()
 
@@ -48,11 +47,10 @@ class SignInFragment : Fragment() {
             }
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_sign_in, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val animatedVectorDrawable = binding.ivLogo.drawable as AnimatedVectorDrawable
+        animatedVectorDrawable.start()
+
         if (auth.currentUser == null) {
             initGoogleLogin()
         } else {

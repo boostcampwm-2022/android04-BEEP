@@ -207,6 +207,7 @@
     <string name="security_setting_change_failure">보안 설정 변경에 실패했습니다.</string>
     <string name="security_setting_change_cancel">보안 설정 변경을 취소했습니다.</string>
 
+    <string name="sign_in_guest">게스트로 시작하기</string>
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
 
     <string name="notification_title">만료 임박 기프티콘 알림</string>
