@@ -209,4 +209,7 @@
 
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
 
+    <string name="notification_title">만료 임박 기프티콘 알림</string>
+    <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>
+
 </resources>

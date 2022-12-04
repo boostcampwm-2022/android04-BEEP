@@ -11,7 +11,12 @@ interface GifticonLocalDataSource {
 
     fun getGifticon(id: String): Flow<Gifticon>
     fun getAllGifticons(userId: String, sortBy: SortBy = SortBy.DEADLINE): Flow<List<Gifticon>>
-    fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy = SortBy.DEADLINE): Flow<List<Gifticon>>
+    fun getFilteredGifticons(
+        userId: String,
+        filter: Set<String>,
+        sortBy: SortBy = SortBy.DEADLINE
+    ): Flow<List<Gifticon>>
+
     fun getAllBrands(userId: String): Flow<List<Brand>>
     suspend fun insertGifticons(gifticons: List<GifticonEntity>)
     suspend fun updateGifticon(gifticon: Gifticon)
