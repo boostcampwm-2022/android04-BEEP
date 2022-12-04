@@ -9,6 +9,7 @@ import java.util.Date
 val sampleGifticonItems = listOf(
     Gifticon(
         id = "sample1",
+        createdAt = Date(),
         userId = "mangbaam",
         hasImage = false,
         name = "별다방 아메리카노",
@@ -22,6 +23,7 @@ val sampleGifticonItems = listOf(
     ),
     Gifticon(
         id = "sample2",
+        createdAt = Date(),
         userId = "mangbaam",
         name = "5만원권",
         hasImage = false,
@@ -35,6 +37,7 @@ val sampleGifticonItems = listOf(
     ),
     Gifticon(
         id = "sample3",
+        createdAt = Date(),
         userId = "mangbaam",
         name = "어머니는 외계인",
         brand = "베스킨라빈스",
@@ -48,6 +51,7 @@ val sampleGifticonItems = listOf(
     ),
     Gifticon(
         id = "sample4",
+        createdAt = Date(),
         userId = "mangbaam",
         name = "3만원권",
         brand = "e마트",

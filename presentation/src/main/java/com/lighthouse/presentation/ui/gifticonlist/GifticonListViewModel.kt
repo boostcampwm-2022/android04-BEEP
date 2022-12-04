@@ -7,6 +7,8 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
+import com.lighthouse.presentation.mapper.toDomain
+import com.lighthouse.presentation.model.GifticonSortBy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +42,14 @@ class GifticonListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             filter.flatMapLatest {
-                getFilteredGifticonsUseCase(it)
+                getFilteredGifticonsUseCase(it, sortBy.value.toDomain())
+            }.collect { dbResult ->
+                gifticons.value = dbResult
+            }
+        }
+        viewModelScope.launch {
+            sortBy.flatMapLatest {
+                getFilteredGifticonsUseCase(filter.value, it.toDomain())
             }.collect { dbResult ->
                 gifticons.value = dbResult
             }
@@ -103,5 +112,9 @@ class GifticonListViewModel @Inject constructor(
 
     fun clearFilter() {
         filter.value = emptySet()
+    }
+
+    fun sort(newSortBy: GifticonSortBy) {
+        sortBy.value = newSortBy
     }
 }

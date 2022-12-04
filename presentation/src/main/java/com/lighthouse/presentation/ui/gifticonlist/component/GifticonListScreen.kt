@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -21,23 +20,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
-import timber.log.Timber
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GifticonListScreen(
+    modifier: Modifier = Modifier,
     viewModel: GifticonListViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
 
-    Timber.tag("GifticonList").d("${viewState.brands}")
-    viewState.selectedFilter.forEach {
-        Timber.tag("Compose").d("GifticonListScreen - $it")
-    }
-    Timber.tag("Compose").d("--END1")
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
             .background(Color.Black.copy(alpha = 0.05f))
             .padding(horizontal = 16.dp),
         color = Color.Transparent

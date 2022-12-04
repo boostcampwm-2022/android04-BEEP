@@ -6,6 +6,7 @@ import com.lighthouse.domain.model.Gifticon
 fun GifticonEntity.toDomain(): Gifticon {
     return Gifticon(
         id = id,
+        createdAt = createdAt,
         userId = userId,
         hasImage = hasImage,
         name = name,

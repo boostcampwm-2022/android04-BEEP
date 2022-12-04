@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.ui.security.pin
 
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.usecase.SavePinUseCase
+import com.lighthouse.domain.usecase.setting.SavePinUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

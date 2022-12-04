@@ -194,18 +194,19 @@
     <string name="home_expire_title">사용 기한이 임박했어요!</string>
     <string name="home_expire_more_label">더보기</string>
 
+    <string name="home_near_gifticon_distance">%dm</string>
+    <string name="home_near_gifticon_announce">근처에 존재합니다.</string>
+    <string name="home_empty_gifticon_description">현재 사용 가능한 쿠폰이 존재하지 않습니다.</string>
+    <string name="home_empty_near_brands">주위에 사용 가능한 브랜드가 존재하지 않습니다.</string>
+    <string name="home_location_has_not_permission_description">위치 권한을 허용해주시면\n근처에서 사용할 수 있는 기프티콘을 볼 수 있어요!</string>
+    <string name="home_location_permission_button">위치권한 허용</string>
+
     <string name="security_setting_option_change">보안 인증 수단 변경</string>
     <string name="security_setting_change_pin">PIN 번호 변경</string>
     <string name="security_setting_change_success">보안 설정을 변경했습니다.</string>
     <string name="security_setting_change_failure">보안 설정 변경에 실패했습니다.</string>
     <string name="security_setting_change_cancel">보안 설정 변경을 취소했습니다.</string>
 
-    <string name="home_near_gifticon_distance">%dm</string>
-    <string name="home_near_gifticon_announce">근처에 존재합니다.</string>
-
-    <string name="home_empty_gifticon_description">현재 사용 가능한 쿠폰이 존재하지 않습니다.</string>
-    <string name="home_empty_near_brands">주위에 사용 가능한 브랜드가 존재하지 않습니다.</string>
-    <string name="home_location_has_not_permission_description">위치 권한을 허용해주시면\n근처에서 사용할 수 있는 기프티콘을 볼 수 있어요!</string>
-    <string name="home_location_permission_button">위치권한 허용</string>
+    <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
 
 </resources>
