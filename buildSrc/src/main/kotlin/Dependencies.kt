@@ -123,7 +123,6 @@ object Libraries {
     private const val COMPOSE_APP_COMPAT_THEME =
         "com.google.accompanist:accompanist-appcompat-theme:${Versions.APP_COMPAT_THEME}"
 
-
     private const val COMPOSE_MATERIAL = "androidx.compose.material:material"
     private const val COMPOSE_PREVIEW = "androidx.compose.ui:ui-tooling-preview"
     private const val COMPOSE_ICONS = "androidx.compose.material:material-icons-extended"
