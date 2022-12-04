@@ -10,10 +10,9 @@
             type="com.lighthouse.presentation.ui.home.adapter.NearGifticonDisplayModel" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="160dp"
-        android:layout_height="240dp"
-        app:cardCornerRadius="4dp">
+        android:layout_height="240dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -98,5 +97,5 @@
                 tools:text="~ 2022-11-08" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
