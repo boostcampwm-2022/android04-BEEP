@@ -50,6 +50,6 @@ class ConcurrencyTextField @JvmOverloads constructor(
     }
 }
 
-interface ValueListener {
+fun interface ValueListener {
     fun onValueChanged(value: Int)
 }

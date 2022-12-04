@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toNumber
 import com.lighthouse.presentation.extension.toNumberFormat
-import timber.log.Timber
 
 @Composable
 fun ConcurrencyField(
@@ -33,20 +32,19 @@ fun ConcurrencyField(
     BasicTextField(
         value = text,
         onValueChange = {
-            Timber.tag("Custom").d("TextField text: $it")
-            it.filterNot { c -> c == ',' || c == '.' }
-                .substring(minOf(10 + suffixText.length, it.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
-            it.toNumber()
-            if (it.isBlank()) {
+            val inputText = it.filterNot { c -> c == ',' || c == '.' }.let { filtered ->
+                filtered.substring(0, minOf(10, filtered.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
+            }.toNumber()
+            if (inputText.isBlank()) {
                 onValueChanged(0)
                 text = ""
                 return@BasicTextField
             }
-            if (it.length >= 10) {
+            if (inputText.length >= 10) {
                 return@BasicTextField
             }
-            onValueChanged(it.toNumber().toIntOrNull() ?: 0)
-            text = it.trim()
+            onValueChanged(inputText.toNumber().toIntOrNull() ?: 0)
+            text = inputText
         },
         modifier = modifier,
         readOnly = editable.not(),
@@ -60,9 +58,6 @@ fun ConcurrencyField(
 class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         val numberWithComma = text.text.toNumberFormat()
-
-        Timber.tag("Custom").d("mapper text: $text")
-        Timber.tag("Custom").d("mapper textWithComma: $numberWithComma")
 
         return TransformedText(
             text = AnnotatedString(numberWithComma + suffixText),
