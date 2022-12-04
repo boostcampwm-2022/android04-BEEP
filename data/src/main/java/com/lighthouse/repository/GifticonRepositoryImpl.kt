@@ -3,7 +3,6 @@ package com.lighthouse.repository
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
-import com.lighthouse.datasource.gifticon.GifticonLocalFakeDataSourceImpl
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
     private val gifticonLocalDataSource: GifticonLocalDataSource,
-    private val gifticonLocalFakeDataSource: GifticonLocalFakeDataSourceImpl, // TODO remove FAKE
     private val gifticonImageSource: GifticonImageSource
 ) : GifticonRepository {
 
@@ -42,7 +40,7 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getFilteredGifticons(userId, filter).collect { // TODO remove FAKE
+        gifticonLocalDataSource.getFilteredGifticons(userId, filter).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
@@ -51,7 +49,7 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalFakeDataSource.getAllBrands(userId).collect { // TODO remove FAKE
+        gifticonLocalDataSource.getAllBrands(userId).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
