@@ -11,7 +11,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,7 +23,6 @@ import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenWidth
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
-import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
@@ -48,10 +46,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var getResultImage: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (isPermissionGranted()) {
-                Timber.tag("TAG").d("${javaClass.simpleName} 외부 설정에서 허용을 하고 왔다.")
                 homeViewModel.changeLocationPermission(true)
-            } else {
-                Timber.tag("TAG").d("${javaClass.simpleName} 외부 설정에서 허용을 하고 오지 않았다.")
             }
         }
 
@@ -76,11 +71,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val locationPermissionLauncher =
         registerForActivityResult(contract) { results ->
             if (results.all { it.value }) {
-                Timber.tag("TAG").d("${javaClass.simpleName} 권한을 허용해줬다.")
                 homeViewModel.changeLocationPermission(true)
-                gotoMap()
-            } else {
-                Timber.tag("TAG").d("${javaClass.simpleName} 하나라도 안됐다")
             }
         }
 
@@ -103,7 +94,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         space = 8.dp,
         start = (screenWidth * 0.05).toFloat(),
         top = 4.dp,
-        end = 24.dp,
+        end = (screenWidth * 0.05).toFloat(),
         bottom = 4.dp
     )
 
@@ -129,14 +120,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun setObserveViewModel() {
         repeatOnStarted {
-            homeViewModel.nearGifticon.collectLatest { state ->
+            homeViewModel.uiState.collectLatest { state ->
                 Timber.tag("TAG").d("${javaClass.simpleName} UiState -> $state")
                 when (state) {
-                    is UiState.Success -> updateNearGifticon(state.item)
-                    is UiState.Loading -> startShimmer()
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
-                    is UiState.NotFoundResults -> guideNotFoundNearBrands()
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
+                    else -> Unit
                 }
             }
         }
@@ -147,14 +136,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     is HomeEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
                     is HomeEvent.RequestLocationPermissionCheck -> launchPermission()
                 }
-            }
-        }
-
-        repeatOnStarted {
-            homeViewModel.hasLocationPermission.collectLatest { hasPermission ->
-                if (hasPermission.not()) stopShimmer()
-                binding.tvNotAllowLocationPermission.isVisible = hasPermission.not()
-                binding.btnLocationPermissionCheck.isVisible = hasPermission.not()
             }
         }
     }
@@ -197,32 +178,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         return true
     }
 
-    private fun startShimmer() {
-        binding.tvEmptyNearBrands.isVisible = false
-        binding.shimmer.isVisible = true
-        binding.shimmer.startShimmer()
-    }
-
-    private fun updateNearGifticon(item: List<GifticonUiModel>) {
-        binding.tvEmptyNearBrands.isVisible = false
-        nearGifticonAdapter.submitList(item)
-        stopShimmer()
-    }
-
-    private fun guideNotFoundNearBrands() {
-        binding.tvEmptyNearBrands.isVisible = true
-        nearGifticonAdapter.submitList(emptyList())
-        stopShimmer()
-    }
-
     private fun showSnackBar(@StringRes message: Int) {
-        stopShimmer()
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun stopShimmer() {
-        binding.shimmer.stopShimmer()
-        binding.shimmer.isVisible = false
     }
 
     companion object {

@@ -24,6 +24,9 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId")
     fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
 
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time")
+    fun getAllUsableGifticons(userId: String, time: Date): Flow<List<GifticonEntity>>
+
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters)")
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
@@ -107,5 +110,5 @@ interface GifticonDao {
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
 
     @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)")
-    fun hasVariableGifticon(userId: String, time: Date): Flow<Boolean>
+    fun hasUsableGifticon(userId: String, time: Date): Flow<Boolean>
 }

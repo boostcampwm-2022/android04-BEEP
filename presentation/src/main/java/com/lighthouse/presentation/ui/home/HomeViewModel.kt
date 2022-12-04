@@ -15,7 +15,6 @@ import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
-import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +45,8 @@ class HomeViewModel @Inject constructor(
     private val _eventFlow = MutableEventFlow<HomeEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+    private val gifticons =
+        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allBrands = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
@@ -56,9 +56,7 @@ class HomeViewModel @Inject constructor(
 
     private val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            val gifticonGroup = gifticons.data
-                .filter { TimeCalculator.formatDdayToInt(it.expireAt.time) >= 0 }
-                .groupBy { it.brand }
+            val gifticonGroup = gifticons.data.groupBy { it.brand }
             emit(gifticonGroup)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
@@ -70,14 +68,21 @@ class HomeViewModel @Inject constructor(
         emit(gifticonFlatten.slice(0 until gifticonSize))
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _nearGifticon: MutableStateFlow<UiState<List<GifticonUiModel>>> = MutableStateFlow(UiState.Loading)
-    val nearGifticon = _nearGifticon.asStateFlow()
+    private val _uiState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Loading)
+    val uiState = _uiState.asStateFlow()
 
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
     private lateinit var recentLocation: VertexLocation
 
     val hasLocationPermission = hasLocationPermissionsUseCase()
+
+    val isShimmer = MutableStateFlow(false)
+
+    val isEmptyNearBrands = MutableStateFlow(false)
+
+    private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
+    val nearGifticons = _nearGifticons.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -101,28 +106,34 @@ class HomeViewModel @Inject constructor(
 
     private fun getNearBrands(x: Double, y: Double) {
         viewModelScope.launch {
-            _nearGifticon.emit(UiState.Loading)
+            _uiState.value = UiState.Loading
+            isEmptyNearBrands.value = false
+            isShimmer.value = true
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
-                    val nearGifticon = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
+                    _nearGifticons.value = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
                         gifticonsMap.value[placeInfo.brand]?.first()
                             ?.toPresentation(diffLocation(placeInfo, recentLocation))
-                    }.sortedBy { it.distance }
-                    when (nearGifticon.isEmpty()) {
-                        true -> _nearGifticon.emit(UiState.NotFoundResults)
-                        false -> _nearGifticon.emit(UiState.Success(nearGifticon))
+                    }
+                    when (_nearGifticons.value.isEmpty()) {
+                        true -> {
+                            _uiState.emit(UiState.NotFoundResults)
+                            isEmptyNearBrands.value = true
+                        }
+                        false -> _uiState.emit(UiState.Success(Unit))
                     }
                 }
                 .onFailure { throwable ->
-                    _nearGifticon.emit(
+                    _uiState.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure
                             else -> UiState.Failure
                         }
                     )
                 }
+            isShimmer.value = false
         }
     }
 

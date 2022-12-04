@@ -113,12 +113,19 @@ class GifticonRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun hasVariableGifticon(userId: String) = flow {
-        gifticonLocalDataSource.hasVariableGifticon(userId).collect() { hasVariableGifticon ->
-            if (hasVariableGifticon) {
-                emit(true)
+    override fun hasUsableGifticon(userId: String) = flow {
+        gifticonLocalDataSource.hasUsableGifticon(userId).collect() { hasUsableGifticon ->
+            emit(hasUsableGifticon)
+        }
+    }
+
+    override fun getUsableGifticons(userId: String) = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getUsableGifticons(userId).collect { gifticons ->
+            if (gifticons.isEmpty()) {
+                emit(DbResult.Empty)
             } else {
-                emit(false)
+                emit(DbResult.Success(gifticons.map { it.toDomain() }))
             }
         }
     }

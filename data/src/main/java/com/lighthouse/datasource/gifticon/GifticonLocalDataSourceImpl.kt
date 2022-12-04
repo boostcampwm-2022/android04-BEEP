@@ -11,12 +11,20 @@ import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 
 class GifticonLocalDataSourceImpl @Inject constructor(
     private val gifticonDao: GifticonDao
 ) : GifticonLocalDataSource {
+
+    private val today = Calendar.getInstance().let {
+        it.set(Calendar.HOUR, 0)
+        it.set(Calendar.MINUTE, 0)
+        it.set(Calendar.SECOND, 0)
+        it.time
+    }
 
     override fun getGifticon(id: String): Flow<Gifticon> {
         return gifticonDao.getGifticon(id).map { entity ->
@@ -76,13 +84,12 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         return gifticonDao.getGifticonByBrand(brand)
     }
 
-    override fun hasVariableGifticon(userId: String): Flow<Boolean> {
-        val today = Calendar.getInstance().let {
-            it.set(Calendar.HOUR, 0)
-            it.set(Calendar.MINUTE, 0)
-            it.set(Calendar.SECOND, 0)
-            it.time
-        }
-        return gifticonDao.hasVariableGifticon(userId, today)
+    override fun hasUsableGifticon(userId: String): Flow<Boolean> {
+        return gifticonDao.hasUsableGifticon(userId, today)
+    }
+
+    override fun getUsableGifticons(userId: String): Flow<List<GifticonEntity>> {
+        Timber.tag("TAG").d("${javaClass.simpleName} today -> $today")
+        return gifticonDao.getAllUsableGifticons(userId, today)
     }
 }

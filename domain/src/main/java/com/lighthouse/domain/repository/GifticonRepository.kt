@@ -13,7 +13,6 @@ interface GifticonRepository {
     fun getAllGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
     fun getFilteredGifticons(userId: String, filter: Set<String>): Flow<DbResult<List<Gifticon>>>
     fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
-
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
     suspend fun updateGifticon(gifticon: Gifticon)
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>
@@ -22,5 +21,6 @@ interface GifticonRepository {
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory)
     suspend fun unUseGifticon(gifticonId: String)
     fun getGifticonByBrand(brand: String): Flow<DbResult<List<Gifticon>>>
-    fun hasVariableGifticon(userId: String): Flow<Boolean>
+    fun hasUsableGifticon(userId: String): Flow<Boolean>
+    fun getUsableGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
 }

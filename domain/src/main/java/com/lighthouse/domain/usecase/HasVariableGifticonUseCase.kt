@@ -13,6 +13,6 @@ class HasVariableGifticonUseCase @Inject constructor(
     val userId = authRepository.getCurrentUserId()
 
     operator fun invoke(): Flow<Boolean> {
-        return gifticonRepository.hasVariableGifticon(userId)
+        return gifticonRepository.hasUsableGifticon(userId)
     }
 }
