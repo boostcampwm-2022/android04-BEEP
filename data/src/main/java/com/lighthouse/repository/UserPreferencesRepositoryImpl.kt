@@ -21,8 +21,17 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferencesRepository {
 
-    override fun isSecurityStored(): Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences.contains(SECURITY)
+    override fun isStored(option: UserPreferenceOption): Flow<Boolean> {
+        val key = when (option) {
+            UserPreferenceOption.SECURITY -> SECURITY
+            UserPreferenceOption.NOTIFICATION -> NOTIFICATION
+            UserPreferenceOption.LOCATION -> LOCATION
+            UserPreferenceOption.GUEST -> GUEST
+        }
+
+        return dataStore.data.map { preferences ->
+            preferences.contains(key)
+        }
     }
 
     override suspend fun setPinString(pinString: String): Result<Unit> = runCatching {
@@ -71,6 +80,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
             val key = when (option) {
                 UserPreferenceOption.NOTIFICATION -> NOTIFICATION
                 UserPreferenceOption.LOCATION -> LOCATION
+                UserPreferenceOption.GUEST -> GUEST
                 else -> throw Exception("Unsupportable Option : Not Boolean")
             }
 
@@ -84,6 +94,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         val key = when (option) {
             UserPreferenceOption.NOTIFICATION -> NOTIFICATION
             UserPreferenceOption.LOCATION -> LOCATION
+            UserPreferenceOption.GUEST -> GUEST
             else -> throw Exception("Unsupportable Option : Not Boolean")
         }
 
@@ -93,7 +104,8 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        private val uid = Firebase.auth.currentUser?.uid ?: "user"
+        private val uid = Firebase.auth.currentUser?.uid ?: "Guest"
+        val GUEST = booleanPreferencesKey("Guest")
         val PIN = byteArrayPreferencesKey("${uid}pin")
         val IV = byteArrayPreferencesKey("${uid}iv")
         val SECURITY = intPreferencesKey("${uid}security")

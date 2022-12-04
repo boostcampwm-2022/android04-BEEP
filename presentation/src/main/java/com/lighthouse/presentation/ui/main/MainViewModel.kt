@@ -51,7 +51,7 @@ class MainViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
-    val securityOption = userPreferencesRepository.isSecurityStored()
+    val securityOption = userPreferencesRepository.isStored(UserPreferenceOption.SECURITY)
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 

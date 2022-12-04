@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,14 +21,19 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSignInBinding
+import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 
+@AndroidEntryPoint
 class SignInFragment : Fragment(R.layout.fragment_sign_in) {
 
     private val binding: FragmentSignInBinding by viewBindings()
+    private val viewModel: SignInViewModel by viewModels()
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private val auth: FirebaseAuth = Firebase.auth
@@ -48,8 +54,24 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        checkAutoLogin()
+
         val animatedVectorDrawable = binding.ivLogo.drawable as AnimatedVectorDrawable
         animatedVectorDrawable.start()
+
+        binding.btnGuestLogin.setOnClickListener {
+            guestSignIn()
+        }
+    }
+
+    private fun checkAutoLogin() {
+        repeatOnStarted {
+            if (viewModel.isGuestStored.first()) {
+                if (viewModel.isGuest.first()) {
+                    gotoMain()
+                }
+            }
+        }
 
         if (auth.currentUser == null) {
             initGoogleLogin()
@@ -79,6 +101,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                 auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
                     if (signInTask.isSuccessful) {
                         Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
+                        viewModel.saveGuestOption(false)
                         if (isInitial) {
                             gotoSecurity()
                         } else {
@@ -99,9 +122,15 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     }
 
     private fun gotoSecurity() {
-        val intent = Intent(requireContext(), SecurityActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        intent.putExtra(Extras.KEY_PIN_REVISE, false)
+        val intent = Intent(requireContext(), SecurityActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(Extras.KEY_PIN_REVISE, false)
+        }
         startActivity(intent)
+    }
+
+    private fun guestSignIn() {
+        viewModel.saveGuestOption(true)
+        gotoSecurity()
     }
 }
