@@ -46,7 +46,6 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
-    private lateinit var useGifticonDialog: UseGifticonDialog
     private lateinit var gifticonInfoChangedSnackbar: Snackbar
     private lateinit var gifticonInfoNotChangedToast: Toast
 
@@ -177,9 +176,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     }
 
     private fun showUseGifticonDialog() {
-        useGifticonDialog = UseGifticonDialog().also { dialog ->
-            dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
-        }
+        UseGifticonDialog().show(supportFragmentManager, UseGifticonDialog.TAG)
     }
 
     private fun showUsageHistoryDialog() {
