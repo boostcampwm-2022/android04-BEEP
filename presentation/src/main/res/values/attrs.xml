@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ConcurrencyEditText">
-        <attr name="text" format="reference|string" />
-        <attr name="hint" format="reference|string" />
-        <attr name="maxValue" format="reference|integer" />
-        <attr name="chunkSize" format="reference|integer" />
-        <attr name="unitText" format="reference|string" />
-        <attr name="underStrokeColor" format="reference|color" />
+    <declare-styleable name="ConcurrencyTextField">
+        <attr name="suffixText" format="reference|string" />
+        <attr name="enabled" format="boolean" />
+        <attr name="value" format="integer" />
     </declare-styleable>
 </resources>

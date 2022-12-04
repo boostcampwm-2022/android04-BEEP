@@ -28,15 +28,16 @@ fun ConcurrencyField(
     value: Int = 0,
     textStyle: TextStyle? = null,
     enable: Boolean = false,
+    suffixText: String = stringResource(id = R.string.all_cash_origin_unit),
     onValueChanged: (Int) -> Unit = {}
 ) {
     val typography = textStyle ?: MaterialTheme.typography.body1
-    val suffixText = stringResource(id = R.string.all_cash_origin_unit)
-    var text by remember { mutableStateOf(value.toString().toNumberFormat()) }
+    var text by remember { mutableStateOf(value.toString()) }
 
     BasicTextField(
         value = text,
         onValueChange = {
+            Timber.tag("Custom").d("TextField text: $it")
             it.filterNot { c -> c == ',' || c == '.' }
                 .substring(minOf(10 + suffixText.length, it.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
             it.toNumber()
@@ -63,6 +64,9 @@ fun ConcurrencyField(
 class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         val numberWithComma = text.text.toNumberFormat()
+
+        Timber.tag("Custom").d("mapper text: $text")
+        Timber.tag("Custom").d("mapper textWithComma: $numberWithComma")
 
         return TransformedText(
             text = AnnotatedString(numberWithComma + suffixText),
@@ -96,7 +100,5 @@ class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : Visua
 @Preview
 @Composable
 fun ConcurrencyFieldPreview() {
-    ConcurrencyField(value = 0, enable = true) {
-        Timber.tag("Custom").d("금액 변경: $it")
-    }
+    ConcurrencyField(value = 0, enable = true)
 }
