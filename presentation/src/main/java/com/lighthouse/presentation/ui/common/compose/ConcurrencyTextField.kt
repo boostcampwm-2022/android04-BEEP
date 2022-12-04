@@ -23,7 +23,7 @@ fun ConcurrencyField(
     modifier: Modifier = Modifier,
     value: Int = 0,
     textStyle: TextStyle? = null,
-    enable: Boolean = false,
+    editable: Boolean = false,
     suffixText: String = stringResource(id = R.string.all_cash_origin_unit),
     onValueChanged: (Int) -> Unit = {}
 ) {
@@ -49,7 +49,7 @@ fun ConcurrencyField(
             text = it.trim()
         },
         modifier = modifier,
-        readOnly = enable.not(),
+        readOnly = editable.not(),
         singleLine = true,
         visualTransformation = ConcurrencyFormatVisualTransformation(suffixText),
         textStyle = typography,
@@ -96,5 +96,5 @@ class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : Visua
 @Preview
 @Composable
 fun ConcurrencyFieldPreview() {
-    ConcurrencyField(value = 0, enable = true)
+    ConcurrencyField(value = 0, editable = true)
 }
