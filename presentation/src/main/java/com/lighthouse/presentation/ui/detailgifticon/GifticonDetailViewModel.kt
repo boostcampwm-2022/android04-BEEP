@@ -173,6 +173,10 @@ class GifticonDetailViewModel @Inject constructor(
             amountToUse.update {
                 it + amount
             }
+        } ?: run { // "전액" 버튼이 클릭된 경우
+            amountToUse.update {
+                gifticon.value?.balance ?: return@run
+            }
         }
     }
 
