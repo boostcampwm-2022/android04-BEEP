@@ -134,22 +134,21 @@ class GifticonDetailViewModel @Inject constructor(
         tempGifticon.value?.let {
             _tempGifticon.value = it.copy(name = newName)
         }
-        Timber.tag("edit").d("editProductName: $tempGifticon")
+        Timber.tag("edit").d("editProductName: ${tempGifticon.value}")
     }
 
     fun editBrand(newBrand: String) {
         tempGifticon.value?.let {
             _tempGifticon.value = it.copy(brand = newBrand)
         }
-        Timber.tag("edit").d("editBrand: $tempGifticon")
+        Timber.tag("edit").d("editBrand: ${tempGifticon.value}")
     }
 
-    fun editBalance(newBalance: String) {
+    fun editBalance(newBalance: Int) {
         tempGifticon.value?.let {
-            val newBalanceAmount = newBalance.filter { c -> c.isDigit() }.toIntOrNull() ?: return@let
-            _tempGifticon.value = it.copy(balance = newBalanceAmount)
+            _tempGifticon.value = it.copy(balance = newBalance)
         }
-        Timber.tag("edit").d("editBalance: $tempGifticon")
+        Timber.tag("edit").d("editBalance: ${tempGifticon.value}")
     }
 
     fun editExpireDate(year: Int, month: Int, dayOfMonth: Int) {
@@ -159,14 +158,14 @@ class GifticonDetailViewModel @Inject constructor(
             }
             _tempGifticon.value = it.copy(expireAt = cal.time)
         }
-        Timber.tag("edit").d("editExpireDate: $tempGifticon")
+        Timber.tag("edit").d("editExpireDate: ${tempGifticon.value}")
     }
 
     fun editMemo(newMemo: String) {
         tempGifticon.value?.let {
             _tempGifticon.value = it.copy(memo = newMemo)
         }
-        Timber.tag("edit").d("editMemo: $tempGifticon")
+        Timber.tag("edit").d("editMemo: ${tempGifticon.value}")
     }
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
