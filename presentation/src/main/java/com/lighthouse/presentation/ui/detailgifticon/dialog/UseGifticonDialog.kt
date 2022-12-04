@@ -45,7 +45,9 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
                     ConcurrencyField(
                         value = amountToUse.value,
                         textStyle = MaterialTheme.typography.h4.copy(textAlign = TextAlign.End)
-                    )
+                    ) {
+                        amountToUse.value = it
+                    }
                 }
             }
         }
