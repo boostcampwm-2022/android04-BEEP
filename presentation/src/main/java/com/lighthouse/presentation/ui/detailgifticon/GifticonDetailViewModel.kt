@@ -169,15 +169,11 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
-        /*amountPreset.amount?.let { amount ->
-            if (amount + amountToUse.value <= gifticon.value.balance) {
-                amountToUse.update {
-                    it + amount
-                }
+        amountPreset.amount?.let { amount ->
+            amountToUse.update {
+                it + amount
             }
-        } ?: amountToUse.update {
-            gifticon.value.balance
-        }*/
+        }
     }
 
     fun rollbackChangedGifticonInfo(before: Gifticon) {
