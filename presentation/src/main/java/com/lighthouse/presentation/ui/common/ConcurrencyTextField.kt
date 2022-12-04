@@ -18,14 +18,14 @@ class ConcurrencyTextField @JvmOverloads constructor(
 ) : AbstractComposeView(context, attrs, defStyle) {
 
     var value by mutableStateOf(0)
-    var editable by mutableStateOf(false)
+    var editable by mutableStateOf(true)
     private var listener: ValueListener? = null
 
     init {
         attrs?.let {
             context.obtainStyledAttributes(it, R.styleable.ConcurrencyTextField).run {
                 value = getInt(R.styleable.ConcurrencyTextField_value, 0)
-                editable = getBoolean(R.styleable.ConcurrencyTextField_editable, false)
+                editable = getBoolean(R.styleable.ConcurrencyTextField_editable, true)
                 recycle()
             }
         }

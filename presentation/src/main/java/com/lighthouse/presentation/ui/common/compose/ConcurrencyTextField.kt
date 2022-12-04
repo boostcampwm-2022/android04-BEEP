@@ -23,7 +23,7 @@ fun ConcurrencyField(
     modifier: Modifier = Modifier,
     value: Int = 0,
     textStyle: TextStyle? = null,
-    editable: Boolean = false,
+    editable: Boolean = true,
     suffixText: String = stringResource(id = R.string.all_cash_origin_unit),
     onValueChanged: (Int) -> Unit = {}
 ) {
