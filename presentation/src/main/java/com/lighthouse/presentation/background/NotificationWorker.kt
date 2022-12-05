@@ -18,15 +18,10 @@ class NotificationWorker @AssistedInject constructor(
     private val notificationHelper: NotificationHelper,
     private val getGifticonsUseCase: GetGifticonsUseCase
 ) : CoroutineWorker(context, workerParams) {
-    private val targetDDays = listOf(3, 7, 14)
 
     override suspend fun doWork(): Result {
         getNotificationGifticons()
         return Result.success()
-    }
-
-    private fun createNotification(list: List<Gifticon>, remainDays: Int) {
-        list.forEach { notificationHelper.applyNotification(it, remainDays) }
     }
 
     private suspend fun getNotificationGifticons() {
@@ -35,10 +30,19 @@ class NotificationWorker @AssistedInject constructor(
                 val usableGifticons = dbResult.data
 
                 targetDDays.forEach { days ->
-                    val targetGifticons = usableGifticons.filter { TimeCalculator.formatDdayToInt(it.expireAt.time) == days }
+                    val targetGifticons =
+                        usableGifticons.filter { TimeCalculator.formatDdayToInt(it.expireAt.time) == days }
                     createNotification(targetGifticons, days)
                 }
             }
         }
+    }
+
+    private fun createNotification(list: List<Gifticon>, remainDays: Int) {
+        list.forEach { notificationHelper.applyNotification(it, remainDays) }
+    }
+
+    companion object {
+        private val targetDDays = listOf(3, 7, 14)
     }
 }
