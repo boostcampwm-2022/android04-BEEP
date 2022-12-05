@@ -2,8 +2,6 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.VertexLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
@@ -15,6 +13,7 @@ import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
+import com.lighthouse.presentation.util.LocationCalculateService.diffLocation
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -73,8 +70,6 @@ class HomeViewModel @Inject constructor(
 
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
-    private lateinit var recentLocation: VertexLocation
-
     val hasLocationPermission = hasLocationPermissionsUseCase()
 
     val isShimmer = MutableStateFlow(false)
@@ -87,7 +82,6 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
-                Timber.tag("TAG").d("${javaClass.simpleName} result -> $result")
                 if (result) observeLocationFlow()
             }
         }
@@ -97,11 +91,12 @@ class HomeViewModel @Inject constructor(
         Timber.tag("TAG").d("${javaClass.simpleName} observeLocationFlow ${locationFlow?.isActive}")
         if (locationFlow?.isActive == true) return
 
-        locationFlow = getUserLocationUseCase().onEach { location ->
-            Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
-            recentLocation = location
-            getNearBrands(location.longitude, location.latitude)
-        }.launchIn(viewModelScope)
+        locationFlow = viewModelScope.launch {
+            getUserLocationUseCase().collectLatest { location ->
+                Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
+                getNearBrands(location.longitude, location.latitude)
+            }
+        }
     }
 
     private fun getNearBrands(x: Double, y: Double) {
@@ -112,10 +107,10 @@ class HomeViewModel @Inject constructor(
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
-                    nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
+                    nearBrandsInfo = brands.sortedBy { diffLocation(it, x, y) }
                     _nearGifticons.value = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
                         gifticonsMap.value[placeInfo.brand]?.first()
-                            ?.toPresentation(diffLocation(placeInfo, recentLocation))
+                            ?.toPresentation(diffLocation(placeInfo, x, y))
                     }
                     when (_nearGifticons.value.isEmpty()) {
                         true -> {
@@ -136,16 +131,6 @@ class HomeViewModel @Inject constructor(
             isShimmer.value = false
         }
     }
-
-    private fun diffLocation(
-        brandLocation: BrandPlaceInfoUiModel,
-        currentLocation: VertexLocation
-    ) = LocationConverter.locationDistance(
-        brandLocation.x.toDouble(),
-        brandLocation.y.toDouble(),
-        currentLocation.longitude,
-        currentLocation.latitude
-    )
 
     fun gotoMap() {
         viewModelScope.launch {
