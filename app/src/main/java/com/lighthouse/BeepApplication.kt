@@ -38,7 +38,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "아메리카노",
                 "스타벅스",
@@ -52,7 +52,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "어머니는 외계인",
                 "베스킨라빈스",
@@ -66,7 +66,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "핫후라이드",
                 "BHC",
@@ -80,7 +80,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "바나나맛 우유",
                 "GS25",
@@ -94,7 +94,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "30,000원",
                 "CU",
@@ -108,9 +108,9 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
-                "이름",
+                "이탈리안BMT+스위트칠리+홀스래디시",
                 "서브웨이",
                 Date(160, 10, 20),
                 "224244242211",
@@ -122,7 +122,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "5,000원",
                 "세븐일레븐",
@@ -136,7 +136,7 @@ class BeepApplication : Application(), Configuration.Provider {
             GifticonEntity(
                 UUID.generate(),
                 Date(),
-                "이름",
+                "Guest",
                 false,
                 "5만원",
                 "파파존스",
