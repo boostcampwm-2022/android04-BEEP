@@ -11,13 +11,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="48dp"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:background="@drawable/bg_on_surface_12">
 
         <ImageView
             android:id="@+id/iv_candidate"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/surface_1"
             android:contentDescription="@string/add_gifticon_goto_gallery_description"
             android:onClickListener="@{() -> dm.onClickItem()}"
             android:scaleType="centerCrop"

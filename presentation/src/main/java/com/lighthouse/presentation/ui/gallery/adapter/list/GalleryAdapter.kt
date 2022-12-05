@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.gallery.adapter
+package com.lighthouse.presentation.ui.gallery.adapter.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,12 +7,8 @@ import com.lighthouse.presentation.adapter.BindablePagingAdapter
 import com.lighthouse.presentation.model.GalleryUIModel
 
 class GalleryAdapter(
-    onClickGallery: (GalleryUIModel.Gallery) -> Unit
+    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit
 ) : BindablePagingAdapter<GalleryUIModel, RecyclerView.ViewHolder>(diff) {
-
-    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit = { model ->
-        onClickGallery(model)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -38,7 +34,7 @@ class GalleryAdapter(
         return when (getItem(position)) {
             is GalleryUIModel.Header -> TYPE_HEADER
             is GalleryUIModel.Gallery -> TYPE_GALLERY
-            else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
+            else -> throw IllegalArgumentException("${getItem(position)} 잘못된 viewType 입니다.")
         }
     }
 

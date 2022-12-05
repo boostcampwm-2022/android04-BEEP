@@ -13,6 +13,7 @@ import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.mapper.toAddGifticonItemUIModel
 import com.lighthouse.presentation.mapper.toAddGifticonUIModel
 import com.lighthouse.presentation.mapper.toDomain
+import com.lighthouse.presentation.mapper.toGalleryUIModel
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.EditTextInfo
@@ -483,7 +484,9 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoGallery() {
         changeDeleteMode(false)
 
-        val list = _displayList.value.filterIsInstance<AddGifticonItemUIModel.Gifticon>().map { it.id }
+        val list = gifticonList.value.mapIndexed { index, gifticon ->
+            gifticon.toGalleryUIModel(index + 1)
+        }
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.NavigateToGallery(list))
         }

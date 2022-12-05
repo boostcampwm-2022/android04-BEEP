@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.gallery.adapter
+package com.lighthouse.presentation.ui.gallery.adapter.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

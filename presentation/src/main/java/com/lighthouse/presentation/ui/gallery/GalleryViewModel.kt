@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.gallery
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,6 +9,7 @@ import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.lighthouse.domain.usecase.GetGalleryImagesUseCase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.util.flow.MutableEventFlow
@@ -27,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
-    getGalleryImagesUseCase: GetGalleryImagesUseCase
+    getGalleryImagesUseCase: GetGalleryImagesUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _eventsFlow = MutableEventFlow<GalleryEvent>()
@@ -37,7 +40,9 @@ class GalleryViewModel @Inject constructor(
 
     private val _pagingData = getGalleryImagesUseCase().cachedIn(viewModelScope)
 
-    private val _selectedList = MutableStateFlow<List<GalleryUIModel.Gallery>>(emptyList())
+    private val _selectedList = MutableStateFlow<List<GalleryUIModel.Gallery>>(
+        savedStateHandle[Extras.KEY_SELECTED_GALLERY_ITEM] ?: emptyList()
+    )
     val selectedList = _selectedList.asStateFlow()
 
     val list = _pagingData.combine(_selectedList) { pagingData, selectedList ->
@@ -60,7 +65,7 @@ class GalleryViewModel @Inject constructor(
                 null
             }
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+    }.cachedIn(viewModelScope).stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
     val isSelected = _selectedList.map { list ->
         list.isNotEmpty()
@@ -83,6 +88,16 @@ class GalleryViewModel @Inject constructor(
             oldList + listOf(gallery)
         } else {
             oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
+        }
+    }
+
+    fun removeItem(gallery: GalleryUIModel.Gallery) {
+        val oldList = _selectedList.value
+        val index = oldList.indexOfFirst { item ->
+            item.id == gallery.id
+        }
+        if (index != -1) {
+            _selectedList.value = oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
         }
     }
 

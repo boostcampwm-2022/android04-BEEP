@@ -5,7 +5,7 @@
     <data>
         <variable
             name="dm"
-            type="com.lighthouse.presentation.ui.gallery.adapter.GalleryDisplayModel" />
+            type="com.lighthouse.presentation.ui.gallery.adapter.list.GalleryDisplayModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

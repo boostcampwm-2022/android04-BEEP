@@ -79,7 +79,8 @@
 
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>
-    <string name="gallery_selected_image_description">갤러리 이미지</string>
+    <string name="gallery_selected_image_description">선택된 갤러리 이미지</string>
+    <string name="gallery_selected_image_delete_description">선택된 갤러리 이미지 삭제</string>
     <string name="gallery_title">이미지 선택</string>
     <string name="gallery_selected">%d개 선택됨</string>
     <string name="gallery_confirm">완료</string>
