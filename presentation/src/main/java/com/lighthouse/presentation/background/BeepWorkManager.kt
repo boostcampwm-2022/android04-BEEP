@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 class BeepWorkManager(@ApplicationContext context: Context) {
     private val notificationWorkRequest: PeriodicWorkRequest =
-        PeriodicWorkRequestBuilder<NotificationWorker>(15, TimeUnit.MINUTES).build()
+        PeriodicWorkRequestBuilder<NotificationWorker>(NOTIFICATION_INTERVAL, TimeUnit.MINUTES).build()
 
     init {
         WorkManager.getInstance(context)
@@ -19,5 +19,6 @@ class BeepWorkManager(@ApplicationContext context: Context) {
 
     companion object {
         private const val WORK_NAME = "notification"
+        private const val NOTIFICATION_INTERVAL = 15L // test를 위해 최소 간격인 15분으로 설정. 원래는 24시간.
     }
 }
