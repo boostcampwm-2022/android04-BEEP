@@ -1,31 +1,28 @@
 package com.lighthouse.presentation.ui.widget
 
 import android.content.Context
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.Image
-import androidx.glance.ImageProvider
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.appWidgetBackground
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.unit.ColorProvider
-import androidx.glance.background
+import androidx.glance.currentState
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
-import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
@@ -34,74 +31,54 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
+import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
 import timber.log.Timber
-import java.util.Date
 
 class BeepWidget : GlanceAppWidget() {
 
-    private val sampleGifticonItems = listOf(
-        Gifticon(
-            id = "sample1",
-            createdAt = Date(),
-            userId = "mangbaam",
-            hasImage = false,
-            name = "별다방 아메리카노",
-            brand = "스타벅스",
-            expireAt = Date(),
-            barcode = "808346588450",
-            isCashCard = false,
-            balance = 0,
-            memo = "",
-            isUsed = false
-        ),
-        Gifticon(
-            id = "sample2",
-            createdAt = Date(),
-            userId = "mangbaam",
-            name = "5만원권",
-            hasImage = false,
-            brand = "GS25",
-            expireAt = Date(),
-            barcode = "808346588450",
-            isCashCard = true,
-            balance = 50000,
-            memo = "",
-            isUsed = false
-        )
-    )
+    override val stateDefinition = BeepWidgetInfoStateDefinition
 
     @Composable
     override fun Content() {
-        Box(
-            modifier = GlanceModifier.fillMaxSize()
-                .background(ImageProvider(resId = R.drawable.bg_widget_small_6))
-                .appWidgetBackground(),
-            contentAlignment = Alignment.Center
-        ) {
-            WidgetBody()
+        val widgetState = currentState<WidgetState>()
+        Timber.tag("TAG").d("${javaClass.simpleName} Widget state -> $widgetState")
+
+        MaterialTheme {
+            when (widgetState) {
+                is WidgetState.Loading -> AppWidgetBox(contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                is WidgetState.Available -> WidgetBody(widgetState)
+                is WidgetState.Unavailable -> {
+                    AppWidgetColumn {
+                        Text("데이터가 정상적이지가 않습니다.")
+                        Button("새로고침", actionRunCallback<WidgetRefreshAction>())
+                    }
+                }
+                is WidgetState.Empty -> {
+                    AppWidgetColumn {
+                        Text("근처에 사용 가능한 기프티콘이 존재하지 않습니다.")
+                        Button("새로고침", actionRunCallback<WidgetRefreshAction>())
+                    }
+                }
+            }
         }
     }
 
     @Composable
-    fun WidgetBody() {
-        Column(
+    fun WidgetBody(widgetState: WidgetState.Available) {
+        AppWidgetColumn(
+            verticalAlignment = Alignment.Top,
+            horizonAlignment = Alignment.Start,
             modifier = GlanceModifier
         ) {
             Row(
                 modifier = GlanceModifier.fillMaxWidth().padding(start = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    modifier = GlanceModifier.size(12.dp),
-                    provider = ImageProvider(resId = R.drawable.ic_marker_market),
-                    contentDescription = "Location Icon"
-                )
                 Spacer(modifier = GlanceModifier.width(4.dp))
                 Text(
                     modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
-                    text = "테스트",
+                    text = "근처에서 사용할 수 있는 기프티콘이에요",
                     style = TextStyle(
                         fontWeight = FontWeight.Normal,
                         fontSize = 10.sp,
@@ -125,7 +102,7 @@ class BeepWidget : GlanceAppWidget() {
                 )
             }
             LazyColumn(modifier = GlanceModifier.padding(8.dp)) {
-                items(sampleGifticonItems) { item ->
+                items(widgetState.gifticons) { item ->
                     Text(
                         text = item.brand,
                         modifier = GlanceModifier
@@ -145,6 +122,7 @@ class BeepWidget : GlanceAppWidget() {
 }
 
 class WidgetRefreshAction : ActionCallback {
+
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
     }
 }
