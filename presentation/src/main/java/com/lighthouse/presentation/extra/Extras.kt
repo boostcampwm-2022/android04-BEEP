@@ -15,4 +15,6 @@ object Extras {
     const val KEY_NEAR_GIFTICONS = "Extra.Home.Gifticons"
 
     const val KEY_PIN_REVISE = "Extra.Pin.Revise"
+
+    const val NOTIFICATION_CHANNEL = "Extra.Notification.Channel"
 }
