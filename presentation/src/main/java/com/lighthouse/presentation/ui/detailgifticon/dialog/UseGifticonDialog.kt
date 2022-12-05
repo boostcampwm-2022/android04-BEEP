@@ -54,14 +54,14 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
 
         initBottomSheetDialog(view)
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.gifticon.collect {
                 val gifticon = it ?: return@collect
                 barcodeUtil.displayBitmap(binding.ivBarcode, gifticon.barcode)
                 binding.tvBarcodeNumber.text = divideBarcodeNumber(gifticon.barcode)
             }
         }
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.amountToUse.collect {
                 amountToUse.value = it
             }
