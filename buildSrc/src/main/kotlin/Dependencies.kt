@@ -15,6 +15,7 @@ object Versions {
 
     const val RETROFIT = "2.9.0"
     const val MOSHI = "1.14.0"
+    const val JSON = "1.3.3"
 
     const val ZXING = "3.5.1"
 
@@ -88,6 +89,7 @@ object Libraries {
     private const val MOSHI_KOTLIN = "com.squareup.moshi:moshi-kotlin:${Versions.MOSHI}"
     private const val MOSHI_ADAPTERS = "com.squareup.moshi:moshi-adapters:${Versions.MOSHI}"
     private const val CONVERTER_MOSHI = "com.squareup.retrofit2:converter-moshi:${Versions.RETROFIT}"
+    private const val JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.JSON}"
 
     private const val PAGING_COMMON_KTX = "androidx.paging:paging-common-ktx:${Versions.PAGING_KTX}"
     private const val PAGING_RUNTIME_KTX = "androidx.paging:paging-runtime:${Versions.PAGING_KTX}"
@@ -174,7 +176,8 @@ object Libraries {
         SHIMMER,
         LOTTIE,
         WORK_MANAGER,
-        GLANCE
+        GLANCE,
+        JSON
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
