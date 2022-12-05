@@ -41,8 +41,14 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
 
-    private val standardGifticonInfo by lazy { StandardGifticonInfoFragment() }
-    private val cashCardGifticonInfo by lazy { CashCardGifticonInfoFragment() }
+    private val standardGifticonInfo by lazy {
+        supportFragmentManager.findFragmentByTag(StandardGifticonInfoFragment::class.java.name)
+            ?: StandardGifticonInfoFragment()
+    }
+    private val cashCardGifticonInfo by lazy {
+        supportFragmentManager.findFragmentByTag(CashCardGifticonInfoFragment::class.java.name)
+            ?: CashCardGifticonInfoFragment()
+    }
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
@@ -85,15 +91,14 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         }
         repeatOnStarted {
             viewModel.gifticon.collect { gifticon ->
-                gifticon?.let {
-                    if (it.isCashCard) {
-                        supportFragmentManager.commit {
-                            replace(binding.fcvGifticonInfo.id, cashCardGifticonInfo)
-                        }
-                    } else {
-                        supportFragmentManager.commit {
-                            replace(binding.fcvGifticonInfo.id, standardGifticonInfo)
-                        }
+                val fragment = when (gifticon?.isCashCard) {
+                    true -> cashCardGifticonInfo
+                    false -> standardGifticonInfo
+                    else -> null
+                }
+                if (fragment != null && fragment.isAdded.not()) {
+                    supportFragmentManager.commit {
+                        replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
             }
