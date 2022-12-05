@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toNumber
 import com.lighthouse.presentation.extension.toNumberFormat
 import com.lighthouse.presentation.ui.common.compose.ConcurrencyFormatVisualTransformation.Companion.MAX_LENGTH
 
@@ -33,19 +32,18 @@ fun ConcurrencyField(
     BasicTextField(
         value = text,
         onValueChange = {
-            val inputText = it.filterNot { c -> c == ',' || c == '.' }.let { filtered ->
+            val inputText = it.filter { c -> c.isDigit() }.let { filtered ->
                 filtered.substring(0, minOf(MAX_LENGTH, filtered.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
-            }.toNumber()
+            }
             if (inputText.isBlank()) {
-                onValueChanged(0)
                 text = ""
                 return@BasicTextField
             }
             if (inputText.length >= MAX_LENGTH) {
                 return@BasicTextField
             }
-            onValueChanged(inputText.toNumber().toIntOrNull() ?: 0)
             text = inputText
+            onValueChanged(inputText.toIntOrNull() ?: 0)
         },
         modifier = modifier,
         readOnly = editable.not(),
