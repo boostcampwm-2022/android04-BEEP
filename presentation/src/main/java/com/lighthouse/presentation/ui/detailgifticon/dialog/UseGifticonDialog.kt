@@ -38,7 +38,7 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
 
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.ctfAmountToUse.apply {
+        binding.ctfAmountToBeUsed.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
@@ -62,7 +62,7 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
             }
         }
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.amountToUse.collect {
+            viewModel.amountToBeUsed.collect {
                 amountToUse.value = it
             }
         }

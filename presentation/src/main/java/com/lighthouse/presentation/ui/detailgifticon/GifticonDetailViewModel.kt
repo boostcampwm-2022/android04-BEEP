@@ -71,7 +71,7 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    val amountToUse = MutableStateFlow(0)
+    val amountToBeUsed = MutableStateFlow(0)
 
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
@@ -171,11 +171,11 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
         amountPreset.amount?.let { amount ->
-            amountToUse.update {
+            amountToBeUsed.update {
                 it + amount
             }
         } ?: run { // "전액" 버튼이 클릭된 경우
-            amountToUse.update {
+            amountToBeUsed.update {
                 gifticon.value?.balance ?: return@run
             }
         }

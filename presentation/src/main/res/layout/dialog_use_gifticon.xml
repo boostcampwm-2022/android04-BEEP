@@ -76,7 +76,7 @@
                 isVisible="@{vm.gifticon.cashCard}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="chip_amount_1,chip_amount_2,chip_amount_3,chip_total_amount,ctf_amount_to_use,tv_balance" />
+                app:constraint_referenced_ids="chip_amount_1,chip_amount_2,chip_amount_3,chip_total_amount,ctf_amount_to_be_used,tv_balance" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_amount_1"
@@ -128,7 +128,7 @@
                 tools:text="전액" />
 
             <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/ctf_amount_to_use"
+                android:id="@+id/ctf_amount_to_be_used"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -145,7 +145,7 @@
                 android:text="@{@string/all_balance_label(vm.gifticon.balance)}"
                 app:layout_constraintEnd_toEndOf="@id/guid_end"
                 app:layout_constraintStart_toStartOf="@id/guid_start"
-                app:layout_constraintTop_toBottomOf="@id/ctf_amount_to_use"
+                app:layout_constraintTop_toBottomOf="@id/ctf_amount_to_be_used"
                 tools:text="남은 금액:3,620원" />
 
             <TextView
