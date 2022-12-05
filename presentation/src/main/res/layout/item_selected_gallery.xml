@@ -16,7 +16,7 @@
             android:id="@+id/iv_thumbnail"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:contentDescription="@string/gallery_image_description"
+            android:contentDescription="@string/gallery_selected_image_description"
             android:onClickListener="@{() -> dm.onClickItem()}"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"

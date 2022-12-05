@@ -31,8 +31,8 @@ class GalleryActivity : AppCompatActivity() {
     }
 
     private val galleryAdapter by lazy {
-        GalleryAdapter(selection, onClickGallery = {
-            viewModel.selectItem(selection.size)
+        GalleryAdapter(onClickGallery = {
+            viewModel.selectItem(it)
         })
     }
 
@@ -68,13 +68,6 @@ class GalleryActivity : AppCompatActivity() {
                 }
             }
             addItemDecoration(GridSectionSpaceItemDecoration(20.dp, 4.dp, 12.dp, 12.dp))
-        }
-
-        repeatOnStarted {
-            viewModel.list.collect {
-                galleryAdapter.submitData(it)
-                binding.rvList.invalidateItemDecorations()
-            }
         }
     }
 
