@@ -43,6 +43,9 @@ class GifticonDetailViewModel @Inject constructor(
     private val gifticonDbResult =
         getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
+    private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
+    val mode = _mode.asStateFlow()
+
     val gifticon: StateFlow<Gifticon?> = gifticonDbResult.transform {
         if (it is DbResult.Success) {
             emit(it.data)
@@ -68,9 +71,6 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
-    val mode = _mode.asStateFlow()
-
     val amountToUse = MutableStateFlow(0)
 
     private val _event = MutableSharedFlow<Event>()
@@ -80,7 +80,8 @@ class GifticonDetailViewModel @Inject constructor(
     val tempGifticon = _tempGifticon.asStateFlow()
 
     fun switchMode(mode: GifticonDetailMode) {
-        _mode.update { mode }
+        Timber.tag("Bug").d("mode: ${mode.name}")
+        _mode.value = mode
     }
 
     fun scrollDownForUseButtonClicked() {
