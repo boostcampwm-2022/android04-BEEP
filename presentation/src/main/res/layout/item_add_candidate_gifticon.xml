@@ -28,7 +28,7 @@
             app:loadUriWithoutCache="@{dm.item.uri}" />
 
         <ImageView
-            android:id="@+id/iv_delete"
+            android:id="@+id/iv_badge"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:contentDescription="@string/add_gifticon_delete_description"
@@ -38,7 +38,7 @@
             app:imageResource="@{dm.badgeResId}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:isVisible="@{dm.badgeVisibility}"/>
+            app:isVisible="@{dm.badgeVisible}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

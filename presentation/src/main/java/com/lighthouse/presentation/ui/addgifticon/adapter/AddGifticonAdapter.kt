@@ -28,6 +28,17 @@ class AddGifticonAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (UPDATE_BADGE in payloads) {
+            val item = getItem(position)
+            if (holder is AddCandidateGifticonViewHolder && item is AddGifticonItemUIModel.Gifticon) {
+                holder.bindBadge(item)
+            }
+        } else {
+            onBindViewHolder(holder, position)
+        }
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (currentList[position]) {
             AddGifticonItemUIModel.Gallery -> TYPE_GALLERY
@@ -50,9 +61,21 @@ class AddGifticonAdapter(
             override fun areContentsTheSame(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Boolean {
                 return oldItem == newItem
             }
+
+            override fun getChangePayload(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Any? {
+                if (oldItem is AddGifticonItemUIModel.Gifticon &&
+                    newItem is AddGifticonItemUIModel.Gifticon &&
+                    (newItem.isDelete != oldItem.isDelete || newItem.isValid != oldItem.isValid)
+                ) {
+                    return UPDATE_BADGE
+                }
+                return super.getChangePayload(oldItem, newItem)
+            }
         }
 
         private const val TYPE_GALLERY = 1
         private const val TYPE_GIFTICON = 2
+
+        private const val UPDATE_BADGE = 1
     }
 }

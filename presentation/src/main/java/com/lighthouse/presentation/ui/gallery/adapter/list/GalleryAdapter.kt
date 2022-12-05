@@ -30,11 +30,22 @@ class GalleryAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (UPDATE_SELECTED in payloads) {
+            val item = getItem(position)
+            if (holder is GalleryItemViewHolder && item is GalleryUIModel.Gallery) {
+                holder.bindSelected(item)
+            }
+        } else {
+            onBindViewHolder(holder, position)
+        }
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is GalleryUIModel.Header -> TYPE_HEADER
             is GalleryUIModel.Gallery -> TYPE_GALLERY
-            else -> throw IllegalArgumentException("${getItem(position)} 잘못된 viewType 입니다.")
+            else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
         }
     }
 
@@ -57,7 +68,10 @@ class GalleryAdapter(
             }
 
             override fun getChangePayload(oldItem: GalleryUIModel, newItem: GalleryUIModel): Any? {
-                if (oldItem is GalleryUIModel.Gallery && newItem is GalleryUIModel.Gallery) {
+                if (oldItem is GalleryUIModel.Gallery &&
+                    newItem is GalleryUIModel.Gallery &&
+                    oldItem.selectedOrder != newItem.selectedOrder
+                ) {
                     return UPDATE_SELECTED
                 }
                 return super.getChangePayload(oldItem, newItem)
