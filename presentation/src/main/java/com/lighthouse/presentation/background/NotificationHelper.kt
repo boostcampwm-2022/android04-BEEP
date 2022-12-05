@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.notification
+package com.lighthouse.presentation.background
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -47,7 +47,7 @@ class NotificationHelper @Inject constructor(
             putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
         }
 
-        val code = gifticon.barcode.substring(0..6).toInt()
+        val code = gifticon.barcode.hashCode()
 
         val pendingIntent = PendingIntent.getActivity(
             context,

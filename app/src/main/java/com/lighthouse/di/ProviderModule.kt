@@ -2,8 +2,8 @@ package com.lighthouse.di
 
 import android.content.Context
 import com.lighthouse.datasource.gifticon.GifticonImageSource
-import com.lighthouse.presentation.notification.NotificationHelper
 import com.lighthouse.datasource.location.SharedLocationManager
+import com.lighthouse.presentation.background.NotificationHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

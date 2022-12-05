@@ -8,7 +8,7 @@ import com.lighthouse.beep.BuildConfig
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.entity.GifticonEntity
-import com.lighthouse.presentation.notification.NotificationWorkManager
+import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.util.UUID
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -153,7 +153,7 @@ class BeepApplication : Application(), Configuration.Provider {
             dao.insertGifticon(*gifticonTestData.toTypedArray())
         }
 
-        NotificationWorkManager(this)
+        BeepWorkManager(this)
     }
 
     override fun getWorkManagerConfiguration() =
