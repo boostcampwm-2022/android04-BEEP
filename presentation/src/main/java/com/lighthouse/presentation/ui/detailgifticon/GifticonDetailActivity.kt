@@ -238,7 +238,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         Timber.tag("Auth").d("onAuthCancel")
     }
 
-    override fun onAuthError(@StringRes StringId: Int?) {
+    override fun onAuthError(@StringRes stringId: Int?) {
         Timber.tag("Auth").d("onAuthError")
         // TODO: StringId가 null 이 아니라면 정의된 에러 메세지가 존재하는 경우입니다. null 체크하고 출력하면 어떨까요?
         authenticate()

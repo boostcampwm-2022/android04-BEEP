@@ -76,8 +76,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     override fun onAuthCancel() {
     }
 
-    override fun onAuthError(StringId: Int?) {
-        StringId?.let {
+    override fun onAuthError(stringId: Int?) {
+        stringId?.let {
             Snackbar.make(requireView(), getString(it), Snackbar.LENGTH_SHORT).show()
         }
     }
