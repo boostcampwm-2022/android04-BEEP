@@ -25,7 +25,7 @@ class BeepWorkManager(@ApplicationContext context: Context) {
             .enqueueUniquePeriodicWork(NOTIFICATION_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, notificationWorkRequest)
 
         WorkManager.getInstance(context)
-            .enqueueUniqueWork(WIDGET_WORK_NAME, ExistingWorkPolicy.KEEP, widgetWorkRequest)
+            .enqueueUniqueWork(WIDGET_WORK_NAME, ExistingWorkPolicy.REPLACE, widgetWorkRequest)
     }
 
     companion object {
