@@ -104,6 +104,11 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
             }
         }
         repeatOnStarted {
+            viewModel.tempGifticon.collect { gifticon ->
+                spinnerDatePicker.setDate(gifticon?.expireAt ?: return@collect)
+            }
+        }
+        repeatOnStarted {
             viewModel.mode.collect { mode ->
                 when (mode) {
                     GifticonDetailMode.UNUSED -> {
@@ -172,7 +177,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     private val spinnerDatePicker = SpinnerDatePicker().apply {
         setOnDatePickListener { year, month, dayOfMonth ->
-            Timber.tag("TEST").d("$year/$month/$dayOfMonth")
+            viewModel.editExpireDate(year, month, dayOfMonth)
         }
     }
 
