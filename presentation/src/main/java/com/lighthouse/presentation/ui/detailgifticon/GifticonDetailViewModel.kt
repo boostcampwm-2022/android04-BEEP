@@ -43,6 +43,9 @@ class GifticonDetailViewModel @Inject constructor(
     private val gifticonDbResult =
         getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
+    private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
+    val mode = _mode.asStateFlow()
+
     val gifticon: StateFlow<Gifticon?> = gifticonDbResult.transform {
         if (it is DbResult.Success) {
             emit(it.data)
@@ -68,10 +71,7 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
-    val mode = _mode.asStateFlow()
-
-    val amountToUse = MutableStateFlow(0)
+    val amountToBeUsed = MutableStateFlow(0)
 
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
@@ -80,7 +80,8 @@ class GifticonDetailViewModel @Inject constructor(
     val tempGifticon = _tempGifticon.asStateFlow()
 
     fun switchMode(mode: GifticonDetailMode) {
-        _mode.update { mode }
+        Timber.tag("Bug").d("mode: ${mode.name}")
+        _mode.value = mode
     }
 
     fun scrollDownForUseButtonClicked() {
@@ -134,22 +135,21 @@ class GifticonDetailViewModel @Inject constructor(
         tempGifticon.value?.let {
             _tempGifticon.value = it.copy(name = newName)
         }
-        Timber.tag("edit").d("editProductName: $tempGifticon")
+        Timber.tag("edit").d("editProductName: ${tempGifticon.value}")
     }
 
     fun editBrand(newBrand: String) {
         tempGifticon.value?.let {
             _tempGifticon.value = it.copy(brand = newBrand)
         }
-        Timber.tag("edit").d("editBrand: $tempGifticon")
+        Timber.tag("edit").d("editBrand: ${tempGifticon.value}")
     }
 
-    fun editBalance(newBalance: String) {
+    fun editBalance(newBalance: Int) {
         tempGifticon.value?.let {
-            val newBalanceAmount = newBalance.filter { c -> c.isDigit() }.toIntOrNull() ?: return@let
-            _tempGifticon.value = it.copy(balance = newBalanceAmount)
+            _tempGifticon.value = it.copy(balance = newBalance)
         }
-        Timber.tag("edit").d("editBalance: $tempGifticon")
+        Timber.tag("edit").d("editBalance: ${tempGifticon.value}")
     }
 
     fun editExpireDate(year: Int, month: Int, dayOfMonth: Int) {
@@ -159,26 +159,26 @@ class GifticonDetailViewModel @Inject constructor(
             }
             _tempGifticon.value = it.copy(expireAt = cal.time)
         }
-        Timber.tag("edit").d("editExpireDate: $tempGifticon")
+        Timber.tag("edit").d("editExpireDate: ${tempGifticon.value}")
     }
 
     fun editMemo(newMemo: String) {
         tempGifticon.value?.let {
             _tempGifticon.value = it.copy(memo = newMemo)
         }
-        Timber.tag("edit").d("editMemo: $tempGifticon")
+        Timber.tag("edit").d("editMemo: ${tempGifticon.value}")
     }
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
-        /*amountPreset.amount?.let { amount ->
-            if (amount + amountToUse.value <= gifticon.value.balance) {
-                amountToUse.update {
-                    it + amount
-                }
+        amountPreset.amount?.let { amount ->
+            amountToBeUsed.update {
+                it + amount
             }
-        } ?: amountToUse.update {
-            gifticon.value.balance
-        }*/
+        } ?: run { // "전액" 버튼이 클릭된 경우
+            amountToBeUsed.update {
+                gifticon.value?.balance ?: return@run
+            }
+        }
     }
 
     fun rollbackChangedGifticonInfo(before: Gifticon) {

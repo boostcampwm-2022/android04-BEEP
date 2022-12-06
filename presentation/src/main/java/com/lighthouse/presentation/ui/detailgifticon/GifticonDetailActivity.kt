@@ -41,12 +41,17 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
 
-    private val standardGifticonInfo by lazy { StandardGifticonInfoFragment() }
-    private val cashCardGifticonInfo by lazy { CashCardGifticonInfoFragment() }
+    private val standardGifticonInfo by lazy {
+        supportFragmentManager.findFragmentByTag(StandardGifticonInfoFragment::class.java.name)
+            ?: StandardGifticonInfoFragment()
+    }
+    private val cashCardGifticonInfo by lazy {
+        supportFragmentManager.findFragmentByTag(CashCardGifticonInfoFragment::class.java.name)
+            ?: CashCardGifticonInfoFragment()
+    }
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
-    private lateinit var useGifticonDialog: UseGifticonDialog
     private lateinit var gifticonInfoChangedSnackbar: Snackbar
     private lateinit var gifticonInfoNotChangedToast: Toast
 
@@ -86,15 +91,14 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         }
         repeatOnStarted {
             viewModel.gifticon.collect { gifticon ->
-                gifticon?.let {
-                    if (it.isCashCard) {
-                        supportFragmentManager.commit {
-                            replace(binding.fcvGifticonInfo.id, cashCardGifticonInfo)
-                        }
-                    } else {
-                        supportFragmentManager.commit {
-                            replace(binding.fcvGifticonInfo.id, standardGifticonInfo)
-                        }
+                val fragment = when (gifticon?.isCashCard) {
+                    true -> cashCardGifticonInfo
+                    false -> standardGifticonInfo
+                    else -> null
+                }
+                if (fragment != null && fragment.isAdded.not()) {
+                    supportFragmentManager.commit {
+                        replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
             }
@@ -177,9 +181,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     }
 
     private fun showUseGifticonDialog() {
-        useGifticonDialog = UseGifticonDialog().also { dialog ->
-            dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
-        }
+        UseGifticonDialog().show(supportFragmentManager, UseGifticonDialog.TAG)
     }
 
     private fun showUsageHistoryDialog() {
@@ -236,7 +238,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         Timber.tag("Auth").d("onAuthCancel")
     }
 
-    override fun onAuthError(@StringRes StringId: Int?) {
+    override fun onAuthError(@StringRes stringId: Int?) {
         Timber.tag("Auth").d("onAuthError")
         // TODO: StringId가 null 이 아니라면 정의된 에러 메세지가 존재하는 경우입니다. null 체크하고 출력하면 어떨까요?
         authenticate()
