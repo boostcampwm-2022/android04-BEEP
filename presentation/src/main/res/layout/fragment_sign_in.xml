@@ -35,18 +35,19 @@
             android:layout_marginBottom="16dp"
             app:buttonSize="wide"
             app:colorScheme="auto"
-            app:layout_constraintBottom_toTopOf="@+id/btn_guest_login"
+            app:layout_constraintBottom_toTopOf="@+id/tv_guest_signin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_guest_login"
-            style="@style/BEEP.TextStyle.Body1"
-            android:layout_width="match_parent"
+
+        <TextView
+            android:id="@+id/tv_guest_signin"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:backgroundTint="@color/gray_200"
             android:text="@string/sign_in_guest"
+            android:textAllCaps="false"
+            android:textAppearance="@style/BEEP.TextStyle.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

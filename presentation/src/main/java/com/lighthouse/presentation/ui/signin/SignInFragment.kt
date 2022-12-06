@@ -59,7 +59,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
         val animatedVectorDrawable = binding.ivLogo.drawable as AnimatedVectorDrawable
         animatedVectorDrawable.start()
 
-        binding.btnGuestLogin.setOnClickListener {
+        binding.tvGuestSignin.setOnClickListener {
             guestSignIn()
         }
     }
