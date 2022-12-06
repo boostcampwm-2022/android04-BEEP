@@ -10,5 +10,5 @@ sealed class Event {
     data class OnGifticonInfoChanged(val before: Gifticon, val after: Gifticon) : Event()
     object ExpireDateClicked : Event()
     object UseGifticonButtonClicked : Event()
-    object Complete : Event()
+    object UseGifticonComplete : Event()
 }

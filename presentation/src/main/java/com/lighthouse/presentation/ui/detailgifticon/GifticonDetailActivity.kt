@@ -171,7 +171,7 @@ class GifticonDetailActivity : AppCompatActivity() {
             is Event.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
-            is Event.Complete -> {
+            is Event.UseGifticonComplete -> {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
