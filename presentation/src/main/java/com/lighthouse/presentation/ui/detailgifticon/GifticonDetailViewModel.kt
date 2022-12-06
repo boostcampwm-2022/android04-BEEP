@@ -128,6 +128,7 @@ class GifticonDetailViewModel @Inject constructor(
             viewModelScope.launch {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
                 useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value)
+                amountToBeUsed.value = 0
                 event(Event.Complete)
             }
         } else {
