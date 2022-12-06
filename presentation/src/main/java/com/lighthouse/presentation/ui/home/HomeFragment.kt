@@ -182,6 +182,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
+    override fun onStart() {
+        homeViewModel.startLocationCollectJob()
+        super.onStart()
+    }
+
+    override fun onStop() {
+        homeViewModel.cancelLocationCollectJob()
+        super.onStop()
+    }
+
     companion object {
         private val PERMISSIONS =
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)

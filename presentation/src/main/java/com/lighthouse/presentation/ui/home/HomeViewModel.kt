@@ -2,6 +2,9 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.Dms
+import com.lighthouse.domain.DmsLocation
+import com.lighthouse.domain.LocationConverter.setDmsLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
@@ -37,6 +40,7 @@ class HomeViewModel @Inject constructor(
     private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
 ) : ViewModel() {
 
+    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
     private var locationFlow: Job? = null
 
     private val _eventFlow = MutableEventFlow<HomeEvent>()
@@ -71,15 +75,17 @@ class HomeViewModel @Inject constructor(
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
     val hasLocationPermission = hasLocationPermissionsUseCase()
-
     val isShimmer = MutableStateFlow(false)
-
     val isEmptyNearBrands = MutableStateFlow(false)
 
     private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
     val nearGifticons = _nearGifticons.asStateFlow()
 
     init {
+        setLocationFlowJob()
+    }
+
+    private fun setLocationFlowJob() {
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
                 if (result) observeLocationFlow()
@@ -93,8 +99,12 @@ class HomeViewModel @Inject constructor(
 
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
-                Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
-                getNearBrands(location.longitude, location.latitude)
+                val currentLocation = setDmsLocation(location)
+                Timber.tag("TAG").d("${javaClass.simpleName} homeLocation $location")
+                if (prevLocation != currentLocation) {
+                    prevLocation = currentLocation
+                    getNearBrands(location.longitude, location.latitude)
+                }
             }
         }
     }
@@ -146,6 +156,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(HomeEvent.RequestLocationPermissionCheck)
         }
+    }
+
+    fun cancelLocationCollectJob() {
+        locationFlow?.cancel()
+    }
+
+    fun startLocationCollectJob() {
+        setLocationFlowJob()
     }
 
     companion object {
