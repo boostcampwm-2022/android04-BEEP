@@ -157,9 +157,14 @@ class AddGifticonActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun gotoGallery(list: List<Long>) {
+    private fun gotoGallery(list: List<GalleryUIModel.Gallery>) {
         val intent = Intent(this, GalleryActivity::class.java).apply {
-            putExtra(Extras.KEY_SELECTED_IDS, list.toTypedArray())
+            putParcelableArrayListExtra(
+                Extras.KEY_SELECTED_GALLERY_ITEM,
+                ArrayList<GalleryUIModel.Gallery>().apply {
+                    addAll(list)
+                }
+            )
         }
         gallery.launch(intent)
     }

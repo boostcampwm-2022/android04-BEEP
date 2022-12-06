@@ -13,9 +13,11 @@ import com.lighthouse.presentation.databinding.ActivityGalleryBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.gallery.adapter.GalleryAdapter
-import com.lighthouse.presentation.ui.gallery.adapter.GallerySelection
+import com.lighthouse.presentation.model.GalleryUIModel
+import com.lighthouse.presentation.ui.gallery.adapter.list.GalleryAdapter
+import com.lighthouse.presentation.ui.gallery.adapter.selected.SelectedGalleryAdapter
 import com.lighthouse.presentation.util.recycler.GridSectionSpaceItemDecoration
+import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,14 +27,17 @@ class GalleryActivity : AppCompatActivity() {
 
     private val viewModel: GalleryViewModel by viewModels()
 
-    private val selection by lazy {
-        val list = intent.getLongArrayExtra(Extras.KEY_SELECTED_IDS) ?: emptyArray<Long>()
-        GallerySelection(listOf())
+    private val selectedGalleryAdapter by lazy {
+        SelectedGalleryAdapter(onClickGallery = {
+            viewModel.removeItem(it)
+            binding.abl.requestLayout()
+        })
     }
 
     private val galleryAdapter by lazy {
-        GalleryAdapter(selection, onClickGallery = {
-            viewModel.selectItem(selection.size)
+        GalleryAdapter(onClickGallery = {
+            viewModel.selectItem(it)
+            binding.abl.requestLayout()
         })
     }
 
@@ -46,7 +51,8 @@ class GalleryActivity : AppCompatActivity() {
         }
 
         setUpOnBackPressed()
-        setUpRecyclerView()
+        setUpSelectedGalleryList()
+        setUpGalleryList()
         collectEvent()
     }
 
@@ -56,7 +62,14 @@ class GalleryActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpRecyclerView() {
+    private fun setUpSelectedGalleryList() {
+        binding.rvSelectedList.apply {
+            adapter = selectedGalleryAdapter
+            addItemDecoration(ListSpaceItemDecoration(4.dp, 32.dp, 4.dp, 32.dp, 4.dp))
+        }
+    }
+
+    private fun setUpGalleryList() {
         val spanCount = 3
         binding.rvList.apply {
             adapter = galleryAdapter
@@ -68,13 +81,6 @@ class GalleryActivity : AppCompatActivity() {
                 }
             }
             addItemDecoration(GridSectionSpaceItemDecoration(20.dp, 4.dp, 12.dp, 12.dp))
-        }
-
-        repeatOnStarted {
-            viewModel.list.collect {
-                galleryAdapter.submitData(it)
-                binding.rvList.invalidateItemDecorations()
-            }
         }
     }
 
@@ -91,7 +97,12 @@ class GalleryActivity : AppCompatActivity() {
 
     private fun completePhotoSelection() {
         val intent = Intent().apply {
-            putParcelableArrayListExtra(Extras.KEY_SELECTED_GALLERY_ITEM, selection.toArrayList())
+            putParcelableArrayListExtra(
+                Extras.KEY_SELECTED_GALLERY_ITEM,
+                ArrayList<GalleryUIModel.Gallery>().apply {
+                    addAll(viewModel.selectedList.value)
+                }
+            )
         }
         setResult(Activity.RESULT_OK, intent)
         finish()
