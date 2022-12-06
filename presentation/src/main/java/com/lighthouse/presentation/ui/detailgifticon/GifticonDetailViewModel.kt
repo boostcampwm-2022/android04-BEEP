@@ -109,14 +109,6 @@ class GifticonDetailViewModel @Inject constructor(
         when (mode.value) {
             GifticonDetailMode.UNUSED -> {
                 event(Event.UseGifticonButtonClicked)
-                viewModelScope.launch {
-                    if (gifticon.value?.isCashCard == true) {
-//                        useCashCardGifticonUseCase(gifticonId, amountToUse.value) // TODO 이걸로 사용해야 함
-                        useGifticonUseCase(gifticonId) // TODO 이건 제거
-                    } else {
-                        useGifticonUseCase(gifticonId)
-                    }
-                }
             }
             GifticonDetailMode.USED -> {
                 viewModelScope.launch {
@@ -127,6 +119,21 @@ class GifticonDetailViewModel @Inject constructor(
                 // TODO(수정사항 반영)
                 _mode.update { GifticonDetailMode.UNUSED }
                 endEdit()
+            }
+        }
+    }
+
+    fun completeUseGifticonButtonClicked() {
+        if (gifticon.value?.isCashCard == true) {
+            viewModelScope.launch {
+                assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
+                useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value)
+                event(Event.Complete)
+            }
+        } else {
+            viewModelScope.launch {
+                useGifticonUseCase(gifticonId)
+                event(Event.Complete)
             }
         }
     }
