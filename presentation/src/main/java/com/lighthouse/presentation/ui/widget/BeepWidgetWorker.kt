@@ -1,9 +1,9 @@
 package com.lighthouse.presentation.ui.widget
 
 import android.content.Context
-import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
+import androidx.glance.appwidget.updateAll
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -20,10 +20,10 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
-import timber.log.Timber
+import kotlinx.coroutines.withContext
 
 @HiltWorker
 class BeepWidgetWorker @AssistedInject constructor(
@@ -54,25 +54,25 @@ class BeepWidgetWorker @AssistedInject constructor(
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
 
     override suspend fun doWork(): Result {
-        Timber.tag("TAG").d("${javaClass.simpleName} doWork")
-        hasLocationPermission.collectLatest { result ->
-            Timber.tag("TAG").d("${javaClass.simpleName} hasLocation result -> $result")
-            if (result) observeLocationFlow()
-        }
-        return Result.success()
-    }
-
-    private suspend fun observeLocationFlow() {
-        Timber.tag("TAG").d("${javaClass.simpleName} observeLocationFlow")
-        getUserLocationUseCase().collectLatest { location ->
-            Timber.tag("TAG").d("${javaClass.simpleName} ${this.hashCode()} BeepWidgetWorker Location -> $location")
-            getNearBrands(location.longitude, location.latitude)
+        return when (hasLocationPermission.value) {
+            true -> {
+                startWidget()
+                Result.success()
+            }
+            false -> {
+                setWidgetState(WidgetState.NoExistsLocationPermission)
+                Result.failure()
+            }
         }
     }
 
-    private suspend fun getNearBrands(x: Double, y: Double) {
-        val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(BeepWidget::class.java)
-        setWidgetState(glanceIds, WidgetState.Loading)
+    private suspend fun startWidget() {
+        val lastLocation = getUserLocationUseCase().first()
+        getNearBrands(lastLocation.longitude, lastLocation.latitude)
+    }
+
+    private suspend fun getNearBrands(x: Double, y: Double) = withContext(Dispatchers.IO) {
+        setWidgetState(WidgetState.Loading)
         runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
             .mapCatching { brandPlaceInfos -> brandPlaceInfos.toPresentation() }
             .onSuccess { brandPlaceInfoUiModel ->
@@ -82,17 +82,17 @@ class BeepWidgetWorker @AssistedInject constructor(
                 }
 
                 when (nearGifticons.isEmpty()) {
-                    true -> setWidgetState(glanceIds, WidgetState.Empty)
-                    false -> setWidgetState(glanceIds, WidgetState.Available(nearGifticons))
+                    true -> setWidgetState(WidgetState.Empty)
+                    false -> setWidgetState(WidgetState.Available(nearGifticons))
                 }
             }
             .onFailure { throwable ->
-                Timber.tag("TAG").d("${javaClass.simpleName} widget error $throwable")
-                setWidgetState(glanceIds, WidgetState.Unavailable(throwable.message.orEmpty()))
+                setWidgetState(WidgetState.Unavailable(throwable.message.orEmpty()))
             }
     }
 
-    private suspend fun setWidgetState(glanceIds: List<GlanceId>, state: WidgetState) {
+    private suspend fun setWidgetState(state: WidgetState) {
+        val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(BeepWidget::class.java)
         glanceIds.forEach { id ->
             updateAppWidgetState(
                 context = context,
@@ -101,6 +101,7 @@ class BeepWidgetWorker @AssistedInject constructor(
                 updateState = { state }
             )
         }
+        BeepWidget().updateAll(context)
     }
 
     companion object {

@@ -31,6 +31,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
 import timber.log.Timber
@@ -51,12 +52,23 @@ class BeepWidget : GlanceAppWidget() {
                 is WidgetState.Unavailable -> {
                     AppWidgetColumn {
                         Text("데이터가 정상적이지가 않습니다.")
+                        Spacer(modifier = GlanceModifier.width(8.dp))
                         Button("새로고침", actionRunCallback<WidgetRefreshAction>())
                     }
                 }
                 is WidgetState.Empty -> {
                     AppWidgetColumn {
                         Text("근처에 사용 가능한 기프티콘이 존재하지 않습니다.")
+                        Spacer(modifier = GlanceModifier.width(8.dp))
+                        Button("새로고침", actionRunCallback<WidgetRefreshAction>())
+                    }
+                }
+                is WidgetState.NoExistsLocationPermission -> {
+                    AppWidgetColumn {
+                        Text("권한을 허용하신 후 다시 새로고침 해주세요.")
+                        Spacer(modifier = GlanceModifier.width(8.dp))
+                        Button("권한 허용", actionRunCallback<WidgetRefreshAction>())
+                        Spacer(modifier = GlanceModifier.width(4.dp))
                         Button("새로고침", actionRunCallback<WidgetRefreshAction>())
                     }
                 }
@@ -124,6 +136,7 @@ class BeepWidget : GlanceAppWidget() {
 class WidgetRefreshAction : ActionCallback {
 
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+        BeepWorkManager(context).widgetEnqueue(true)
     }
 }
 

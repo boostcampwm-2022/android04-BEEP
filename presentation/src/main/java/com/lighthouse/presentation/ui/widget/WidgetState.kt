@@ -12,6 +12,9 @@ sealed interface WidgetState {
     object Empty : WidgetState
 
     @Serializable
+    object NoExistsLocationPermission : WidgetState
+
+    @Serializable
     data class Available(val gifticons: List<GifticonWidgetData>) : WidgetState
 
     @Serializable

@@ -12,7 +12,7 @@ class BeepWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        BeepWorkManager(context).enqueue()
+        BeepWorkManager(context).widgetEnqueue()
     }
 
     /**
@@ -20,6 +20,6 @@ class BeepWidgetReceiver : GlanceAppWidgetReceiver() {
      */
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
-        BeepWorkManager(context).cancel()
+        BeepWorkManager(context).widgetCancel()
     }
 }

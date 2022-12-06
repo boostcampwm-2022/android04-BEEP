@@ -33,13 +33,6 @@ class SharedLocationManager constructor(
     var receivingLocationUpdates = MutableStateFlow(hasLocationPermission())
         private set
 
-    fun locationFlow() = locationUpdates
-
-    fun changePermission(hasPermission: Boolean) {
-        receivingLocationUpdates.value = hasPermission
-        if (hasPermission) setProviderRequest()
-    }
-
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private val locationRequest = LocationRequest.create().apply {
         interval = LOCATION_INTERVAL
@@ -54,13 +47,13 @@ class SharedLocationManager constructor(
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 val locationResult = result.lastLocation ?: return
-                val currentLocation = setDmsLocation(locationResult)
-                Timber.tag("TAG").d("${javaClass.simpleName} lastLocationResult -> $locationResult")
+                /*val currentLocation = setDmsLocation(locationResult)
+                Timber.tag("TAG").d("${javaClass.simpleName}lastLocationResult -> $locationResult")
                 if (prevLocation != currentLocation) {
                     prevLocation = currentLocation
-                    Timber.tag("TAG").d("${javaClass.simpleName} 로케이션 갱신 $prevLocation")
-                    trySend(VertexLocation(locationResult.longitude, locationResult.latitude))
-                }
+                Timber.tag("TAG").d("${javaClass.simpleName} 로케이션 갱신 $prevLocation")
+                }*/
+                trySend(VertexLocation(locationResult.longitude, locationResult.latitude))
             }
         }
 
@@ -109,6 +102,13 @@ class SharedLocationManager constructor(
         val x = LocationConverter.toMinDms(lastLocationResult.longitude)
         val y = LocationConverter.toMinDms(lastLocationResult.latitude)
         return DmsLocation(x, y)
+    }
+
+    fun locationFlow() = locationUpdates
+
+    fun changePermission(hasPermission: Boolean) {
+        receivingLocationUpdates.value = hasPermission
+        if (hasPermission) setProviderRequest()
     }
 
     companion object {

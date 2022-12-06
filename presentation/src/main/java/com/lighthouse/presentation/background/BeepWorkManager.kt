@@ -22,10 +22,8 @@ class BeepWorkManager(
     private val widgetWorkRequest: PeriodicWorkRequest =
         PeriodicWorkRequestBuilder<BeepWidgetWorker>(WIDGET_INTERVAL, TimeUnit.MINUTES).build()
 
-    private val manager = WorkManager.getInstance(context)
-
-    init {
-        manager.enqueueUniquePeriodicWork(
+    private val manager = WorkManager.getInstance(context).also {
+        it.enqueueUniquePeriodicWork(
             NOTIFICATION_WORK_NAME,
             workPolicyKeep,
             notificationWorkRequest
@@ -36,7 +34,7 @@ class BeepWorkManager(
      * 새로고침이나 시작할때 실행할 함수
      * @param force 만약 새로고침
      */
-    fun enqueue(force: Boolean = false) {
+    fun widgetEnqueue(force: Boolean = false) {
         val policy = when (force) {
             true -> workPolicyReplace
             false -> workPolicyKeep
@@ -51,7 +49,7 @@ class BeepWorkManager(
     /**
      * WidgetReceiver에서 onDisabled때 실행할 함수
      */
-    fun cancel() {
+    fun widgetCancel() {
         manager.cancelUniqueWork(WIDGET_WORK_NAME)
     }
 
