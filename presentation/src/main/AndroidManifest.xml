@@ -7,14 +7,13 @@
 
         <activity
             android:name=".ui.security.SecurityActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
-        </activity>
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.signin.SignInActivity"
-            android:theme="@style/Theme.BEEP.Splash"
+            android:exported="true"
             android:noHistory="true"
-            android:exported="true">
+            android:theme="@style/Theme.BEEP.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,22 +22,39 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+            android:exported="true"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.addgifticon.AddGifticonActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.cropgifticon.CropGifticonActivity" android:exported="true" android:screenOrientation="portrait" />
-        <activity android:name=".ui.gallery.GalleryActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.detailgifticon.GifticonDetailActivity" android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.addgifticon.AddGifticonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.cropgifticon.CropGifticonActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.gallery.GalleryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.detailgifticon.GifticonDetailActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.map.MapActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
-    </application>
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
+        <receiver
+            android:name=".ui.widget.BeepWidgetReceiver"
+            android:exported="false"
+            android:label="Gifticon Widget">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/gifticon_widget_provider" />
+        </receiver>
+    </application>
 </manifest>

@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Build
 import android.os.Looper
 import androidx.core.app.ActivityCompat
@@ -13,9 +12,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.DmsLocation
-import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.VertexLocation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,14 +29,8 @@ class SharedLocationManager constructor(
     var receivingLocationUpdates = MutableStateFlow(hasLocationPermission())
         private set
 
-    fun locationFlow() = locationUpdates
-
-    fun changePermission(hasPermission: Boolean) {
-        receivingLocationUpdates.value = hasPermission
-        if (hasPermission) setProviderRequest()
-    }
-
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
     private val locationRequest = LocationRequest.create().apply {
         interval = LOCATION_INTERVAL
         fastestInterval = LOCATION_INTERVAL / 2
@@ -48,19 +38,12 @@ class SharedLocationManager constructor(
         maxWaitTime = LOCATION_INTERVAL
     }
     private var locationCallback: LocationCallback? = null
-    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
 
     private val locationUpdates = callbackFlow {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 val locationResult = result.lastLocation ?: return
-                val currentLocation = setDmsLocation(locationResult)
-                Timber.tag("TAG").d("${javaClass.simpleName} lastLocationResult -> $locationResult")
-                if (prevLocation != currentLocation) {
-                    prevLocation = currentLocation
-                    Timber.tag("TAG").d("${javaClass.simpleName} 로케이션 갱신 $prevLocation")
-                    trySend(VertexLocation(locationResult.longitude, locationResult.latitude))
-                }
+                trySend(VertexLocation(locationResult.longitude, locationResult.latitude))
             }
         }
 
@@ -105,10 +88,11 @@ class SharedLocationManager constructor(
         }
     }
 
-    private fun setDmsLocation(lastLocationResult: Location): DmsLocation {
-        val x = LocationConverter.toMinDms(lastLocationResult.longitude)
-        val y = LocationConverter.toMinDms(lastLocationResult.latitude)
-        return DmsLocation(x, y)
+    fun locationFlow() = locationUpdates
+
+    fun changePermission(hasPermission: Boolean) {
+        receivingLocationUpdates.value = hasPermission
+        if (hasPermission) setProviderRequest()
     }
 
     companion object {
