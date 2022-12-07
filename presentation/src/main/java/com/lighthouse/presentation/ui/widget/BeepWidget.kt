@@ -13,6 +13,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
+import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
@@ -37,6 +38,7 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.background.BeepWorkManager
+import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
 import com.lighthouse.presentation.util.CATEGORY_ACCOMMODATION
@@ -128,41 +130,45 @@ val itemKey = ActionParameters.Key<String>("itemKey")
 fun WidgetBody(widgetState: WidgetState.Available) {
     LazyColumn(modifier = GlanceModifier.padding(12.dp)) {
         items(widgetState.gifticons) { item ->
-            Spacer(modifier = GlanceModifier.width(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = GlanceModifier.clickable(
-                    onClick = actionRunCallback<ListWidgetClickActionCallback>(
-                        actionParametersOf(itemKey to item.id)
-                    )
-                ).fillMaxWidth()
-            ) {
-                Image(
-                    provider = ImageProvider(resId = getDrawableId(item.category)),
-                    contentDescription = "brand image"
-                )
-                Spacer(modifier = GlanceModifier.width(4.dp))
-                Text(
-                    text = item.brand,
-                    modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(vertical = 8.dp),
-                    style = TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Start,
-                        color = ColorProvider(day = Color.Black, night = Color.Black)
-                    )
-                )
-                Text(
-                    text = item.name,
-                    modifier = GlanceModifier.padding(vertical = 8.dp),
-                    style = TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.End
-                    )
-                )
-            }
+            GifticonItem(item)
         }
+    }
+}
+
+@Composable
+private fun GifticonItem(item: GifticonWidgetData, modifier: GlanceModifier = GlanceModifier) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth().clickable(
+            onClick = actionRunCallback<ListWidgetClickActionCallback>(
+                actionParametersOf(itemKey to item.id)
+            )
+        )
+    ) {
+        Image(
+            provider = ImageProvider(resId = getDrawableId(item.category)),
+            contentDescription = "brand image"
+        )
+        Spacer(modifier = GlanceModifier.width(4.dp))
+        Text(
+            text = item.brand,
+            modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(vertical = 8.dp),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                color = ColorProvider(day = Color.Black, night = Color.Black)
+            )
+        )
+        Text(
+            text = item.name,
+            modifier = GlanceModifier.padding(vertical = 8.dp),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                textAlign = TextAlign.End
+            )
+        )
     }
 }
 
@@ -180,14 +186,18 @@ fun getDrawableId(category: String): Int {
 
 class WidgetRefreshAction : ActionCallback {
 
-    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+    override suspend fun onRun(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         BeepWorkManager(context).widgetEnqueue(true)
     }
 }
 
 class ListWidgetClickActionCallback : ActionCallback {
 
-    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+    override suspend fun onRun(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         Timber.tag("TAG").d("${javaClass.simpleName} Clickable -> $parameters")
+        actionStartActivity(
+            activity = MapActivity::class.java,
+            parameters = parameters
+        )
     }
 }
