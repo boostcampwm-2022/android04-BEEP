@@ -92,4 +92,8 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override fun getUsableGifticons(userId: String): Flow<List<GifticonEntity>> {
         return gifticonDao.getAllUsableGifticons(userId, today)
     }
+
+    override suspend fun moveUserIdGifticon(userId: String) {
+        gifticonDao.moveUserIdGifticon(userId)
+    }
 }

@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.usecase.MoveUserIdGifticonUseCase
 import com.lighthouse.domain.usecase.setting.GetGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.domain.usecase.setting.MoveGuestDataUseCase
@@ -20,7 +21,8 @@ class SettingViewModel @Inject constructor(
     getSecurityOptionUseCase: GetSecurityOptionUseCase,
     private val saveSecurityOptionUseCase: SaveSecurityOptionUseCase,
     getGuestOptionUseCase: GetGuestOptionUseCase,
-    private val moveGuestDataUseCase: MoveGuestDataUseCase
+    private val moveGuestDataUseCase: MoveGuestDataUseCase,
+    private val moveUserIdGifticonUseCase: MoveUserIdGifticonUseCase
 ) : ViewModel() {
 
     val securityOption: StateFlow<SecurityOption> =
@@ -47,6 +49,7 @@ class SettingViewModel @Inject constructor(
     fun moveGuestData(uid: String) {
         viewModelScope.launch {
             moveGuestDataUseCase(uid)
+            moveUserIdGifticonUseCase(uid)
         }
     }
 }
