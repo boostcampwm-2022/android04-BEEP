@@ -15,7 +15,5 @@ val currentTime: Date
     get() = Calendar.getInstance().time
 
 fun Date.isExpired(): Boolean {
-    val today = System.currentTimeMillis()
-    val dDay = (time - today) / (24 * 60 * 60 * 1000)
-    return dDay < 0
+    return time > System.currentTimeMillis()
 }
