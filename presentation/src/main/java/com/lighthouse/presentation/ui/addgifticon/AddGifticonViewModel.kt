@@ -4,7 +4,8 @@ import android.text.InputFilter
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.usecase.SaveGifticonsUseCase
+import com.lighthouse.domain.usecase.addgifticon.RecognizeGifticonImageUseCase
+import com.lighthouse.domain.usecase.addgifticon.SaveGifticonsUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDate
 import com.lighthouse.presentation.extension.toDigit
@@ -37,7 +38,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddGifticonViewModel @Inject constructor(
-    private val saveGifticonsUseCase: SaveGifticonsUseCase
+    private val saveGifticonsUseCase: SaveGifticonsUseCase,
+    private val recognizeGifticonImageUseCase: RecognizeGifticonImageUseCase
 ) : ViewModel() {
 
     private val today = Calendar.getInstance().let {

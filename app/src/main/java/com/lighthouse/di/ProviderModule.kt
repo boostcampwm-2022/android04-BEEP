@@ -1,6 +1,7 @@
 package com.lighthouse.di
 
 import android.content.Context
+import com.lighthouse.datasource.gifticon.GifticonImageRecognizeSource
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.location.SharedLocationManager
 import dagger.Module
@@ -19,6 +20,12 @@ object ProviderModule {
     fun provideGifticonImageSource(
         @ApplicationContext context: Context
     ): GifticonImageSource = GifticonImageSource(context)
+
+    @Provides
+    @Singleton
+    fun provideGifticonImageRecognizeSource(
+        @ApplicationContext context: Context
+    ): GifticonImageRecognizeSource = GifticonImageRecognizeSource(context)
 
     @Provides
     @Singleton

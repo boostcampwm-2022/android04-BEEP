@@ -7,7 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
-import com.lighthouse.domain.usecase.GetGalleryImagesUseCase
+import com.lighthouse.domain.usecase.gallery.GetGalleryImagesUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
