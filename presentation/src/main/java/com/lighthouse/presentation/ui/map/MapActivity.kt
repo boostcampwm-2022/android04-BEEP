@@ -76,6 +76,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         setGifticonAdapterItem()
         setGifticonAdapterChangeCallback()
         setInitAdapterData()
+        setObserveEvent()
     }
 
     private fun setGifticonAdapterItem() {
@@ -226,10 +227,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.updateMarkers(brandMarkers)
 
         repeatOnStarted {
-            viewModel.event.collect { event ->
-                if (event is Event.NavigateBrand) {
-                    findBrandPlaceInfo(event.brand, true)
-                }
+            viewModel.widgetBrand.collect { brand ->
+                findBrandPlaceInfo(brand, true)
             }
         }
     }
@@ -281,6 +280,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.iconTintColor = getColor(R.color.point_green)
         marker.captionColor = getColor(R.color.black)
         viewModel.resetMarker()
+    }
+
+    private fun setObserveEvent() {
+        repeatOnStarted {
+            viewModel.event.collect {
+                gotoHome()
+            }
+        }
+    }
+
+    private fun gotoHome() {
+        finish()
     }
 
     private fun showSnackBar(@StringRes message: Int) {
