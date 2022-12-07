@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -31,6 +32,7 @@ fun GifticonListScreen(
 
     Surface(
         modifier = modifier
+            .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.05f))
             .padding(horizontal = 16.dp),
         color = Color.Transparent
@@ -60,7 +62,7 @@ fun GifticonListScreen(
             }
             GifticonList(
                 gifticons = viewState.gifticons,
-                Modifier.padding(top = 64.dp)
+                Modifier.padding(top = 8.dp)
             )
         }
         if (viewState.entireBrandsDialogShown) {
