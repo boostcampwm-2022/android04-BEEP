@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.extension
 
 import android.content.Context
+import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.resource.UIText
@@ -23,11 +24,6 @@ fun Date.toDate(): Int {
     val calendar = Calendar.getInstance()
     calendar.time = this
     return calendar.get(Calendar.DATE)
-}
-
-fun Date.isExpired(): Boolean {
-    val dDay = TimeCalculator.formatDdayToInt(time)
-    return dDay < TimeCalculator.MIN_DAY
 }
 
 fun Date.toDday(context: Context): String {
