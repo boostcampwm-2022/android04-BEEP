@@ -96,6 +96,6 @@ class SharedLocationManager constructor(
     }
 
     companion object {
-        private const val LOCATION_INTERVAL = 100L
+        private const val LOCATION_INTERVAL = 30000L
     }
 }

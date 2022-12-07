@@ -94,13 +94,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeLocationFlow() {
-        Timber.tag("TAG").d("${javaClass.simpleName} observeLocationFlow ${locationFlow?.isActive}")
         if (locationFlow?.isActive == true) return
 
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
                 val currentLocation = setDmsLocation(location)
-                Timber.tag("TAG").d("${javaClass.simpleName} homeLocation $location")
                 if (prevLocation != currentLocation) {
                     prevLocation = currentLocation
                     getNearBrands(location.longitude, location.latitude)
@@ -131,6 +129,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
+                    Timber.tag("TAG").d("${javaClass.simpleName} homeViewModel Error -> $throwable")
                     _uiState.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure

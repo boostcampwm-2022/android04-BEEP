@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -102,7 +103,6 @@ class MapViewModel @Inject constructor(
                     prevLocation = currentLocation
                     getBrandPlaceInfos(location.longitude, location.latitude)
                 }
-                getBrandPlaceInfos(location.longitude, location.latitude)
             }
         }
     }
@@ -126,6 +126,7 @@ class MapViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
+                    Timber.tag("TAG").d("${javaClass.simpleName} throwable -> $throwable")
                     _state.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure
