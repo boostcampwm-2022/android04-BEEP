@@ -36,7 +36,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
+class GifticonDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
@@ -52,6 +52,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
+    private lateinit var useGifticonDialog: UseGifticonDialog
     private lateinit var gifticonInfoChangedSnackbar: Snackbar
     private lateinit var gifticonInfoNotChangedToast: Toast
 
@@ -66,9 +67,25 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 Activity.RESULT_OK -> authenticate()
-                else -> onAuthError()
+                else -> authCallback.onAuthError()
             }
         }
+    private val authCallback = object : AuthCallback {
+        override fun onAuthSuccess() {
+            showUseGifticonDialog()
+        }
+
+        override fun onAuthCancel() {
+        }
+
+        override fun onAuthError(@StringRes stringId: Int?) {
+            if (stringId != null) {
+                Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
+            } else {
+                authenticate()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +118,11 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
+            }
+        }
+        repeatOnStarted {
+            viewModel.tempGifticon.collect { gifticon ->
+                spinnerDatePicker.setDate(gifticon?.expireAt ?: return@collect)
             }
         }
         repeatOnStarted {
@@ -149,6 +171,11 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
             is Event.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
+            is Event.UseGifticonComplete -> {
+                if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
+                    useGifticonDialog.dismiss()
+                }
+            }
             else -> { // TODO(이벤트 처리)
             }
         }
@@ -172,7 +199,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     private val spinnerDatePicker = SpinnerDatePicker().apply {
         setOnDatePickListener { year, month, dayOfMonth ->
-            Timber.tag("TEST").d("$year/$month/$dayOfMonth")
+            viewModel.editExpireDate(year, month, dayOfMonth)
         }
     }
 
@@ -181,7 +208,9 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     }
 
     private fun showUseGifticonDialog() {
-        UseGifticonDialog().show(supportFragmentManager, UseGifticonDialog.TAG)
+        useGifticonDialog = UseGifticonDialog().also { dialog ->
+            dialog.show(supportFragmentManager, UseGifticonDialog.TAG)
+        }
     }
 
     private fun showUsageHistoryDialog() {
@@ -226,22 +255,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     }
 
     private fun authenticate() {
-        authManager.auth(this, biometricLauncher, this)
-    }
-
-    override fun onAuthSuccess() {
-        Timber.tag("Auth").d("onAuthSuccess")
-        showUseGifticonDialog()
-    }
-
-    override fun onAuthCancel() {
-        Timber.tag("Auth").d("onAuthCancel")
-    }
-
-    override fun onAuthError(@StringRes stringId: Int?) {
-        Timber.tag("Auth").d("onAuthError")
-        // TODO: StringId가 null 이 아니라면 정의된 에러 메세지가 존재하는 경우입니다. null 체크하고 출력하면 어떨까요?
-        authenticate()
+        authManager.auth(this, biometricLauncher, authCallback)
     }
 
     private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
