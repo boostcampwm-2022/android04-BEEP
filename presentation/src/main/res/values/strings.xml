@@ -185,6 +185,7 @@
     <string name="setting_terms_of_use">이용약관</string>
     <string name="setting_personal_info_policy">개인정보처리방침</string>
     <string name="setting_open_source_license">오픈소스 라이선스</string>
+    <string name="setting_already_exist_email">이미 등록된 계정입니다.\n다른 이메일로 재시도해주세요.</string>
 
     <string name="gifticon_list_sort_by_deadline">디데이순</string>
     <string name="gifticon_list_sort_by_recent">최신순</string>

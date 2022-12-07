@@ -49,4 +49,8 @@ class SettingViewModel @Inject constructor(
             saveGuestOptionUseCase(option)
         }
     }
+
+    fun moveGuestData(uid: String) {
+        saveGuestOption(false)
+    }
 }
