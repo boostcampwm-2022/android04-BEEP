@@ -177,8 +177,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 currentLocation(it, brandPlaceInfo)
             } ?: return@addOnSuccessListener
 
-            if (isLoadGifticonList) viewModel.updateGifticons()
             setFocusMarker(currentFocusMarker)
+            if (isLoadGifticonList) viewModel.updateGifticons()
         }
     }
 
@@ -284,7 +284,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showSnackBar(@StringRes message: Int) {
-        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
