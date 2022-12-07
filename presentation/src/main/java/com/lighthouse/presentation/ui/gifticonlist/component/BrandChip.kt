@@ -53,8 +53,6 @@ fun BrandChipList(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        val chipCountToShow = 7
-
         item { // "전체" 칩
             val entireChipBrand = Brand(
                 name = stringResource(id = R.string.main_filter_all),
@@ -67,7 +65,7 @@ fun BrandChipList(
                 viewModel.clearFilter()
             }
         }
-        items(brands.subList(0, minOf(chipCountToShow, brands.size))) { brand ->
+        items(brands) { brand ->
             BrandChip(
                 brand = brand,
                 selected = selectedFilters.contains(brand.name)
