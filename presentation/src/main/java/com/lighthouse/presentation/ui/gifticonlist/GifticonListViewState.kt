@@ -7,7 +7,7 @@ import com.lighthouse.presentation.model.GifticonSortBy
 data class GifticonListViewState(
     val sortBy: GifticonSortBy = GifticonSortBy.DEADLINE,
     val gifticons: List<Gifticon> = emptyList(),
-    val showUsedGifticon: Boolean = true,
+    val showExpiredGifticon: Boolean = false,
     val loading: Boolean = false,
     val brands: List<Brand> = emptyList(),
     val selectedFilter: Set<String> = emptySet(),

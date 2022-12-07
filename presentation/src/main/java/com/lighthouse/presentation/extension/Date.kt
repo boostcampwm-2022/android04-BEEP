@@ -25,6 +25,11 @@ fun Date.toDate(): Int {
     return calendar.get(Calendar.DATE)
 }
 
+fun Date.isExpired(): Boolean {
+    val dDay = TimeCalculator.formatDdayToInt(time)
+    return dDay < TimeCalculator.MIN_DAY
+}
+
 fun Date.toDday(context: Context): String {
     val dDay = TimeCalculator.formatDdayToInt(time)
     return when {
@@ -32,7 +37,7 @@ fun Date.toDday(context: Context): String {
             context.getString(R.string.all_d_day),
             dDay
         )
-        dDay < TimeCalculator.MIN_DAY -> context.getString(R.string.all_d_day_expired)
+        isExpired() -> context.getString(R.string.all_d_day_expired)
         else -> context.getString(R.string.all_d_day_more_than_year)
     }
 }

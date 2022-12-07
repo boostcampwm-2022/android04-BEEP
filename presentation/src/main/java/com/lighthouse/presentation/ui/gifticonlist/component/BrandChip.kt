@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Checkbox
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
@@ -32,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.common.compose.TextCheckbox
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 import timber.log.Timber
 
@@ -80,7 +80,7 @@ fun BrandChipList(
 fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
-    showUsedGifticon: Boolean = true,
+    showExpiredGifticon: Boolean = false,
     selectedFilters: Set<String> = emptySet(),
     viewModel: GifticonListViewModel = viewModel(),
     onDismiss: () -> Unit = {}
@@ -98,13 +98,11 @@ fun AllBrandChipsDialog(
             color = Color.White
         ) {
             Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(checked = showUsedGifticon, onCheckedChange = { checked ->
-                        viewModel.filterUsedGifticon(checked)
-                    })
-                    Text(text = stringResource(R.string.gifticon_list_brands_dialog_show_used_gifticon_option))
+                TextCheckbox(
+                    checked = showExpiredGifticon,
+                    text = stringResource(R.string.gifticon_list_brands_dialog_show_expired_gifticon_option)
+                ) { checked ->
+                    viewModel.filterUsedGifticon(checked)
                 }
                 val scrollState = rememberScrollState()
                 FlowRow(

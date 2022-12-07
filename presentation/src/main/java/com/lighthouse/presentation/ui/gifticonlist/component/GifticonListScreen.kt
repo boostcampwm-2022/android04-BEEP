@@ -69,7 +69,7 @@ fun GifticonListScreen(
                 modifier = Modifier
                     .padding(16.dp),
                 selectedFilters = viewState.selectedFilter,
-                showUsedGifticon = viewState.showUsedGifticon,
+                showExpiredGifticon = viewState.showExpiredGifticon,
                 onDismiss = {
                     viewModel.dismissEntireBrandsDialog()
                 }

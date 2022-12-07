@@ -7,6 +7,7 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
+import com.lighthouse.presentation.extension.isExpired
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.GifticonSortBy
 import com.lighthouse.presentation.util.flow.combine
@@ -38,7 +39,7 @@ class GifticonListViewModel @Inject constructor(
     private val sortBy = MutableStateFlow(GifticonSortBy.DEADLINE)
     private val gifticons = MutableStateFlow<DbResult<List<Gifticon>>>(DbResult.Loading)
     private val entireBrandsDialogShown = MutableStateFlow(false)
-    private val showUsedGifticon = MutableStateFlow(true)
+    private val showExpiredGifticon = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
@@ -60,21 +61,21 @@ class GifticonListViewModel @Inject constructor(
     val state = combine(
         sortBy,
         gifticons,
-        showUsedGifticon,
+        showExpiredGifticon,
         brands,
         entireBrandsDialogShown,
         filter
-    ) { sortBy, dbResult, isFiltered, brands, entireBrandsDialogShown, filter ->
+    ) { sortBy, dbResult, showExpired, brands, entireBrandsDialogShown, filter ->
         when (dbResult) {
             is DbResult.Success -> {
                 GifticonListViewState(
                     sortBy = sortBy,
-                    gifticons = if (isFiltered) {
-                        dbResult.data.filterNot { it.isUsed }
-                    } else {
+                    gifticons = if (showExpired) {
                         dbResult.data
+                    } else {
+                        dbResult.data.filterNot { it.expireAt.isExpired() }
                     },
-                    showUsedGifticon = isFiltered,
+                    showExpiredGifticon = showExpired,
                     brands = brands,
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
@@ -118,7 +119,7 @@ class GifticonListViewModel @Inject constructor(
     }
 
     fun filterUsedGifticon(show: Boolean = true) {
-        showUsedGifticon.value = show
+        showExpiredGifticon.value = show
     }
 
     fun clearFilter() {
