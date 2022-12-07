@@ -1,13 +1,17 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Checkbox
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
@@ -76,6 +80,7 @@ fun BrandChipList(
 fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
+    showUsedGifticon: Boolean = true,
     selectedFilters: Set<String> = emptySet(),
     viewModel: GifticonListViewModel = viewModel(),
     onDismiss: () -> Unit = {}
@@ -92,16 +97,29 @@ fun AllBrandChipsDialog(
             shape = RoundedCornerShape(12.dp),
             color = Color.White
         ) {
-            FlowRow(
-                modifier = Modifier.padding(16.dp),
-                mainAxisSpacing = 10.dp
-            ) {
-                brands.forEach {
-                    BrandChip(
-                        brand = it,
-                        selected = selectedFilters.contains(it.name)
-                    ) { selected ->
-                        viewModel.toggleFilterSelection(selected)
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = showUsedGifticon, onCheckedChange = { checked ->
+                        viewModel.filterUsedGifticon(checked)
+                    })
+                    Text(text = stringResource(R.string.gifticon_list_brands_dialog_show_used_gifticon_option))
+                }
+                val scrollState = rememberScrollState()
+                FlowRow(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .verticalScroll(scrollState),
+                    mainAxisSpacing = 10.dp
+                ) {
+                    brands.forEach {
+                        BrandChip(
+                            brand = it,
+                            selected = selectedFilters.contains(it.name)
+                        ) { selected ->
+                            viewModel.toggleFilterSelection(selected)
+                        }
                     }
                 }
             }

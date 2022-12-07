@@ -9,12 +9,12 @@ import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.GifticonSortBy
+import com.lighthouse.presentation.util.flow.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
@@ -38,6 +38,7 @@ class GifticonListViewModel @Inject constructor(
     private val sortBy = MutableStateFlow(GifticonSortBy.DEADLINE)
     private val gifticons = MutableStateFlow<DbResult<List<Gifticon>>>(DbResult.Loading)
     private val entireBrandsDialogShown = MutableStateFlow(false)
+    private val showUsedGifticon = MutableStateFlow(true)
 
     init {
         viewModelScope.launch {
@@ -59,15 +60,21 @@ class GifticonListViewModel @Inject constructor(
     val state = combine(
         sortBy,
         gifticons,
+        showUsedGifticon,
         brands,
         entireBrandsDialogShown,
         filter
-    ) { sortBy, dbResult, brands, entireBrandsDialogShown, filter ->
+    ) { sortBy, dbResult, isFiltered, brands, entireBrandsDialogShown, filter ->
         when (dbResult) {
             is DbResult.Success -> {
                 GifticonListViewState(
                     sortBy = sortBy,
-                    gifticons = dbResult.data,
+                    gifticons = if (isFiltered) {
+                        dbResult.data.filterNot { it.isUsed }
+                    } else {
+                        dbResult.data
+                    },
+                    showUsedGifticon = isFiltered,
                     brands = brands,
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
@@ -108,6 +115,10 @@ class GifticonListViewModel @Inject constructor(
         } else {
             filter.value.plus(brand.name)
         }
+    }
+
+    fun filterUsedGifticon(show: Boolean = true) {
+        showUsedGifticon.value = show
     }
 
     fun clearFilter() {
