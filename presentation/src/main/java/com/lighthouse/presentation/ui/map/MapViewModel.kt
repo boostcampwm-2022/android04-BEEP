@@ -55,7 +55,8 @@ class MapViewModel @Inject constructor(
     private val _brandInfos = mutableSetOf<BrandPlaceInfoUiModel>()
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
 
-    private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+    private val gifticons =
+        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     val allGifticons = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
