@@ -67,12 +67,12 @@ class BeepWidgetWorker @AssistedInject constructor(
     }
 
     private suspend fun startWidget() {
+        setWidgetState(WidgetState.Loading)
         val lastLocation = getUserLocationUseCase().first()
         getNearBrands(lastLocation.longitude, lastLocation.latitude)
     }
 
     private suspend fun getNearBrands(x: Double, y: Double) = withContext(Dispatchers.IO) {
-        setWidgetState(WidgetState.Loading)
         runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
             .mapCatching { brandPlaceInfos -> brandPlaceInfos.toPresentation() }
             .onSuccess { brandPlaceInfoUiModel ->

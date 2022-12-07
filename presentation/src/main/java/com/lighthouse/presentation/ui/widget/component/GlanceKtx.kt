@@ -11,7 +11,6 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.ColumnScope
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.padding
 import com.lighthouse.presentation.R
 
 @Composable
@@ -45,7 +44,6 @@ fun AppWidgetColumn(
 @Composable
 fun appWidgetBackgroundModifier() = GlanceModifier
     .fillMaxSize()
-    .padding(16.dp)
     .appWidgetBackground()
     .background(R.color.widget_background)
     .appWidgetBackgroundCornerRadius()
