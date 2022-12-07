@@ -43,7 +43,7 @@ class HomeViewModel @Inject constructor(
     private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
     private var locationFlow: Job? = null
 
-    private val _eventFlow = MutableEventFlow<HomeEvent>()
+    private val _eventFlow = MutableEventFlow<Event>()
     val eventFlow = _eventFlow.asEventFlow()
 
     private val gifticons =
@@ -145,7 +145,7 @@ class HomeViewModel @Inject constructor(
 
     fun gotoMap() {
         viewModelScope.launch {
-            _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten(), nearBrandsInfo))
+            _eventFlow.emit(Event.NavigateMap(gifticonsMap.value.values.flatten(), nearBrandsInfo))
         }
     }
 
@@ -155,7 +155,7 @@ class HomeViewModel @Inject constructor(
 
     fun requestLocationPermission() {
         viewModelScope.launch {
-            _eventFlow.emit(HomeEvent.RequestLocationPermissionCheck)
+            _eventFlow.emit(Event.RequestLocationPermissionCheck)
         }
     }
 

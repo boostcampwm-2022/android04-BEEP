@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor(
     hasVariableGifticonUseCase: HasVariableGifticonUseCase
 ) : ViewModel() {
 
-    private val _eventFlow = MutableEventFlow<MainEvent>()
+    private val _eventFlow = MutableEventFlow<Event>()
     val eventFlow = _eventFlow.asEventFlow()
 
     private val _pageFlow = MutableStateFlow<MainPage>(MainPage.Home)
@@ -51,7 +51,7 @@ class MainViewModel @Inject constructor(
 
     fun gotoAddGifticon() {
         viewModelScope.launch {
-            _eventFlow.emit(MainEvent.NavigateAddGifticon)
+            _eventFlow.emit(Event.NavigateAddGifticon)
         }
     }
 
