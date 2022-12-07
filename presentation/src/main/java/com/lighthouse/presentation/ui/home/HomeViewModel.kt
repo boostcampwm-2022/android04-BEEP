@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.Dms
 import com.lighthouse.domain.DmsLocation
+import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.domain.LocationConverter.setDmsLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
@@ -16,7 +17,6 @@ import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUiModel
 import com.lighthouse.presentation.ui.common.UiState
-import com.lighthouse.presentation.util.LocationCalculateService.diffLocation
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,11 +62,13 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    val expiredGifticon = gifticonsMap.transform { gifticons ->
-        val gifticonFlatten = gifticons.values.flatten()
-        val gifticonSize =
-            if (gifticonFlatten.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) gifticonFlatten.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
-        emit(gifticonFlatten.slice(0 until gifticonSize))
+    val expiredGifticon = gifticons.transform { gifticons ->
+        if (gifticons is DbResult.Success) {
+            val data = gifticons.data
+            val gifticonSize =
+                if (data.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) data.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
+            emit(data.slice(0 until gifticonSize))
+        }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _uiState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Loading)
@@ -115,10 +117,10 @@ class HomeViewModel @Inject constructor(
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
-                    nearBrandsInfo = brands.sortedBy { diffLocation(it, x, y) }
+                    nearBrandsInfo = brands.sortedBy { diffLocation(it.x, it.y, x, y) }
                     _nearGifticons.value = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
                         gifticonsMap.value[placeInfo.brand]?.first()
-                            ?.toPresentation(diffLocation(placeInfo, x, y))
+                            ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
                     when (_nearGifticons.value.isEmpty()) {
                         true -> {
