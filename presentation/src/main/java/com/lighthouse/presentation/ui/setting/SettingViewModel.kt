@@ -2,19 +2,26 @@ package com.lighthouse.presentation.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
-import com.lighthouse.presentation.util.UserPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    userPreference: UserPreference,
+    getSecurityOptionUseCase: GetSecurityOptionUseCase,
     private val saveSecurityOptionUseCase: SaveSecurityOptionUseCase
 ) : ViewModel() {
 
-    val securityOptionFlow = userPreference.securityOption
+    val securityOption: StateFlow<SecurityOption> =
+        getSecurityOptionUseCase().map {
+            SecurityOption.values()[it]
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, SecurityOption.NONE)
 
     fun saveSecurityOption(selectedOption: Int) {
         viewModelScope.launch {
