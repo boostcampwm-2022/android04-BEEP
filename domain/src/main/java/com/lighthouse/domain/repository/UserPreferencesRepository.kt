@@ -14,4 +14,6 @@ interface UserPreferencesRepository {
     fun getBooleanOption(option: UserPreferenceOption): Flow<Boolean>
 
     fun isStored(option: UserPreferenceOption): Flow<Boolean>
+
+    suspend fun moveGuestData(uid: String): Result<Unit>
 }

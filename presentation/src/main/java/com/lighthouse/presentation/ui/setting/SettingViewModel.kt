@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.usecase.setting.GetGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
-import com.lighthouse.domain.usecase.setting.SaveGuestOptionUseCase
+import com.lighthouse.domain.usecase.setting.MoveGuestDataUseCase
 import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +20,7 @@ class SettingViewModel @Inject constructor(
     getSecurityOptionUseCase: GetSecurityOptionUseCase,
     private val saveSecurityOptionUseCase: SaveSecurityOptionUseCase,
     getGuestOptionUseCase: GetGuestOptionUseCase,
-    private val saveGuestOptionUseCase: SaveGuestOptionUseCase
+    private val moveGuestDataUseCase: MoveGuestDataUseCase
 ) : ViewModel() {
 
     val securityOption: StateFlow<SecurityOption> =
@@ -44,13 +44,9 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun saveGuestOption(option: Boolean) {
-        viewModelScope.launch {
-            saveGuestOptionUseCase(option)
-        }
-    }
-
     fun moveGuestData(uid: String) {
-        saveGuestOption(false)
+        viewModelScope.launch {
+            moveGuestDataUseCase(uid)
+        }
     }
 }
