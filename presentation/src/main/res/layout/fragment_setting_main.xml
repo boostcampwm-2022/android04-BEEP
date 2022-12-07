@@ -4,6 +4,7 @@
 
     <data>
         <import type="com.lighthouse.domain.model.UserPreferenceOption" />
+        <import type="android.view.View"/>
 
         <variable
             name="vm"
@@ -75,7 +76,7 @@
                 android:id="@+id/tv_security_option"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{vm.securityOption.text}"
+                android:text="@{vm.userPreferenceState.security.text}"
                 style="@style/BEEP.TextStyle.Caption"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_security"
                 app:layout_constraintEnd_toEndOf="@+id/tv_security"
@@ -123,7 +124,18 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_sign_out"
+                android:visibility="@{vm.userPreferenceState.guest ? View.GONE : View.VISIBLE}"
                 app:layout_constraintTop_toBottomOf="@+id/tv_divider_user" />
+
+            <TextView
+                android:id="@+id/tv_sign_in"
+                style="@style/Theme.BEEP.SettingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="16dp"
+                android:text="@string/setting_sign_in"
+                android:visibility="@{vm.userPreferenceState.guest ? View.VISIBLE : View.GONE}"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sign_out" />
 
             <TextView
                 android:id="@+id/tv_withdrawal"
@@ -132,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_withdrawal"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sign_out" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_sign_in" />
 
             <TextView
                 android:id="@+id/tv_divider_etc"

@@ -178,6 +178,7 @@
     <string name="setting_location">위치 정보 권한</string>
     <string name="setting_all">사용자</string>
     <string name="setting_sign_out">로그아웃</string>
+    <string name="setting_sign_in">구글 계정 연동</string>
     <string name="setting_withdrawal">회원 탈퇴</string>
     <string name="setting_etc">기타</string>
     <string name="setting_coffee">개발자에게 커피 사주기</string>
