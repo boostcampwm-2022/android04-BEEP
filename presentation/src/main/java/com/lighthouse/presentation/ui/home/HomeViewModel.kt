@@ -2,8 +2,10 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.VertexLocation
+import com.lighthouse.domain.Dms
+import com.lighthouse.domain.DmsLocation
+import com.lighthouse.domain.LocationConverter.diffLocation
+import com.lighthouse.domain.LocationConverter.setDmsLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
@@ -23,8 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -40,6 +40,7 @@ class HomeViewModel @Inject constructor(
     private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
 ) : ViewModel() {
 
+    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
     private var locationFlow: Job? = null
 
     private val _eventFlow = MutableEventFlow<HomeEvent>()
@@ -61,11 +62,13 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    val expiredGifticon = gifticonsMap.transform { gifticons ->
-        val gifticonFlatten = gifticons.values.flatten()
-        val gifticonSize =
-            if (gifticonFlatten.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) gifticonFlatten.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
-        emit(gifticonFlatten.slice(0 until gifticonSize))
+    val expiredGifticon = gifticons.transform { gifticons ->
+        if (gifticons is DbResult.Success) {
+            val data = gifticons.data
+            val gifticonSize =
+                if (data.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) data.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
+            emit(data.slice(0 until gifticonSize))
+        }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _uiState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Loading)
@@ -73,35 +76,37 @@ class HomeViewModel @Inject constructor(
 
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
-    private lateinit var recentLocation: VertexLocation
-
     val hasLocationPermission = hasLocationPermissionsUseCase()
-
     val isShimmer = MutableStateFlow(false)
-
     val isEmptyNearBrands = MutableStateFlow(false)
 
     private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
     val nearGifticons = _nearGifticons.asStateFlow()
 
     init {
+        setLocationFlowJob()
+    }
+
+    private fun setLocationFlowJob() {
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
-                Timber.tag("TAG").d("${javaClass.simpleName} result -> $result")
                 if (result) observeLocationFlow()
             }
         }
     }
 
     private fun observeLocationFlow() {
-        Timber.tag("TAG").d("${javaClass.simpleName} observeLocationFlow ${locationFlow?.isActive}")
         if (locationFlow?.isActive == true) return
 
-        locationFlow = getUserLocationUseCase().onEach { location ->
-            Timber.tag("TAG").d("${javaClass.simpleName} location collect -> $location")
-            recentLocation = location
-            getNearBrands(location.longitude, location.latitude)
-        }.launchIn(viewModelScope)
+        locationFlow = viewModelScope.launch {
+            getUserLocationUseCase().collectLatest { location ->
+                val currentLocation = setDmsLocation(location)
+                if (prevLocation != currentLocation) {
+                    prevLocation = currentLocation
+                    getNearBrands(location.longitude, location.latitude)
+                }
+            }
+        }
     }
 
     private fun getNearBrands(x: Double, y: Double) {
@@ -112,10 +117,10 @@ class HomeViewModel @Inject constructor(
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
-                    nearBrandsInfo = brands.sortedBy { diffLocation(it, recentLocation) }
+                    nearBrandsInfo = brands.sortedBy { diffLocation(it.x, it.y, x, y) }
                     _nearGifticons.value = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
                         gifticonsMap.value[placeInfo.brand]?.first()
-                            ?.toPresentation(diffLocation(placeInfo, recentLocation))
+                            ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
                     when (_nearGifticons.value.isEmpty()) {
                         true -> {
@@ -126,6 +131,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
+                    Timber.tag("TAG").d("${javaClass.simpleName} homeViewModel Error -> $throwable")
                     _uiState.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure
@@ -136,16 +142,6 @@ class HomeViewModel @Inject constructor(
             isShimmer.value = false
         }
     }
-
-    private fun diffLocation(
-        brandLocation: BrandPlaceInfoUiModel,
-        currentLocation: VertexLocation
-    ) = LocationConverter.locationDistance(
-        brandLocation.x.toDouble(),
-        brandLocation.y.toDouble(),
-        currentLocation.longitude,
-        currentLocation.latitude
-    )
 
     fun gotoMap() {
         viewModelScope.launch {
@@ -161,6 +157,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(HomeEvent.RequestLocationPermissionCheck)
         }
+    }
+
+    fun cancelLocationCollectJob() {
+        locationFlow?.cancel()
+    }
+
+    fun startLocationCollectJob() {
+        setLocationFlowJob()
     }
 
     companion object {

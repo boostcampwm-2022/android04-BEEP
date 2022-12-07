@@ -3,6 +3,9 @@ package com.lighthouse.presentation.ui.map
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.Dms
+import com.lighthouse.domain.DmsLocation
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -21,9 +24,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +38,8 @@ class MapViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
     private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
+
+    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
 
     private val _state: MutableEventFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableEventFlow()
     val state = _state.asEventFlow()
@@ -49,7 +56,8 @@ class MapViewModel @Inject constructor(
     private val _brandInfos = mutableSetOf<BrandPlaceInfoUiModel>()
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
 
-    private val gifticons = getGifticonUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+    private val gifticons =
+        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     val allGifticons = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
@@ -85,12 +93,16 @@ class MapViewModel @Inject constructor(
     private fun collectLocation(isFirstLoadData: Boolean) {
         var isNeededFirstLoading = isFirstLoadData
         viewModelScope.launch {
-            getUserLocation().collect { location ->
+            getUserLocation().collectLatest { location ->
                 if (isNeededFirstLoading) {
                     isNeededFirstLoading = false
-                    return@collect
+                    return@collectLatest
                 }
-                getBrandPlaceInfos(location.longitude, location.latitude)
+                val currentLocation = LocationConverter.setDmsLocation(location)
+                if (prevLocation != currentLocation) {
+                    prevLocation = currentLocation
+                    getBrandPlaceInfos(location.longitude, location.latitude)
+                }
             }
         }
     }
@@ -114,6 +126,7 @@ class MapViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
+                    Timber.tag("TAG").d("${javaClass.simpleName} throwable -> $throwable")
                     _state.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure
