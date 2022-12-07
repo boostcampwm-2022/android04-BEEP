@@ -1,6 +1,8 @@
 package com.lighthouse.presentation.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -11,6 +13,7 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.actionStartActivity
@@ -38,16 +41,16 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.background.BeepWorkManager
+import com.lighthouse.presentation.extra.Extras.CATEGORY_ACCOMMODATION
+import com.lighthouse.presentation.extra.Extras.CATEGORY_CAFE
+import com.lighthouse.presentation.extra.Extras.CATEGORY_CONVENIENCE
+import com.lighthouse.presentation.extra.Extras.CATEGORY_CULTURE
+import com.lighthouse.presentation.extra.Extras.CATEGORY_MART
+import com.lighthouse.presentation.extra.Extras.CATEGORY_RESTAURANT
+import com.lighthouse.presentation.extra.Extras.WIDGET_BRAND_KEY
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
-import com.lighthouse.presentation.util.CATEGORY_ACCOMMODATION
-import com.lighthouse.presentation.util.CATEGORY_CAFE
-import com.lighthouse.presentation.util.CATEGORY_CONVENIENCE
-import com.lighthouse.presentation.util.CATEGORY_CULTURE
-import com.lighthouse.presentation.util.CATEGORY_MART
-import com.lighthouse.presentation.util.CATEGORY_RESTAURANT
-import timber.log.Timber
 
 class BeepWidget : GlanceAppWidget() {
 
@@ -61,30 +64,22 @@ class BeepWidget : GlanceAppWidget() {
             when (widgetState) {
                 is WidgetState.Loading -> AppWidgetBox(contentAlignment = Alignment.Center) { CircularProgressIndicator() }
                 is WidgetState.Available -> WidgetCommon(widgetState)
-                is WidgetState.Unavailable -> {
-                    AppWidgetColumn {
-                        Text("데이터가 정상적이지가 않습니다.")
-                        Spacer(modifier = GlanceModifier.width(8.dp))
-                        Button("새로고침", actionRunCallback<WidgetRefreshAction>())
-                    }
-                }
-                is WidgetState.Empty -> {
-                    AppWidgetColumn {
-                        Text("근처에 사용 가능한 기프티콘이 존재하지 않습니다.")
-                        Spacer(modifier = GlanceModifier.width(8.dp))
-                        Button("새로고침", actionRunCallback<WidgetRefreshAction>())
-                    }
-                }
-                is WidgetState.NoExistsLocationPermission -> {
-                    AppWidgetColumn {
-                        Text("권한을 허용하신 후 다시 새로고침 해주세요.")
-                        Spacer(modifier = GlanceModifier.width(8.dp))
-                        Button("권한 허용", actionRunCallback<WidgetRefreshAction>())
-                        Spacer(modifier = GlanceModifier.width(4.dp))
-                        Button("새로고침", actionRunCallback<WidgetRefreshAction>())
-                    }
-                }
+                is WidgetState.Unavailable -> WidgetErrorColumn(R.string.widget_common_error)
+                is WidgetState.Empty -> WidgetErrorColumn(R.string.widget_empty_data)
+                is WidgetState.NoExistsLocationPermission -> WidgetErrorColumn(R.string.widget_has_not_permission)
             }
+        }
+    }
+
+    @Composable
+    private fun WidgetErrorColumn(@StringRes textId: Int) {
+        AppWidgetColumn {
+            Text(stringResource(id = textId))
+            Spacer(modifier = GlanceModifier.width(8.dp))
+            Button(
+                stringResource(id = R.string.widget_refresh_button),
+                actionRunCallback<WidgetRefreshAction>()
+            )
         }
     }
 }
@@ -103,7 +98,7 @@ fun WidgetCommon(widgetState: WidgetState.Available) {
             Spacer(modifier = GlanceModifier.width(4.dp))
             Text(
                 modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
-                text = "근처에서 사용할 수 있는 기프티콘이에요",
+                text = stringResource(id = R.string.widget_header_description),
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
@@ -117,14 +112,12 @@ fun WidgetCommon(widgetState: WidgetState.Available) {
                 modifier = GlanceModifier.size(32.dp).padding(8.dp)
                     .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
                 provider = ImageProvider(resId = R.drawable.ic_widget_refresh_24),
-                contentDescription = "Refresh icon"
+                contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
             )
         }
         WidgetBody(widgetState)
     }
 }
-
-val itemKey = ActionParameters.Key<String>("itemKey")
 
 @Composable
 fun WidgetBody(widgetState: WidgetState.Available) {
@@ -140,14 +133,17 @@ private fun GifticonItem(item: GifticonWidgetData, modifier: GlanceModifier = Gl
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth().clickable(
-            onClick = actionRunCallback<ListWidgetClickActionCallback>(
-                actionParametersOf(itemKey to item.id)
+            onClick = actionStartActivity(
+                activity = MapActivity::class.java,
+                parameters = actionParametersOf(
+                    ActionParameters.Key<String>(WIDGET_BRAND_KEY) to item.brand
+                )
             )
         )
     ) {
         Image(
             provider = ImageProvider(resId = getDrawableId(item.category)),
-            contentDescription = "brand image"
+            contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
         )
         Spacer(modifier = GlanceModifier.width(4.dp))
         Text(
@@ -191,13 +187,6 @@ class WidgetRefreshAction : ActionCallback {
     }
 }
 
-class ListWidgetClickActionCallback : ActionCallback {
-
-    override suspend fun onRun(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
-        Timber.tag("TAG").d("${javaClass.simpleName} Clickable -> $parameters")
-        actionStartActivity(
-            activity = MapActivity::class.java,
-            parameters = parameters
-        )
-    }
-}
+@SuppressLint("ComposableNaming")
+@Composable
+fun stringResource(@StringRes id: Int) = LocalContext.current.getString(id)
