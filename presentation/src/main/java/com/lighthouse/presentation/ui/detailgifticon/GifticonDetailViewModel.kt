@@ -124,19 +124,6 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun completeUseGifticonButtonClicked() {
-        if (gifticon.value?.isCashCard == true) {
-            viewModelScope.launch {
-                assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
-                useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value)
-                amountToBeUsed.value = 0
-                event(Event.UseGifticonComplete)
-            }
-        } else {
-            viewModelScope.launch {
-                useGifticonUseCase(gifticonId)
-                event(Event.UseGifticonComplete)
-            }
-        }
         viewModelScope.launch {
             if (gifticon.value?.isCashCard == true) {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
