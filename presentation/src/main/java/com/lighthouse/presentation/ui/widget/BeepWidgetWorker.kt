@@ -1,20 +1,23 @@
 package com.lighthouse.presentation.ui.widget
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
-import com.lighthouse.domain.usecase.HasLocationPermissionsUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.mapper.toWidgetModel
-import com.lighthouse.presentation.util.LocationCalculateService.diffLocation
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -24,18 +27,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @HiltWorker
 class BeepWidgetWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
-    hasLocationPermissionsUseCase: HasLocationPermissionsUseCase,
     getGifticonsUseCase: GetGifticonsUseCase,
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase
 ) : CoroutineWorker(context, workerParams) {
-
-    private val hasLocationPermission = hasLocationPermissionsUseCase()
 
     private val gifticonsDbResult = getGifticonsUseCase.getUsableGifticons()
         .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, DbResult.Loading)
@@ -54,7 +55,7 @@ class BeepWidgetWorker @AssistedInject constructor(
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
 
     override suspend fun doWork(): Result {
-        return when (hasLocationPermission.value) {
+        return when (hasLocationPermission()) {
             true -> {
                 startWidget()
                 Result.success()
@@ -68,7 +69,9 @@ class BeepWidgetWorker @AssistedInject constructor(
 
     private suspend fun startWidget() {
         setWidgetState(WidgetState.Loading)
+        Timber.tag("TAG").d("${javaClass.simpleName} userLocation start")
         val lastLocation = getUserLocationUseCase().first()
+        Timber.tag("TAG").d("${javaClass.simpleName} userLocation get $lastLocation")
         getNearBrands(lastLocation.longitude, lastLocation.latitude)
     }
 
@@ -78,7 +81,7 @@ class BeepWidgetWorker @AssistedInject constructor(
             .onSuccess { brandPlaceInfoUiModel ->
                 val nearGifticons = brandPlaceInfoUiModel.distinctBy { it.brand }.mapNotNull { info ->
                     gifticons.value[info.brand]?.firstOrNull()
-                        ?.toWidgetModel(diffLocation(info, x, y), info.categoryName)
+                        ?.toWidgetModel(diffLocation(info.x, info.y, x, y), info.categoryName)
                 }
 
                 when (nearGifticons.isEmpty()) {
@@ -87,6 +90,7 @@ class BeepWidgetWorker @AssistedInject constructor(
                 }
             }
             .onFailure { throwable ->
+                Timber.tag("TAG").d("${javaClass.simpleName} widget worker throw -> $throwable")
                 setWidgetState(WidgetState.Unavailable(throwable.message.orEmpty()))
             }
     }
@@ -102,6 +106,21 @@ class BeepWidgetWorker @AssistedInject constructor(
             )
         }
         BeepWidget().updateAll(context)
+    }
+
+    private fun hasLocationPermission() =
+        context.hasLocationPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
+            context.hasLocationPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    private fun Context.hasLocationPermission(permission: String): Boolean {
+        if (permission == Manifest.permission.ACCESS_BACKGROUND_LOCATION &&
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
+        ) {
+            return true
+        }
+
+        return ActivityCompat.checkSelfPermission(this, permission) ==
+            PackageManager.PERMISSION_GRANTED
     }
 
     companion object {

@@ -39,9 +39,13 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
+import com.lighthouse.presentation.util.CATEGORY_ACCOMMODATION
+import com.lighthouse.presentation.util.CATEGORY_CAFE
+import com.lighthouse.presentation.util.CATEGORY_CONVENIENCE
+import com.lighthouse.presentation.util.CATEGORY_CULTURE
+import com.lighthouse.presentation.util.CATEGORY_MART
+import com.lighthouse.presentation.util.CATEGORY_RESTAURANT
 import timber.log.Timber
-
-val itemKey = ActionParameters.Key<String>("itemKey")
 
 class BeepWidget : GlanceAppWidget() {
 
@@ -118,19 +122,26 @@ fun WidgetCommon(widgetState: WidgetState.Available) {
     }
 }
 
+val itemKey = ActionParameters.Key<String>("itemKey")
+
 @Composable
 fun WidgetBody(widgetState: WidgetState.Available) {
-    LazyColumn(modifier = GlanceModifier.padding(20.dp)) {
+    LazyColumn(modifier = GlanceModifier.padding(12.dp)) {
         items(widgetState.gifticons) { item ->
+            Spacer(modifier = GlanceModifier.width(8.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = GlanceModifier.clickable(
                     onClick = actionRunCallback<ListWidgetClickActionCallback>(
                         actionParametersOf(itemKey to item.id)
                     )
-                ).width(200.dp)
+                ).fillMaxWidth()
             ) {
-                Spacer(modifier = GlanceModifier.width(30.dp))
+                Image(
+                    provider = ImageProvider(resId = getDrawableId(item.category)),
+                    contentDescription = "brand image"
+                )
+                Spacer(modifier = GlanceModifier.width(4.dp))
                 Text(
                     text = item.brand,
                     modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(vertical = 8.dp),
@@ -152,6 +163,18 @@ fun WidgetBody(widgetState: WidgetState.Available) {
                 )
             }
         }
+    }
+}
+
+fun getDrawableId(category: String): Int {
+    return when (category) {
+        CATEGORY_MART -> R.drawable.ic_widget_market
+        CATEGORY_CONVENIENCE -> R.drawable.ic_widget_convenience
+        CATEGORY_CULTURE -> R.drawable.ic_widget_culture
+        CATEGORY_ACCOMMODATION -> R.drawable.ic_widget_accommodation
+        CATEGORY_RESTAURANT -> R.drawable.ic_widget_restaurant
+        CATEGORY_CAFE -> R.drawable.ic_widget_cafe
+        else -> R.drawable.ic_marker_base
     }
 }
 

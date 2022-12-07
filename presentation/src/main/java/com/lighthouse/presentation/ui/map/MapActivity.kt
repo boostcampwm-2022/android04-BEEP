@@ -24,6 +24,12 @@ import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
+import com.lighthouse.presentation.util.CATEGORY_ACCOMMODATION
+import com.lighthouse.presentation.util.CATEGORY_CAFE
+import com.lighthouse.presentation.util.CATEGORY_CONVENIENCE
+import com.lighthouse.presentation.util.CATEGORY_CULTURE
+import com.lighthouse.presentation.util.CATEGORY_MART
+import com.lighthouse.presentation.util.CATEGORY_RESTAURANT
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -312,11 +318,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
-        private const val CATEGORY_MART = "대형마트"
-        private const val CATEGORY_CONVENIENCE = "편의점"
-        private const val CATEGORY_CULTURE = "문화시설"
-        private const val CATEGORY_ACCOMMODATION = "숙박"
-        private const val CATEGORY_RESTAURANT = "음식점"
-        private const val CATEGORY_CAFE = "카페"
     }
 }
