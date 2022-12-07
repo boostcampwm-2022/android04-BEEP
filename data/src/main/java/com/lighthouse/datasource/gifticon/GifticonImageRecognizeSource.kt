@@ -22,6 +22,7 @@ import javax.inject.Inject
 class GifticonImageRecognizeSource @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+
     suspend fun recognize(id: Long, path: String): GifticonForAddition? {
         val originUri = Uri.parse(path)
         val originBitmap = when (originUri.scheme) {
@@ -37,7 +38,7 @@ class GifticonImageRecognizeSource @Inject constructor(
         val croppedBitmap = info.croppedImage
         var croppedPath = ""
         if (croppedBitmap != null) {
-            val croppedFile = context.getFileStreamPath("$CROPPED_PREFIX$id")
+            val croppedFile = context.getFileStreamPath("$TEMP_CROPPED_PREFIX$id")
             saveBitmap(croppedBitmap, CompressFormat.JPEG, 100, croppedFile)
             croppedPath = croppedFile.path
         }
@@ -65,6 +66,6 @@ class GifticonImageRecognizeSource @Inject constructor(
     }
 
     companion object {
-        private const val CROPPED_PREFIX = "cropped"
+        private const val TEMP_CROPPED_PREFIX = "temp_gifticon_"
     }
 }

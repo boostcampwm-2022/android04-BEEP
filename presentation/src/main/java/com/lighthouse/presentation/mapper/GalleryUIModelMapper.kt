@@ -18,3 +18,9 @@ fun AddGifticonUIModel.toGalleryUIModel(order: Int): GalleryUIModel.Gallery = Ga
     selectedOrder = order,
     date = expiredAt
 )
+
+fun GalleryUIModel.Gallery.toDomain(): GalleryImage = GalleryImage(
+    id = id,
+    contentUri = uri.toString(),
+    date = date
+)

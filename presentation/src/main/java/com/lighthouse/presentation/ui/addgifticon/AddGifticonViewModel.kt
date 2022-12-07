@@ -15,6 +15,7 @@ import com.lighthouse.presentation.mapper.toAddGifticonItemUIModel
 import com.lighthouse.presentation.mapper.toAddGifticonUIModel
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.mapper.toGalleryUIModel
+import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.EditTextInfo
@@ -168,10 +169,35 @@ class AddGifticonViewModel @Inject constructor(
         gifticonList.value = list.map { newItem ->
             oldGifticonList.find { oldItem -> newItem.id == oldItem.id } ?: newItem.toAddGifticonUIModel()
         }
+
+        list.forEach { gallery ->
+            viewModelScope.launch {
+                val result = recognizeGifticonImageUseCase(gallery.toDomain())
+                if (result != null) {
+                    val updated = updateGifticon(gallery.id) {
+                        result.toPresentation(gallery.id)
+                    }
+                    if (updated != null) {
+                        updateDisplayGifticon(gallery.id) {
+                            it.copy(
+                                thumbnailImage = updated.thumbnailImage,
+                                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun updateSelectedDisplayGifticon(
-        srcIndex: Long? = selectedId.value,
+        update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
+    ) {
+        updateDisplayGifticon(selectedId.value, update)
+    }
+
+    private fun updateDisplayGifticon(
+        srcIndex: Long?,
         update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
     ) {
         val index = displayList.value.indexOfFirst {
@@ -190,7 +216,11 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     private fun updateSelectedGifticon(
-        srcIndex: Long? = selectedId.value,
+        update: (AddGifticonUIModel) -> AddGifticonUIModel
+    ) = updateGifticon(selectedId.value, update)
+
+    private fun updateGifticon(
+        srcIndex: Long?,
         update: (AddGifticonUIModel) -> AddGifticonUIModel
     ): AddGifticonUIModel? {
         val index = gifticonList.value.indexOfFirst { it.id == srcIndex }
@@ -256,7 +286,7 @@ class AddGifticonViewModel @Inject constructor(
     fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
         val newBarcode = charSequence.toString()
         val oldBarcode = barcode.value?.text ?: return
-        if (oldBarcode == newBarcode) {
+        if (oldBarcode == newBarcode && before == count) {
             return
         }
 
@@ -311,7 +341,7 @@ class AddGifticonViewModel @Inject constructor(
     fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
         val newBalance = charSequence.toString()
         val oldBalance = balance.value?.text ?: return
-        if (oldBalance == newBalance) {
+        if (oldBalance == newBalance && before == count) {
             return
         }
 
@@ -397,7 +427,9 @@ class AddGifticonViewModel @Inject constructor(
         return when {
             gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
-            gifticon.barcode.text.length != 12 + 2 && gifticon.barcode.text.length != 16 + 3 -> AddGifticonValid.INVALID_BARCODE
+            gifticon.barcode.text.length != 12 + 2 &&
+                gifticon.barcode.text.length != 14 + 2 &&
+                gifticon.barcode.text.length != 16 + 3 -> AddGifticonValid.INVALID_BARCODE
             gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
             gifticon.isCashCard && gifticon.balance.text.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             else -> AddGifticonValid.VALID
