@@ -152,7 +152,7 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting), Au
         Snackbar.make(requireView(), getString(R.string.security_setting_change_cancel), Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun onAuthError(StringId: Int?) {
+    override fun onAuthError(stringId: Int?) {
         Snackbar.make(requireView(), getString(R.string.security_setting_change_failure), Snackbar.LENGTH_SHORT).show()
     }
 }

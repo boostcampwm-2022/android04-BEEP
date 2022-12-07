@@ -4,9 +4,10 @@ plugins {
     id("com.android.library")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
+    kotlin("kapt")
+    kotlin("plugin.serialization") version "1.5.0"
 }
 
 android {

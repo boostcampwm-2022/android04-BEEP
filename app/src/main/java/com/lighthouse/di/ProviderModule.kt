@@ -4,6 +4,7 @@ import android.content.Context
 import com.lighthouse.datasource.gifticon.GifticonImageRecognizeSource
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.location.SharedLocationManager
+import com.lighthouse.presentation.background.NotificationHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +33,10 @@ object ProviderModule {
     fun provideSharedLocationManager(
         @ApplicationContext context: Context
     ): SharedLocationManager = SharedLocationManager(context)
+
+    @Provides
+    @Singleton
+    fun provideNotificationHelper(
+        @ApplicationContext context: Context
+    ): NotificationHelper = NotificationHelper(context)
 }

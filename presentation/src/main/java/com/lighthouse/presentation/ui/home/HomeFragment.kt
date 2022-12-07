@@ -119,7 +119,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setObserveViewModel() {
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             homeViewModel.uiState.collectLatest { state ->
                 Timber.tag("TAG").d("${javaClass.simpleName} UiState -> $state")
                 when (state) {
@@ -130,7 +130,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         }
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             homeViewModel.eventFlow.collectLatest { directions ->
                 when (directions) {
                     is HomeEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
@@ -180,6 +180,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun showSnackBar(@StringRes message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onStart() {
+        homeViewModel.startLocationCollectJob()
+        super.onStart()
+    }
+
+    override fun onStop() {
+        homeViewModel.cancelLocationCollectJob()
+        super.onStop()
     }
 
     companion object {

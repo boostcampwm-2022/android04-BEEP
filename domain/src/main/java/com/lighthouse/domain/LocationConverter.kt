@@ -220,4 +220,22 @@ object LocationConverter {
     private fun radianToDecimal(radian: Double): Double {
         return radian * 180 / Math.PI
     }
+
+    fun setDmsLocation(lastLocationResult: VertexLocation): DmsLocation {
+        val x = toMinDms(lastLocationResult.longitude)
+        val y = toMinDms(lastLocationResult.latitude)
+        return DmsLocation(x, y)
+    }
+
+    fun diffLocation(
+        brandX: String,
+        brandY: String,
+        x: Double,
+        y: Double
+    ) = locationDistance(
+        brandX.toDouble(),
+        brandY.toDouble(),
+        x,
+        y
+    )
 }
