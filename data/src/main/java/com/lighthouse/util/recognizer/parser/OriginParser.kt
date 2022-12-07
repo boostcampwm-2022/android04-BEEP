@@ -16,7 +16,7 @@ class OriginParser {
     )
 
     private val dateFilterRegex = listOf(
-        "(\\d{4})\\s*[년., ]\\s*(\\d{1,2})\\s*[월., ]\\s*(\\d{1,2})".toRegex()
+        "(\\d{4})\\s*[-년., ]\\s*(\\d{1,2})\\s*[-월., ]\\s*(\\d{1,2})".toRegex()
     )
 
     private val contentFilterText = listOf(
