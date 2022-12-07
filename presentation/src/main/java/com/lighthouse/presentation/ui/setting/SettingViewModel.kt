@@ -6,6 +6,7 @@ import com.lighthouse.domain.usecase.MoveUserIdGifticonUseCase
 import com.lighthouse.domain.usecase.setting.GetGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.domain.usecase.setting.MoveGuestDataUseCase
+import com.lighthouse.domain.usecase.setting.SaveGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +22,7 @@ class SettingViewModel @Inject constructor(
     getSecurityOptionUseCase: GetSecurityOptionUseCase,
     private val saveSecurityOptionUseCase: SaveSecurityOptionUseCase,
     getGuestOptionUseCase: GetGuestOptionUseCase,
+    private val saveGuestOptionUseCase: SaveGuestOptionUseCase,
     private val moveGuestDataUseCase: MoveGuestDataUseCase,
     private val moveUserIdGifticonUseCase: MoveUserIdGifticonUseCase
 ) : ViewModel() {
@@ -48,6 +50,7 @@ class SettingViewModel @Inject constructor(
 
     fun moveGuestData(uid: String) {
         viewModelScope.launch {
+            saveGuestOptionUseCase(false)
             moveGuestDataUseCase(uid)
             moveUserIdGifticonUseCase(uid)
         }

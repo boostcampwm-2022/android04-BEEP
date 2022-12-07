@@ -58,7 +58,6 @@ class UserPreferencesRepositoryImpl @Inject constructor(
                 preferences[securityKey] = security as Int
                 // preferences[notificationKey] = notification as Boolean
                 // preferences[locationKey] = location as Boolean
-                preferences[guestKey] = false
             }
         }
     }
