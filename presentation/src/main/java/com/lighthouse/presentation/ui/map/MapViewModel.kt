@@ -72,6 +72,11 @@ class MapViewModel @Inject constructor(
     private val _gifticonData = MutableStateFlow<List<Gifticon>>(emptyList())
     val gifticonData = _gifticonData.asStateFlow()
 
+    private val widgetBrand = savedStateHandle.get<String>(Extras.WIDGET_BRAND_KEY)
+
+    private val _event = MutableEventFlow<Event>()
+    val event = _event.asEventFlow()
+
     init {
         var isFirstLoadData = true
         val nearBrands = savedStateHandle.get<List<BrandPlaceInfoUiModel>>(Extras.KEY_NEAR_BRANDS)
@@ -88,6 +93,10 @@ class MapViewModel @Inject constructor(
             }
         }
         collectLocation(isFirstLoadData)
+        viewModelScope.launch {
+            val brand = widgetBrand ?: return@launch
+            _event.emit(Event.NavigateBrand(brand))
+        }
     }
 
     private fun collectLocation(isFirstLoadData: Boolean) {
@@ -148,6 +157,7 @@ class MapViewModel @Inject constructor(
 
     fun updateGifticons() {
         val brandName = focusMarker.captionText
+        Timber.tag("TAG").d("${javaClass.simpleName} brandName -> $brandName")
         _gifticonData.value = when (brandName.isEmpty()) {
             true -> {
                 allGifticons.value.filter { gifticon ->

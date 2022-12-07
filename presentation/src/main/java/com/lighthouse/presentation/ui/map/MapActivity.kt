@@ -2,7 +2,6 @@ package com.lighthouse.presentation.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.location.Location
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -12,24 +11,24 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.LocationConverter
+import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.screenWidth
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.extra.Extras.CATEGORY_ACCOMMODATION
+import com.lighthouse.presentation.extra.Extras.CATEGORY_CAFE
+import com.lighthouse.presentation.extra.Extras.CATEGORY_CONVENIENCE
+import com.lighthouse.presentation.extra.Extras.CATEGORY_CULTURE
+import com.lighthouse.presentation.extra.Extras.CATEGORY_MART
+import com.lighthouse.presentation.extra.Extras.CATEGORY_RESTAURANT
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
-import com.lighthouse.presentation.util.CATEGORY_ACCOMMODATION
-import com.lighthouse.presentation.util.CATEGORY_CAFE
-import com.lighthouse.presentation.util.CATEGORY_CONVENIENCE
-import com.lighthouse.presentation.util.CATEGORY_CULTURE
-import com.lighthouse.presentation.util.CATEGORY_MART
-import com.lighthouse.presentation.util.CATEGORY_RESTAURANT
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -62,6 +61,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
+    private var isFirstLoad = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +79,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setGifticonAdapterItem() {
-        val pagerWidth = 300.dp
-        val pageMarginPx = 24.dp
-        val offsetPx = screenWidth - pageMarginPx - pagerWidth
+        val pagerWidth = screenWidth * 0.8
+        val pageMarginPx = screenWidth * 0.1
+        val offsetPx = screenWidth - pageMarginPx.toInt() - pagerWidth.toInt()
         with(binding.vpGifticon) {
             adapter = gifticonAdapter
             offscreenPageLimit = 3
@@ -91,7 +91,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             addItemDecoration(
                 ListSpaceItemDecoration(
                     space = 48.dp,
-                    start = 24.dp,
+                    start = 20.dp,
                     end = 24.dp
                 )
             )
@@ -140,57 +140,50 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.captionColor = getColor(R.color.beep_pink)
         marker.zIndex = 1
         val location = marker.position
+        viewModel.updateFocusMarker(marker)
         moveMapCamera(location.longitude, location.latitude)
     }
 
     private fun setGifticonAdapterChangeCallback() {
         binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                if (isFirstLoad) {
+                    isFirstLoad = false
+                    return
+                }
                 if (isRecentSelected(gifticonAdapter.currentList[position].brand)) return
                 val currentItem = gifticonAdapter.currentList[position].brand
-                val brandInfos = viewModel.brandInfos
-                findBrandPlaceInfo(brandInfos, currentItem)
+                findBrandPlaceInfo(currentItem)
             }
-
-            /**
-             * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
-             * @param brandPlaceInfos 지도에 보이고 있는 브랜드들
-             * @param brandName 찾고자하는 브랜드명
-             */
-            private fun findBrandPlaceInfo(brandPlaceInfos: Set<BrandPlaceInfoUiModel>, brandName: String) {
-                client.lastLocation.addOnSuccessListener { currentLocation ->
-                    val brandPlaceInfo = brandPlaceInfos.filter { brandPlaceInfo ->
-                        brandPlaceInfo.brand == brandName
-                    }.minByOrNull { location ->
-                        diffLocation(location, currentLocation)
-                    } ?: return@addOnSuccessListener
-
-                    resetFocusMarker(viewModel.focusMarker)
-                    moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
-
-                    val currentFocusMarker = viewModel.markerHolder.find {
-                        currentLocation(it, brandPlaceInfo)
-                    } ?: return@addOnSuccessListener
-
-                    viewModel.updateFocusMarker(currentFocusMarker)
-                    setFocusMarker(currentFocusMarker)
-                }
-            }
-
-            private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
-                it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
-
-            private fun diffLocation(
-                location: BrandPlaceInfoUiModel,
-                currentLocation: Location
-            ) = LocationConverter.locationDistance(
-                location.x.toDouble(),
-                location.y.toDouble(),
-                currentLocation.longitude,
-                currentLocation.latitude
-            )
         })
     }
+
+    /**
+     * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
+     * @param brandName 찾고자하는 브랜드명
+     */
+    private fun findBrandPlaceInfo(brandName: String, isLoadGifticonList: Boolean = false) {
+        client.lastLocation.addOnSuccessListener { currentLocation ->
+            val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
+                brandPlaceInfo.brand == brandName
+            }.minByOrNull { location ->
+                diffLocation(location.x, location.y, currentLocation.longitude, currentLocation.latitude)
+            } ?: return@addOnSuccessListener
+
+            resetFocusMarker(viewModel.focusMarker)
+            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
+
+            val currentFocusMarker = viewModel.markerHolder.find {
+                currentLocation(it, brandPlaceInfo)
+            } ?: return@addOnSuccessListener
+
+            if (isLoadGifticonList) viewModel.updateGifticons()
+            setFocusMarker(currentFocusMarker)
+        }
+    }
+
+    private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
+        it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
 
     private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText == brand
 
@@ -205,7 +198,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.state.collectLatest { state ->
                 when (state) {
                     is UiState.Success -> updateBrandMarker(state.item)
-                    is UiState.Loading -> Unit // TODO 로딩화면 처리 필요
+                    is UiState.Loading -> Unit
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
                     is UiState.NotFoundResults -> showSnackBar(R.string.error_not_found_results)
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)
@@ -231,6 +224,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         viewModel.updateMarkers(brandMarkers)
+
+        repeatOnStarted {
+            viewModel.event.collect { event ->
+                if (event is Event.NavigateBrand) {
+                    findBrandPlaceInfo(event.brand, true)
+                }
+            }
+        }
     }
 
     private fun setMarker(
