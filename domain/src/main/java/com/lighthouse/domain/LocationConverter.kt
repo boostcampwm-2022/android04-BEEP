@@ -226,4 +226,16 @@ object LocationConverter {
         val y = toMinDms(lastLocationResult.latitude)
         return DmsLocation(x, y)
     }
+
+    fun diffLocation(
+        brandX: String,
+        brandY: String,
+        x: Double,
+        y: Double
+    ) = locationDistance(
+        brandX.toDouble(),
+        brandY.toDouble(),
+        x,
+        y
+    )
 }
