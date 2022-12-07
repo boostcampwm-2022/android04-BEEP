@@ -7,8 +7,8 @@ interface UserPreferencesRepository {
     suspend fun setPinString(pinString: String): Result<Unit>
     fun getPinString(): Flow<String>
 
-    suspend fun setIntOption(option: UserPreferenceOption, value: Int): Result<Unit>
-    fun getIntOption(option: UserPreferenceOption): Flow<Int>
+    suspend fun setSecurityOption(value: Int): Result<Unit>
+    fun getSecurityOption(): Flow<Int>
 
     suspend fun setBooleanOption(option: UserPreferenceOption, value: Boolean): Result<Unit>
     fun getBooleanOption(option: UserPreferenceOption): Flow<Boolean>

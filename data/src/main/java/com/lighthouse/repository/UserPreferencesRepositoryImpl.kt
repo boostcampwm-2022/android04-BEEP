@@ -51,39 +51,24 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         CryptoObjectHelper.decrypt(pin, iv)
     }
 
-    override suspend fun setIntOption(option: UserPreferenceOption, value: Int): Result<Unit> = runCatching {
+    override suspend fun setSecurityOption(value: Int): Result<Unit> = runCatching {
         withContext(Dispatchers.IO) {
-            val key = when (option) {
-                UserPreferenceOption.SECURITY -> SECURITY
-                else -> throw Exception("Unsupportable Option : Not Int")
-            }
-
             dataStore.edit { preferences ->
-                preferences[key] = value
+                preferences[SECURITY] = value
             }
         }
     }
 
-    override fun getIntOption(option: UserPreferenceOption): Flow<Int> {
-        val key = when (option) {
-            UserPreferenceOption.SECURITY -> SECURITY
-            else -> throw Exception("Unsupportable Option : Not Int")
-        }
-
+    override fun getSecurityOption(): Flow<Int> {
         return dataStore.data.map { preferences ->
-            preferences[key] ?: throw Exception("Cannot Find Int Option")
+            preferences[SECURITY] ?: throw Exception("Cannot Find Int Option")
         }
     }
 
     override suspend fun setBooleanOption(option: UserPreferenceOption, value: Boolean): Result<Unit> = runCatching {
-        withContext(Dispatchers.IO) {
-            val key = when (option) {
-                UserPreferenceOption.NOTIFICATION -> NOTIFICATION
-                UserPreferenceOption.LOCATION -> LOCATION
-                UserPreferenceOption.GUEST -> GUEST
-                else -> throw Exception("Unsupportable Option : Not Boolean")
-            }
+        val key = getPreferenceKey(option)
 
+        withContext(Dispatchers.IO) {
             dataStore.edit { preferences ->
                 preferences[key] = value
             }
@@ -91,15 +76,19 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     }
 
     override fun getBooleanOption(option: UserPreferenceOption): Flow<Boolean> {
-        val key = when (option) {
-            UserPreferenceOption.NOTIFICATION -> NOTIFICATION
-            UserPreferenceOption.LOCATION -> LOCATION
-            UserPreferenceOption.GUEST -> GUEST
-            else -> throw Exception("Unsupportable Option : Not Boolean")
-        }
+        val key = getPreferenceKey(option)
 
         return dataStore.data.map { preferences ->
             preferences[key] ?: throw Exception("Cannot Find Boolean Option")
+        }
+    }
+
+    private fun getPreferenceKey(option: UserPreferenceOption): Preferences.Key<Boolean> {
+        return when (option) {
+            UserPreferenceOption.GUEST -> GUEST
+            UserPreferenceOption.NOTIFICATION -> NOTIFICATION
+            UserPreferenceOption.LOCATION -> LOCATION
+            else -> throw Exception("Unsupportable Option : Not Boolean")
         }
     }
 

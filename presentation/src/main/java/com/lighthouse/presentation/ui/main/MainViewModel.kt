@@ -86,7 +86,7 @@ class MainViewModel @Inject constructor(
 
     fun setSecurityNoUse() {
         viewModelScope.launch {
-            userPreferencesRepository.setIntOption(UserPreferenceOption.SECURITY, SecurityOption.NONE.ordinal)
+            userPreferencesRepository.setSecurityOption(SecurityOption.NONE.ordinal)
         }
     }
 }
