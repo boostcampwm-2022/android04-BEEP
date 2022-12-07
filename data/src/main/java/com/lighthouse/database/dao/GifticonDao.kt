@@ -21,7 +21,7 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE id = :id")
     fun getGifticon(id: String): Flow<GifticonEntity>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY created_at DESC")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 ORDER BY created_at DESC")
     fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 ORDER BY expire_at")
