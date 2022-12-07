@@ -221,4 +221,6 @@
     <string name="widget_header_description">근처에서 사용할 수 있는 기프티콘이에요</string>
     <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
 
+    <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
+
 </resources>
