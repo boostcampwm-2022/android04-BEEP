@@ -12,7 +12,8 @@ class GetAllBrandsUseCase @Inject constructor(
     authRepository: AuthRepository
 ) {
     val userId = authRepository.getCurrentUserId()
-    operator fun invoke(): Flow<DbResult<List<Brand>>> {
-        return gifticonRepository.getAllBrands(userId)
+
+    operator fun invoke(filterExpired: Boolean = false): Flow<DbResult<List<Brand>>> {
+        return gifticonRepository.getAllBrands(userId, filterExpired)
     }
 }

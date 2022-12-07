@@ -9,6 +9,7 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
+import com.lighthouse.domain.util.isExpired
 import com.lighthouse.domain.util.today
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
@@ -45,8 +46,22 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllBrands(userId: String): Flow<List<Brand>> {
-        return gifticonDao.getAllBrands(userId)
+    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>> {
+        return gifticonDao.getAllGifticons(userId).map {
+            if (filterExpired) {
+                it.filterNot { entity ->
+                    entity.expireAt.isExpired()
+                }
+            } else {
+                it
+            }.groupBy { entity ->
+                entity.brand
+            }.map { entry ->
+                Brand(entry.key, entry.value.size)
+            }.sortedBy { brand ->
+                -brand.count // 내림차순
+            }
+        }
     }
 
     override suspend fun updateGifticon(gifticon: Gifticon) {
