@@ -58,5 +58,15 @@ class BeepWorkManager(
         private const val NOTIFICATION_INTERVAL = 15L // test를 위해 최소 간격인 15분으로 설정. 원래는 24시간.
         private const val WIDGET_WORK_NAME = "widget"
         private const val WIDGET_INTERVAL = 15L
+
+        @Volatile
+        private var instance: BeepWorkManager? = null
+
+        fun getInstance(context: Context): BeepWorkManager =
+            instance ?: synchronized(this) {
+                BeepWorkManager(context).also {
+                    instance = it
+                }
+            }
     }
 }
