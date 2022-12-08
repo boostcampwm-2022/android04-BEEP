@@ -25,6 +25,7 @@
                 android:id="@+id/tb_security_setting"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
                 app:title="@string/main_menu_setting"
                 app:titleCentered="true" />
@@ -64,7 +65,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             android:onClick="@{null}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_change_pin" />

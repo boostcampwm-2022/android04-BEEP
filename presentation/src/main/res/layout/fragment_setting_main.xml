@@ -29,6 +29,7 @@
                     android:id="@+id/tb_setting"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
                     app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
                     app:title="@string/main_menu_setting"
                     app:titleCentered="true" />
@@ -48,7 +49,8 @@
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_200"
+                android:alpha="0.3"
+                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/main_menu_setting"
                 app:layout_constraintTop_toBottomOf="@+id/tv_used_gifticon" />
@@ -147,7 +149,7 @@
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_200"
+                android:alpha="0.3"                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/setting_all"
                 app:layout_constraintTop_toBottomOf="@+id/tv_location" />
@@ -186,7 +188,8 @@
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_200"
+                android:alpha="0.3"
+                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/setting_etc"
                 app:layout_constraintTop_toBottomOf="@+id/tv_withdrawal" />

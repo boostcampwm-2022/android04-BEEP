@@ -2,7 +2,9 @@ package com.lighthouse.presentation.ui.security.pin
 
 import android.animation.ValueAnimator
 import android.app.Activity
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -131,7 +133,18 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private fun animateNumberPadBackground(num: Int) {
         if (num < 0) return
 
-        ValueAnimator.ofArgb(requireContext().getColor(R.color.gray_200), requireContext().getColor(R.color.white))
+        val startColor =
+            when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> requireContext().getColor(R.color.gray_500)
+                else -> requireContext().getColor(R.color.gray_200)
+            }
+
+        val endColor = TypedValue().let {
+            requireContext().theme.resolveAttribute(android.R.attr.background, it, true)
+            it.data
+        }
+
+        ValueAnimator.ofArgb(startColor, endColor)
             .apply {
                 duration = 300
                 addUpdateListener {
