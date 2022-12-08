@@ -6,7 +6,7 @@ import javax.inject.Inject
 class MoveUserIdGifticonUseCase @Inject constructor(
     private val gifticonRepository: GifticonRepository
 ) {
-    suspend operator fun invoke(userId: String) {
-        gifticonRepository.moveUserIdGifticon(userId)
+    suspend operator fun invoke(oldUserId: String, newUserId: String) {
+        gifticonRepository.moveUserIdGifticon(oldUserId, newUserId)
     }
 }

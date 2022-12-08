@@ -52,7 +52,7 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             saveGuestOptionUseCase(false)
             moveGuestDataUseCase(uid)
-            moveUserIdGifticonUseCase(uid)
+            moveUserIdGifticonUseCase("Guest", uid)
         }
     }
 }

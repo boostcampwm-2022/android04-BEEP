@@ -118,6 +118,6 @@ interface GifticonDao {
     @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)")
     fun hasUsableGifticon(userId: String, time: Date): Flow<Boolean>
 
-    @Query("UPDATE $GIFTICON_TABLE SET user_id = :userId")
-    suspend fun moveUserIdGifticon(userId: String)
+    @Query("UPDATE $GIFTICON_TABLE SET user_id = :newUserId WHERE user_id = :oldUserId")
+    suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
 }
