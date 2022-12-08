@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    hasVariableGifticonUseCase: HasVariableGifticonUseCase
+    hasVariableGifticonUseCase: HasVariableGifticonUseCase,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
