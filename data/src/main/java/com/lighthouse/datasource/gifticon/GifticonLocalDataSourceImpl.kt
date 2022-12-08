@@ -58,8 +58,8 @@ class GifticonLocalDataSourceImpl @Inject constructor(
                 entity.brand
             }.map { entry ->
                 Brand(entry.key, entry.value.size)
-            }.sortedBy { brand ->
-                -brand.count // 내림차순
+            }.sortedByDescending { brand ->
+                brand.count
             }
         }
     }
