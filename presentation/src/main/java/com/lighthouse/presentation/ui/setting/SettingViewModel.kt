@@ -36,11 +36,13 @@ class SettingViewModel @Inject constructor(
             SecurityOption.values()[it]
         }.stateIn(viewModelScope, SharingStarted.Eagerly, SecurityOption.NONE)
 
-    private val guestOption: StateFlow<Boolean> =
+    private val guestOption: StateFlow<Boolean> by lazy {
         getGuestOptionUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    }
 
-    private val notificationOption: StateFlow<Boolean> =
+    private val notificationOption: StateFlow<Boolean> by lazy {
         getNotificationOptionUseCase().stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    }
 
     val userPreferenceState: StateFlow<UserPreferenceState> = combine(
         guestOption,
