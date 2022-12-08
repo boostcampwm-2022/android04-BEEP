@@ -202,7 +202,7 @@
     <string name="home_expire_more_label">더보기</string>
 
     <string name="home_near_gifticon_distance">%dm</string>
-    <string name="home_near_gifticon_announce">근처에 존재합니다.</string>
+    <string name="home_near_gifticon_announce">100m 내외</string>
     <string name="home_empty_gifticon_description">현재 사용 가능한 쿠폰이 존재하지 않습니다.</string>
     <string name="home_empty_near_brands">주위에 사용 가능한 브랜드가 존재하지 않습니다.</string>
     <string name="home_location_has_not_permission_description">위치 권한을 허용해주시면\n근처에서 사용할 수 있는 기프티콘을 볼 수 있어요!</string>
@@ -225,10 +225,19 @@
     <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
 
     <string name="widget_loading">로딩중입니다.</string>
-
+    
     <string name="location_setting">위치권한설정</string>
     <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
     <string name="location_not_allowed">허용 안 함</string>
     <string name="location_allowed">허용됨</string>
+
+    <string name="widget_common_error">데이터를 불러오던 중 문제가 생겼습니다. 새로고침을 눌러주세요.</string>
+    <string name="widget_refresh_button">새로고침</string>
+    <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
+    <string name="widget_has_not_permission">권한을 허용하신 후 다시 새로고침 해주세요.</string>
+    <string name="widget_header_description">근처에서 사용할 수 있는 기프티콘이에요</string>
+    <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
+
+    <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
 
 </resources>

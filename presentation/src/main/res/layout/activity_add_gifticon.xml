@@ -303,7 +303,7 @@
                         android:maxLength="19"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
-                        app:setEditTextInfo="@{vm.barcode}" />
+                        app:setEditTextInfo="@{vm.displayBarcode}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -347,7 +347,7 @@
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
-                        app:setEditTextInfo="@{vm.balance}" />
+                        app:setEditTextInfo="@{vm.displayBalance}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

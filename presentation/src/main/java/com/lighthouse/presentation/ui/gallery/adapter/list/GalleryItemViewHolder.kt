@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.gallery.adapter.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.binding.setUIText
@@ -30,7 +31,7 @@ class GalleryItemViewHolder(
         binding.apply {
             viewSelected.setUIText(selectedOrder)
             viewSelected.isSelected = isSelected
-            viewShadow.isSelected = isSelected
+            viewShadow.isVisible = isSelected
         }
     }
 }
