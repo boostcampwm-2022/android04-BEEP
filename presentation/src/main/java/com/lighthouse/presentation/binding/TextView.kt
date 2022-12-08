@@ -1,5 +1,13 @@
 package com.lighthouse.presentation.binding
 
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.UnderlineSpan
+import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.R
@@ -26,4 +34,55 @@ fun applyConcurrencyFormat(view: TextView, amount: Int) {
 @BindingAdapter("setUIText")
 fun TextView.setUIText(uiText: UIText?) {
     text = uiText?.asString(context) ?: ""
+}
+
+/**
+ * 타겟 텍스트에 밑줄을 칠한다. 타겟 텍스트를 찾지 못 한 경우 무시된다
+ *
+ * @param targetText 밑줄을 칠할 텍스트
+ */
+@BindingAdapter("underLineText")
+fun applyUnderLine(view: TextView, targetText: String) {
+    val start = view.text.indexOf(string = targetText, ignoreCase = false)
+    if (start == -1) return
+    val end = start + targetText.length
+
+    view.text = SpannableStringBuilder(view.text).apply {
+        setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+}
+
+/**
+ * 부분적으로 클릭할 수 있다. 타겟 텍스트를 찾지 못 한 경우 무시된다
+ *
+ * @param targetText 클릭 가능한 문구
+ * @param onClickListener 클릭 리스너
+ * @param drawUnderLine 텍스트 강조 여부
+ */
+@BindingAdapter("clickableText", "clickableClicked", "drawUnderLine", requireAll = false)
+fun TextView.applyClickable(targetText: String, onClickListener: View.OnClickListener, drawUnderLine: Boolean? = null) {
+    val start = text.indexOf(string = targetText, ignoreCase = false)
+
+    if (start == -1) return
+    val end = start + targetText.length
+
+    val spannableString = SpannableString(text).apply {
+        setSpan(
+            object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    onClickListener.onClick(widget)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    if (drawUnderLine != null && drawUnderLine == false) return
+                    super.updateDrawState(ds)
+                }
+            },
+            start,
+            end,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+    }
+    movementMethod = LinkMovementMethod()
+    setText(spannableString, TextView.BufferType.SPANNABLE)
 }
