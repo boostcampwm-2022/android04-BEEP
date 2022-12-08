@@ -1,20 +1,28 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -25,9 +33,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.common.compose.TextCheckbox
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 import timber.log.Timber
 
@@ -38,17 +49,10 @@ fun BrandChipList(
     viewModel: GifticonListViewModel = viewModel(),
     selectedFilters: Set<String> = emptySet()
 ) {
-    Timber.tag("Compose").d("BrandChipList: ${viewModel.viewModelScope.coroutineContext}")
-    selectedFilters.forEach {
-        Timber.tag("Compose").d("BrandChipList - selected: $it")
-    }
-    Timber.tag("Compose").d("---END")
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        val chipCountToShow = 7
-
         item { // "전체" 칩
             val entireChipBrand = Brand(
                 name = stringResource(id = R.string.main_filter_all),
@@ -61,7 +65,7 @@ fun BrandChipList(
                 viewModel.clearFilter()
             }
         }
-        items(brands.subList(0, minOf(chipCountToShow, brands.size))) { brand ->
+        items(brands) { brand ->
             BrandChip(
                 brand = brand,
                 selected = selectedFilters.contains(brand.name)
@@ -72,36 +76,62 @@ fun BrandChipList(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
+    showExpiredGifticon: Boolean = false,
     selectedFilters: Set<String> = emptySet(),
     viewModel: GifticonListViewModel = viewModel(),
     onDismiss: () -> Unit = {}
 ) {
     Timber.tag("Compose").d("AllBrandChipsDialog: ${viewModel.viewModelScope.coroutineContext}")
-
+    val interactionSource = remember { MutableInteractionSource() }
     Dialog(
         onDismissRequest = { onDismiss() },
-        properties = DialogProperties()
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false // 다이얼로그 너비 제한 제거
+        )
     ) {
-        Surface(
-            modifier = modifier
-                .wrapContentHeight(),
-            shape = RoundedCornerShape(12.dp),
-            color = Color.White
-        ) {
-            FlowRow(
-                modifier = Modifier.padding(16.dp),
-                mainAxisSpacing = 10.dp
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize().clickable(
+                interactionSource = interactionSource, // Ripple 효과 제거
+                indication = null
             ) {
-                brands.forEach {
-                    BrandChip(
-                        brand = it,
-                        selected = selectedFilters.contains(it.name)
-                    ) { selected ->
-                        viewModel.toggleFilterSelection(selected)
+                onDismiss()
+            }
+        ) {
+            Surface(
+                modifier = modifier,
+                shape = RoundedCornerShape(12.dp),
+                color = Color.White
+            ) {
+                Column {
+                    TextCheckbox(
+                        checked = showExpiredGifticon,
+                        text = stringResource(R.string.gifticon_list_brands_dialog_show_expired_gifticon_option)
+                    ) { checked ->
+                        viewModel.filterUsedGifticon(checked)
+                    }
+                    val scrollState = rememberScrollState()
+                    FlowRow(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .verticalScroll(scrollState),
+                        mainAxisAlignment = FlowMainAxisAlignment.Start,
+                        mainAxisSpacing = 8.dp,
+                        mainAxisSize = SizeMode.Expand
+                    ) {
+                        brands.forEach {
+                            BrandChip(
+                                brand = it,
+                                selected = selectedFilters.contains(it.name)
+                            ) { selected ->
+                                viewModel.toggleFilterSelection(selected)
+                            }
+                        }
                     }
                 }
             }

@@ -18,7 +18,7 @@ interface GifticonRepository {
         sortBy: SortBy = SortBy.DEADLINE
     ): Flow<DbResult<List<Gifticon>>>
 
-    fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
+    fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>>
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
     suspend fun updateGifticon(gifticon: Gifticon)
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>
