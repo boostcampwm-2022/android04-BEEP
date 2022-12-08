@@ -7,6 +7,7 @@ import com.lighthouse.domain.usecase.setting.GetGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetNotificationOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.domain.usecase.setting.MoveGuestDataUseCase
+import com.lighthouse.domain.usecase.setting.RemoveUserDataUseCase
 import com.lighthouse.domain.usecase.setting.SaveGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.SaveNotificationOptionUseCase
 import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
@@ -28,7 +29,8 @@ class SettingViewModel @Inject constructor(
     getNotificationOptionUseCase: GetNotificationOptionUseCase,
     private val saveNotificationOptionUseCase: SaveNotificationOptionUseCase,
     private val moveGuestDataUseCase: MoveGuestDataUseCase,
-    private val moveUserIdGifticonUseCase: MoveUserIdGifticonUseCase
+    private val moveUserIdGifticonUseCase: MoveUserIdGifticonUseCase,
+    private val removeUserDataUseCase: RemoveUserDataUseCase
 ) : ViewModel() {
 
     val securityOption: StateFlow<SecurityOption> =
@@ -69,6 +71,12 @@ class SettingViewModel @Inject constructor(
     fun saveNotificationOption(selectedOption: Boolean) {
         viewModelScope.launch {
             saveNotificationOptionUseCase(selectedOption)
+        }
+    }
+
+    fun removeUserData() {
+        viewModelScope.launch {
+            removeUserDataUseCase()
         }
     }
 }

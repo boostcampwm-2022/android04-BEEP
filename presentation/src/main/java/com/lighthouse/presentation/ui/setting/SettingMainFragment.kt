@@ -86,6 +86,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
 
         binding.tvSecurity.setOnClickListener { authenticate() }
         binding.tvSignOut.setOnClickListener { signOut() }
+        binding.tvWithdrawal.setOnClickListener { withdrawal() }
         binding.tvLocation.setOnClickListener { gotoPermissionSetting() }
         binding.smNotification.setOnCheckedChangeListener { _, isChecked ->
             val workManager = BeepWorkManager(requireContext())
@@ -119,6 +120,12 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         val intent = Intent(requireContext(), SignInActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    private fun withdrawal() {
+        Firebase.auth.currentUser?.delete()
+        viewModel.removeUserData()
+        signOut()
     }
 
     private fun initGoogleLogin() {
