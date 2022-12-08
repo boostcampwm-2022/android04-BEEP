@@ -1,7 +1,6 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,12 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toConcurrency
@@ -40,6 +39,8 @@ import com.lighthouse.presentation.extension.toDday
 import com.lighthouse.presentation.extension.toExpireDate
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun GifticonList(gifticons: List<Gifticon>, modifier: Modifier = Modifier) {
@@ -72,9 +73,13 @@ fun GifticonItem(gifticon: Gifticon) {
         }
     ) {
         Row {
-            Image(
-                painter = rememberAsyncImagePainter(context.getFileStreamPath("cropped${gifticon.id}")),
-                contentDescription = stringResource(R.string.gifticon_product_image),
+            GlideImage(
+                imageModel = { context.getFileStreamPath("cropped${gifticon.id}") },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop,
+                    contentDescription = stringResource(R.string.gifticon_product_image),
+                    alignment = Alignment.Center
+                ),
                 modifier = Modifier
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(topStart = cornerSize, bottomStart = cornerSize))
