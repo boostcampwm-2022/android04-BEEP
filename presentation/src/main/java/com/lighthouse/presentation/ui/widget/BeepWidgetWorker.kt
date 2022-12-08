@@ -55,6 +55,7 @@ class BeepWidgetWorker @AssistedInject constructor(
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
 
     override suspend fun doWork(): Result {
+        setWidgetState(WidgetState.Loading)
         return when (hasLocationPermission()) {
             true -> {
                 startWidget()
@@ -68,7 +69,6 @@ class BeepWidgetWorker @AssistedInject constructor(
     }
 
     private suspend fun startWidget() {
-        setWidgetState(WidgetState.Loading)
         val lastLocation = getUserLocationUseCase().first()
         getNearBrands(lastLocation.longitude, lastLocation.latitude)
     }
