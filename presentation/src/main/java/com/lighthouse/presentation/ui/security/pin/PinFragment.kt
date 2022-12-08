@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.security.pin
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
@@ -34,12 +35,43 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
     }
 
+    private lateinit var numberPadViews: List<View>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         binding.tvSecureNotUse.visibility = if (activityViewModel.isRevise) View.INVISIBLE else View.VISIBLE
 
+        numberPadViews = listOf(
+            binding.tvNum0,
+            binding.tvNum1,
+            binding.tvNum2,
+            binding.tvNum3,
+            binding.tvNum4,
+            binding.tvNum5,
+            binding.tvNum6,
+            binding.tvNum7,
+            binding.tvNum8,
+            binding.tvNum9,
+            binding.ivBackspace
+        )
+
+        managePinMode()
+
+        repeatOnStarted {
+            viewModel.pushedNum.collect { num ->
+                animateNumberPadBackground(num)
+            }
+        }
+
+        binding.tvSecureNotUse.setOnClickListener {
+            activityViewModel.setSecurityOption(SecurityOption.NONE)
+            activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
+        }
+    }
+
+    private fun managePinMode() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.pinMode.collect {
                 when (it) {
@@ -56,7 +88,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         playWrongPinAnimation()
                     }
                     PinSettingType.COMPLETE -> {
-                        Snackbar.make(view, getString(R.string.pin_complete), Snackbar.LENGTH_SHORT)
+                        Snackbar.make(requireView(), getString(R.string.pin_complete), Snackbar.LENGTH_SHORT)
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
                         binding.ivCheck.apply {
@@ -75,7 +107,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         }
                     }
                     PinSettingType.ERROR -> {
-                        Snackbar.make(view, getString(R.string.pin_internal_error), Snackbar.LENGTH_SHORT)
+                        Snackbar.make(requireView(), getString(R.string.pin_internal_error), Snackbar.LENGTH_SHORT)
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
                         delay(500L)
@@ -84,11 +116,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                     PinSettingType.WAIT -> {}
                 }
             }
-        }
-
-        binding.tvSecureNotUse.setOnClickListener {
-            activityViewModel.setSecurityOption(SecurityOption.NONE)
-            activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
         }
     }
 
@@ -99,5 +126,17 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         binding.ivPin3.startAnimation(shakeAnimation)
         binding.ivPin4.startAnimation(shakeAnimation)
         binding.ivPin5.startAnimation(shakeAnimation)
+    }
+
+    private fun animateNumberPadBackground(num: Int) {
+        if (num < 0) return
+
+        ValueAnimator.ofArgb(requireContext().getColor(R.color.gray_200), requireContext().getColor(R.color.white))
+            .apply {
+                duration = 300
+                addUpdateListener {
+                    numberPadViews[num].setBackgroundColor(it.animatedValue as Int)
+                }
+            }.start()
     }
 }
