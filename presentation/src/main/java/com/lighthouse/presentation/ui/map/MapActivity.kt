@@ -93,7 +93,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 ListSpaceItemDecoration(
                     space = 48.dp,
                     start = 20.dp,
-                    end = 24.dp
+                    end = 20.dp
                 )
             )
         }
