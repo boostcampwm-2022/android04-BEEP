@@ -17,7 +17,7 @@ class BeepWorkManager(
     private val workPolicyReplace = ExistingPeriodicWorkPolicy.REPLACE
 
     private val notificationWorkRequest: PeriodicWorkRequest =
-        PeriodicWorkRequestBuilder<NotificationWorker>(NOTIFICATION_INTERVAL, TimeUnit.MINUTES).build()
+        PeriodicWorkRequestBuilder<NotificationWorker>(NOTIFICATION_INTERVAL, TimeUnit.HOURS).build()
 
     private val widgetWorkRequest: PeriodicWorkRequest =
         PeriodicWorkRequestBuilder<BeepWidgetWorker>(WIDGET_INTERVAL, TimeUnit.MINUTES).build()
@@ -67,7 +67,7 @@ class BeepWorkManager(
 
     companion object {
         private const val NOTIFICATION_WORK_NAME = "notification"
-        private const val NOTIFICATION_INTERVAL = 15L // test를 위해 최소 간격인 15분으로 설정. 원래는 24시간.
+        private const val NOTIFICATION_INTERVAL = 24L
         private const val WIDGET_WORK_NAME = "widget"
         private const val WIDGET_INTERVAL = 15L
 
