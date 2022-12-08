@@ -3,7 +3,6 @@ package com.lighthouse.presentation.extra
 object Extras {
 
     const val KEY_SELECTED_GALLERY_ITEM = "Extra.SELECTED_GALLERY_ITEM"
-    const val KEY_SELECTED_IDS = "Extra.SelectedIds"
     const val KEY_ORIGIN_IMAGE = "Extra.OriginImage"
 
     const val KEY_CROPPED_IMAGE = "Extra.CroppedImage"
@@ -25,5 +24,7 @@ object Extras {
     const val CATEGORY_RESTAURANT = "음식점"
     const val CATEGORY_CAFE = "카페"
 
-    const val WIDGET_BRAND_KEY = "itemKey"
+    const val KEY_WIDGET_BRAND = "Extra.Widget.Item.id"
+    const val KEY_WIDGET_EVENT = "Extra.Widget.Event"
+    const val WIDGET_EVENT_MAP = "gotoMap"
 }

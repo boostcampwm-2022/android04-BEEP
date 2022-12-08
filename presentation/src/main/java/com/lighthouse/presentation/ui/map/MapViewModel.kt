@@ -95,7 +95,7 @@ class MapViewModel @Inject constructor(
         }
         collectLocation(isFirstLoadData)
         viewModelScope.launch {
-            val brand = savedStateHandle.get<String>(Extras.WIDGET_BRAND_KEY) ?: return@launch
+            val brand = savedStateHandle.get<String>(Extras.KEY_WIDGET_BRAND) ?: return@launch
             _widgetBrand.emit(brand)
         }
     }
