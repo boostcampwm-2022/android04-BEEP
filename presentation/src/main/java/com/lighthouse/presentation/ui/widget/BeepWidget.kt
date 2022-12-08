@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.StringRes
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.glance.Button
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
@@ -29,8 +27,10 @@ import androidx.glance.appwidget.unit.ColorProvider
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
@@ -52,7 +52,6 @@ import com.lighthouse.presentation.extra.Extras.KEY_WIDGET_BRAND
 import com.lighthouse.presentation.extra.Extras.KEY_WIDGET_EVENT
 import com.lighthouse.presentation.extra.Extras.WIDGET_EVENT_MAP
 import com.lighthouse.presentation.ui.main.MainActivity
-import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
 
 class BeepWidget : GlanceAppWidget() {
@@ -62,64 +61,75 @@ class BeepWidget : GlanceAppWidget() {
     @Composable
     override fun Content() {
         val widgetState = currentState<WidgetState>()
-
-        MaterialTheme {
+        AppWidgetColumn(
+            verticalAlignment = Alignment.Top,
+            horizonAlignment = Alignment.Start
+        ) {
+            WidgetHead()
             when (widgetState) {
-                is WidgetState.Loading -> AppWidgetBox(contentAlignment = Alignment.Center) { CircularProgressIndicator() }
-                is WidgetState.Available -> WidgetCommon(widgetState)
-                is WidgetState.Unavailable -> WidgetErrorColumn(R.string.widget_common_error)
-                is WidgetState.Empty -> WidgetErrorColumn(R.string.widget_empty_data)
-                is WidgetState.NoExistsLocationPermission -> WidgetErrorColumn(R.string.widget_has_not_permission)
+                is WidgetState.Loading -> WidgetLoading()
+                is WidgetState.Available -> WidgetBody(widgetState)
+                is WidgetState.Unavailable -> WidgetErrorBody(R.string.widget_common_error)
+                is WidgetState.Empty -> WidgetErrorBody(R.string.widget_empty_data)
+                is WidgetState.NoExistsLocationPermission -> WidgetErrorBody(R.string.widget_has_not_permission)
             }
-        }
-    }
-
-    @Composable
-    private fun WidgetErrorColumn(@StringRes textId: Int) {
-        AppWidgetColumn {
-            Text(stringResource(id = textId))
-            Spacer(modifier = GlanceModifier.width(8.dp))
-            Button(
-                stringResource(id = R.string.widget_refresh_button),
-                actionRunCallback<WidgetRefreshAction>()
-            )
         }
     }
 }
 
 @Composable
-fun WidgetCommon(widgetState: WidgetState.Available) {
-    AppWidgetColumn(
-        verticalAlignment = Alignment.Top,
-        horizonAlignment = Alignment.Start,
-        modifier = GlanceModifier
+fun WidgetLoading() {
+    Box(
+        modifier = GlanceModifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = GlanceModifier.fillMaxWidth().background(R.color.beep_pink).height(40.dp).padding(start = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = GlanceModifier.width(4.dp))
+        CircularProgressIndicator()
+    }
+}
 
-            Image(
-                modifier = GlanceModifier.size(44.dp).padding(8.dp)
-                    .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
-                provider = ImageProvider(resId = R.drawable.ic_splash_beep),
-                contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
+@Composable
+fun WidgetHead() {
+    Row(
+        modifier = GlanceModifier.fillMaxWidth().background(R.color.beep_pink).height(40.dp).padding(start = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = GlanceModifier.width(4.dp))
+
+        Image(
+            modifier = GlanceModifier.size(44.dp).padding(8.dp)
+                .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
+            provider = ImageProvider(resId = R.drawable.ic_splash_beep),
+            contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
+        )
+
+        Spacer(GlanceModifier.defaultWeight())
+
+        Image(
+            modifier = GlanceModifier.size(32.dp).padding(8.dp)
+                .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
+            provider = ImageProvider(resId = R.drawable.ic_widget_refresh_24),
+            contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
+        )
+        Spacer(GlanceModifier.width(10.dp).height(4.dp))
+    }
+}
+
+@Composable
+fun WidgetErrorBody(@StringRes textId: Int) {
+    Box(
+        modifier = GlanceModifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            stringResource(id = textId),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                color = ColorProvider(day = Color.Black, night = Color.White)
             )
-
-            Spacer(GlanceModifier.defaultWeight())
-
-            Image(
-                modifier = GlanceModifier.size(32.dp).padding(8.dp)
-                    .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
-                provider = ImageProvider(resId = R.drawable.ic_widget_refresh_24),
-                contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
-            )
-
-            Spacer(GlanceModifier.width(10.dp).height(4.dp))
-        }
-        WidgetBody(widgetState)
+        )
     }
 }
 
@@ -133,7 +143,7 @@ fun WidgetBody(widgetState: WidgetState.Available) {
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
-            color = ColorProvider(day = Color.Black, night = Color.Black)
+            color = ColorProvider(day = Color.Black, night = Color.White)
         ),
         maxLines = 1
     )
