@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.mapper.toDomain
 import com.lighthouse.util.recognizer.GifticonRecognizer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,7 @@ class GifticonImageRecognizeSource @Inject constructor(
             info.balance,
             path,
             croppedPath,
+            info.croppedRect.toDomain(),
             ""
         )
     }
