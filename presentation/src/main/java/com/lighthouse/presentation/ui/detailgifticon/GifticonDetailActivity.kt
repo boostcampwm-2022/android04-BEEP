@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
@@ -26,6 +27,8 @@ import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
+import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
@@ -184,6 +187,9 @@ class GifticonDetailActivity : AppCompatActivity() {
                     useGifticonDialog.dismiss()
                 }
             }
+            is Event.ShowOriginalImage -> {
+                showOriginGifticonDialog(event.origin)
+            }
             else -> { // TODO(이벤트 처리)
             }
         }
@@ -264,6 +270,15 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun authenticate() {
         authManager.auth(this, biometricLauncher, authCallback)
+    }
+
+    private fun showOriginGifticonDialog(path: String) {
+        val uri = this.getFileStreamPath(path).toUri()
+        OriginImageDialog().apply {
+            arguments = Bundle().apply {
+                putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
+            }
+        }.show(supportFragmentManager, OriginImageDialog::class.java.name)
     }
 
     private fun showGifticonInfoChangedSnackBar(before: Gifticon) {

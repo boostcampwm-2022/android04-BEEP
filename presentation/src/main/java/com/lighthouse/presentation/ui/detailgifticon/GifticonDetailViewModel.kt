@@ -194,6 +194,11 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
+    fun showOriginalImage() {
+        val origin = "origin${gifticon.value?.id}"
+        event(Event.ShowOriginalImage(origin))
+    }
+
     fun startEdit() {
         _tempGifticon.value = gifticon.value ?: return
     }
