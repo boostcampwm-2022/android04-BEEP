@@ -75,7 +75,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         setGifticonAdapterItem()
         setGifticonAdapterChangeCallback()
-        setInitAdapterData()
+        setObserveGifticonData()
         setObserveEvent()
     }
 
@@ -99,8 +99,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setInitAdapterData() {
-        viewModel.updateGifticons()
+    private fun setObserveGifticonData() {
         repeatOnStarted {
             viewModel.allGifticons.collectLatest {
                 viewModel.updateGifticons()
