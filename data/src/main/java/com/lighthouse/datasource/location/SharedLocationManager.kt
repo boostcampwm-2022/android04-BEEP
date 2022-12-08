@@ -13,13 +13,9 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.lighthouse.domain.VertexLocation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.shareIn
 import timber.log.Timber
 
 @SuppressLint("MissingPermission")
@@ -55,7 +51,7 @@ class SharedLocationManager constructor(
             Timber.tag("TAG").d("${javaClass.simpleName} Stopping Location Updates")
             locationCallback?.let { fusedLocationProviderClient.removeLocationUpdates(it) }
         }
-    }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed())
+    }
 
     private fun hasLocationPermission() =
         context.hasLocationPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||

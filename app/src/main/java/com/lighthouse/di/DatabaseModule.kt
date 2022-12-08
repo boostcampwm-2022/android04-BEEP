@@ -15,7 +15,6 @@ import com.lighthouse.database.dao.GifticonCropDao
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.presentation.ui.security.AuthManager
-import com.lighthouse.presentation.util.UserPreference
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -78,13 +77,7 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideUserPreference(getSecurityOptionUseCase: GetSecurityOptionUseCase): UserPreference {
-        return UserPreference(getSecurityOptionUseCase)
-    }
-
-    @Singleton
-    @Provides
-    fun provideAuthManger(userPreference: UserPreference): AuthManager {
-        return AuthManager(userPreference)
+    fun provideAuthManger(getSecurityOptionUseCase: GetSecurityOptionUseCase): AuthManager {
+        return AuthManager(getSecurityOptionUseCase)
     }
 }

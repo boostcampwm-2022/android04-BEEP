@@ -13,3 +13,7 @@ val today: Date
 
 val currentTime: Date
     get() = Calendar.getInstance().time
+
+fun Date.isExpired(): Boolean {
+    return time < System.currentTimeMillis()
+}

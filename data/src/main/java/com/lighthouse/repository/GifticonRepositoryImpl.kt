@@ -3,7 +3,6 @@ package com.lighthouse.repository
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
-import com.lighthouse.datasource.gifticoncrop.GifticonCropLocalDataSource
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -57,9 +56,9 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>> = flow {
+    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllBrands(userId).collect {
+        gifticonLocalDataSource.getAllBrands(userId, filterExpired).collect {
             emit(DbResult.Success(it))
         }
     }.catch { e ->
@@ -148,5 +147,9 @@ class GifticonRepositoryImpl @Inject constructor(
             gifticonLocalCropDataSource.updateGifticonCrop(gifticonCrop)
             gifticonImageSource.updateImage(gifticonCrop)
         }
+    }
+
+    override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
+        gifticonLocalDataSource.moveUserIdGifticon(oldUserId, newUserId)
     }
 }

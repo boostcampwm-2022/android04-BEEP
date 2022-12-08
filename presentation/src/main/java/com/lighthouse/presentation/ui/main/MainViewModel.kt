@@ -2,8 +2,11 @@ package com.lighthouse.presentation.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.model.UserPreferenceOption
+import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.domain.usecase.HasVariableGifticonUseCase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.ui.setting.SecurityOption
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    hasVariableGifticonUseCase: HasVariableGifticonUseCase
+    hasVariableGifticonUseCase: HasVariableGifticonUseCase,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
     private val _eventFlow = MutableEventFlow<MainEvent>()
@@ -46,6 +50,8 @@ class MainViewModel @Inject constructor(
             MainPage.Other -> false
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    val securityOption = userPreferencesRepository.isStored(UserPreferenceOption.SECURITY)
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
@@ -76,5 +82,11 @@ class MainViewModel @Inject constructor(
             _pageFlow.emit(pages)
         }
         return true
+    }
+
+    fun setSecurityNoUse() {
+        viewModelScope.launch {
+            userPreferencesRepository.setSecurityOption(SecurityOption.NONE.ordinal)
+        }
     }
 }

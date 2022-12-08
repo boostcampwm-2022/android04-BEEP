@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <application
-        android:theme="@style/Theme.BEEP">
+    <application android:theme="@style/Theme.BEEP">
 
         <activity
             android:name=".ui.security.SecurityActivity"
@@ -23,8 +22,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.addgifticon.AddGifticonActivity"
             android:screenOrientation="portrait" />
@@ -41,7 +39,7 @@
 
         <activity
             android:name=".ui.map.MapActivity"
-            android:exported="true"
+            android:noHistory="true"
             android:screenOrientation="portrait" />
 
         <receiver

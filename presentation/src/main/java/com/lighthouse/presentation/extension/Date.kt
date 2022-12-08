@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.extension
 
 import android.content.Context
+import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.resource.UIText
@@ -32,7 +33,7 @@ fun Date.toDday(context: Context): String {
             context.getString(R.string.all_d_day),
             dDay
         )
-        dDay < TimeCalculator.MIN_DAY -> context.getString(R.string.all_d_day_expired)
+        isExpired() -> context.getString(R.string.all_d_day_expired)
         else -> context.getString(R.string.all_d_day_more_than_year)
     }
 }

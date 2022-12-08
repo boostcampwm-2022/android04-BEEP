@@ -21,19 +21,19 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE id = :id")
     fun getGifticon(id: String): Flow<GifticonEntity>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY created_at DESC")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 ORDER BY created_at DESC")
     fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 ORDER BY expire_at")
     fun getAllUsableGifticons(userId: String, time: Date): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId ORDER BY expire_at")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 ORDER BY expire_at")
     fun getAllGifticonsSortByDeadline(userId: String): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters) ORDER BY created_at DESC")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND brand IN(:filters) ORDER BY created_at DESC")
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND brand IN(:filters) ORDER BY expire_at")
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND brand IN(:filters) ORDER BY expire_at")
     fun getFilteredGifticonsSortByDeadline(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query(
@@ -117,4 +117,7 @@ interface GifticonDao {
 
     @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)")
     fun hasUsableGifticon(userId: String, time: Date): Flow<Boolean>
+
+    @Query("UPDATE $GIFTICON_TABLE SET user_id = :newUserId WHERE user_id = :oldUserId")
+    suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
 }

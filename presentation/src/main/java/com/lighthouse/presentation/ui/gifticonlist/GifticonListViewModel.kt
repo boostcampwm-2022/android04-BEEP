@@ -7,17 +7,16 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
+import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.GifticonSortBy
+import com.lighthouse.presentation.util.flow.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,16 +27,12 @@ class GifticonListViewModel @Inject constructor(
     private val getFilteredGifticonsUseCase: GetFilteredGifticonsUseCase
 ) : ViewModel() {
 
-    private val brands: StateFlow<List<Brand>> = getAllBrandsUseCase().transform {
-        if (it is DbResult.Success) {
-            emit(it.data)
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
     private val filter = MutableStateFlow(setOf<String>())
     private val sortBy = MutableStateFlow(GifticonSortBy.DEADLINE)
     private val gifticons = MutableStateFlow<DbResult<List<Gifticon>>>(DbResult.Loading)
+    private val brands = MutableStateFlow<DbResult<List<Brand>>>(DbResult.Loading)
     private val entireBrandsDialogShown = MutableStateFlow(false)
+    private val showExpiredGifticon = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
@@ -54,20 +49,40 @@ class GifticonListViewModel @Inject constructor(
                 gifticons.value = dbResult
             }
         }
+        viewModelScope.launch {
+            showExpiredGifticon.flatMapLatest { showExpired ->
+                getAllBrandsUseCase(showExpired.not())
+            }.collect { dbResult ->
+                filter.value = emptySet() // 만료된 기프티콘 표시 옵션이 변경되면 필터 초기화
+                brands.value = dbResult
+            }
+        }
     }
 
     val state = combine(
         sortBy,
         gifticons,
+        showExpiredGifticon,
         brands,
         entireBrandsDialogShown,
         filter
-    ) { sortBy, dbResult, brands, entireBrandsDialogShown, filter ->
-        when (dbResult) {
+    ) { sortBy, gifticonResult, showExpired, brandResult, entireBrandsDialogShown, filter ->
+        when (gifticonResult) {
             is DbResult.Success -> {
+                val brands = when (brandResult) {
+                    is DbResult.Success -> {
+                        brandResult.data
+                    }
+                    else -> emptyList()
+                }
                 GifticonListViewState(
                     sortBy = sortBy,
-                    gifticons = dbResult.data,
+                    gifticons = if (showExpired) {
+                        gifticonResult.data
+                    } else {
+                        gifticonResult.data.filterNot { it.expireAt.isExpired() }
+                    },
+                    showExpiredGifticon = showExpired,
                     brands = brands,
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
@@ -82,7 +97,7 @@ class GifticonListViewModel @Inject constructor(
                 GifticonListViewState(
                     sortBy = sortBy,
                     gifticons = gifticons,
-                    brands = brands,
+                    brands = emptyList(),
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
                     loading = true
@@ -108,6 +123,10 @@ class GifticonListViewModel @Inject constructor(
         } else {
             filter.value.plus(brand.name)
         }
+    }
+
+    fun filterUsedGifticon(show: Boolean = true) {
+        showExpiredGifticon.value = show
     }
 
     fun clearFilter() {
