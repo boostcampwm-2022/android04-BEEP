@@ -17,7 +17,7 @@ interface GifticonLocalDataSource {
         sortBy: SortBy = SortBy.DEADLINE
     ): Flow<List<Gifticon>>
 
-    fun getAllBrands(userId: String): Flow<List<Brand>>
+    fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>>
     suspend fun insertGifticons(gifticons: List<GifticonEntity>)
     suspend fun updateGifticon(gifticon: Gifticon)
     suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory)

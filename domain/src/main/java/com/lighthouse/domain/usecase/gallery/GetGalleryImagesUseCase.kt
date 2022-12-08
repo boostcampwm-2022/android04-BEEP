@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase
+package com.lighthouse.domain.usecase.gallery
 
 import androidx.paging.PagingData
 import com.lighthouse.domain.model.GalleryImage

@@ -58,10 +58,7 @@ class GifticonImageSource @Inject constructor(
                 minSize
             )
         }
-        val sampledCropped = Bitmap.createScaledBitmap(cropped, CROPPED_IMAGE_SIZE, CROPPED_IMAGE_SIZE, false)
-        saveBitmap(sampledCropped, CompressFormat.JPEG, QUALITY, outputCropped)
-        sampledCropped.recycle()
-        cropped.recycle()
+        saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCropped)
     }
 
     private fun calculateSampleSize(inputStream: InputStream): Int {
@@ -113,6 +110,5 @@ class GifticonImageSource @Inject constructor(
         private const val CROPPED_PREFIX = "cropped"
 
         private const val QUALITY = 70
-        private const val CROPPED_IMAGE_SIZE = 200
     }
 }

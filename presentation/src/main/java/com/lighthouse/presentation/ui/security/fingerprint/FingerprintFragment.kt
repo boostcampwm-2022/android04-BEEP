@@ -63,7 +63,7 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallbac
         activityViewModel.setSecurityOption(SecurityOption.PIN)
     }
 
-    override fun onAuthError(@StringRes StringId: Int?) {
+    override fun onAuthError(@StringRes stringId: Int?) {
         Timber.tag("Finger").d("Error")
         activityViewModel.setSecurityOption(SecurityOption.PIN)
     }

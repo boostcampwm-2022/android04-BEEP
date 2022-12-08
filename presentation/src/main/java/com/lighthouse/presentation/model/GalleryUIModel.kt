@@ -12,6 +12,7 @@ sealed class GalleryUIModel {
     data class Gallery(
         val id: Long,
         val uri: Uri,
+        val selectedOrder: Int,
         val date: Date
     ) : GalleryUIModel(), Parcelable
 }

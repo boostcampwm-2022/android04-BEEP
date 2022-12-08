@@ -1,25 +1,19 @@
-package com.lighthouse.presentation.ui.gallery.adapter
+package com.lighthouse.presentation.ui.gallery.adapter.list
 
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.lighthouse.presentation.adapter.BindablePagingAdapter
 import com.lighthouse.presentation.model.GalleryUIModel
 
 class GalleryAdapter(
-    private val selection: GallerySelection,
-    onClickGallery: (GalleryUIModel.Gallery) -> Unit
-) : PagingDataAdapter<GalleryUIModel, RecyclerView.ViewHolder>(diff) {
-
-    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit = { model ->
-        selection.toggle(model)
-        onClickGallery(model)
-    }
+    private val onClickGallery: (GalleryUIModel.Gallery) -> Unit
+) : BindablePagingAdapter<GalleryUIModel, RecyclerView.ViewHolder>(diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_HEADER -> GalleryHeaderViewHolder(parent)
-            TYPE_GALLERY -> GalleryItemViewHolder(parent, onClickGallery, selection)
+            TYPE_GALLERY -> GalleryItemViewHolder(parent, onClickGallery)
             else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
         }
     }
@@ -33,6 +27,17 @@ class GalleryAdapter(
             holder is GalleryItemViewHolder && item is GalleryUIModel.Gallery -> {
                 holder.bind(item)
             }
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (UPDATE_SELECTED in payloads) {
+            val item = getItem(position)
+            if (holder is GalleryItemViewHolder && item is GalleryUIModel.Gallery) {
+                holder.bindSelected(item)
+            }
+        } else {
+            onBindViewHolder(holder, position)
         }
     }
 
@@ -63,7 +68,10 @@ class GalleryAdapter(
             }
 
             override fun getChangePayload(oldItem: GalleryUIModel, newItem: GalleryUIModel): Any? {
-                if (oldItem is GalleryUIModel.Gallery && newItem is GalleryUIModel.Gallery) {
+                if (oldItem is GalleryUIModel.Gallery &&
+                    newItem is GalleryUIModel.Gallery &&
+                    oldItem.selectedOrder != newItem.selectedOrder
+                ) {
                     return UPDATE_SELECTED
                 }
                 return super.getChangePayload(oldItem, newItem)

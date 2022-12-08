@@ -5,5 +5,5 @@ import androidx.annotation.StringRes
 interface AuthCallback {
     fun onAuthSuccess()
     fun onAuthCancel()
-    fun onAuthError(@StringRes StringId: Int? = null)
+    fun onAuthError(@StringRes stringId: Int? = null)
 }

@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase
+package com.lighthouse.domain.usecase.addgifticon
 
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.repository.AuthRepository

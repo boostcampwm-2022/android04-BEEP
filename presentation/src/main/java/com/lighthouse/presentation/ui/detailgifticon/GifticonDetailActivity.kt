@@ -15,11 +15,14 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
@@ -36,13 +39,19 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
+class GifticonDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGifticonDetailBinding
     private val viewModel: GifticonDetailViewModel by viewModels()
 
-    private val standardGifticonInfo by lazy { StandardGifticonInfoFragment() }
-    private val cashCardGifticonInfo by lazy { CashCardGifticonInfoFragment() }
+    private val standardGifticonInfo by lazy {
+        supportFragmentManager.findFragmentByTag(StandardGifticonInfoFragment::class.java.name)
+            ?: StandardGifticonInfoFragment()
+    }
+    private val cashCardGifticonInfo by lazy {
+        supportFragmentManager.findFragmentByTag(CashCardGifticonInfoFragment::class.java.name)
+            ?: CashCardGifticonInfoFragment()
+    }
 
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
@@ -61,9 +70,25 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 Activity.RESULT_OK -> authenticate()
-                else -> onAuthError()
+                else -> authCallback.onAuthError()
             }
         }
+    private val authCallback = object : AuthCallback {
+        override fun onAuthSuccess() {
+            showUseGifticonDialog()
+        }
+
+        override fun onAuthCancel() {
+        }
+
+        override fun onAuthError(@StringRes stringId: Int?) {
+            if (stringId != null) {
+                Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
+            } else {
+                authenticate()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,17 +111,26 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
         }
         repeatOnStarted {
             viewModel.gifticon.collect { gifticon ->
-                gifticon?.let {
-                    if (it.isCashCard) {
-                        supportFragmentManager.commit {
-                            replace(binding.fcvGifticonInfo.id, cashCardGifticonInfo)
-                        }
-                    } else {
-                        supportFragmentManager.commit {
-                            replace(binding.fcvGifticonInfo.id, standardGifticonInfo)
-                        }
+                val fragment = when (gifticon?.isCashCard) {
+                    true -> cashCardGifticonInfo
+                    false -> standardGifticonInfo
+                    else -> null
+                }
+                if (fragment != null && fragment.isAdded.not()) {
+                    supportFragmentManager.commit {
+                        replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
+                val output = getFileStreamPath("cropped${gifticon?.id ?: return@collect}")
+                Glide.with(binding.ivProductImage)
+                    .load(output)
+                    .transform(RoundedCorners(8.dp.toInt()))
+                    .into(binding.ivProductImage)
+            }
+        }
+        repeatOnStarted {
+            viewModel.tempGifticon.collect { gifticon ->
+                spinnerDatePicker.setDate(gifticon?.expireAt ?: return@collect)
             }
         }
         repeatOnStarted {
@@ -145,6 +179,11 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
             is Event.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
+            is Event.UseGifticonComplete -> {
+                if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
+                    useGifticonDialog.dismiss()
+                }
+            }
             else -> { // TODO(이벤트 처리)
             }
         }
@@ -168,7 +207,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
 
     private val spinnerDatePicker = SpinnerDatePicker().apply {
         setOnDatePickListener { year, month, dayOfMonth ->
-            Timber.tag("TEST").d("$year/$month/$dayOfMonth")
+            viewModel.editExpireDate(year, month, dayOfMonth)
         }
     }
 
@@ -224,22 +263,7 @@ class GifticonDetailActivity : AppCompatActivity(), AuthCallback {
     }
 
     private fun authenticate() {
-        authManager.auth(this, biometricLauncher, this)
-    }
-
-    override fun onAuthSuccess() {
-        Timber.tag("Auth").d("onAuthSuccess")
-        showUseGifticonDialog()
-    }
-
-    override fun onAuthCancel() {
-        Timber.tag("Auth").d("onAuthCancel")
-    }
-
-    override fun onAuthError(@StringRes StringId: Int?) {
-        Timber.tag("Auth").d("onAuthError")
-        // TODO: StringId가 null 이 아니라면 정의된 에러 메세지가 존재하는 경우입니다. null 체크하고 출력하면 어떨까요?
-        authenticate()
+        authManager.auth(this, biometricLauncher, authCallback)
     }
 
     private fun showGifticonInfoChangedSnackBar(before: Gifticon) {

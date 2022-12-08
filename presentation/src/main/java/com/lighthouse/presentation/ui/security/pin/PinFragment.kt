@@ -42,7 +42,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         binding.lifecycleOwner = this
         binding.tvSecureNotUse.visibility = if (activityViewModel.isRevise) View.INVISIBLE else View.VISIBLE
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pinMode.collect {
                 when (it) {
                     PinSettingType.INITIAL -> {

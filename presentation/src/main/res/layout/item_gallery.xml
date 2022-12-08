@@ -3,14 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="dm"
-            type="com.lighthouse.presentation.ui.gallery.adapter.GalleryDisplayModel" />
-
-        <variable
-            name="selection"
-            type="com.lighthouse.presentation.ui.gallery.adapter.GallerySelection" />
+            type="com.lighthouse.presentation.ui.gallery.adapter.list.GalleryDisplayModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +22,8 @@
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadThumbnailByContentUri="@{dm.item.uri}"/>
 
         <View
             android:id="@+id/view_shadow"
@@ -38,20 +34,23 @@
             app:layout_constraintEnd_toEndOf="@id/iv_thumbnail"
             app:layout_constraintStart_toStartOf="@id/iv_thumbnail"
             app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
-            app:isVisible="@{selection.isSelected(dm.item)}"/>
+            app:isVisible="@{dm.isSelected}"/>
 
-        <View
+        <TextView
             android:id="@+id/view_selected"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_gallery"
             android:gravity="center"
-            android:selected="@{selection.isSelected(dm.item)}"
-            app:layout_constraintDimensionRatio="1"
+            android:selected="@{dm.isSelected}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="@style/BEEP.TextStyle.Caption"
+            android:textColor="?attr/colorOnPrimary"
+            android:textStyle="bold"
+            app:setUIText="@{dm.selectedOrder}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
