@@ -11,8 +11,13 @@ import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
+import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toMonth
+import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.model.CashAmountPreset
+import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,6 +69,19 @@ class GifticonDetailViewModel @Inject constructor(
     val latestUsageHistory = usageHistory.transform {
         emit(it?.last())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val latestUsageHistoryUIText = latestUsageHistory.transform {
+        if (it == null) return@transform
+        val date = it.date
+        emit(
+            UIText.StringResource(
+                R.string.gifticon_detail_used_image_label,
+                date.toYear(),
+                date.toMonth(),
+                date.toDate()
+            )
+        )
+    }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
 
     val failure = gifticonDbResult.transform {
         if (it is DbResult.Failure) {

@@ -66,14 +66,32 @@
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/gifticon_detail_product_image_description"
                     android:scaleType="centerCrop"
+                    app:filterToGray="@{vm.gifticon.used}"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@mipmap/ic_launcher" />
 
+                <TextView
+                    style="@style/BEEP.TextStyle.H5"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:isVisible="@{vm.gifticon.used}"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
+                    app:layout_constraintEnd_toEndOf="@id/iv_product_image"
+                    app:layout_constraintStart_toStartOf="@id/iv_product_image"
+                    app:layout_constraintTop_toTopOf="@id/iv_product_image"
+                    app:setUIText="@{vm.latestUsageHistoryUIText}"
+                    tools:text="사용 완료\n2022.12.28" />
+
                 <ImageView
                     android:id="@+id/iv_share_button"
+                    isVisible="@{false}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginTop="16dp"
@@ -125,6 +143,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
+                    android:backgroundTint="@{vm.gifticon.used ? @color/gray : @color/beep_pink}"
                     android:onClick="@{() -> vm.useGifticonButtonClicked()}"
                     android:text="@string/gifticon_detail_use_gifticon_button_text"
                     app:layout_constraintBottom_toBottomOf="parent"

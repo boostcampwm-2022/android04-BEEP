@@ -1,5 +1,7 @@
 package com.lighthouse.presentation.binding
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -54,6 +56,13 @@ fun ImageView.loadThumbnailByContentUri(contentUri: Uri?) {
         }
     }
 }
+
+@BindingAdapter("filterToGray")
+fun ImageView.applyFilterGray(applyFilter: Boolean = true) {
+    if (applyFilter) {
+        setColorFilter(Color.parseColor("#55000000"), PorterDuff.Mode.DARKEN)
+    } else {
+        clearColorFilter()
 
 @BindingAdapter("loadWithFileStreamPath")
 fun ImageView.loadWithFileStreamPath(filename: String?) {
