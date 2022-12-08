@@ -38,6 +38,7 @@ object Versions {
     const val PLAY_SERVICES_LOCATION = "20.0.0"
 
     const val GLIDE = "4.14.2"
+    const val LANDSCAPIST_GLIDE = "2.1.0"
     const val VIEW_PAGER2 = "2:1.0.0"
 
     const val JUNIT = "4.13.2"
@@ -117,6 +118,7 @@ object Libraries {
         "com.google.android.gms:play-services-location:${Versions.PLAY_SERVICES_LOCATION}"
 
     private const val GLIDE = "com.github.bumptech.glide:glide:${Versions.GLIDE}"
+    private const val LANDSCAPIST_GLIDE = "com.github.skydoves:landscapist-glide:${Versions.LANDSCAPIST_GLIDE}"
 
     private const val VIEW_PAGER2 = "androidx.viewpager2:viewpager${Versions.VIEW_PAGER2}"
 
@@ -160,6 +162,7 @@ object Libraries {
         NAVER_MAP,
         PLAY_SERVICES_LOCATION,
         GLIDE,
+        LANDSCAPIST_GLIDE,
         ZXING,
         VIEW_PAGER2,
         TIMBER,

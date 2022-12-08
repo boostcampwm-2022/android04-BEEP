@@ -15,11 +15,14 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
@@ -118,6 +121,11 @@ class GifticonDetailActivity : AppCompatActivity() {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
+                val output = getFileStreamPath("cropped${gifticon?.id ?: return@collect}")
+                Glide.with(binding.ivProductImage)
+                    .load(output)
+                    .transform(RoundedCorners(8.dp.toInt()))
+                    .into(binding.ivProductImage)
             }
         }
         repeatOnStarted {
