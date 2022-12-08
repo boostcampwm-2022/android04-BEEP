@@ -26,6 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.databinding.FragmentSettingMainBinding
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
@@ -86,6 +87,14 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         binding.tvSecurity.setOnClickListener { authenticate() }
         binding.tvSignOut.setOnClickListener { signOut() }
         binding.tvLocation.setOnClickListener { gotoPermissionSetting() }
+        binding.smNotification.setOnCheckedChangeListener { _, isChecked ->
+            val workManager = BeepWorkManager(requireContext())
+            viewModel.saveNotificationOption(isChecked)
+            when (isChecked) {
+                true -> workManager.notificationEnqueue()
+                false -> workManager.notificationCancel()
+            }
+        }
 
         if (viewModel.userPreferenceState.value.guest) {
             initGoogleLogin()

@@ -3,8 +3,10 @@ package com.lighthouse.presentation.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.UserPreferenceOption
-import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.domain.usecase.HasVariableGifticonUseCase
+import com.lighthouse.domain.usecase.setting.GetOptionStoredUseCase
+import com.lighthouse.domain.usecase.setting.SaveNotificationOptionUseCase
+import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.setting.SecurityOption
 import com.lighthouse.presentation.util.flow.MutableEventFlow
@@ -22,7 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     hasVariableGifticonUseCase: HasVariableGifticonUseCase,
-    private val userPreferencesRepository: UserPreferencesRepository
+    getOptionStoredUseCase: GetOptionStoredUseCase,
+    private val saveSecurityOptionUseCase: SaveSecurityOptionUseCase,
+    private val saveNotificationOptionUseCase: SaveNotificationOptionUseCase
 ) : ViewModel() {
 
     private val _eventFlow = MutableEventFlow<MainEvent>()
@@ -51,7 +55,8 @@ class MainViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
-    val securityOption = userPreferencesRepository.isStored(UserPreferenceOption.SECURITY)
+    val isSecurityOptionExist = getOptionStoredUseCase(UserPreferenceOption.SECURITY)
+    val isNotificationOptionExist = getOptionStoredUseCase(UserPreferenceOption.NOTIFICATION)
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
@@ -84,9 +89,15 @@ class MainViewModel @Inject constructor(
         return true
     }
 
-    fun setSecurityNoUse() {
+    fun saveSecurityNotUse() {
         viewModelScope.launch {
-            userPreferencesRepository.setSecurityOption(SecurityOption.NONE.ordinal)
+            saveSecurityOptionUseCase(SecurityOption.NONE.ordinal)
+        }
+    }
+
+    fun saveNotificationUse() {
+        viewModelScope.launch {
+            saveNotificationOptionUseCase(true)
         }
     }
 }
