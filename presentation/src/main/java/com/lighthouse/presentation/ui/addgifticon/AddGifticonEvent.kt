@@ -17,6 +17,8 @@ sealed class AddGifticonEvent {
     data class NavigateToCropGifticon(val origin: Uri, val croppedRect: RectF) : AddGifticonEvent()
     data class ShowOriginGifticon(val origin: Uri) : AddGifticonEvent()
     data class ShowExpiredAtDatePicker(val date: Date) : AddGifticonEvent()
+    data class RequestLoading(val loading: Boolean) : AddGifticonEvent()
     data class RequestFocus(val focus: AddGifticonFocus) : AddGifticonEvent()
+    data class RequestScroll(val scroll: AddGifticonScroll) : AddGifticonEvent()
     data class ShowSnackBar(val uiText: UIText) : AddGifticonEvent()
 }

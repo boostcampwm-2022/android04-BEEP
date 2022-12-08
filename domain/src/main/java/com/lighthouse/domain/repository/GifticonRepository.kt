@@ -30,6 +30,7 @@ interface GifticonRepository {
     fun getGifticonByBrand(brand: String): Flow<DbResult<List<Gifticon>>>
     fun hasUsableGifticon(userId: String): Flow<Boolean>
     fun getUsableGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
+    suspend fun hasGifticonBrand(brand: String): Boolean
 
     fun getGifticonCrop(gifticonId: String): Flow<GifticonCrop>
     suspend fun updateGifticonCrop(gifticonCrop: GifticonCrop)

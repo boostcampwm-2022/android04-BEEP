@@ -15,56 +15,50 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/abl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             app:liftOnScroll="true">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:toolbarId="@id/cl_toolbar">
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:minHeight="?attr/actionBarSize"
-                    app:layout_collapseMode="pin">
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@string/add_gifticon_back_description"
+                    android:onClick="@{() -> vm.requestPopBackstack()}"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?attr/colorOnPrimary" />
 
-                    <ImageView
-                        android:id="@+id/iv_back"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="4dp"
-                        android:contentDescription="@string/add_gifticon_back_description"
-                        android:onClick="@{() -> vm.requestPopBackstack()}"
-                        android:padding="12dp"
-                        android:src="@drawable/ic_back"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorOnPrimary" />
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/add_gifticon_title"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_back"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/iv_back" />
 
-                    <TextView
-                        android:id="@+id/tv_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/add_gifticon_title"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:textColor="?attr/colorOnPrimary"
-                        app:layout_constraintBottom_toBottomOf="@id/iv_back"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/iv_back" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -227,6 +221,7 @@
                         android:inputType="textNoSuggestions"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeGifticonName(text)}"
+                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onNameFocusChangeListener(hasFocus)}"
                         android:text="@{vm.name}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
 
@@ -264,6 +259,7 @@
                         android:inputType="textNoSuggestions"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBrandName(text)}"
+                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBrandFocusChangeListener(hasFocus)}"
                         android:text="@{vm.brand}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
 

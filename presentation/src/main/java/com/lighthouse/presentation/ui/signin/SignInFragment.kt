@@ -23,6 +23,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSignInBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
@@ -35,13 +36,14 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     private val binding: FragmentSignInBinding by viewBindings()
     private val viewModel: SignInViewModel by viewModels()
 
+    private val progressDialog by lazy { ProgressDialog() }
+
     private lateinit var googleSignInClient: GoogleSignInClient
     private val auth: FirebaseAuth = Firebase.auth
     private val activityLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-
                 try {
                     signInWithGoogle(task.getResult(ApiException::class.java))
                 } catch (e: ApiException) {
@@ -90,11 +92,13 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
 
         binding.btnGoogleLogin.setOnClickListener {
             activityLauncher.launch(googleSignInClient.signInIntent)
+            progressDialog.show(parentFragmentManager, "progress")
         }
     }
 
     private fun signInWithGoogle(account: GoogleSignInAccount) {
         account.email?.let { email ->
+            progressDialog.dismiss()
             auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { task ->
                 val isInitial = task.result.signInMethods?.size == 0
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)

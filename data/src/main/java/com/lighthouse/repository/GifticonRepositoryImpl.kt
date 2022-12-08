@@ -150,6 +150,8 @@ class GifticonRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun hasGifticonBrand(brand: String) = gifticonLocalDataSource.hasGifticonBrand(brand)
+
     override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
         gifticonLocalDataSource.moveUserIdGifticon(oldUserId, newUserId)
     }

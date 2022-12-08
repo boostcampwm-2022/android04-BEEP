@@ -104,7 +104,6 @@ class HomeViewModel @Inject constructor(
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
                 _uiState.value = UiState.Loading
-
                 val currentLocation = setDmsLocation(location)
                 if (prevLocation.value != currentLocation) {
                     isShimmer.value = true

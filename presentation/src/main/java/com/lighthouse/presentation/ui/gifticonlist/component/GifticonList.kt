@@ -74,7 +74,7 @@ fun GifticonItem(gifticon: Gifticon) {
     ) {
         Row {
             GlideImage(
-                imageModel = { context.getFileStreamPath("cropped${gifticon.id}") },
+                imageModel = { context.getFileStreamPath(gifticon.croppedPath) },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     contentDescription = stringResource(R.string.gifticon_product_image),

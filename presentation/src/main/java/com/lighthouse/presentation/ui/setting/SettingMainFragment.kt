@@ -1,11 +1,16 @@
 package com.lighthouse.presentation.ui.setting
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -21,7 +26,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.databinding.FragmentSettingMainBinding
+import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.security.AuthCallback
@@ -38,6 +45,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     private val activityViewModel: MainViewModel by activityViewModels()
 
     private val settingSecurityFragment by lazy { SettingSecurityFragment() }
+    private val progressDialog by lazy { ProgressDialog() }
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private val auth: FirebaseAuth = Firebase.auth
@@ -52,7 +60,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                     Snackbar.make(requireView(), getString(R.string.signin_google_fail), Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -66,6 +75,11 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
             }
         }
 
+    private val locationLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            locationPermissionCheck()
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -74,10 +88,22 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
 
         binding.tvSecurity.setOnClickListener { authenticate() }
         binding.tvSignOut.setOnClickListener { signOut() }
+        binding.tvWithdrawal.setOnClickListener { withdrawal() }
+        binding.tvLocation.setOnClickListener { gotoPermissionSetting() }
+        binding.smNotification.setOnCheckedChangeListener { _, isChecked ->
+            val workManager = BeepWorkManager(requireContext())
+            viewModel.saveNotificationOption(isChecked)
+            when (isChecked) {
+                true -> workManager.notificationEnqueue()
+                false -> workManager.notificationCancel()
+            }
+        }
 
         if (viewModel.userPreferenceState.value.guest) {
             initGoogleLogin()
         }
+
+        locationPermissionCheck()
     }
 
     private fun gotoSecuritySetting() {
@@ -98,6 +124,12 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         startActivity(intent)
     }
 
+    private fun withdrawal() {
+        Firebase.auth.currentUser?.delete()
+        viewModel.removeUserData()
+        signOut()
+    }
+
     private fun initGoogleLogin() {
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
@@ -112,8 +144,10 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     }
 
     private fun signInWithGoogle(account: GoogleSignInAccount) {
+        progressDialog.show(childFragmentManager, "progress")
         account.email?.let { email ->
             auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { task ->
+                progressDialog.dismiss()
                 val isInitial = task.result.signInMethods?.size == 0
                 if (isInitial) {
                     val credential = GoogleAuthProvider.getCredential(account.idToken, null)
@@ -125,7 +159,6 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                             Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
                         }
                     }
-                    // TODO: 신규 google 로그인
                 } else {
                     MaterialAlertDialogBuilder(requireContext())
                         .setMessage(R.string.setting_already_exist_email)
@@ -146,5 +179,29 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         stringId?.let {
             Snackbar.make(requireView(), getString(it), Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun locationPermissionCheck() {
+        for (permission in PERMISSIONS) {
+            val result: Int = ContextCompat.checkSelfPermission(requireContext(), permission)
+            if (PackageManager.PERMISSION_GRANTED != result) {
+                binding.tvLocationOption.text = getString(R.string.location_not_allowed)
+                return
+            }
+        }
+        binding.tvLocationOption.text = getString(R.string.location_allowed)
+    }
+
+    private fun gotoPermissionSetting() {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts("package", requireActivity().packageName, null)
+        }
+        locationLauncher.launch(intent)
+    }
+
+    companion object {
+        private val PERMISSIONS =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 }

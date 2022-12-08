@@ -134,6 +134,7 @@
     <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
     <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
     <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
+    <string name="use_gifticon_dialog_use_origin_image_underline_target_label">원본 이미지로 결제하기</string>
 
     <string name="secure_later">나중에 설정</string>
     <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
@@ -225,6 +226,12 @@
     <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
 
     <string name="widget_loading">로딩중입니다.</string>
+    
+    <string name="location_setting">위치권한설정</string>
+    <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
+    <string name="location_not_allowed">허용 안 함</string>
+    <string name="location_allowed">허용됨</string>
+
     <string name="widget_common_error">데이터를 불러오던 중 문제가 생겼습니다. 새로고침을 눌러주세요.</string>
     <string name="widget_refresh_button">새로고침</string>
     <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>

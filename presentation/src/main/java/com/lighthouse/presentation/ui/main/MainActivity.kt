@@ -65,27 +65,31 @@ class MainActivity : AppCompatActivity() {
             vm = viewModel
         }
 
-        checkSecurityOption()
+        checkUserPreferenceOption()
         collectEvent()
         collectPage()
         collectFab()
         collectBnv()
     }
 
-    private fun checkSecurityOption() {
+    private fun checkUserPreferenceOption() {
         repeatOnStarted {
-            if (viewModel.securityOption.first().not()) {
+            if (viewModel.isSecurityOptionExist.first().not()) {
                 MaterialAlertDialogBuilder(this)
                     .setTitle(getString(R.string.security_not_set))
                     .setMessage(getString(R.string.security_not_set_description))
                     .setNeutralButton(getString(R.string.all_not_use)) { dialog, which ->
-                        viewModel.setSecurityNoUse()
+                        viewModel.saveSecurityNotUse()
                     }
                     .setPositiveButton(getString(R.string.main_menu_setting)) { dialog, which ->
                         gotoSecurity()
                     }
                     .setCancelable(false)
                     .show()
+            }
+
+            if (viewModel.isNotificationOptionExist.first().not()) {
+                viewModel.saveNotificationUse()
             }
         }
     }
