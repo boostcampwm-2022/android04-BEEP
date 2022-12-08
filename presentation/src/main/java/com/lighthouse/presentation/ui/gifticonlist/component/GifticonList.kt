@@ -4,14 +4,17 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
@@ -24,10 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.lighthouse.domain.model.Gifticon
@@ -41,8 +44,9 @@ import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 @Composable
 fun GifticonList(gifticons: List<Gifticon>, modifier: Modifier = Modifier) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-        modifier = modifier
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier,
+        contentPadding = PaddingValues(vertical = 36.dp)
     ) {
         items(gifticons) { gifticon ->
             GifticonItem(gifticon = gifticon)
@@ -57,7 +61,7 @@ fun GifticonItem(gifticon: Gifticon) {
     val cornerSize = 8.dp
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().height(130.dp),
         shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize)),
         onClick = {
             context.startActivity(
@@ -72,41 +76,57 @@ fun GifticonItem(gifticon: Gifticon) {
                 painter = rememberAsyncImagePainter(context.getFileStreamPath("cropped${gifticon.id}")),
                 contentDescription = stringResource(R.string.gifticon_product_image),
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(cornerSize))
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(topStart = cornerSize, bottomStart = cornerSize))
                     .aspectRatio(1f)
                     .align(Alignment.CenterVertically)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 Text(
                     text = gifticon.expireAt.toDday(context),
                     modifier = Modifier
                         .clip(RoundedCornerShape(cornerSize))
-                        .background(colorResource(id = R.color.beep_pink))
+                        .background(MaterialTheme.colors.primary)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .align(Alignment.End),
-                    color = Color.White,
+                        .align(Alignment.TopEnd),
+                    color = MaterialTheme.colors.onSurface,
                     style = MaterialTheme.typography.caption
                 )
                 Text(
-                    text = gifticon.name
-                )
-                Text(
-                    text = gifticon.brand
-                )
-                if (gifticon.isCashCard) {
-                    Text(
-                        text = gifticon.balance.toConcurrency(context, true),
-                        color = colorResource(R.color.beep_pink)
-                    )
-                }
-                Text(
                     text = gifticon.expireAt.toExpireDate(context),
                     modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(bottom = 16.dp, end = 16.dp)
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 16.dp, end = 16.dp),
+                    style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                 )
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = gifticon.brand,
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                    )
+                    Text(
+                        text = gifticon.name,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.body1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (gifticon.isCashCard) {
+                        Text(
+                            modifier = Modifier.padding(top = 4.dp),
+                            text = gifticon.balance.toConcurrency(context, true),
+                            color = colorResource(R.color.beep_pink)
+                        )
+                    } else {
+                        Spacer(Modifier.height(16.dp))
+                    }
+                }
             }
         }
     }
