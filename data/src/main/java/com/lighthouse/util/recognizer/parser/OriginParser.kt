@@ -116,7 +116,7 @@ class OriginParser {
             newText.trim()
         }.filter { text ->
             text.isNotEmpty() && !text.all { it.isDigit() } && lineFilterText.none {
-                text.lowercase().contains(it)
+                text.lowercase() == it
             } && lineFilterRegex.none { regex ->
                 regex.find(text) != null
             }

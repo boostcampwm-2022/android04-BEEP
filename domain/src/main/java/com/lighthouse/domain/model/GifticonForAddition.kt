@@ -12,5 +12,6 @@ data class GifticonForAddition(
     val balance: Int,
     val originUri: String,
     val croppedUri: String,
+    val croppedRect: Rectangle,
     val memo: String
 )

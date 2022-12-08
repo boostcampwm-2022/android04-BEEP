@@ -34,20 +34,13 @@ class GifticonRecognizer {
     suspend fun recognize(bitmap: Bitmap) = withContext(Dispatchers.IO) {
         val origin = scaleProcessor.scaleProcess(bitmap)
         val originInputs = textRecognizer.recognize(origin)
+        origin.recycle()
         var info = originParser.parseBarcode(originInputs) ?: return@withContext null
         info = originParser.parseDate(info)
         info = originParser.filterTrash(info)
-
-        val template = getTemplateRecognizer(info.candidate)
-        info = if (template != null) {
-            template.recognize(origin, info)
-        } else {
-            val gifticonName = info.candidate.first()
-            val brandName = if (info.candidate.size > 1) info.candidate.last() else ""
-            info.copy(name = gifticonName, brand = brandName)
+        getTemplateRecognizer(info.candidate)?.run {
+            info = recognize(bitmap, info)
         }
-        info = originParser.parseCashCard(info)
-        origin.recycle()
-        return@withContext info
+        originParser.parseCashCard(info)
     }
 }
