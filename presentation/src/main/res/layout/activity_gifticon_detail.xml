@@ -143,6 +143,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
+                    android:backgroundTint="@{vm.gifticon.used ? @color/gray : @color/beep_pink}"
                     android:onClick="@{() -> vm.useGifticonButtonClicked()}"
                     android:text="@string/gifticon_detail_use_gifticon_button_text"
                     app:layout_constraintBottom_toBottomOf="parent"
