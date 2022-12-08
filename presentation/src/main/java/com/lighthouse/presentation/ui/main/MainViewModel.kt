@@ -1,9 +1,11 @@
 package com.lighthouse.presentation.ui.main
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.usecase.HasVariableGifticonUseCase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     hasVariableGifticonUseCase: HasVariableGifticonUseCase
 ) : ViewModel() {
 
@@ -28,6 +31,19 @@ class MainViewModel @Inject constructor(
     val pageFlow = _pageFlow.asStateFlow()
 
     val hasVariableGifticon = hasVariableGifticonUseCase()
+
+    private val widgetEvent = savedStateHandle.get<String>(Extras.KEY_WIDGET_EVENT)
+    private val widgetBrandName = savedStateHandle.get<String>(Extras.KEY_WIDGET_BRAND)
+
+    init {
+        viewModelScope.launch() {
+            widgetEvent ?: return@launch
+            widgetBrandName ?: return@launch
+            when (widgetEvent) {
+                Extras.WIDGET_EVENT_MAP -> _eventFlow.emit(MainEvent.NavigateMap(widgetBrandName))
+            }
+        }
+    }
 
     val fabFlow = _pageFlow.combine(hasVariableGifticon) { page, hasVariableGifticon ->
         when (page) {

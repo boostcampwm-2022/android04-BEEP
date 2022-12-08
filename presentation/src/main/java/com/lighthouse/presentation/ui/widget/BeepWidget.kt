@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -16,12 +17,12 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.unit.ColorProvider
@@ -47,8 +48,10 @@ import com.lighthouse.presentation.extra.Extras.CATEGORY_CONVENIENCE
 import com.lighthouse.presentation.extra.Extras.CATEGORY_CULTURE
 import com.lighthouse.presentation.extra.Extras.CATEGORY_MART
 import com.lighthouse.presentation.extra.Extras.CATEGORY_RESTAURANT
-import com.lighthouse.presentation.extra.Extras.WIDGET_BRAND_KEY
-import com.lighthouse.presentation.ui.map.MapActivity
+import com.lighthouse.presentation.extra.Extras.KEY_WIDGET_BRAND
+import com.lighthouse.presentation.extra.Extras.KEY_WIDGET_EVENT
+import com.lighthouse.presentation.extra.Extras.WIDGET_EVENT_MAP
+import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.widget.component.AppWidgetBox
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
 
@@ -93,27 +96,28 @@ fun WidgetCommon(widgetState: WidgetState.Available) {
     ) {
         Row(
             modifier = GlanceModifier.fillMaxWidth().background(R.color.beep_pink).height(40.dp).padding(start = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = GlanceModifier.width(4.dp))
-            Text(
-                modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
-                text = stringResource(id = R.string.widget_header_description),
-                style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Start,
-                    color = ColorProvider(day = Color.White, night = Color.White)
-                ),
-                maxLines = 1
+
+            Image(
+                modifier = GlanceModifier.size(44.dp).padding(8.dp)
+                    .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
+                provider = ImageProvider(resId = R.drawable.ic_splash_beep),
+                contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
             )
-            Spacer(modifier = GlanceModifier.width(6.dp))
+
+            Spacer(GlanceModifier.defaultWeight())
+
             Image(
                 modifier = GlanceModifier.size(32.dp).padding(8.dp)
                     .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
                 provider = ImageProvider(resId = R.drawable.ic_widget_refresh_24),
                 contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
             )
+
+            Spacer(GlanceModifier.width(10.dp).height(4.dp))
         }
         WidgetBody(widgetState)
     }
@@ -121,6 +125,18 @@ fun WidgetCommon(widgetState: WidgetState.Available) {
 
 @Composable
 fun WidgetBody(widgetState: WidgetState.Available) {
+    Spacer(modifier = GlanceModifier.height(10.dp))
+    Text(
+        modifier = GlanceModifier.fillMaxWidth(),
+        text = stringResource(id = R.string.widget_header_description),
+        style = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center,
+            color = ColorProvider(day = Color.Black, night = Color.Black)
+        ),
+        maxLines = 1
+    )
     LazyColumn(modifier = GlanceModifier.padding(12.dp)) {
         items(widgetState.gifticons) { item ->
             GifticonItem(item)
@@ -130,38 +146,43 @@ fun WidgetBody(widgetState: WidgetState.Available) {
 
 @Composable
 private fun GifticonItem(item: GifticonWidgetData, modifier: GlanceModifier = GlanceModifier) {
+    val intent = Intent(LocalContext.current, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth().clickable(
+        modifier = modifier.fillMaxWidth().padding(8.dp).clickable(
             onClick = actionStartActivity(
-                activity = MapActivity::class.java,
+                intent,
                 parameters = actionParametersOf(
-                    ActionParameters.Key<String>(WIDGET_BRAND_KEY) to item.brand
+                    ActionParameters.Key<String>(KEY_WIDGET_BRAND) to item.brand,
+                    ActionParameters.Key<String>(KEY_WIDGET_EVENT) to WIDGET_EVENT_MAP
                 )
             )
         )
     ) {
         Image(
+            modifier = GlanceModifier.size(16.dp),
             provider = ImageProvider(resId = getDrawableId(item.category)),
             contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
         )
-        Spacer(modifier = GlanceModifier.width(4.dp))
+        Spacer(modifier = GlanceModifier.width(8.dp))
         Text(
             text = item.brand,
-            modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(vertical = 8.dp),
+            modifier = GlanceModifier.fillMaxWidth().defaultWeight(),
             style = TextStyle(
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Start,
-                color = ColorProvider(day = Color.Black, night = Color.Black)
+                color = ColorProvider(day = Color.Black, night = Color.White)
             )
         )
         Text(
             text = item.name,
-            modifier = GlanceModifier.padding(vertical = 8.dp),
             style = TextStyle(
                 fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.End
             )
         )

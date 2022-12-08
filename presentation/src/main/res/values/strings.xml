@@ -222,7 +222,7 @@
     <string name="widget_refresh_button">새로고침</string>
     <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
     <string name="widget_has_not_permission">권한을 허용하신 후 다시 새로고침 해주세요.</string>
-    <string name="widget_header_description">근처에서 사용할 수 있는 기프티콘이에요</string>
+    <string name="widget_header_description">근처에서 사용 가능해요!</string>
     <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>

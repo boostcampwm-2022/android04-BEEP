@@ -16,9 +16,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragmentContainer
+import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { directions ->
                 when (directions) {
                     is MainEvent.NavigateAddGifticon -> gotoAddGifticon()
+                    is MainEvent.NavigateMap -> gotoMap(directions.brand)
                 }
             }
         }
@@ -144,6 +147,13 @@ class MainActivity : AppCompatActivity() {
         } else {
             storagePermissionLauncher.launch(getStoragePermission())
         }
+    }
+
+    private fun gotoMap(brand: String) {
+        val intent = Intent(this, MapActivity::class.java).apply {
+            putExtra(Extras.KEY_WIDGET_BRAND, brand)
+        }
+        startActivity(intent)
     }
 
     private fun showSnackBar(uiText: UIText) {
