@@ -31,7 +31,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="4dp"
-                    android:contentDescription="@string/add_gifticon_back_description"
+                    android:contentDescription="@string/map_back_button"
                     android:onClick="@{() -> vm.gotoHome()}"
                     android:padding="12dp"
                     android:src="@drawable/ic_back"
