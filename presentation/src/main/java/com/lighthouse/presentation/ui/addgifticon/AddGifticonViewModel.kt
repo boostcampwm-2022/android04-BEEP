@@ -202,23 +202,45 @@ class AddGifticonViewModel @Inject constructor(
             oldGifticonList.find { oldItem -> newItem.id == oldItem.id } ?: newItem.toAddGifticonUIModel()
         }
 
+        val newList = list.filter { newItem ->
+            oldGifticonList.none { oldItem ->
+                oldItem.id == newItem.id
+            }
+        }
+
+        recognizeGifticonList(newList)
+    }
+
+    private fun recognizeGifticonList(list: List<GalleryUIModel.Gallery>) {
+        if (list.isEmpty()) {
+            return
+        }
+
+        requestLoading(true)
+        var count = 0
         list.forEach { gallery ->
             viewModelScope.launch {
-                val result = recognizeGifticonImageUseCase(gallery.toDomain())
-                if (result != null) {
-                    val updated = updateGifticon(gallery.id) {
-                        result.toPresentation(gallery.id)
-                    }
-                    if (updated != null) {
-                        updateDisplayGifticon(gallery.id) {
-                            it.copy(
-                                thumbnailImage = updated.thumbnailImage,
-                                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
-                            )
-                        }
+                recognizeGifticonItem(gallery)
+                synchronized(this@AddGifticonViewModel) {
+                    count += 1
+                    if (count >= list.size) {
+                        requestLoading(false)
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun recognizeGifticonItem(gallery: GalleryUIModel.Gallery) {
+        val result = recognizeGifticonImageUseCase(gallery.toDomain()) ?: return
+        val updated = updateGifticon(gallery.id) {
+            result.toPresentation(gallery.id)
+        } ?: return
+        updateDisplayGifticon(gallery.id) {
+            it.copy(
+                thumbnailImage = updated.thumbnailImage,
+                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
+            )
         }
     }
 
@@ -615,6 +637,12 @@ class AddGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonFocus.NONE))
             _eventFlow.emit(AddGifticonEvent.ShowExpiredAtDatePicker(expiredAt))
+        }
+    }
+
+    private fun requestLoading(loading: Boolean) {
+        viewModelScope.launch {
+            _eventFlow.emit(AddGifticonEvent.RequestLoading(loading))
         }
     }
 
