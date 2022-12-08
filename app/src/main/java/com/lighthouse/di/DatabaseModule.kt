@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.lighthouse.database.BeepDatabase
 import com.lighthouse.database.BeepDatabase.Companion.DATABASE_NAME
 import com.lighthouse.database.dao.BrandWithSectionDao
+import com.lighthouse.database.dao.GifticonCropDao
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.domain.usecase.setting.GetSecurityOptionUseCase
 import com.lighthouse.presentation.ui.security.AuthManager
@@ -54,6 +55,12 @@ object DatabaseModule {
     fun provideGifticonDao(
         database: BeepDatabase
     ): GifticonDao = database.gifticonDao()
+
+    @Provides
+    @Singleton
+    fun provideGifticonCropDao(
+        database: BeepDatabase
+    ): GifticonCropDao = database.gifticonCropDao()
 
     @Provides
     @Singleton
