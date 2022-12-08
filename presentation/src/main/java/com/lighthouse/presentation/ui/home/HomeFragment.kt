@@ -133,8 +133,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewLifecycleOwner.repeatOnStarted {
             homeViewModel.eventFlow.collectLatest { directions ->
                 when (directions) {
-                    is Event.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
-                    is Event.RequestLocationPermissionCheck -> launchPermission()
+                    is HomeEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
+                    is HomeEvent.RequestLocationPermissionCheck -> launchPermission()
                 }
             }
         }

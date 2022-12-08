@@ -72,7 +72,7 @@ class MapViewModel @Inject constructor(
     private val _gifticonData = MutableStateFlow<List<Gifticon>>(emptyList())
     val gifticonData = _gifticonData.asStateFlow()
 
-    private val _event = MutableEventFlow<Event>()
+    private val _event = MutableEventFlow<HomeEvent>()
     val event = _event.asEventFlow()
 
     private val _widgetBrand = MutableEventFlow<String>()
@@ -175,7 +175,7 @@ class MapViewModel @Inject constructor(
 
     fun gotoHome() {
         viewModelScope.launch {
-            _event.emit(Event.NavigateHome)
+            _event.emit(HomeEvent.NavigateHome)
         }
     }
 

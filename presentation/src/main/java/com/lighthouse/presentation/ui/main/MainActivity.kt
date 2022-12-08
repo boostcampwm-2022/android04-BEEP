@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         repeatOnStarted {
             viewModel.eventFlow.collect { directions ->
                 when (directions) {
-                    is Event.NavigateAddGifticon -> gotoAddGifticon()
+                    is MainEvent.NavigateAddGifticon -> gotoAddGifticon()
                 }
             }
         }

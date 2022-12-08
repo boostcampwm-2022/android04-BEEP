@@ -39,7 +39,6 @@
 
         <activity
             android:name=".ui.map.MapActivity"
-            android:exported="true"
             android:noHistory="true"
             android:screenOrientation="portrait" />
 
