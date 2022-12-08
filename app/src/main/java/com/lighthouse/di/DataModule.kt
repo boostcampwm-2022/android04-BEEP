@@ -13,6 +13,7 @@ import com.lighthouse.datasource.gifticon.GifticonLocalDataSourceImpl
 import com.lighthouse.domain.repository.AuthRepository
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
+import com.lighthouse.domain.repository.GifticonImageRecognizeRepository
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.domain.repository.LocationRepository
 import com.lighthouse.domain.repository.SecurityRepository
@@ -20,6 +21,7 @@ import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.repository.AuthRepositoryImpl
 import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
+import com.lighthouse.repository.GifticonImageRecognizeRepositoryImpl
 import com.lighthouse.repository.GifticonRepositoryImpl
 import com.lighthouse.repository.LocationRepositoryImpl
 import com.lighthouse.repository.SecurityRepositoryImpl
@@ -75,6 +77,12 @@ abstract class DataModule {
     abstract fun bindGalleryImageRepository(
         repository: GalleryImageRepositoryImpl
     ): GalleryImageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGalleryImageRecognizeRepository(
+        repository: GifticonImageRecognizeRepositoryImpl
+    ): GifticonImageRecognizeRepository
 
     @Binds
     @Singleton

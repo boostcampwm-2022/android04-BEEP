@@ -79,6 +79,8 @@
 
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>
+    <string name="gallery_selected_image_description">선택된 갤러리 이미지</string>
+    <string name="gallery_selected_image_delete_description">선택된 갤러리 이미지 삭제</string>
     <string name="gallery_title">이미지 선택</string>
     <string name="gallery_selected">%d개 선택됨</string>
     <string name="gallery_confirm">완료</string>
@@ -188,6 +190,7 @@
     <string name="gifticon_list_sort_by_deadline">디데이순</string>
     <string name="gifticon_list_sort_by_recent">최신순</string>
     <string name="gifticon_list_show_all_brand_chips_button">브랜드 전체 보기 버튼</string>
+    <string name="gifticon_product_image">기프티콘 상품 이미지</string>
 
     <string name="home_near_title">근처에서 사용할 수 있어요</string>
     <string name="home_near_more_label">지도보기</string>
@@ -212,6 +215,7 @@
     <string name="notification_title">만료 임박 기프티콘 알림</string>
     <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>
     <string name="notification_channel_description">만료일에 가까워진 기프티콘을 알려드립니다.</string>
+    <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
 
     <string name="widget_loading">로딩중입니다.</string>
     <string name="widget_common_error">데이터를 불러오던 중 문제가 생겼습니다. 새로고침을 눌러주세요.</string>
@@ -222,5 +226,4 @@
     <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
-
 </resources>

@@ -14,17 +14,15 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toNumber
 import com.lighthouse.presentation.extension.toNumberFormat
 import com.lighthouse.presentation.ui.common.compose.ConcurrencyFormatVisualTransformation.Companion.MAX_LENGTH
-import timber.log.Timber
 
 @Composable
 fun ConcurrencyField(
     modifier: Modifier = Modifier,
     value: Int = 0,
     textStyle: TextStyle? = null,
-    editable: Boolean = false,
+    editable: Boolean = true,
     suffixText: String = stringResource(id = R.string.all_cash_origin_unit),
     onValueChanged: (Int) -> Unit = {}
 ) {
@@ -34,20 +32,18 @@ fun ConcurrencyField(
     BasicTextField(
         value = text,
         onValueChange = {
-            Timber.tag("Custom").d("TextField text: $it")
-            it.filterNot { c -> c == ',' || c == '.' }
-                .substring(minOf(MAX_LENGTH + suffixText.length, it.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
-            it.toNumber()
-            if (it.isBlank()) {
-                onValueChanged(0)
+            val inputText = it.filter { c -> c.isDigit() }.let { filtered ->
+                filtered.substring(0, minOf(MAX_LENGTH, filtered.length)) // 붙여넣기 했을 때 최대 10개 까지만 입력 되도록 제한
+            }
+            if (inputText.isBlank()) {
                 text = ""
                 return@BasicTextField
             }
-            if (it.length >= MAX_LENGTH) {
+            if (inputText.length >= MAX_LENGTH) {
                 return@BasicTextField
             }
-            onValueChanged(it.toNumber().toIntOrNull() ?: 0)
-            text = it.trim()
+            text = inputText
+            onValueChanged(inputText.toIntOrNull() ?: 0)
         },
         modifier = modifier,
         readOnly = editable.not(),
@@ -61,9 +57,6 @@ fun ConcurrencyField(
 class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         val numberWithComma = text.text.toNumberFormat()
-
-        Timber.tag("Custom").d("mapper text: $text")
-        Timber.tag("Custom").d("mapper textWithComma: $numberWithComma")
 
         return TransformedText(
             text = AnnotatedString(numberWithComma + suffixText),

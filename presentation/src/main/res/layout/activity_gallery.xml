@@ -15,67 +15,81 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/abl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:theme="@style/Theme.BEEP.Toolbar"
             app:liftOnScroll="true">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:toolbarId="@id/cl_toolbar">
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:minHeight="?attr/actionBarSize"
-                    app:layout_collapseMode="pin">
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@string/gallery_back_description"
+                    android:onClick="@{() -> vm.cancelPhotoSelection()}"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_back"
+                    app:layout_constraintBottom_toBottomOf="@id/guide_appbar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?attr/colorOnSurface" />
 
-                    <ImageView
-                        android:id="@+id/iv_back"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="4dp"
-                        android:contentDescription="@string/gallery_back_description"
-                        android:onClick="@{() -> vm.cancelPhotoSelection()}"
-                        android:padding="12dp"
-                        android:src="@drawable/ic_back"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="?attr/colorOnSurface" />
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_back"
+                    app:layout_constraintStart_toEndOf="@id/iv_back"
+                    app:layout_constraintTop_toTopOf="@id/iv_back"
+                    app:setUIText="@{vm.titleText}"
+                    tools:text="10" />
 
-                    <TextView
-                        android:id="@+id/tv_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:textColor="?attr/colorOnSurface"
-                        app:layout_constraintBottom_toBottomOf="@id/iv_back"
-                        app:layout_constraintStart_toEndOf="@id/iv_back"
-                        app:layout_constraintTop_toTopOf="@id/iv_back"
-                        app:setUIText="@{vm.titleText}"
-                        tools:text="10" />
+                <TextView
+                    android:id="@+id/tv_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:onClickListener="@{() -> vm.completePhotoSelection()}"
+                    android:text="@string/gallery_confirm"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="?attr/colorOnSurface"
+                    app:isVisible="@{vm.isSelected}"
+                    app:layout_constraintBaseline_toBaselineOf="@id/tv_title"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tv_confirm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:onClickListener="@{() -> vm.completePhotoSelection()}"
-                        android:text="@string/gallery_confirm"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:textColor="?attr/colorOnSurface"
-                        app:isVisible="@{vm.isSelected}"
-                        app:layout_constraintBaseline_toBaselineOf="@id/tv_title"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guide_appbar"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintGuide_begin="?attr/actionBarSize"/>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_selected_list"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/guide_appbar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:setItems="@{vm.selectedList}"
+                    tools:listitem="@layout/item_selected_gallery"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -90,6 +104,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_toolbar"
+            app:setItems="@{vm.list}"
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/item_gallery"
             tools:spanCount="3" />
