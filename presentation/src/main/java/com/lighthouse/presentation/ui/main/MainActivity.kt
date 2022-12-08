@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(getString(R.string.main_menu_setting)) { dialog, which ->
                         gotoSecurity()
                     }
+                    .setCancelable(false)
                     .show()
             }
         }

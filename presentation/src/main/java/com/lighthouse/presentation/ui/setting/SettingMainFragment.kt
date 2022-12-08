@@ -52,8 +52,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                     Snackbar.make(requireView(), getString(R.string.signin_google_fail), Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT).show()
             }
         }
 
