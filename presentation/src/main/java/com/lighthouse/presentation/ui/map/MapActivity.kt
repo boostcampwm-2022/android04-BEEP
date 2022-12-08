@@ -80,9 +80,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setGifticonAdapterItem() {
-        val pagerWidth = screenWidth * 0.8
-        val pageMarginPx = screenWidth * 0.1
-        val offsetPx = screenWidth - pageMarginPx.toInt() - pagerWidth.toInt()
+        val pageMargin = screenWidth * 0.1
+        val pagerWidth = screenWidth - 2 * pageMargin
+        val offsetPx = screenWidth - pageMargin.toInt() - pagerWidth.toInt()
         with(binding.vpGifticon) {
             adapter = gifticonAdapter
             offscreenPageLimit = 3
