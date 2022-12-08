@@ -225,4 +225,8 @@
     <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
 
     <string name="widget_loading">로딩중입니다.</string>
+
+    <string name="location_setting">위치권한설정</string>
+    <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
+
 </resources>

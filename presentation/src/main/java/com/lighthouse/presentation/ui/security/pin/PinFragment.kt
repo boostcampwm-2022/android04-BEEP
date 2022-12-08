@@ -1,7 +1,6 @@
 package com.lighthouse.presentation.ui.security.pin
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -14,7 +13,6 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.common.viewBindings
-import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.SecurityViewModel
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.setting.SecurityOption
@@ -81,7 +79,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
                         delay(500L)
-                        activityViewModel.gotoOtherScreen(SecurityDirections.MAIN)
+                        activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
                     }
                 }
             }
@@ -89,9 +87,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
 
         binding.tvSecureNotUse.setOnClickListener {
             activityViewModel.setSecurityOption(SecurityOption.NONE)
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
         }
     }
 
