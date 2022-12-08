@@ -25,6 +25,7 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.lang.Integer.max
 import java.lang.Integer.min
 import java.text.DecimalFormat
 import java.util.Calendar
@@ -92,9 +94,21 @@ class AddGifticonViewModel @Inject constructor(
         it?.name
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    fun onNameFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonScroll.GIFTICON_NAME)
+        }
+    }
+
     val brand = selectedGifticon.map {
         it?.brandName
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun onBrandFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonScroll.BRAND_NAME)
+        }
+    }
 
     private val displayBarcodeSelection = MutableStateFlow(0)
 
@@ -128,7 +142,7 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     private fun transformedToBalance(text: String): String {
-        return text.filter { it.isDigit() }
+        return text.filter { it.isDigit() }.toDigit().toString()
     }
 
     val displayBalance = balance.combine(displayBalanceSelection) { balance, selection ->
@@ -201,23 +215,45 @@ class AddGifticonViewModel @Inject constructor(
             oldGifticonList.find { oldItem -> newItem.id == oldItem.id } ?: newItem.toAddGifticonUIModel()
         }
 
+        val newList = list.filter { newItem ->
+            oldGifticonList.none { oldItem ->
+                oldItem.id == newItem.id
+            }
+        }
+
+        recognizeGifticonList(newList)
+    }
+
+    private fun recognizeGifticonList(list: List<GalleryUIModel.Gallery>) {
+        if (list.isEmpty()) {
+            return
+        }
+
+        requestLoading(true)
+        var count = 0
         list.forEach { gallery ->
             viewModelScope.launch {
-                val result = recognizeGifticonImageUseCase(gallery.toDomain())
-                if (result != null) {
-                    val updated = updateGifticon(gallery.id) {
-                        result.toPresentation(gallery.id)
-                    }
-                    if (updated != null) {
-                        updateDisplayGifticon(gallery.id) {
-                            it.copy(
-                                thumbnailImage = updated.thumbnailImage,
-                                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
-                            )
-                        }
+                recognizeGifticonItem(gallery)
+                synchronized(this@AddGifticonViewModel) {
+                    count += 1
+                    if (count >= list.size) {
+                        requestLoading(false)
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun recognizeGifticonItem(gallery: GalleryUIModel.Gallery) {
+        val result = recognizeGifticonImageUseCase(gallery.toDomain()) ?: return
+        val updated = updateGifticon(gallery.id) {
+            result.toPresentation(gallery.id)
+        } ?: return
+        updateDisplayGifticon(gallery.id) {
+            it.copy(
+                thumbnailImage = updated.thumbnailImage,
+                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
+            )
         }
     }
 
@@ -315,39 +351,43 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-        val newBarcode = charSequence.toString()
+        val newString = charSequence.toString()
         val oldBarcode = displayBarcode.value.text
-        if (oldBarcode == newBarcode) {
+        if (oldBarcode == newString) {
             return
         }
 
-        val newValue = transformedToBarcode(newBarcode)
-        val newSelection = start + count
+        val newValue = if (before == 1 && count == 0 && start < oldBarcode.length && oldBarcode[start] == ' ') {
+            transformedToBarcode(
+                newString.substring(0, max(start - 1, 0)) + newString.substring(
+                    max(start, 0),
+                    newString.length
+                )
+            )
+        } else {
+            transformedToBarcode(newString)
+        }
 
-//        val newValue = newBarcode.filter { it.isDigit() }
-//        var newValueText = newValue
-//        val spaceCount = oldBarcode.substring(0, start + before).count { it == ' ' }
-//        if (before == 1 && count == 0 && oldBarcode[start] == ' ') {
-//            val numIndex = start - spaceCount
-//            newValueText =
-//                newValueText.substring(0, numIndex) + newValueText.substring(numIndex + 1, newValueText.length)
-//        }
-//
-//        val newText = newValueText.chunked(4).joinToString(" ")
-//        val newSelection = if (oldBarcode.length == start) {
-//            newText.length
-//        } else {
-//            val numIndex = start + count - spaceCount
-//            var numCount = 0
-//            var selection = 0
-//            while (numCount < numIndex) {
-//                if (newText[selection].isDigit()) {
-//                    numCount += 1
-//                }
-//                selection += 1
-//            }
-//            selection
-//        }
+        val newBarcode = barcodeToTransformed(newValue)
+        val newSelection = if (oldBarcode.length == start + before) {
+            newBarcode.length
+        } else {
+            val endStringCount = max(oldBarcode.length - start - before, 0)
+            val oldDividerCount = oldBarcode.substring(start + before, oldBarcode.length).filter { it == ' ' }.length
+            val endNumCount = max(endStringCount - oldDividerCount, 0)
+            var index = 0
+            var numCount = 0
+            while (
+                newBarcode.lastIndex - index >= 0 &&
+                (numCount < endNumCount || newBarcode[newBarcode.lastIndex - index] == ' ')
+            ) {
+                if (newBarcode[newBarcode.lastIndex - index] != ' ') {
+                    numCount += 1
+                }
+                index += 1
+            }
+            newBarcode.lastIndex - index + 1
+        }
 
         val updated = updateSelectedGifticon { it.copy(barcode = newValue) }
         viewModelScope.launch {
@@ -377,39 +417,46 @@ class AddGifticonViewModel @Inject constructor(
     )
 
     fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-        val newBalance = charSequence.toString()
+        val newString = charSequence.toString()
         val oldBalance = displayBalance.value.text
-        if (oldBalance == newBalance) {
+        if (oldBalance == newString) {
             return
         }
 
-        val newValue = transformedToBalance(newBalance)
-        val newSelection = start + count
+        val newValue = if (before == 1 && count == 0 && start < oldBalance.length && oldBalance[start] == ',') {
+            transformedToBalance(
+                newString.substring(0, max(start - 1, 0)) + newString.substring(
+                    max(start, 0),
+                    newString.length
+                )
+            )
+        } else {
+            transformedToBalance(newString)
+        }
 
-//        val newValue = newBalance.filter { it.isDigit() }
-//        var newValueText = newValue
-//        val unitCount = oldBalance.substring(0, start + before).count { it == ',' }
-//        if (before == 1 && count == 0 && oldBalance[start] == ',') {
-//            val numIndex = start - unitCount
-//            newValueText =
-//                newValueText.substring(0, numIndex) + newValueText.substring(numIndex + 1, newValueText.length)
-//        }
-//
-//        val newText = balanceFormat.format(newValueText.toDigit())
-//        val newSelection = if (oldBalance.length == start) {
-//            newText.length
-//        } else {
-//            val numIndex = start + count - unitCount
-//            var numCount = 0
-//            var selection = 0
-//            while (numCount < numIndex) {
-//                if (newText[selection].isDigit()) {
-//                    numCount += 1
-//                }
-//                selection += 1
-//            }
-//            selection
-//        }
+        val newBalance = balanceToTransformed(newValue)
+        val newSelection = if (oldBalance.length == start + before || oldBalance == "0") {
+            newBalance.length
+        } else {
+            val endStringCount = max(oldBalance.length - start - before, 0)
+            val oldDividerCount = oldBalance.substring(start + before, oldBalance.length).filter { it == ',' }.length
+            val endNumCount = max(endStringCount - oldDividerCount, 0)
+            var index = 0
+            var numCount = 0
+            while (
+                newBalance.lastIndex - index >= 0 &&
+                (numCount < endNumCount || newBalance[newBalance.lastIndex - index] == ',')
+            ) {
+                if (newBalance.lastIndex - index < 0) {
+                    break
+                }
+                if (newBalance[newBalance.lastIndex - index] != ',') {
+                    numCount += 1
+                }
+                index += 1
+            }
+            newBalance.lastIndex - index + 1
+        }
 
         val updated = updateSelectedGifticon { it.copy(balance = newValue) }
         viewModelScope.launch {
@@ -603,6 +650,19 @@ class AddGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonFocus.NONE))
             _eventFlow.emit(AddGifticonEvent.ShowExpiredAtDatePicker(expiredAt))
+        }
+    }
+
+    private fun requestLoading(loading: Boolean) {
+        viewModelScope.launch {
+            _eventFlow.emit(AddGifticonEvent.RequestLoading(loading))
+        }
+    }
+
+    private fun requestScroll(scroll: AddGifticonScroll) {
+        viewModelScope.launch {
+            delay(400)
+            _eventFlow.emit(AddGifticonEvent.RequestScroll(scroll))
         }
     }
 

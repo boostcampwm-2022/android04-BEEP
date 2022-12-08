@@ -22,6 +22,7 @@ import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
+import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
@@ -29,6 +30,7 @@ import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
+import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
@@ -139,7 +141,9 @@ class AddGifticonActivity : AppCompatActivity() {
                     is AddGifticonEvent.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
                     is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
                     is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
+                    is AddGifticonEvent.RequestLoading -> requestLoading(events.loading)
                     is AddGifticonEvent.RequestFocus -> requestFocus(events.focus)
+                    is AddGifticonEvent.RequestScroll -> requestScroll(events.scroll)
                     is AddGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
                     is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
@@ -182,7 +186,7 @@ class AddGifticonActivity : AppCompatActivity() {
             arguments = Bundle().apply {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
-        }.show(supportFragmentManager, OriginImageDialog::class.java.name)
+        }.show(supportFragmentManager)
     }
 
     private fun showExpiredAtDatePicker(date: Date) {
@@ -196,7 +200,7 @@ class AddGifticonActivity : AppCompatActivity() {
             }
         }.apply {
             setDate(date)
-        }.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
+        }.show(supportFragmentManager)
     }
 
     private fun showConfirmationCancelDialog() {
@@ -222,6 +226,21 @@ class AddGifticonActivity : AppCompatActivity() {
         }.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
     }
 
+    private var progressDialog: ProgressDialog? = null
+
+    private fun requestLoading(loading: Boolean) {
+        if (progressDialog?.isAdded == true) {
+            progressDialog?.dismiss()
+        }
+        progressDialog = if (loading) {
+            ProgressDialog().also {
+                it.show(supportFragmentManager)
+            }
+        } else {
+            null
+        }
+    }
+
     private fun requestFocus(focus: AddGifticonFocus) {
         val focusView = when (focus) {
             AddGifticonFocus.GIFTICON_NAME -> binding.tietName
@@ -238,6 +257,14 @@ class AddGifticonActivity : AppCompatActivity() {
         } else {
             inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
+    }
+
+    private fun requestScroll(scroll: AddGifticonScroll) {
+        val focusView = when (scroll) {
+            AddGifticonScroll.GIFTICON_NAME -> binding.tvName
+            AddGifticonScroll.BRAND_NAME -> binding.tvBrand
+        }
+        binding.nsv.smoothScrollTo(0, focusView.top)
     }
 
     private fun showSnackBar(uiText: UIText) {
