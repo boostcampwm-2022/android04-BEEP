@@ -68,9 +68,9 @@ class BeepWidgetWorker @AssistedInject constructor(
     }
 
     private suspend fun startWidget() {
-        setWidgetState(WidgetState.Loading)
         Timber.tag("TAG").d("${javaClass.simpleName} userLocation start")
         val lastLocation = getUserLocationUseCase().first()
+        setWidgetState(WidgetState.Loading)
         Timber.tag("TAG").d("${javaClass.simpleName} userLocation get $lastLocation")
         getNearBrands(lastLocation.longitude, lastLocation.latitude)
     }
