@@ -195,7 +195,7 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun showOriginalImage() {
-        val origin = "origin${gifticon.value?.id}"
+        val origin = gifticon.value?.originPath ?: return
         event(Event.ShowOriginalImage(origin))
     }
 

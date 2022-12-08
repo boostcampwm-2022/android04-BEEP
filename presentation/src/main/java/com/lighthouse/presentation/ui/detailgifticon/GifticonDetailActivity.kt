@@ -124,7 +124,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
-                val output = getFileStreamPath("cropped${gifticon?.id ?: return@collect}")
+                val output = getFileStreamPath(gifticon?.croppedPath ?: return@collect)
                 Glide.with(binding.ivProductImage)
                     .load(output)
                     .transform(RoundedCorners(8.dp.toInt()))
