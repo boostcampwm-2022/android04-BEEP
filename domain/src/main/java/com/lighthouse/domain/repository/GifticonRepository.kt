@@ -3,6 +3,7 @@ package com.lighthouse.domain.repository
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
@@ -18,7 +19,7 @@ interface GifticonRepository {
         sortBy: SortBy = SortBy.DEADLINE
     ): Flow<DbResult<List<Gifticon>>>
 
-    fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
+    fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>>
     suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
     suspend fun updateGifticon(gifticon: Gifticon)
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>

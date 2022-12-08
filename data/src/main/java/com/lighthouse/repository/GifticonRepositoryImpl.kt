@@ -3,6 +3,7 @@ package com.lighthouse.repository
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
+import com.lighthouse.datasource.gifticoncrop.GifticonCropLocalDataSource
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
