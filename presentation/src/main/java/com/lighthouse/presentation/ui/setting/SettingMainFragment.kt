@@ -28,6 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.databinding.FragmentSettingMainBinding
+import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.security.AuthCallback
@@ -44,6 +45,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     private val activityViewModel: MainViewModel by activityViewModels()
 
     private val settingSecurityFragment by lazy { SettingSecurityFragment() }
+    private val progressDialog by lazy { ProgressDialog() }
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private val auth: FirebaseAuth = Firebase.auth
@@ -142,21 +144,21 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     }
 
     private fun signInWithGoogle(account: GoogleSignInAccount) {
+        progressDialog.show(childFragmentManager, "progress")
         account.email?.let { email ->
             auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { task ->
+                progressDialog.dismiss()
                 val isInitial = task.result.signInMethods?.size == 0
                 if (isInitial) {
                     val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                     auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
                         if (signInTask.isSuccessful) {
-                            Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT)
-                                .show()
+                            Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
                             auth.uid?.let { viewModel.moveGuestData(it) }
                         } else {
                             Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
                         }
                     }
-                    // TODO: 신규 google 로그인
                 } else {
                     MaterialAlertDialogBuilder(requireContext())
                         .setMessage(R.string.setting_already_exist_email)
