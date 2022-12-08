@@ -158,36 +158,36 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleEvent(event: Event) {
+    private fun handleEvent(event: GifticonDetailEvent) {
         when (event) {
-            is Event.ScrollDownForUseButtonClicked -> {
+            is GifticonDetailEvent.ScrollDownForUseButtonClicked -> {
                 binding.svGifticonDetail.scrollToBottom()
             }
-            is Event.EditButtonClicked -> {
+            is GifticonDetailEvent.EditButtonClicked -> {
                 showCheckEditDialog()
             }
-            is Event.OnGifticonInfoChanged -> {
+            is GifticonDetailEvent.OnGifticonInfoChanged -> {
                 if (event.before == event.after) {
                     showGifticonInfoNotChangedToast()
                 } else {
                     showGifticonInfoChangedSnackBar(event.before)
                 }
             }
-            is Event.ExpireDateClicked -> {
+            is GifticonDetailEvent.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
-            is Event.UseGifticonButtonClicked -> {
+            is GifticonDetailEvent.UseGifticonButtonClicked -> {
                 authenticate()
             }
-            is Event.ShowAllUsedInfoButtonClicked -> {
+            is GifticonDetailEvent.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
-            is Event.UseGifticonComplete -> {
+            is GifticonDetailEvent.UseGifticonComplete -> {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
             }
-            is Event.ShowOriginalImage -> {
+            is GifticonDetailEvent.ShowOriginalImage -> {
                 showOriginGifticonDialog(event.origin)
             }
             else -> { // TODO(이벤트 처리)
