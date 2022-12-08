@@ -231,6 +231,7 @@
     <string name="widget_has_not_permission">권한을 허용하신 후 다시 새로고침 해주세요.</string>
     <string name="widget_header_description">근처에서 사용 가능해요!</string>
     <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
+    <string name="widget_gifticon_count">%d개</string>
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
 </resources>

@@ -11,13 +11,11 @@ import androidx.glance.appwidget.updateAll
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
-import com.lighthouse.presentation.mapper.toWidgetModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -47,9 +45,12 @@ class BeepWidgetWorker @AssistedInject constructor(
         }
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyList())
 
-    private val gifticons = gifticonsDbResult.transform { gifticons ->
+    private val gifticonsCount = gifticonsDbResult.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            val gifticonGroup = gifticons.data.groupBy { it.brand }
+            val gifticonGroup = gifticons.data
+                .groupBy { it.brand }
+                .map { it.key to it.value.count() }
+                .toMap()
             emit(gifticonGroup)
         }
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
@@ -77,14 +78,20 @@ class BeepWidgetWorker @AssistedInject constructor(
         runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
             .mapCatching { brandPlaceInfos -> brandPlaceInfos.toPresentation() }
             .onSuccess { brandPlaceInfoUiModel ->
-                val nearGifticons = brandPlaceInfoUiModel.distinctBy { it.brand }.mapNotNull { info ->
-                    gifticons.value[info.brand]?.firstOrNull()
-                        ?.toWidgetModel(diffLocation(info.x, info.y, x, y), info.categoryName)
+                val nearGifticonBrands = brandPlaceInfoUiModel
+                    .map { Pair(it.brand, it.categoryName) }
+                    .distinct()
+                    .toMap()
+
+                val nearGifticonCount = gifticonsCount.value.filter { gifticon ->
+                    nearGifticonBrands[gifticon.key] != null
                 }
 
-                when (nearGifticons.isEmpty()) {
+                val gifticonAndBrandWithCategory = nearGifticonBrands.map { it to nearGifticonCount[it.key] }
+
+                when (nearGifticonCount.isEmpty()) {
                     true -> setWidgetState(WidgetState.Empty)
-                    false -> setWidgetState(WidgetState.Available(nearGifticons))
+                    false -> setWidgetState(WidgetState.Available(gifticonAndBrandWithCategory))
                 }
             }
             .onFailure { throwable ->
