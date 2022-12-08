@@ -39,9 +39,7 @@ abstract class BaseProcessor : ScaleProcessor() {
         bottomPercent: Float
     ): GifticonProcessText {
         val croppedImage = cropImage(bitmap, leftPercent, topPercent, rightPercent, bottomPercent)
-        val image = scaleProcess(croppedImage.bitmap)
-        croppedImage.bitmap.recycle()
-        return GifticonProcessText(tag, image)
+        return GifticonProcessText(tag, croppedImage.bitmap)
     }
 
     protected open fun preprocess(bitmap: Bitmap): Bitmap = bitmap
