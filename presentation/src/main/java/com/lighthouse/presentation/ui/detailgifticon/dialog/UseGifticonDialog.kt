@@ -44,7 +44,8 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
                 MaterialTheme {
                     ConcurrencyField(
                         value = amountToUse.value,
-                        textStyle = MaterialTheme.typography.h4.copy(textAlign = TextAlign.End)
+                        textStyle = MaterialTheme.typography.h4.copy(textAlign = TextAlign.End),
+                        upperLimit = viewModel.gifticon.value?.balance ?: 0
                     ) {
                         amountToUse.value = it
                     }
