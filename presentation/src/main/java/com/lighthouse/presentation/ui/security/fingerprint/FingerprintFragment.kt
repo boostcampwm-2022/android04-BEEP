@@ -12,12 +12,11 @@ import androidx.fragment.app.activityViewModels
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentFingerprintBinding
 import com.lighthouse.presentation.ui.common.viewBindings
-import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.SecurityViewModel
+import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.security.fingerprint.biometric.BiometricAuth
 import com.lighthouse.presentation.ui.setting.SecurityOption
-import timber.log.Timber
 
 class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallback {
 
@@ -42,29 +41,20 @@ class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallbac
         }
 
         binding.btnNotUseFingerprint.setOnClickListener {
-            gotoMain()
+            activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
         }
     }
 
-    private fun gotoMain() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-    }
-
     override fun onAuthSuccess() {
-        Timber.tag("Finger").d("Success")
         activityViewModel.setSecurityOption(SecurityOption.FINGERPRINT)
-        gotoMain()
+        activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
     }
 
     override fun onAuthCancel() {
-        Timber.tag("Finger").d("Cancel")
         activityViewModel.setSecurityOption(SecurityOption.PIN)
     }
 
     override fun onAuthError(@StringRes stringId: Int?) {
-        Timber.tag("Finger").d("Error")
         activityViewModel.setSecurityOption(SecurityOption.PIN)
     }
 }

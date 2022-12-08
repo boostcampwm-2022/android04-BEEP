@@ -29,6 +29,7 @@
                     android:id="@+id/tb_setting"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
                     app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
                     app:title="@string/main_menu_setting"
                     app:titleCentered="true" />
@@ -41,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_used_gifticon"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/ab_setting" />
 
             <TextView
@@ -48,7 +50,8 @@
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_200"
+                android:alpha="0.3"
+                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/main_menu_setting"
                 app:layout_constraintTop_toBottomOf="@+id/tv_used_gifticon" />
@@ -61,6 +64,17 @@
                 android:paddingVertical="16dp"
                 android:text="@string/setting_imminent_notification"
                 app:layout_constraintTop_toBottomOf="@+id/tv_divider_setting" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/sm_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@{vm.userPreferenceState.notification}"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_imminent_notification"
+                app:layout_constraintEnd_toEndOf="@+id/tv_imminent_notification"
+                app:layout_constraintStart_toStartOf="@+id/tv_imminent_notification"
+                app:layout_constraintTop_toTopOf="@+id/tv_imminent_notification" />
 
             <TextView
                 android:id="@+id/tv_security"
@@ -107,11 +121,36 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_security" />
 
             <TextView
+                android:id="@+id/tv_location_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/BEEP.TextStyle.Caption"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+                app:layout_constraintEnd_toEndOf="@+id/tv_location"
+                app:layout_constraintStart_toStartOf="@+id/tv_location"
+                app:layout_constraintTop_toTopOf="@+id/tv_location"
+                app:layout_constraintHorizontal_bias="0.85"
+                />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_location"
+                android:src="@drawable/ic_arrow_forward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+                app:layout_constraintEnd_toEndOf="@+id/tv_location"
+                app:layout_constraintStart_toStartOf="@+id/tv_location"
+                app:layout_constraintTop_toTopOf="@+id/tv_location"
+                android:contentDescription="@string/setting_security"
+                />
+
+            <TextView
                 android:id="@+id/tv_divider_user"
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_200"
+                android:alpha="0.3"                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/setting_all"
                 app:layout_constraintTop_toBottomOf="@+id/tv_location" />
@@ -150,7 +189,8 @@
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_200"
+                android:alpha="0.3"
+                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/setting_etc"
                 app:layout_constraintTop_toBottomOf="@+id/tv_withdrawal" />

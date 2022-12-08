@@ -19,6 +19,7 @@ class SecurityActivity : AppCompatActivity() {
     private val viewModel: SecurityViewModel by viewModels()
     private val fingerprintFragment by lazy { FingerprintFragment() }
     private val pinFragment by lazy { PinFragment() }
+    private val checkLocationFragment by lazy { CheckLocationFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,9 @@ class SecurityActivity : AppCompatActivity() {
     }
 
     private fun gotoMain() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         startActivity(intent)
     }
 
@@ -48,11 +51,13 @@ class SecurityActivity : AppCompatActivity() {
         val fragment = when (directions) {
             SecurityDirections.FINGERPRINT -> fingerprintFragment
             SecurityDirections.PIN -> pinFragment
+            SecurityDirections.LOCATION -> checkLocationFragment
             else -> return
         }
         supportFragmentManager.commit {
             if (fragment != fingerprintFragment && fingerprintFragment.isAdded) hide(fingerprintFragment)
             if (fragment != pinFragment && pinFragment.isAdded) hide(pinFragment)
+            if (fragment != checkLocationFragment && checkLocationFragment.isAdded) hide(checkLocationFragment)
             if (fragment.isAdded) {
                 show(fragment)
             } else {
