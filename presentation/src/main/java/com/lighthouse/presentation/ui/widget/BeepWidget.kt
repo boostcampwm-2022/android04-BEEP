@@ -110,15 +110,19 @@ fun WidgetLoading() {
 
 @Composable
 fun WidgetHead() {
+    val intent = Intent(LocalContext.current, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
     Row(
-        modifier = GlanceModifier.fillMaxWidth().background(R.color.beep_pink).height(40.dp).padding(start = 12.dp),
+        modifier = GlanceModifier.fillMaxWidth().background(R.color.beep_pink).height(40.dp).padding(start = 12.dp)
+            .clickable(actionStartActivity(intent)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = GlanceModifier.width(4.dp))
 
         Image(
-            modifier = GlanceModifier.size(44.dp).padding(8.dp)
+            modifier = GlanceModifier.size(48.dp).padding(8.dp)
                 .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
             provider = ImageProvider(resId = R.drawable.ic_splash_beep),
             contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
@@ -127,12 +131,12 @@ fun WidgetHead() {
         Spacer(GlanceModifier.defaultWeight())
 
         Image(
-            modifier = GlanceModifier.size(32.dp).padding(8.dp)
+            modifier = GlanceModifier.size(52.dp).padding(start = 16.dp, end = 16.dp)
                 .clickable(onClick = actionRunCallback<WidgetRefreshAction>()),
             provider = ImageProvider(resId = R.drawable.ic_widget_refresh_24),
             contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
         )
-        Spacer(GlanceModifier.width(28.dp).height(4.dp))
+        Spacer(GlanceModifier.width(12.dp))
     }
 }
 
@@ -187,47 +191,53 @@ private fun GifticonItem(
     val intent = Intent(LocalContext.current, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth().padding(8.dp).clickable(
-            onClick = actionStartActivity(
-                intent,
-                parameters = actionParametersOf(
-                    ActionParameters.Key<String>(KEY_WIDGET_BRAND) to brandWithCategory.key,
-                    ActionParameters.Key<String>(KEY_WIDGET_EVENT) to WIDGET_EVENT_MAP
-                )
+    Box() {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier.fillMaxWidth().padding(start = 24.dp, top = 10.dp, end = 24.dp, bottom = 10.dp)
+        ) {
+            Image(
+                modifier = GlanceModifier.size(16.dp),
+                provider = ImageProvider(resId = getDrawableId(brandWithCategory.value)),
+                contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
             )
-        )
-    ) {
-        Spacer(modifier = GlanceModifier.width(16.dp))
-        Image(
-            modifier = GlanceModifier.size(16.dp),
-            provider = ImageProvider(resId = getDrawableId(brandWithCategory.value)),
-            contentDescription = stringResource(id = R.string.widget_gifticon_image_description)
-        )
-        Spacer(modifier = GlanceModifier.width(8.dp))
-        Text(
-            text = brandWithCategory.key,
-            style = TextStyle(
-                fontSize = 14.sp,
-                textAlign = TextAlign.Start,
-                color = ColorProvider(day = Color.Black, night = Color.White)
-            )
-        )
-        Spacer(GlanceModifier.defaultWeight())
-        if (isShowGifticon) {
+            Spacer(modifier = GlanceModifier.width(8.dp))
             Text(
-                modifier = GlanceModifier.padding(end = 16.dp),
-                text = stringResource(R.string.widget_gifticon_count, gifticonCount),
+                text = brandWithCategory.key,
                 style = TextStyle(
                     fontSize = 14.sp,
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.Start,
+                    color = ColorProvider(day = Color.Black, night = Color.White)
                 )
             )
+            Spacer(GlanceModifier.defaultWeight())
+            if (isShowGifticon) {
+                Text(
+                    text = stringResource(R.string.widget_gifticon_count, gifticonCount),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.End
+                    )
+                )
+            }
         }
+        Spacer(
+            modifier = modifier.fillMaxSize().clickable(onClick = startActivityHome(intent, brandWithCategory))
+        )
     }
 }
+
+@Composable
+private fun startActivityHome(
+    intent: Intent,
+    brandWithCategory: Map.Entry<String, String>
+) = actionStartActivity(
+    intent,
+    parameters = actionParametersOf(
+        ActionParameters.Key<String>(KEY_WIDGET_BRAND) to brandWithCategory.key,
+        ActionParameters.Key<String>(KEY_WIDGET_EVENT) to WIDGET_EVENT_MAP
+    )
+)
 
 fun getDrawableId(category: String): Int {
     return when (category) {
@@ -243,7 +253,7 @@ fun getDrawableId(category: String): Int {
 
 class WidgetRefreshAction : ActionCallback {
 
-    override suspend fun onRun(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         BeepWorkManager(context).widgetEnqueue(true)
     }
 }

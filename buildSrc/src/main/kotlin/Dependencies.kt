@@ -64,7 +64,7 @@ object Versions {
     const val SHIMMER = "0.5.0"
     const val LOTTIE = "5.2.0"
 
-    const val GLANCE = "1.0.0-alpha03"
+    const val GLANCE = "1.0.0-alpha05"
 }
 
 object Libraries {
