@@ -196,7 +196,7 @@ class GifticonDetailViewModel @Inject constructor(
     fun amountChipClicked(amountPreset: CashAmountPreset) {
         amountPreset.amount?.let { amount ->
             amountToBeUsed.update {
-                it + amount
+                minOf(it + amount, gifticon.value?.balance ?: 0)
             }
         } ?: run { // "전액" 버튼이 클릭된 경우
             amountToBeUsed.update {
