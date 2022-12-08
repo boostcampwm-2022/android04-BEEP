@@ -25,6 +25,7 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -93,9 +94,21 @@ class AddGifticonViewModel @Inject constructor(
         it?.name
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    fun onNameFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonScroll.GIFTICON_NAME)
+        }
+    }
+
     val brand = selectedGifticon.map {
         it?.brandName
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun onBrandFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonScroll.BRAND_NAME)
+        }
+    }
 
     private val displayBarcodeSelection = MutableStateFlow(0)
 
@@ -643,6 +656,13 @@ class AddGifticonViewModel @Inject constructor(
     private fun requestLoading(loading: Boolean) {
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.RequestLoading(loading))
+        }
+    }
+
+    private fun requestScroll(scroll: AddGifticonScroll) {
+        viewModelScope.launch {
+            delay(400)
+            _eventFlow.emit(AddGifticonEvent.RequestScroll(scroll))
         }
     }
 

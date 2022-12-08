@@ -143,6 +143,7 @@ class AddGifticonActivity : AppCompatActivity() {
                     is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
                     is AddGifticonEvent.RequestLoading -> requestLoading(events.loading)
                     is AddGifticonEvent.RequestFocus -> requestFocus(events.focus)
+                    is AddGifticonEvent.RequestScroll -> requestScroll(events.scroll)
                     is AddGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
                     is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
@@ -256,6 +257,14 @@ class AddGifticonActivity : AppCompatActivity() {
         } else {
             inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
+    }
+
+    private fun requestScroll(scroll: AddGifticonScroll) {
+        val focusView = when (scroll) {
+            AddGifticonScroll.GIFTICON_NAME -> binding.tvName
+            AddGifticonScroll.BRAND_NAME -> binding.tvBrand
+        }
+        binding.nsv.smoothScrollTo(0, focusView.top)
     }
 
     private fun showSnackBar(uiText: UIText) {
