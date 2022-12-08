@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="tv_expire_at_label,tv_expire_at"
             app:isVisible="@{!vm.gifticon.used}"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_expire_at_label"
@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="tv_used_address_label,tv_used_address,tv_used_date_label,tv_used_date"
             app:isVisible="@{vm.gifticon.used}"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_used_address_label"
