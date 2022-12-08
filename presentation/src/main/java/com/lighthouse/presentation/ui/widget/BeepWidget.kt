@@ -56,7 +56,6 @@ import com.lighthouse.presentation.extra.Extras.KEY_WIDGET_EVENT
 import com.lighthouse.presentation.extra.Extras.WIDGET_EVENT_MAP
 import com.lighthouse.presentation.ui.main.MainActivity
 import com.lighthouse.presentation.ui.widget.component.AppWidgetColumn
-import timber.log.Timber
 
 class BeepWidget : GlanceAppWidget() {
 
@@ -77,7 +76,6 @@ class BeepWidget : GlanceAppWidget() {
             when (widgetState) {
                 is WidgetState.Loading -> WidgetLoading()
                 is WidgetState.Available -> {
-                    Timber.tag("TAG").d("${javaClass.simpleName} size -> $size")
                     when (size) {
                         thinMode -> WidgetBody(widgetState, false)
                         else -> WidgetBody(widgetState, true)
