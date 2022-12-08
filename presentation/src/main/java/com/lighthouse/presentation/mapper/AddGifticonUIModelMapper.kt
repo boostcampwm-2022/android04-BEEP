@@ -1,10 +1,9 @@
 package com.lighthouse.presentation.mapper
 
+import androidx.core.graphics.toRect
 import com.lighthouse.domain.model.GifticonForAddition
-import com.lighthouse.presentation.extension.toDigit
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
-import com.lighthouse.presentation.model.EditTextInfo
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import java.util.Date
@@ -40,10 +39,10 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(
         hasImage = hasImage,
         name = name,
         brandName = brandName,
-        barcode = EditTextInfo(barcode, barcode.length),
+        barcode = barcode,
         expiredAt = expiredAt,
         isCashCard = isCashCard,
-        balance = EditTextInfo(balance, balance.length),
+        balance = balance,
         memo = memo,
         thumbnailImage = thumbnailImage
     )
@@ -54,12 +53,13 @@ fun AddGifticonUIModel.toDomain(): GifticonForAddition {
         hasImage = hasImage,
         name = name,
         brandName = brandName,
-        barcode = barcode.text.replace(" ", ""),
+        barcode = barcode,
         expiredAt = expiredAt,
         isCashCard = isCashCard,
-        balance = balance.text.toDigit(),
+        balance = balance.toIntOrNull() ?: 0,
         memo = memo,
         originUri = origin.toString(),
-        croppedUri = thumbnailImage.uri?.path ?: ""
+        croppedUri = thumbnailImage.uri?.path ?: "",
+        croppedRect = thumbnailImage.croppedRect.toRect().toDomain()
     )
 }

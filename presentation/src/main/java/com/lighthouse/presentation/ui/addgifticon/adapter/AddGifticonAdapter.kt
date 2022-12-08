@@ -65,6 +65,7 @@ class AddGifticonAdapter(
             override fun getChangePayload(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Any? {
                 if (oldItem is AddGifticonItemUIModel.Gifticon &&
                     newItem is AddGifticonItemUIModel.Gifticon &&
+                    newItem.thumbnailImage == oldItem.thumbnailImage &&
                     (newItem.isDelete != oldItem.isDelete || newItem.isValid != oldItem.isValid)
                 ) {
                     return UPDATE_BADGE
