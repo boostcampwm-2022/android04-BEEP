@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
@@ -21,9 +23,11 @@ import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragmentContainer
 import com.lighthouse.presentation.ui.map.MapActivity
+import com.lighthouse.presentation.ui.security.SecurityActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -62,10 +66,29 @@ class MainActivity : AppCompatActivity() {
             vm = viewModel
         }
 
+        checkSecurityOption()
         collectEvent()
         collectPage()
         collectFab()
         collectBnv()
+    }
+
+    private fun checkSecurityOption() {
+        repeatOnStarted {
+            if (viewModel.securityOption.first().not()) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.security_not_set))
+                    .setMessage(getString(R.string.security_not_set_description))
+                    .setNeutralButton(getString(R.string.all_not_use)) { dialog, which ->
+                        viewModel.setSecurityNoUse()
+                    }
+                    .setPositiveButton(getString(R.string.main_menu_setting)) { dialog, which ->
+                        gotoSecurity()
+                    }
+                    .setCancelable(false)
+                    .show()
+            }
+        }
     }
 
     private fun collectEvent() {
@@ -152,6 +175,13 @@ class MainActivity : AppCompatActivity() {
     private fun gotoMap(brand: String) {
         val intent = Intent(this, MapActivity::class.java).apply {
             putExtra(Extras.KEY_WIDGET_BRAND, brand)
+        }
+        startActivity(intent)
+    }
+
+    private fun gotoSecurity() {
+        val intent = Intent(this, SecurityActivity::class.java).apply {
+            putExtra(Extras.KEY_PIN_REVISE, false)
         }
         startActivity(intent)
     }

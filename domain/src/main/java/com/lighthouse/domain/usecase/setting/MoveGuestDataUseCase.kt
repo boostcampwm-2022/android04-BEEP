@@ -1,13 +1,12 @@
 package com.lighthouse.domain.usecase.setting
 
 import com.lighthouse.domain.repository.UserPreferencesRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetSecurityOptionUseCase @Inject constructor(
+class MoveGuestDataUseCase @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository
 ) {
-    operator fun invoke(): Flow<Int> {
-        return userPreferencesRepository.getSecurityOption()
+    suspend operator fun invoke(uid: String): Result<Unit> {
+        return userPreferencesRepository.moveGuestData(uid)
     }
 }

@@ -11,15 +11,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/beep_pink"
+        android:paddingHorizontal="32dp"
         tools:context=".ui.signin.SignInFragment">
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="64dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/anim_logo"
+            app:layout_constraintBottom_toTopOf="@+id/btn_google_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_google_login"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="16dp"
             app:buttonSize="wide"
             app:colorScheme="auto"
+            app:layout_constraintBottom_toTopOf="@+id/tv_guest_signin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_guest_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/signin_guest"
+            android:textAllCaps="false"
+            android:textAppearance="@style/BEEP.TextStyle.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
