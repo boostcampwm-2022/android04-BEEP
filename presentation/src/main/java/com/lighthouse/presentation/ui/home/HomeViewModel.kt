@@ -2,8 +2,8 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.Dms
 import com.lighthouse.domain.DmsLocation
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.domain.LocationConverter.setDmsLocation
 import com.lighthouse.domain.model.BeepError
@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -40,7 +41,6 @@ class HomeViewModel @Inject constructor(
     private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
 ) : ViewModel() {
 
-    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
     private var locationFlow: Job? = null
 
     private val _eventFlow = MutableEventFlow<HomeEvent>()
@@ -83,6 +83,8 @@ class HomeViewModel @Inject constructor(
     private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
     val nearGifticons = _nearGifticons.asStateFlow()
 
+    private var prevLocation = MutableStateFlow<DmsLocation?>(null)
+
     init {
         setLocationFlowJob()
     }
@@ -91,6 +93,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
                 if (result) observeLocationFlow()
+                combineLocationGifticon()
             }
         }
     }
@@ -101,19 +104,25 @@ class HomeViewModel @Inject constructor(
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
                 _uiState.value = UiState.Loading
+
                 val currentLocation = setDmsLocation(location)
-                if (prevLocation != currentLocation) {
-                    prevLocation = currentLocation
-                    getNearBrands(location.longitude, location.latitude)
+                if (prevLocation.value != currentLocation) {
+                    isShimmer.value = true
+                    prevLocation.value = currentLocation
                 }
             }
         }
     }
 
-    private fun getNearBrands(x: Double, y: Double) {
-        viewModelScope.launch {
+    private suspend fun combineLocationGifticon() {
+        prevLocation.combine(gifticons) { location, _ ->
+            location
+        }.collectLatest { location ->
+            location ?: return@collectLatest
+            val x = LocationConverter.convertToDD(location.x)
+            val y = LocationConverter.convertToDD(location.y)
             isEmptyNearBrands.value = false
-            isShimmer.value = true
+
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
