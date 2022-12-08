@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
+import com.lighthouse.presentation.binding.loadWithFileStreamPath
 import com.lighthouse.presentation.databinding.ItemGifticonHorizontalBinding
 import com.lighthouse.presentation.databinding.ItemGifticonVerticalBinding
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
@@ -45,10 +45,7 @@ class GifticonAdapter(
         }
 
         fun bind(gifticon: Gifticon) {
-            val output = binding.ivProduct.context.getFileStreamPath("cropped${gifticon.id}")
-            Glide.with(binding.ivProduct)
-                .load(output)
-                .into(binding.ivProduct)
+            binding.ivProduct.loadWithFileStreamPath("cropped${gifticon.id}")
             binding.gifticon = gifticon
             binding.executePendingBindings()
         }
@@ -68,10 +65,7 @@ class GifticonAdapter(
         }
 
         fun bind(gifticon: Gifticon) {
-            val output = binding.ivProduct.context.getFileStreamPath("cropped${gifticon.id}")
-            Glide.with(binding.ivProduct)
-                .load(output)
-                .into(binding.ivProduct)
+            binding.ivProduct.loadWithFileStreamPath("cropped${gifticon.id}")
             binding.gifticon = gifticon
             binding.executePendingBindings()
         }
