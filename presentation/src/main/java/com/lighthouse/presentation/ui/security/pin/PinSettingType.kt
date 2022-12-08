@@ -5,5 +5,6 @@ enum class PinSettingType {
     CONFIRM,
     WRONG,
     COMPLETE,
-    ERROR
+    ERROR,
+    WAIT
 }

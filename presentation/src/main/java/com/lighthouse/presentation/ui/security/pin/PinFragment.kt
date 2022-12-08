@@ -81,6 +81,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         delay(500L)
                         activityViewModel.gotoOtherScreen(SecurityDirections.LOCATION)
                     }
+                    PinSettingType.WAIT -> {}
                 }
             }
         }

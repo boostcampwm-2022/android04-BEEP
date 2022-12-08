@@ -13,6 +13,8 @@ abstract class PinViewModel : ViewModel() {
     val pinMode = _pinMode.asStateFlow()
 
     fun inputPin(num: Int) {
+        if (pinMode.value == PinSettingType.WAIT || pinMode.value == PinSettingType.WRONG) return
+
         if (pinString.value.length < 6) {
             _pinString.value = "${pinString.value}$num"
         }
