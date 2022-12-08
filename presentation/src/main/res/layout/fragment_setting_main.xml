@@ -4,7 +4,6 @@
 
     <data>
         <import type="com.lighthouse.domain.model.UserPreferenceOption" />
-        <import type="android.view.View"/>
 
         <variable
             name="vm"
@@ -124,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_sign_out"
-                android:visibility="@{vm.userPreferenceState.guest ? View.GONE : View.VISIBLE}"
+                app:isVisible="@{!vm.userPreferenceState.guest}"
                 app:layout_constraintTop_toBottomOf="@+id/tv_divider_user" />
 
             <TextView
@@ -134,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_sign_in"
-                android:visibility="@{vm.userPreferenceState.guest ? View.VISIBLE : View.GONE}"
+                app:isVisible="@{vm.userPreferenceState.guest}"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sign_out" />
 
             <TextView

@@ -30,7 +30,7 @@
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_google_login"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:buttonSize="wide"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:text="@string/sign_in_guest"
+            android:text="@string/signin_guest"
             android:textAllCaps="false"
             android:textAppearance="@style/BEEP.TextStyle.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
