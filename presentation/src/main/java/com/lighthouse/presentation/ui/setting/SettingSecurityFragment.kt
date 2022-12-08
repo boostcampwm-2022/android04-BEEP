@@ -91,8 +91,8 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting), Au
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        checkedSecurityOption = viewModel.securityOptionFlow.value.ordinal
-        currentSecurityOption = viewModel.securityOptionFlow
+        checkedSecurityOption = viewModel.securityOption.value.ordinal
+        currentSecurityOption = viewModel.securityOption
 
         binding.tvChangeSecurityOption.setOnClickListener {
             // 옵션 변경 시 currentSecurityOption 바뀌기 때문에 매번 AlertDialog 을 만들어 사용합니다.

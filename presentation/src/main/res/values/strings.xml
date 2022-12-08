@@ -92,6 +92,8 @@
     <string name="signin_google_connect_fail">구글 연결 실패</string>
     <string name="signin_success">로그인 성공</string>
     <string name="signin_fail">로그인 실패</string>
+    <string name="signin_guest">게스트로 시작하기</string>
+
 
     <string name="fingerprint_info_obtain_fail">기기의 지문 정보를 가져올 수 없습니다.</string>
     <string name="fingerprint_error_no_hardware">지문 인증을 사용할 수 없는 기기입니다.</string>
@@ -180,12 +182,14 @@
     <string name="setting_location">위치 정보 권한</string>
     <string name="setting_all">사용자</string>
     <string name="setting_sign_out">로그아웃</string>
+    <string name="setting_sign_in">구글 계정 연동</string>
     <string name="setting_withdrawal">회원 탈퇴</string>
     <string name="setting_etc">기타</string>
     <string name="setting_coffee">개발자에게 커피 사주기</string>
     <string name="setting_terms_of_use">이용약관</string>
     <string name="setting_personal_info_policy">개인정보처리방침</string>
     <string name="setting_open_source_license">오픈소스 라이선스</string>
+    <string name="setting_already_exist_email">이미 등록된 계정입니다.\n다른 이메일로 재시도해주세요.</string>
 
     <string name="gifticon_list_sort_by_deadline">디데이순</string>
     <string name="gifticon_list_sort_by_recent">최신순</string>
@@ -211,6 +215,9 @@
     <string name="security_setting_change_cancel">보안 설정 변경을 취소했습니다.</string>
 
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
+    <string name="security_not_set">보안 수단 미설정</string>
+    <string name="security_not_set_description">소중한 기프티콘을 지킬 수 있는 보안을 설정하시겠어요?</string>
+    <string name="all_not_use">사용 안 함</string>
 
     <string name="notification_title">만료 임박 기프티콘 알림</string>
     <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>

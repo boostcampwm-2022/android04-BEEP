@@ -132,4 +132,8 @@ class GifticonRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
+        gifticonLocalDataSource.moveUserIdGifticon(oldUserId, newUserId)
+    }
 }
