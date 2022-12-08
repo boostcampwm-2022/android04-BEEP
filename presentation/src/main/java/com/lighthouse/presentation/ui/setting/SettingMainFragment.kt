@@ -1,11 +1,16 @@
 package com.lighthouse.presentation.ui.setting
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -52,7 +57,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                     Snackbar.make(requireView(), getString(R.string.signin_google_fail), Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -66,6 +72,11 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
             }
         }
 
+    private val locationLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            locationPermissionCheck()
+        }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -74,10 +85,13 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
 
         binding.tvSecurity.setOnClickListener { authenticate() }
         binding.tvSignOut.setOnClickListener { signOut() }
+        binding.tvLocation.setOnClickListener { gotoPermissionSetting() }
 
         if (viewModel.userPreferenceState.value.guest) {
             initGoogleLogin()
         }
+
+        locationPermissionCheck()
     }
 
     private fun gotoSecuritySetting() {
@@ -119,7 +133,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                     val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                     auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
                         if (signInTask.isSuccessful) {
-                            Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT)
+                                .show()
                             auth.uid?.let { viewModel.moveGuestData(it) }
                         } else {
                             Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
@@ -146,5 +161,29 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         stringId?.let {
             Snackbar.make(requireView(), getString(it), Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun locationPermissionCheck() {
+        for (permission in PERMISSIONS) {
+            val result: Int = ContextCompat.checkSelfPermission(requireContext(), permission)
+            if (PackageManager.PERMISSION_GRANTED != result) {
+                binding.tvLocationOption.text = getString(R.string.location_not_allowed)
+                return
+            }
+        }
+        binding.tvLocationOption.text = getString(R.string.location_allowed)
+    }
+
+    private fun gotoPermissionSetting() {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts("package", requireActivity().packageName, null)
+        }
+        locationLauncher.launch(intent)
+    }
+
+    companion object {
+        private val PERMISSIONS =
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 }

@@ -228,5 +228,7 @@
 
     <string name="location_setting">위치권한설정</string>
     <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
+    <string name="location_not_allowed">허용 안 함</string>
+    <string name="location_allowed">허용됨</string>
 
 </resources>
