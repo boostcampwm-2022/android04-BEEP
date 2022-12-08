@@ -15,17 +15,8 @@ sealed interface WidgetState {
     object NoExistsLocationPermission : WidgetState
 
     @Serializable
-    data class Available(val gifticons: List<GifticonWidgetData>) : WidgetState
+    data class Available(val gifticons: List<Pair<Map.Entry<String, String>, Int?>>) : WidgetState
 
     @Serializable
     data class Unavailable(val message: String) : WidgetState
 }
-
-@Serializable
-data class GifticonWidgetData(
-    val id: String,
-    val category: String,
-    val name: String,
-    val brand: String,
-    val distance: Int
-)

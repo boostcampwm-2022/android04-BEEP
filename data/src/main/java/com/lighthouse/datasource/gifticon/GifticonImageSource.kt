@@ -8,6 +8,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.domain.model.GifticonForAddition
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ class GifticonImageSource @Inject constructor(
         val sampleSize = calculateSampleSize(inputOrigin)
 
         val sampledOrigin = decodeSampledBitmap(originUri, sampleSize) ?: return
-        saveBitmap(sampledOrigin, CompressFormat.JPEG, QUALITY, outputOrigin)
+        saveBitmap(sampledOrigin, CompressFormat.JPEG, 100, outputOrigin)
         sampledOrigin.recycle()
 
         val inputCropped = File(gifticon.croppedUri)
@@ -59,6 +60,21 @@ class GifticonImageSource @Inject constructor(
             )
         }
         saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCropped)
+    }
+
+    suspend fun updateImage(gifticonCrop: GifticonCrop) {
+        val inputOrigin = context.getFileStreamPath("$ORIGIN_PREFIX${gifticonCrop.gifticonId}")
+        val originBitmap = decodeBitmap(inputOrigin)
+
+        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX${gifticonCrop.gifticonId}")
+        val croppedBitmap = Bitmap.createBitmap(
+            originBitmap,
+            gifticonCrop.rect.left,
+            gifticonCrop.rect.top,
+            gifticonCrop.rect.width,
+            gifticonCrop.rect.height
+        )
+        saveBitmap(croppedBitmap, CompressFormat.JPEG, QUALITY, outputCropped)
     }
 
     private fun calculateSampleSize(inputStream: InputStream): Int {

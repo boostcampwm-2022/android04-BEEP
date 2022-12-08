@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
@@ -26,6 +27,8 @@ import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
+import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
@@ -121,7 +124,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
-                val output = getFileStreamPath("cropped${gifticon?.id ?: return@collect}")
+                val output = getFileStreamPath(gifticon?.croppedPath ?: return@collect)
                 Glide.with(binding.ivProductImage)
                     .load(output)
                     .transform(RoundedCorners(8.dp.toInt()))
@@ -155,34 +158,37 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleEvent(event: Event) {
+    private fun handleEvent(event: GifticonDetailEvent) {
         when (event) {
-            is Event.ScrollDownForUseButtonClicked -> {
+            is GifticonDetailEvent.ScrollDownForUseButtonClicked -> {
                 binding.svGifticonDetail.scrollToBottom()
             }
-            is Event.EditButtonClicked -> {
+            is GifticonDetailEvent.EditButtonClicked -> {
                 showCheckEditDialog()
             }
-            is Event.OnGifticonInfoChanged -> {
+            is GifticonDetailEvent.OnGifticonInfoChanged -> {
                 if (event.before == event.after) {
                     showGifticonInfoNotChangedToast()
                 } else {
                     showGifticonInfoChangedSnackBar(event.before)
                 }
             }
-            is Event.ExpireDateClicked -> {
+            is GifticonDetailEvent.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
-            is Event.UseGifticonButtonClicked -> {
+            is GifticonDetailEvent.UseGifticonButtonClicked -> {
                 authenticate()
             }
-            is Event.ShowAllUsedInfoButtonClicked -> {
+            is GifticonDetailEvent.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
-            is Event.UseGifticonComplete -> {
+            is GifticonDetailEvent.UseGifticonComplete -> {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
+            }
+            is GifticonDetailEvent.ShowOriginalImage -> {
+                showOriginGifticonDialog(event.origin)
             }
             else -> { // TODO(이벤트 처리)
             }
@@ -264,6 +270,15 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun authenticate() {
         authManager.auth(this, biometricLauncher, authCallback)
+    }
+
+    private fun showOriginGifticonDialog(path: String) {
+        val uri = this.getFileStreamPath(path).toUri()
+        OriginImageDialog().apply {
+            arguments = Bundle().apply {
+                putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
+            }
+        }.show(supportFragmentManager, OriginImageDialog::class.java.name)
     }
 
     private fun showGifticonInfoChangedSnackBar(before: Gifticon) {

@@ -135,6 +135,7 @@
     <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
     <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
     <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
+    <string name="use_gifticon_dialog_use_origin_image_underline_target_label">원본 이미지로 결제하기</string>
 
     <string name="secure_later">나중에 설정</string>
     <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
@@ -230,8 +231,9 @@
     <string name="widget_refresh_button">새로고침</string>
     <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
     <string name="widget_has_not_permission">권한을 허용하신 후 다시 새로고침 해주세요.</string>
-    <string name="widget_header_description">근처에서 사용할 수 있는 기프티콘이에요</string>
+    <string name="widget_header_description">근처에서 사용 가능해요!</string>
     <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
+    <string name="widget_gifticon_count">%d개</string>
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
 </resources>

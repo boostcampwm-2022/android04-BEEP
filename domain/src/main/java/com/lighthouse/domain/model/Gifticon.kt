@@ -16,4 +16,8 @@ data class Gifticon(
     val balance: Int,
     val memo: String,
     val isUsed: Boolean
-) : Serializable
+) : Serializable {
+
+    val croppedPath = "cropped$id"
+    val originPath = "origin$id"
+}

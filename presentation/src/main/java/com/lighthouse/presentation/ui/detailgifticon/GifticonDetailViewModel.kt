@@ -91,7 +91,7 @@ class GifticonDetailViewModel @Inject constructor(
 
     val amountToBeUsed = MutableStateFlow(0)
 
-    private val _event = MutableSharedFlow<Event>()
+    private val _event = MutableSharedFlow<GifticonDetailEvent>()
     val event = _event.asSharedFlow()
 
     private val _tempGifticon = MutableStateFlow<Gifticon?>(null)
@@ -103,30 +103,30 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun scrollDownForUseButtonClicked() {
-        event(Event.ScrollDownForUseButtonClicked)
+        event(GifticonDetailEvent.ScrollDownForUseButtonClicked)
     }
 
     fun shareButtonClicked() {
-        event(Event.ShareButtonClicked)
+        event(GifticonDetailEvent.ShareButtonClicked)
     }
 
     fun editButtonClicked() {
-        event(Event.EditButtonClicked)
+        event(GifticonDetailEvent.EditButtonClicked)
     }
 
     fun expireDateClicked() {
         Timber.tag("gifticon_detail").d("expireDateClicked() 호출")
-        event(Event.ExpireDateClicked)
+        event(GifticonDetailEvent.ExpireDateClicked)
     }
 
     fun showAllUsedInfoButtonClicked() {
-        event(Event.ShowAllUsedInfoButtonClicked)
+        event(GifticonDetailEvent.ShowAllUsedInfoButtonClicked)
     }
 
     fun useGifticonButtonClicked() {
         when (mode.value) {
             GifticonDetailMode.UNUSED -> {
-                event(Event.UseGifticonButtonClicked)
+                event(GifticonDetailEvent.UseGifticonButtonClicked)
             }
             GifticonDetailMode.USED -> {
                 viewModelScope.launch {
@@ -147,10 +147,10 @@ class GifticonDetailViewModel @Inject constructor(
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
                 useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value)
                 amountToBeUsed.value = 0
-                event(Event.UseGifticonComplete)
+                event(GifticonDetailEvent.UseGifticonComplete)
             } else {
                 useGifticonUseCase(gifticonId)
-                event(Event.UseGifticonComplete)
+                event(GifticonDetailEvent.UseGifticonComplete)
             }
         }
     }
@@ -212,6 +212,11 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
+    fun showOriginalImage() {
+        val origin = gifticon.value?.originPath ?: return
+        event(GifticonDetailEvent.ShowOriginalImage(origin))
+    }
+
     fun startEdit() {
         _tempGifticon.value = gifticon.value ?: return
     }
@@ -225,11 +230,11 @@ class GifticonDetailViewModel @Inject constructor(
                 updateGifticonInfoUseCase(after)
             }
         }
-        event(Event.OnGifticonInfoChanged(before, after))
+        event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
         _tempGifticon.value = null
     }
 
-    private fun event(event: Event) {
+    private fun event(event: GifticonDetailEvent) {
         viewModelScope.launch {
             _event.emit(event)
         }

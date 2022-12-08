@@ -100,6 +100,7 @@ class HomeViewModel @Inject constructor(
 
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
+                _uiState.value = UiState.Loading
                 val currentLocation = setDmsLocation(location)
                 if (prevLocation != currentLocation) {
                     prevLocation = currentLocation
@@ -111,7 +112,6 @@ class HomeViewModel @Inject constructor(
 
     private fun getNearBrands(x: Double, y: Double) {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
             isEmptyNearBrands.value = false
             isShimmer.value = true
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }

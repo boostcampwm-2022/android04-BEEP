@@ -49,6 +49,6 @@ fun appWidgetBackgroundModifier() = GlanceModifier
     .appWidgetBackgroundCornerRadius()
 
 fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {
-    cornerRadius(16.dp)
+    cornerRadius(12.dp)
     return this
 }

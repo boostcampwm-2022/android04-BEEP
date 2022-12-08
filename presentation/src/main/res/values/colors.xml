@@ -18,5 +18,5 @@
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/beep_pink</color>
 
     <color name="point_green">#06DA79</color>
-    <color name="widget_background">@color/m3_sys_color_light_background</color>
+    <color name="widget_background">#FFFFFFFF</color>
 </resources>
