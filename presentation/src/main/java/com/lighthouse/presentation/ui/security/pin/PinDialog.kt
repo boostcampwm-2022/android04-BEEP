@@ -1,6 +1,9 @@
 package com.lighthouse.presentation.ui.security.pin
 
+import android.animation.ValueAnimator
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -30,12 +33,38 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
     }
 
+    private lateinit var numberPadViews: List<View>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        numberPadViews = listOf(
+            binding.tvNum0,
+            binding.tvNum1,
+            binding.tvNum2,
+            binding.tvNum3,
+            binding.tvNum4,
+            binding.tvNum5,
+            binding.tvNum6,
+            binding.tvNum7,
+            binding.tvNum8,
+            binding.tvNum9,
+            binding.ivBackspace
+        )
+
+        repeatOnStarted {
+            viewModel.pushedNum.collect { num ->
+                animateNumberPadBackground(num)
+            }
+        }
+
         initBottomSheetDialog(view)
+        managePinMode()
+    }
+
+    private fun managePinMode() {
         repeatOnStarted {
             viewModel.pinMode.collect { mode ->
                 when (mode) {
@@ -72,5 +101,28 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
         binding.ivPin3.startAnimation(shakeAnimation)
         binding.ivPin4.startAnimation(shakeAnimation)
         binding.ivPin5.startAnimation(shakeAnimation)
+    }
+
+    private fun animateNumberPadBackground(num: Int) {
+        if (num < 0) return
+
+        val startColor =
+            when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> requireContext().getColor(R.color.gray_500)
+                else -> requireContext().getColor(R.color.gray_200)
+            }
+
+        val endColor = TypedValue().let {
+            requireContext().theme.resolveAttribute(android.R.attr.background, it, true)
+            it.data
+        }
+
+        ValueAnimator.ofArgb(startColor, endColor)
+            .apply {
+                duration = 300
+                addUpdateListener {
+                    numberPadViews[num].setBackgroundColor(it.animatedValue as Int)
+                }
+            }.start()
     }
 }

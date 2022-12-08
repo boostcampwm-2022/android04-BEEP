@@ -227,6 +227,12 @@
     <string name="notification_channel_description">만료일에 가까워진 기프티콘을 알려드립니다.</string>
 
     <string name="widget_loading">로딩중입니다.</string>
+    
+    <string name="location_setting">위치권한설정</string>
+    <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
+    <string name="location_not_allowed">허용 안 함</string>
+    <string name="location_allowed">허용됨</string>
+
     <string name="widget_common_error">데이터를 불러오던 중 문제가 생겼습니다. 새로고침을 눌러주세요.</string>
     <string name="widget_refresh_button">새로고침</string>
     <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
@@ -236,4 +242,5 @@
     <string name="widget_gifticon_count">%d개</string>
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
+
 </resources>

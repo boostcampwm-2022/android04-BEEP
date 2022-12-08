@@ -53,6 +53,18 @@ class BeepWorkManager(
         manager.cancelUniqueWork(WIDGET_WORK_NAME)
     }
 
+    fun notificationCancel() {
+        manager.cancelUniqueWork(NOTIFICATION_WORK_NAME)
+    }
+
+    fun notificationEnqueue() {
+        manager.enqueueUniquePeriodicWork(
+            NOTIFICATION_WORK_NAME,
+            workPolicyKeep,
+            notificationWorkRequest
+        )
+    }
+
     companion object {
         private const val NOTIFICATION_WORK_NAME = "notification"
         private const val NOTIFICATION_INTERVAL = 15L // test를 위해 최소 간격인 15분으로 설정. 원래는 24시간.

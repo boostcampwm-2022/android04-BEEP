@@ -27,13 +27,11 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     private val ivKey get() = byteArrayPreferencesKey("${uid}iv")
     private val securityKey get() = intPreferencesKey("${uid}security")
     private val notificationKey get() = booleanPreferencesKey("${uid}notification")
-    private val locationKey get() = booleanPreferencesKey("${uid}location")
 
     override fun isStored(option: UserPreferenceOption): Flow<Boolean> {
         val key = when (option) {
             UserPreferenceOption.SECURITY -> securityKey
             UserPreferenceOption.NOTIFICATION -> notificationKey
-            UserPreferenceOption.LOCATION -> locationKey
             UserPreferenceOption.GUEST -> guestKey
         }
 
@@ -46,8 +44,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         val pin = dataStore.data.map { it[pinKey] }.first()
         val iv = dataStore.data.map { it[ivKey] }.first()
         val security = dataStore.data.map { it[securityKey] }.first()
-        // val notification = dataStore.data.map { it[notificationKey] }.first()
-        // val location = dataStore.data.map { it[locationKey] }.first()
+        val notification = dataStore.data.map { it[notificationKey] }.first()
 
         this.uid = uid
 
@@ -56,9 +53,20 @@ class UserPreferencesRepositoryImpl @Inject constructor(
                 preferences[pinKey] = pin as ByteArray
                 preferences[ivKey] = iv as ByteArray
                 preferences[securityKey] = security as Int
-                // preferences[notificationKey] = notification as Boolean
-                // preferences[locationKey] = location as Boolean
+                preferences[notificationKey] = notification as Boolean
             }
+        }
+    }
+
+    override suspend fun removeCurrentUserData(): Result<Unit> = runCatching {
+        dataStore.edit { preferences ->
+            preferences.remove(guestKey)
+            if (preferences.contains(pinKey)) {
+                preferences.remove(pinKey)
+                preferences.remove(ivKey)
+            }
+            preferences.remove(securityKey)
+            preferences.remove(notificationKey)
         }
     }
 
@@ -89,7 +97,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     override fun getSecurityOption(): Flow<Int> {
         return dataStore.data.map { preferences ->
-            preferences[securityKey] ?: throw Exception("Cannot Find Int Option")
+            preferences[securityKey] ?: 0
         }
     }
 
@@ -107,7 +115,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         val key = getPreferenceKey(option)
 
         return dataStore.data.map { preferences ->
-            preferences[key] ?: throw Exception("Cannot Find Boolean Option")
+            preferences[key] ?: false
         }
     }
 
@@ -115,7 +123,6 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         return when (option) {
             UserPreferenceOption.GUEST -> guestKey
             UserPreferenceOption.NOTIFICATION -> notificationKey
-            UserPreferenceOption.LOCATION -> locationKey
             else -> throw Exception("Unsupportable Option : Not Boolean")
         }
     }
