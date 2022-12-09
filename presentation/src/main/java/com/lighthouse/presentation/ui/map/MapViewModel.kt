@@ -3,9 +3,8 @@ package com.lighthouse.presentation.ui.map
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.DmsLocation
 import com.lighthouse.domain.LocationConverter
+import com.lighthouse.domain.VertexLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
@@ -38,8 +38,6 @@ class MapViewModel @Inject constructor(
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
     private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
-
-    private var prevLocation = DmsLocation(Dms(0, 0, 0), Dms(0, 0, 0))
 
     private val _state: MutableEventFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableEventFlow()
     val state = _state.asEventFlow()
@@ -56,10 +54,10 @@ class MapViewModel @Inject constructor(
     private val _brandInfos = mutableSetOf<BrandPlaceInfoUiModel>()
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
 
-    private val gifticons =
+    private val resultGifticons =
         getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    private val allGifticons = gifticons.transform { gifticons ->
+    private val allGifticons = resultGifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             emit(gifticons.data.sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) })
         }
@@ -67,83 +65,113 @@ class MapViewModel @Inject constructor(
 
     private val allBrands = allGifticons.transform { gifticons ->
         emit(gifticons.map { it.brand }.distinct())
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _gifticonData = MutableStateFlow<List<Gifticon>>(emptyList())
     val gifticonData = _gifticonData.asStateFlow()
 
-    private val _event = MutableEventFlow<HomeEvent>()
+    private val _event = MutableEventFlow<MapEvent>()
     val event = _event.asEventFlow()
 
     private val _widgetBrand = MutableEventFlow<String>()
     val widgetBrand = _widgetBrand.asEventFlow()
 
+    private var prevVertex = MutableStateFlow<VertexLocation?>(null)
+
+    private var removeMarker = allBrands.transform {
+        val brands = it ?: return@transform
+        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText).not() }
+        emit(removeMarkers)
+    }
+
     init {
+        setRemoveMarker()
+        val isFirstLoadData = checkHomeData(savedStateHandle)
+        combineLocationGifticon()
+        collectLocation(isFirstLoadData)
+    }
+
+    private fun checkHomeData(savedStateHandle: SavedStateHandle): Boolean {
         var isFirstLoadData = true
         val nearBrands = savedStateHandle.get<List<BrandPlaceInfoUiModel>>(Extras.KEY_NEAR_BRANDS)
         val nearGifticons = savedStateHandle.get<List<Gifticon>>(Extras.KEY_NEAR_GIFTICONS)
-
-        if (nearBrands.isNullOrEmpty() || nearGifticons.isNullOrEmpty()) {
-            isFirstLoadData = false
-        } else {
-            // homeActivity에서 받은 데이터가 있는 경우에만 실행
-            viewModelScope.launch {
+        viewModelScope.launch {
+            if (nearBrands.isNullOrEmpty() || nearGifticons.isNullOrEmpty()) {
+                isFirstLoadData = false
+            } else {
+                // homeActivity에서 받은 데이터가 있는 경우에만 실행
                 _brandInfos.addAll(nearBrands)
                 _state.emit(UiState.Success(nearBrands))
                 updateGifticons()
             }
-        }
-        collectLocation(isFirstLoadData)
-        viewModelScope.launch {
             val brand = savedStateHandle.get<String>(Extras.KEY_WIDGET_BRAND) ?: return@launch
             _widgetBrand.emit(brand)
+        }
+        return isFirstLoadData
+    }
+
+    private fun setRemoveMarker() {
+        viewModelScope.launch {
+            removeMarker.collectLatest {
+                _markerHolder.removeAll(it.toSet())
+                _event.emit(MapEvent.DeleteMarker(it))
+            }
         }
     }
 
     private fun collectLocation(isFirstLoadData: Boolean) {
-        var isNeededFirstLoading = isFirstLoadData
         viewModelScope.launch {
+            var isNeededFirstLoading = isFirstLoadData
             getUserLocation().collectLatest { location ->
                 if (isNeededFirstLoading) {
                     isNeededFirstLoading = false
                     return@collectLatest
                 }
-                val currentLocation = LocationConverter.setDmsLocation(location)
-                if (prevLocation != currentLocation) {
-                    prevLocation = currentLocation
-                    getBrandPlaceInfos(location.longitude, location.latitude)
-                }
+                val currentDms = LocationConverter.setDmsLocation(location)
+                val prevDms = prevVertex.value?.let { LocationConverter.setDmsLocation(it) }
+
+                if (prevDms != currentDms) prevVertex.value = location
             }
         }
     }
 
-    private fun getBrandPlaceInfos(x: Double, y: Double) {
+    private fun combineLocationGifticon() {
         viewModelScope.launch {
-            _state.emit(UiState.Loading)
-            runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
-                .mapCatching { it.toPresentation() }
-                .onSuccess { brandPlaceInfos ->
-                    val diffBrandPlaceInfo = brandPlaceInfos.filter {
-                        brandInfos.contains(it).not()
-                    }
-                    _brandInfos.addAll(brandPlaceInfos)
-                    when (brandInfos.isEmpty()) {
-                        true -> _state.emit(UiState.NotFoundResults)
-                        false -> {
-                            _state.emit(UiState.Success(diffBrandPlaceInfo))
-                            updateGifticons()
+            prevVertex.combine(resultGifticons) { location, _ ->
+                location
+            }.collectLatest { location ->
+                location ?: run {
+                    updateGifticons()
+                    return@collectLatest
+                }
+                val brands = allBrands.value ?: return@collectLatest
+
+                _state.emit(UiState.Loading)
+                runCatching { getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE) }
+                    .mapCatching { it.toPresentation() }
+                    .onSuccess { brandPlaceInfos ->
+                        val diffBrandPlaceInfo = brandPlaceInfos.filter {
+                            brandInfos.contains(it).not()
+                        }
+                        _brandInfos.addAll(brandPlaceInfos)
+                        when (brandInfos.isEmpty()) {
+                            true -> _state.emit(UiState.NotFoundResults)
+                            false -> {
+                                _state.emit(UiState.Success(diffBrandPlaceInfo))
+                                updateGifticons()
+                            }
                         }
                     }
-                }
-                .onFailure { throwable ->
-                    Timber.tag("TAG").d("${javaClass.simpleName} throwable -> $throwable")
-                    _state.emit(
-                        when (throwable) {
-                            BeepError.NetworkFailure -> UiState.NetworkFailure
-                            else -> UiState.Failure
-                        }
-                    )
-                }
+                    .onFailure { throwable ->
+                        Timber.tag("TAG").d("${javaClass.simpleName} throwable -> $throwable")
+                        _state.emit(
+                            when (throwable) {
+                                BeepError.NetworkFailure -> UiState.NetworkFailure
+                                else -> UiState.Failure
+                            }
+                        )
+                    }
+            }
         }
     }
 
@@ -159,7 +187,6 @@ class MapViewModel @Inject constructor(
 
     fun updateGifticons() {
         val brandName = focusMarker.captionText
-        Timber.tag("TAG").d("${javaClass.simpleName} brandName -> $brandName")
         _gifticonData.value = when (brandName.isEmpty()) {
             true -> {
                 allGifticons.value.filter { gifticon ->
@@ -176,7 +203,7 @@ class MapViewModel @Inject constructor(
 
     fun gotoHome() {
         viewModelScope.launch {
-            _event.emit(HomeEvent.NavigateHome)
+            _event.emit(MapEvent.NavigateHome)
         }
     }
 

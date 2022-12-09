@@ -162,12 +162,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             } ?: return@addOnSuccessListener
 
             resetFocusMarker(viewModel.focusMarker)
-            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
 
             val currentFocusMarker = viewModel.markerHolder.find {
                 currentLocation(it, brandPlaceInfo)
             } ?: return@addOnSuccessListener
-
+            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
             setFocusMarker(currentFocusMarker)
             if (isLoadGifticonList) viewModel.updateGifticons()
         }
@@ -263,7 +262,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun isSameMarker(marker: Marker) =
         marker.position.longitude == viewModel.focusMarker.position.longitude &&
-                marker.position.latitude == viewModel.focusMarker.position.latitude
+            marker.position.latitude == viewModel.focusMarker.position.latitude
 
     private fun resetFocusMarker(marker: Marker) {
         marker.zIndex = 0
@@ -274,10 +273,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setObserveEvent() {
         repeatOnStarted {
-            viewModel.event.collect {
-                gotoHome()
+            viewModel.event.collect { event ->
+                when (event) {
+                    is MapEvent.DeleteMarker -> deleteMarker(event.marker)
+                    is MapEvent.NavigateHome -> gotoHome()
+                }
             }
         }
+    }
+
+    private fun deleteMarker(marker: List<Marker>) {
+        marker.forEach { it.map = null }
     }
 
     private fun gotoHome() {

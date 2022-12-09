@@ -76,13 +76,17 @@ class HomeViewModel @Inject constructor(
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
     val hasLocationPermission = hasLocationPermissionsUseCase()
-    val isShimmer = MutableStateFlow(false)
+    val isShimmer = MutableStateFlow(true)
 
-    private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
+    private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>?> = MutableStateFlow(null)
     val nearGifticons = _nearGifticons.asStateFlow()
 
     val isEmptyNearBrands = nearGifticons.transform {
-        emit(nearGifticons.value.isEmpty())
+        val data = nearGifticons.value ?: kotlin.run {
+            emit(false)
+            return@transform
+        }
+        emit(data.isEmpty())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private var prevVertex = MutableStateFlow<VertexLocation?>(null)
@@ -132,7 +136,7 @@ class HomeViewModel @Inject constructor(
                         gifticonsMap.value[placeInfo.brand]?.first()
                             ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
-                    when (_nearGifticons.value.isEmpty()) {
+                    when (_nearGifticons.value.isNullOrEmpty()) {
                         true -> _uiState.emit(UiState.NotFoundResults)
                         false -> _uiState.emit(UiState.Success(Unit))
                     }
