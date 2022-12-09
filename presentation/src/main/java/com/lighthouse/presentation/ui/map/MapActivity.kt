@@ -61,7 +61,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
-    private var isFirstLoad = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -138,8 +137,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setGifticonAdapterChangeCallback() {
         binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                if (isFirstLoad) {
-                    isFirstLoad = false
+                if (viewModel.viewPagerFocus.not()) {
+                    viewModel.updatePagerFocus(true)
                     return
                 }
                 if (isRecentSelected(gifticonAdapter.currentList[position].brand)) return

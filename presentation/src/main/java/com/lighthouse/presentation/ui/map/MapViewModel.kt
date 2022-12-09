@@ -77,6 +77,8 @@ class MapViewModel @Inject constructor(
     val widgetBrand = _widgetBrand.asEventFlow()
 
     private var prevVertex = MutableStateFlow<VertexLocation?>(null)
+    var viewPagerFocus = false
+        private set
 
     private var removeMarker = allBrands.transform {
         val brands = it ?: return@transform
@@ -115,6 +117,9 @@ class MapViewModel @Inject constructor(
             removeMarker.collectLatest {
                 _markerHolder.removeAll(it.toSet())
                 _event.emit(MapEvent.DeleteMarker(it))
+                resetMarker()
+                updatePagerFocus(false)
+                updateGifticons()
             }
         }
     }
@@ -205,6 +210,10 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             _event.emit(MapEvent.NavigateHome)
         }
+    }
+
+    fun updatePagerFocus(isPagerFocus: Boolean) {
+        viewPagerFocus = isPagerFocus
     }
 
     companion object {
