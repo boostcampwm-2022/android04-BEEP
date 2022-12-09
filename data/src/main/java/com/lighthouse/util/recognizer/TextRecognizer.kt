@@ -1,4 +1,4 @@
-package com.lighthouse.util.recognizer.recognizer
+package com.lighthouse.util.recognizer
 
 import android.graphics.Bitmap
 import com.google.mlkit.vision.common.InputImage

@@ -2,6 +2,7 @@ package com.lighthouse.util.recognizer.recognizer
 
 import android.graphics.Bitmap
 import com.lighthouse.util.recognizer.GifticonRecognizeInfo
+import com.lighthouse.util.recognizer.TextRecognizer
 import com.lighthouse.util.recognizer.parser.BaseParser
 import com.lighthouse.util.recognizer.processor.BaseProcessor
 
