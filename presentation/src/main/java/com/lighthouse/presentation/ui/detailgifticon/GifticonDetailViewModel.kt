@@ -12,7 +12,7 @@ import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
@@ -78,7 +78,7 @@ class GifticonDetailViewModel @Inject constructor(
                 R.string.gifticon_detail_used_image_label,
                 date.toYear(),
                 date.toMonth(),
-                date.toDate()
+                date.toDayOfMonth()
             )
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
