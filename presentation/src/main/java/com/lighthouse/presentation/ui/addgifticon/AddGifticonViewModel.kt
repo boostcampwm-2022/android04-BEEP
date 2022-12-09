@@ -519,9 +519,7 @@ class AddGifticonViewModel @Inject constructor(
         return when {
             gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
-            gifticon.barcode.length != 12 &&
-                gifticon.barcode.length != 14 &&
-                gifticon.barcode.length != 16 -> AddGifticonValid.INVALID_BARCODE
+            gifticon.barcode.length !in VALID_BARCODE_COUNT -> AddGifticonValid.INVALID_BARCODE
             gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
             gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             else -> AddGifticonValid.VALID
@@ -668,5 +666,7 @@ class AddGifticonViewModel @Inject constructor(
 
     companion object {
         private val EMPTY_DATE = Date(0)
+
+        private val VALID_BARCODE_COUNT = setOf(12, 14, 16, 18, 20, 22, 24)
     }
 }

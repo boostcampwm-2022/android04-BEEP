@@ -38,7 +38,6 @@ class GifticonRecognizer {
         var info = originParser.parseBarcode(originInputs) ?: return@withContext null
         info = originParser.parseDateFormat(info)
         info = originParser.parseExpiredFormat(info)
-        info = originParser.filterTrash(info)
         getTemplateRecognizer(info.candidate)?.run {
             info = recognize(bitmap, info)
         }

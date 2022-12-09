@@ -9,58 +9,29 @@ import java.util.Queue
 
 class OriginParser {
     private val barcodeFilterRegex = listOf(
-        "(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})".toRegex(),
-        "(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{2})".toRegex(),
-        "(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})".toRegex(),
-        "(\\d{16})".toRegex(),
-        "(\\d{14})".toRegex(),
-        "(\\d{12})".toRegex()
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})\\b".toRegex(),
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{2})\\b".toRegex(),
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})\\b".toRegex(),
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{2})\\b".toRegex(),
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})\\b".toRegex(),
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{2})\\b".toRegex(),
+        "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})\\b".toRegex(),
+        "\\b(\\d{16})\\b".toRegex(),
+        "\\b(\\d{14})\\b".toRegex(),
+        "\\b(\\d{12})\\b".toRegex()
     )
 
     private val dateFilterRegex = listOf(
-        "(\\d{4})\\s*[-년., ]\\s*(\\d{1,2})\\s*[-월., ]\\s*(\\d{1,2})".toRegex(),
-        "(\\d{4})(\\d{2})(\\d{2})".toRegex()
+        "(\\d{4})\\s*[-/년., ]\\s*(\\d{1,2})\\s*[-/월., ]\\s*(\\d{1,2})".toRegex(),
+        "\\b(\\d{4})(\\d{2})(\\d{2})\\b".toRegex()
     )
 
     private val expiredFilterRegex = listOf(
         "만료[^\\d]*(\\d*)일".toRegex()
     )
 
-    private val contentFilterText = listOf(
-        ":",
-        "happy",
-        "상품명",
-        "수량",
-        "유효기간",
-        "쿠폰번호",
-        "교환처",
-        "사용처",
-        "금액",
-        "사용회",
-        "사용회수",
-        "사용횟수",
-        "사용기한",
-        "주문번호",
-        "웹사이트",
-        "전화주문",
-        "홈페이지"
-    )
-
-    private val lineFilterText = listOf(
-        "happy",
-        "con",
-        "coon",
-        "c콘",
-        "inumber",
-        "înumber"
-    )
-
-    private val lineFilterRegex = listOf(
-        "\\d+\\s*개".toRegex()
-    )
-
     private val cashCardFilterRegex = listOf(
-        CashCardRegex("(\\d*[,]*\\d*[,]*\\d+)원".toRegex(), 1),
+        CashCardRegex("(\\d{0,3}[,]?\\d{0,3}[,]\\d{1,3})".toRegex(), 1),
         CashCardRegex("(\\d+)천원".toRegex(), 1000),
         CashCardRegex("(\\d+)만원".toRegex(), 10000),
         CashCardRegex("(\\d+)십만원".toRegex(), 100000)
@@ -147,23 +118,6 @@ class OriginParser {
 
         val expiredAt = dateList.maxOrNull() ?: Date(0)
         return info.copy(expiredAt = info.expiredAt.coerceAtLeast(expiredAt), candidate = dateFiltered)
-    }
-
-    fun filterTrash(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
-        val trashFiltered = info.candidate.map { text ->
-            var newText = text
-            for (filter in contentFilterText) {
-                newText = newText.replace(filter, "")
-            }
-            newText.trim()
-        }.filter { text ->
-            text.isNotEmpty() && !text.all { it.isDigit() } && lineFilterText.none {
-                text.lowercase() == it
-            } && lineFilterRegex.none { regex ->
-                regex.find(text) != null
-            }
-        }
-        return info.copy(candidate = trashFiltered)
     }
 
     fun parseCashCard(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
