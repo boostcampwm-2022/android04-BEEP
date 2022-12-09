@@ -161,6 +161,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     private fun handleEvent(event: GifticonDetailEvent) {
         when (event) {
             is GifticonDetailEvent.ScrollDownForUseButtonClicked -> {
+                binding.abGifticonDetail.setExpanded(false, true)
                 binding.svGifticonDetail.scrollToBottom()
             }
             is GifticonDetailEvent.EditButtonClicked -> {
