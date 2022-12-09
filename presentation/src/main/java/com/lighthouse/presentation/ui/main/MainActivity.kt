@@ -37,11 +37,9 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            when (val currentFragment = supportFragmentManager.fragments.filter { it.isVisible }[0]) {
+            when (supportFragmentManager.fragments.filter { it.isVisible }[0]) {
                 is HomeFragmentContainer -> finish()
-                is SettingSecurityFragment -> supportFragmentManager.commit {
-                    remove(currentFragment)
-                }
+                is SettingSecurityFragment -> {} // SettingSecurityFragment 에서 관리하는 부분을 옮기려고 했는데 안 되네요...
                 else -> {
                     binding.bnv.selectedItemId = R.id.menu_home
                     viewModel.gotoHome()

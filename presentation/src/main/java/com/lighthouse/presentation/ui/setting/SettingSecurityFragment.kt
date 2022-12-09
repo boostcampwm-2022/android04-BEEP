@@ -5,16 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSecuritySettingBinding
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.viewBindings
+import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
 import com.lighthouse.presentation.ui.security.SecurityActivity
@@ -26,12 +29,14 @@ import javax.inject.Inject
 class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting), AuthCallback {
 
     private val binding: FragmentSecuritySettingBinding by viewBindings()
+    private val activityViewModel: MainViewModel by activityViewModels()
     private val viewModel: SettingViewModel by activityViewModels()
 
     private val securityOptionItems =
         arrayOf(SecurityOption.NONE.text, SecurityOption.PIN.text, SecurityOption.FINGERPRINT.text)
     private var checkedSecurityOption: Int = 0
     private lateinit var currentSecurityOption: StateFlow<SecurityOption>
+    private lateinit var callback: OnBackPressedCallback
 
     @Inject
     lateinit var authManager: AuthManager
@@ -41,6 +46,16 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting), Au
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                activityViewModel.gotoMenuItem(R.id.menu_setting)
+
+                parentFragmentManager.commit {
+                    remove(this@SettingSecurityFragment)
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
         optionChangeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -121,6 +136,11 @@ class SettingSecurityFragment : Fragment(R.layout.fragment_security_setting), Au
 
     private fun authenticate() {
         authManager.authFingerprint(requireActivity(), biometricLauncher, this)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callback.remove()
     }
 
     override fun onAuthSuccess() {
