@@ -42,7 +42,11 @@ fun GifticonAppBar(
 
     TopAppBar(
         title = {},
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = if (MaterialTheme.colors.isLight) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.onSurface.copy(0.09f)
+        },
         actions = {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Row(
@@ -96,7 +100,7 @@ fun DropDownToolbarMenu(
                 Text(
                     text = stringResource(id = it.stringRes),
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.onSurface,
                     textAlign = TextAlign.Center
                 )
             }

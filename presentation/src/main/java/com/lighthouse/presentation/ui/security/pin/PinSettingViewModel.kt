@@ -24,9 +24,10 @@ class PinSettingViewModel @Inject constructor(
             when (pinMode.value) {
                 PinSettingType.INITIAL -> {
                     temporaryPinString = pinString.value
+                    _pinMode.value = PinSettingType.WAIT
                     delay(500L)
-                    _pinString.value = ""
                     _pinMode.value = PinSettingType.CONFIRM
+                    _pinString.value = ""
                 }
                 else -> {
                     if (pinString.value == temporaryPinString) {
@@ -46,7 +47,6 @@ class PinSettingViewModel @Inject constructor(
         viewModelScope.launch {
             savePinUseCase(pinString.value).onSuccess {
                 _pinMode.value = PinSettingType.COMPLETE
-                delay(1000L)
             }.onFailure {
                 _pinMode.value = PinSettingType.ERROR
             }

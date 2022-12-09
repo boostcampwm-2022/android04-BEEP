@@ -2,32 +2,44 @@ package com.lighthouse.util.recognizer.processor
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import kotlin.math.max
 
 abstract class BaseProcessor : ScaleProcessor() {
 
-    protected fun cropImage(
+    private fun calculateRect(
+        bitmap: Bitmap,
+        leftPercent: Float,
+        topPercent: Float,
+        rightPercent: Float,
+        bottomPercent: Float
+    ): Rect {
+        return Rect(
+            (bitmap.width * leftPercent).toInt(),
+            (bitmap.height * topPercent).toInt(),
+            (bitmap.width * rightPercent).toInt(),
+            (bitmap.height * bottomPercent).toInt()
+        )
+    }
+
+    private fun cropBitmap(bitmap: Bitmap, rect: Rect): Bitmap {
+        return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height())
+    }
+
+    protected fun cropGifticonImage(
         bitmap: Bitmap,
         leftPercent: Float,
         topPercent: Float,
         rightPercent: Float,
         bottomPercent: Float
     ): GifticonProcessImage {
-        val cropRect = Rect(
-            (bitmap.width * leftPercent).toInt(),
-            (bitmap.height * topPercent).toInt(),
-            (bitmap.width * rightPercent).toInt(),
-            (bitmap.height * bottomPercent).toInt()
-        )
-        return GifticonProcessImage(
-            Bitmap.createBitmap(
-                bitmap,
-                cropRect.left,
-                cropRect.top,
-                cropRect.width(),
-                cropRect.height()
-            ),
-            cropRect
-        )
+        val cropRect = calculateRect(bitmap, leftPercent, topPercent, rightPercent, bottomPercent)
+        if (cropRect.width() != cropRect.height()) {
+            cropRect.inset(
+                max((cropRect.width() - cropRect.height()) / 2, 0),
+                max((cropRect.height() - cropRect.width()) / 2, 0)
+            )
+        }
+        return GifticonProcessImage(cropBitmap(bitmap, cropRect), cropRect)
     }
 
     protected fun cropAndScaleTextImage(
@@ -38,10 +50,8 @@ abstract class BaseProcessor : ScaleProcessor() {
         rightPercent: Float,
         bottomPercent: Float
     ): GifticonProcessText {
-        val croppedImage = cropImage(bitmap, leftPercent, topPercent, rightPercent, bottomPercent)
-        val image = scaleProcess(croppedImage.bitmap)
-        croppedImage.bitmap.recycle()
-        return GifticonProcessText(tag, image)
+        val cropRect = calculateRect(bitmap, leftPercent, topPercent, rightPercent, bottomPercent)
+        return GifticonProcessText(tag, cropBitmap(bitmap, cropRect))
     }
 
     protected open fun preprocess(bitmap: Bitmap): Bitmap = bitmap

@@ -106,6 +106,10 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         return gifticonDao.getAllUsableGifticons(userId, today)
     }
 
+    override suspend fun hasGifticonBrand(brand: String): Boolean {
+        return gifticonDao.hasGifticonBrand(brand)
+    }
+
     override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
         gifticonDao.moveUserIdGifticon(oldUserId, newUserId)
     }

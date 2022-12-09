@@ -63,6 +63,7 @@
 
             <TextView
                 android:id="@+id/tv_barcode_number"
+                style="@style/BEEP.TextStyle.H6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -150,11 +151,14 @@
 
             <TextView
                 android:id="@+id/tv_use_origin_image"
-                style="@style/BEEP.TextStyle.Caption"
+                style="@style/BEEP.TextStyle.Body2.Gray"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:gravity="center_horizontal"
                 android:text="@string/use_gifticon_dialog_use_origin_image_label"
+                app:clickableClicked="@{(v) -> vm.showOriginalImage()}"
+                app:clickableText="@{@string/use_gifticon_dialog_use_origin_image_underline_target_label}"
                 app:layout_constraintBottom_toTopOf="@id/btn_use_gifticon_completed"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

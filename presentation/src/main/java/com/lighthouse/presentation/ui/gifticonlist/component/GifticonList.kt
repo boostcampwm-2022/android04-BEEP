@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -74,7 +75,7 @@ fun GifticonItem(gifticon: Gifticon) {
     ) {
         Row {
             GlideImage(
-                imageModel = { context.getFileStreamPath("cropped${gifticon.id}") },
+                imageModel = { context.getFileStreamPath(gifticon.croppedPath) },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     contentDescription = stringResource(R.string.gifticon_product_image),
@@ -96,7 +97,7 @@ fun GifticonItem(gifticon: Gifticon) {
                         .background(MaterialTheme.colors.primary)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .align(Alignment.TopEnd),
-                    color = MaterialTheme.colors.onSurface,
+                    color = Color.White,
                     style = MaterialTheme.typography.caption
                 )
                 Text(

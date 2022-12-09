@@ -28,5 +28,6 @@ interface GifticonLocalDataSource {
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
     fun hasUsableGifticon(userId: String): Flow<Boolean>
     fun getUsableGifticons(userId: String): Flow<List<GifticonEntity>>
+    suspend fun hasGifticonBrand(brand: String): Boolean
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
 }

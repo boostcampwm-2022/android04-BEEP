@@ -16,4 +16,5 @@ interface UserPreferencesRepository {
     fun isStored(option: UserPreferenceOption): Flow<Boolean>
 
     suspend fun moveGuestData(uid: String): Result<Unit>
+    suspend fun removeCurrentUserData(): Result<Unit>
 }

@@ -22,6 +22,6 @@ class SmileConProcessor : BaseProcessor() {
     }
 
     override fun processGifticonImage(bitmap: Bitmap): GifticonProcessImage {
-        return cropImage(bitmap, 0.02475f, 0.05263f, 0.47029f, 0.43157f)
+        return cropGifticonImage(bitmap, 0.02475f, 0.05263f, 0.47029f, 0.43157f)
     }
 }

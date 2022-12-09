@@ -11,8 +11,13 @@ import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
+import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toMonth
+import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.model.CashAmountPreset
+import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,6 +70,19 @@ class GifticonDetailViewModel @Inject constructor(
         emit(it?.last())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val latestUsageHistoryUIText = latestUsageHistory.transform {
+        if (it == null) return@transform
+        val date = it.date
+        emit(
+            UIText.StringResource(
+                R.string.gifticon_detail_used_image_label,
+                date.toYear(),
+                date.toMonth(),
+                date.toDate()
+            )
+        )
+    }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
+
     val failure = gifticonDbResult.transform {
         if (it is DbResult.Failure) {
             emit(it.throwable)
@@ -73,7 +91,7 @@ class GifticonDetailViewModel @Inject constructor(
 
     val amountToBeUsed = MutableStateFlow(0)
 
-    private val _event = MutableSharedFlow<Event>()
+    private val _event = MutableSharedFlow<GifticonDetailEvent>()
     val event = _event.asSharedFlow()
 
     private val _tempGifticon = MutableStateFlow<Gifticon?>(null)
@@ -85,30 +103,30 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun scrollDownForUseButtonClicked() {
-        event(Event.ScrollDownForUseButtonClicked)
+        event(GifticonDetailEvent.ScrollDownForUseButtonClicked)
     }
 
     fun shareButtonClicked() {
-        event(Event.ShareButtonClicked)
+        event(GifticonDetailEvent.ShareButtonClicked)
     }
 
     fun editButtonClicked() {
-        event(Event.EditButtonClicked)
+        event(GifticonDetailEvent.EditButtonClicked)
     }
 
     fun expireDateClicked() {
         Timber.tag("gifticon_detail").d("expireDateClicked() 호출")
-        event(Event.ExpireDateClicked)
+        event(GifticonDetailEvent.ExpireDateClicked)
     }
 
     fun showAllUsedInfoButtonClicked() {
-        event(Event.ShowAllUsedInfoButtonClicked)
+        event(GifticonDetailEvent.ShowAllUsedInfoButtonClicked)
     }
 
     fun useGifticonButtonClicked() {
         when (mode.value) {
             GifticonDetailMode.UNUSED -> {
-                event(Event.UseGifticonButtonClicked)
+                event(GifticonDetailEvent.UseGifticonButtonClicked)
             }
             GifticonDetailMode.USED -> {
                 viewModelScope.launch {
@@ -129,10 +147,10 @@ class GifticonDetailViewModel @Inject constructor(
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
                 useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value)
                 amountToBeUsed.value = 0
-                event(Event.UseGifticonComplete)
+                event(GifticonDetailEvent.UseGifticonComplete)
             } else {
                 useGifticonUseCase(gifticonId)
-                event(Event.UseGifticonComplete)
+                event(GifticonDetailEvent.UseGifticonComplete)
             }
         }
     }
@@ -178,7 +196,7 @@ class GifticonDetailViewModel @Inject constructor(
     fun amountChipClicked(amountPreset: CashAmountPreset) {
         amountPreset.amount?.let { amount ->
             amountToBeUsed.update {
-                it + amount
+                minOf(it + amount, gifticon.value?.balance ?: 0)
             }
         } ?: run { // "전액" 버튼이 클릭된 경우
             amountToBeUsed.update {
@@ -194,6 +212,11 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
+    fun showOriginalImage() {
+        val origin = gifticon.value?.originPath ?: return
+        event(GifticonDetailEvent.ShowOriginalImage(origin))
+    }
+
     fun startEdit() {
         _tempGifticon.value = gifticon.value ?: return
     }
@@ -207,11 +230,11 @@ class GifticonDetailViewModel @Inject constructor(
                 updateGifticonInfoUseCase(after)
             }
         }
-        event(Event.OnGifticonInfoChanged(before, after))
+        event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
         _tempGifticon.value = null
     }
 
-    private fun event(event: Event) {
+    private fun event(event: GifticonDetailEvent) {
         viewModelScope.launch {
             _event.emit(event)
         }

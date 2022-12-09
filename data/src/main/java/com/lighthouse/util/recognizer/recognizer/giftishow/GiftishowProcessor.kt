@@ -15,6 +15,6 @@ class GiftishowProcessor : BaseProcessor() {
     }
 
     override fun processGifticonImage(bitmap: Bitmap): GifticonProcessImage {
-        return cropImage(bitmap, 0.1f, 0.04f, 0.43f, 0.37f)
+        return cropGifticonImage(bitmap, 0.1f, 0.04f, 0.43f, 0.37f)
     }
 }
