@@ -5,7 +5,6 @@ import android.net.Uri
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.util.resource.UIText
-import com.skydoves.balloon.ArrowOrientation
 import java.util.Date
 
 sealed class AddGifticonEvent {
@@ -24,10 +23,4 @@ sealed class AddGifticonEvent {
     data class RequestFocus(val tag: AddGifticonTag) : AddGifticonEvent()
     data class RequestScroll(val tag: AddGifticonTag) : AddGifticonEvent()
     data class ShowSnackBar(val uiText: UIText) : AddGifticonEvent()
-    data class ShowBalloon(
-        val tag: AddGifticonTag,
-        val alignDir: AddGifticonBalloonAlignDir,
-        val arrowOrientation: ArrowOrientation,
-        val text: UIText
-    ) : AddGifticonEvent()
 }

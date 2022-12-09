@@ -142,7 +142,7 @@
                     android:padding="8dp"
                     android:text="@string/add_gifticon_edit_image"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/iv_gifticon_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
@@ -330,22 +330,39 @@
                     app:layout_constraintBottom_toBottomOf="@id/til_brand"
                     app:layout_constraintEnd_toStartOf="@id/iv_brand_crop" />
 
+                <TextView
+                    android:id="@+id/tv_brand_confirm_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/bg_primary_corner_4"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/add_gifticon_brand_confirm"
+                    android:textAppearance="@style/BEEP.TextStyle.Caption"
+                    android:textColor="@color/white"
+                    app:isVisible="@{vm.isConfirmBrandDescriptionVisible}"
+                    app:layout_constraintBottom_toTopOf="@id/iv_brand_confirm"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+
                 <ImageView
                     android:id="@+id/iv_brand_confirm"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginBottom="6dp"
-                    android:contentDescription="@string/add_gifticon_brand_confirm_description"
-                    android:padding="6dp"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_brand_confirm_description"
+                    android:focusable="true"
                     android:onClick="@{() -> vm.confirmBrand()}"
-                    app:visibility="@{vm.isConfirmBrandVisibility}"
+                    android:padding="6dp"
+                    app:layout_constraintBottom_toBottomOf="@id/til_brand"
+                    app:layout_constraintEnd_toStartOf="@id/iv_brand_crop"
                     app:setImageRes="@{vm.isConfirmBrandResId}"
                     app:setTintRes="@{vm.isConfirmBrandTint}"
-                    app:layout_constraintBottom_toBottomOf="@id/til_brand"
-                    app:layout_constraintEnd_toStartOf="@id/iv_brand_crop" />
+                    app:visibility="@{vm.isConfirmBrandVisibility}" />
 
                 <ImageView
                     android:id="@+id/iv_brand_crop"

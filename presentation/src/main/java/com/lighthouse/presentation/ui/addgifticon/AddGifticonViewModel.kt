@@ -183,9 +183,17 @@ class AddGifticonViewModel @Inject constructor(
         }
     }
 
-    val isConfirmBrandVisibility = combine(brand, isLoadingConfirmBrand) { brand, isLoading ->
-        if (brand != "" && !isLoading) View.VISIBLE else View.INVISIBLE
+    private val isConfirmVisible = brand.combine(isLoadingConfirmBrand) { brand, isLoading ->
+        brand != "" && !isLoading
+    }
+
+    val isConfirmBrandVisibility = isConfirmVisible.map { isVisible ->
+        if (isVisible) View.VISIBLE else View.INVISIBLE
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val isConfirmBrandDescriptionVisible = isConfirmVisible.combine(isApproveBrand) { visible, approve ->
+        visible && !approve
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val isConfirmBrandResId = isApproveBrand.map { isApprove ->
         if (isApprove) R.drawable.ic_confirm else R.drawable.ic_question

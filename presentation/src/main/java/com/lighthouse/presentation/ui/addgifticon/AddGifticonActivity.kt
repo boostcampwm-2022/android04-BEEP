@@ -29,7 +29,6 @@ import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
-import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonBalloonAlignDir
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonEvent
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonTag
@@ -40,8 +39,6 @@ import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.lighthouse.presentation.util.resource.UIText
-import com.skydoves.balloon.ArrowOrientation
-import com.skydoves.balloon.Balloon
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -184,12 +181,6 @@ class AddGifticonActivity : AppCompatActivity() {
                     is AddGifticonEvent.RequestLoading -> requestLoading(event.loading)
                     is AddGifticonEvent.RequestFocus -> requestFocus(event.tag)
                     is AddGifticonEvent.RequestScroll -> requestScroll(event.tag)
-                    is AddGifticonEvent.ShowBalloon -> showBalloon(
-                        event.tag,
-                        event.alignDir,
-                        event.arrowOrientation,
-                        event.text
-                    )
                     is AddGifticonEvent.ShowSnackBar -> showSnackBar(event.uiText)
                     is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
@@ -330,34 +321,6 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private fun showSnackBar(uiText: UIText) {
         Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun showBalloon(
-        tag: AddGifticonTag,
-        alignDir: AddGifticonBalloonAlignDir,
-        arrowOrientation: ArrowOrientation,
-        text: UIText
-    ) {
-        val anchor = when (tag) {
-            AddGifticonTag.BRAND_CONFIRM -> binding.ivBrandConfirm
-            else -> null
-        } ?: return
-
-        val balloon = Balloon.Builder(this)
-            .setIsVisibleArrow(true)
-            .setArrowPosition((anchor.left + anchor.right) / 2.toFloat())
-            .setText(text.asString(this))
-            .setTextColorResource(R.color.white)
-            .setBackgroundColorResource(R.color.beep_pink)
-            .setArrowOrientation(arrowOrientation)
-            .build()
-
-        when (alignDir) {
-            AddGifticonBalloonAlignDir.START -> balloon.showAlignLeft(anchor)
-            AddGifticonBalloonAlignDir.TOP -> balloon.showAlignTop(anchor)
-            AddGifticonBalloonAlignDir.END -> balloon.showAlignRight(anchor)
-            AddGifticonBalloonAlignDir.BOTTOM -> balloon.showAlignBottom(anchor)
-        }
     }
 
     companion object {
