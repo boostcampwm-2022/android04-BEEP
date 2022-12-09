@@ -36,7 +36,8 @@ class GifticonRecognizer {
         val originInputs = textRecognizer.recognize(origin)
         origin.recycle()
         var info = originParser.parseBarcode(originInputs) ?: return@withContext null
-        info = originParser.parseDate(info)
+        info = originParser.parseDateFormat(info)
+        info = originParser.parseExpiredFormat(info)
         info = originParser.filterTrash(info)
         getTemplateRecognizer(info.candidate)?.run {
             info = recognize(bitmap, info)
