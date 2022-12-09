@@ -59,7 +59,7 @@ class MapViewModel @Inject constructor(
     private val gifticons =
         getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    val allGifticons = gifticons.transform { gifticons ->
+    private val allGifticons = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             emit(gifticons.data.sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) })
         }
@@ -154,6 +154,7 @@ class MapViewModel @Inject constructor(
 
     fun updateMarkers(brandMarkers: List<Marker>) {
         _markerHolder.addAll(brandMarkers)
+        updateGifticons()
     }
 
     fun updateGifticons() {

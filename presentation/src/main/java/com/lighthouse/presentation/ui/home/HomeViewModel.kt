@@ -2,10 +2,9 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.DmsLocation
-import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.domain.LocationConverter.setDmsLocation
+import com.lighthouse.domain.VertexLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
@@ -78,12 +77,15 @@ class HomeViewModel @Inject constructor(
 
     val hasLocationPermission = hasLocationPermissionsUseCase()
     val isShimmer = MutableStateFlow(false)
-    val isEmptyNearBrands = MutableStateFlow(false)
 
     private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
     val nearGifticons = _nearGifticons.asStateFlow()
 
-    private var prevLocation = MutableStateFlow<DmsLocation?>(null)
+    val isEmptyNearBrands = nearGifticons.transform {
+        emit(nearGifticons.value.isEmpty())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    private var prevVertex = MutableStateFlow<VertexLocation?>(null)
 
     init {
         setLocationFlowJob()
@@ -104,24 +106,23 @@ class HomeViewModel @Inject constructor(
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
                 _uiState.value = UiState.Loading
-
-                val currentLocation = setDmsLocation(location)
-                if (prevLocation.value != currentLocation) {
+                val currentDms = setDmsLocation(location)
+                val prevDms = prevVertex.value?.let { setDmsLocation(it) }
+                if (prevDms != currentDms) {
                     isShimmer.value = true
-                    prevLocation.value = currentLocation
+                    prevVertex.value = location
                 }
             }
         }
     }
 
     private suspend fun combineLocationGifticon() {
-        prevLocation.combine(gifticons) { location, _ ->
+        prevVertex.combine(gifticons) { location, _ ->
             location
         }.collectLatest { location ->
             location ?: return@collectLatest
-            val x = LocationConverter.convertToDD(location.x)
-            val y = LocationConverter.convertToDD(location.y)
-            isEmptyNearBrands.value = false
+            val x = location.longitude
+            val y = location.latitude
 
             runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
                 .mapCatching { brand -> brand.toPresentation() }
@@ -132,10 +133,7 @@ class HomeViewModel @Inject constructor(
                             ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
                     when (_nearGifticons.value.isEmpty()) {
-                        true -> {
-                            _uiState.emit(UiState.NotFoundResults)
-                            isEmptyNearBrands.value = true
-                        }
+                        true -> _uiState.emit(UiState.NotFoundResults)
                         false -> _uiState.emit(UiState.Success(Unit))
                     }
                 }

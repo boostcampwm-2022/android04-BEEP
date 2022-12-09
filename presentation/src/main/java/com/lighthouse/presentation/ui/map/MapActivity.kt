@@ -75,7 +75,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         setGifticonAdapterItem()
         setGifticonAdapterChangeCallback()
-        setObserveGifticonData()
         setObserveEvent()
     }
 
@@ -93,17 +92,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 ListSpaceItemDecoration(
                     space = 48.dp,
                     start = 20.dp,
-                    end = 20.dp
+                    end = 24.dp
                 )
             )
-        }
-    }
-
-    private fun setObserveGifticonData() {
-        repeatOnStarted {
-            viewModel.allGifticons.collectLatest {
-                viewModel.updateGifticons()
-            }
         }
     }
 
@@ -272,7 +263,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun isSameMarker(marker: Marker) =
         marker.position.longitude == viewModel.focusMarker.position.longitude &&
-            marker.position.latitude == viewModel.focusMarker.position.latitude
+                marker.position.latitude == viewModel.focusMarker.position.latitude
 
     private fun resetFocusMarker(marker: Marker) {
         marker.zIndex = 0
@@ -294,7 +285,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showSnackBar(@StringRes message: Int) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
