@@ -96,12 +96,12 @@
 
 
     <string name="fingerprint_info_obtain_fail">기기의 지문 정보를 가져올 수 없습니다.</string>
-    <string name="fingerprint_error_no_hardware">지문 인증을 사용할 수 없는 기기입니다.</string>
-    <string name="fingerprint_unavailable">지문 인증을 사용할 수 없습니다.</string>
-    <string name="fingerprint_authentication">지문 인증</string>
+    <string name="fingerprint_error_no_hardware">생체 인증을 사용할 수 없는 기기입니다.</string>
+    <string name="fingerprint_unavailable">생체 인증을 사용할 수 없습니다.</string>
+    <string name="fingerprint_authentication">생체 인증</string>
     <string name="fingerprint_description">기기에 저장된 기프티콘을 보호합니다.</string>
-    <string name="fingerprint_authentication_success">지문 인증 성공</string>
-    <string name="fingerprint_authentication_fail">지문 인증 실패</string>
+    <string name="fingerprint_authentication_success">생체 인증 성공</string>
+    <string name="fingerprint_authentication_fail">생체 인증 실패</string>
     <string name="fingerprint_not_enrolled">등록된 지문이 없습니다.</string>
     <string name="fingerprint_error_lockout">5회 인증에 실패했습니다. 잠시 후 다시 시도해주세요</string>
     <string name="fingerprint_error_lockout_permanent">잦은 실패로 지문 센서가 비활성화 되었습니다</string>
