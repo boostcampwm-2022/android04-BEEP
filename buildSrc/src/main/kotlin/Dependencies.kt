@@ -10,8 +10,6 @@ object Versions {
     const val FRAGMENT_KTX = "1.5.4"
     const val COROUTINE = "1.6.4"
 
-    const val BALLOON = "1.4.7"
-
     const val ROOM = "2.4.3"
     const val PAGING_KTX = "3.1.1"
 
@@ -78,8 +76,6 @@ object Libraries {
     private const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
     private const val VIEWMODEL_KTX = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL_KTX}"
     private const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT_KTX}"
-
-    private const val BALLOON = "com.github.skydoves:balloon:${Versions.BALLOON}"
 
     private const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINE}"
     private const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
@@ -153,7 +149,6 @@ object Libraries {
         APP_COMPAT,
         CONSTRAINT_LAYOUT,
         MATERIAL,
-        BALLOON,
         COROUTINE_CORE,
         COROUTINE_ANDROID,
         HILT,
