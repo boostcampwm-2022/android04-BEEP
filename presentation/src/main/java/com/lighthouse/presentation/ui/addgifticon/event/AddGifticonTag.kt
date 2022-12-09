@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.addgifticon
+package com.lighthouse.presentation.ui.addgifticon.event
 
 enum class AddGifticonTag(val needKeyboard: Boolean) {
     GIFTICON_NAME(true),

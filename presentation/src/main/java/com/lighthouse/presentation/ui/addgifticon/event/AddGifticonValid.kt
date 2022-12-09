@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.addgifticon
+package com.lighthouse.presentation.ui.addgifticon.event
 
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.resource.UIText

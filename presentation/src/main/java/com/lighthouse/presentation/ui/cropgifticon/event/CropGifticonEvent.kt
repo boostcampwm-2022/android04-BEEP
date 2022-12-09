@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.cropgifticon
+package com.lighthouse.presentation.ui.cropgifticon.event
 
 import android.graphics.Bitmap
 import android.graphics.RectF
