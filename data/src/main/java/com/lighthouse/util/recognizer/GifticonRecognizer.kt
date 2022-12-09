@@ -1,10 +1,11 @@
 package com.lighthouse.util.recognizer
 
 import android.graphics.Bitmap
-import com.lighthouse.util.recognizer.parser.OriginParser
+import com.lighthouse.util.recognizer.parser.BalanceParser
+import com.lighthouse.util.recognizer.parser.BarcodeParser
+import com.lighthouse.util.recognizer.parser.ExpiredParser
 import com.lighthouse.util.recognizer.processor.ScaleProcessor
 import com.lighthouse.util.recognizer.recognizer.TemplateRecognizer
-import com.lighthouse.util.recognizer.recognizer.TextRecognizer
 import com.lighthouse.util.recognizer.recognizer.giftishow.GiftishowRecognizer
 import com.lighthouse.util.recognizer.recognizer.kakao.KakaoRecognizer
 import com.lighthouse.util.recognizer.recognizer.smilecon.SmileConRecognizer
@@ -13,8 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GifticonRecognizer {
+    private val barcodeParser = BarcodeParser()
+    private val expiredParser = ExpiredParser()
+    private val balanceParser = BalanceParser()
 
-    private val originParser = OriginParser()
     private val scaleProcessor = ScaleProcessor()
     private val textRecognizer = TextRecognizer()
 
@@ -33,14 +36,17 @@ class GifticonRecognizer {
 
     suspend fun recognize(bitmap: Bitmap) = withContext(Dispatchers.IO) {
         val origin = scaleProcessor.scaleProcess(bitmap)
-        val originInputs = textRecognizer.recognize(origin)
+        val inputs = textRecognizer.recognize(origin)
         origin.recycle()
-        var info = originParser.parseBarcode(originInputs) ?: return@withContext null
-        info = originParser.parseDateFormat(info)
-        info = originParser.parseExpiredFormat(info)
+        var info = GifticonRecognizeInfo(candidate = inputs)
+        info = barcodeParser.parseBarcode(info)
+        if (info.barcode == "") {
+            return@withContext null
+        }
+        info = expiredParser.parseExpiredDate(info)
         getTemplateRecognizer(info.candidate)?.run {
             info = recognize(bitmap, info)
         }
-        originParser.parseCashCard(info)
+        balanceParser.parseCashCard(info)
     }
 }
