@@ -36,7 +36,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private val backgroundPaint by lazy {
         Paint().apply {
-            color = context.getColor(R.color.black_a60)
+            color = context.getColor(R.color.black_60)
         }
     }
     private val guidelinePaint by lazy {
