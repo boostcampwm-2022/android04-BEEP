@@ -67,6 +67,7 @@
     <string name="add_gifticon_name_remove_description">이름 지우기 아이콘</string>
     <string name="add_gifticon_name_crop_description">이름 크롭 아이콘</string>
     <string name="add_gifticon_brand_remove_description">브랜드 지우기 아이콘</string>
+    <string name="add_gifticon_brand_confirm_description">유효한 브랜드 확인 아이콘</string>
     <string name="add_gifticon_brand_crop_description">브랜드 크롭 아이콘</string>
     <string name="add_gifticon_barcode_remove_description">바코드 지우기 아이콘</string>
     <string name="add_gifticon_barcode_crop_description">바코드 크롭 아이콘</string>
@@ -75,10 +76,13 @@
     <string name="add_gifticon_expire_calendar_description">유효기간 달력 아이콘</string>
     <string name="add_gifticon_expire_crop_description">유효기간 크롭 아이콘</string>
 
+    <string name="add_gifticon_brand_confirm">입력한 브랜드가 맞다면 클릭해주세요</string>
+
     <string name="add_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
     <string name="add_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_barcode">바코드를 입력해주세요</string>
     <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
+    <string name="add_gifticon_invalid_brand_confirm">브랜드 정보를 확인해주세요</string>
     <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
     <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
 
