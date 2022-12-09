@@ -94,9 +94,22 @@ class AddGifticonViewModel @Inject constructor(
         it?.name
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val nameFocus = MutableStateFlow(false)
+
     fun onNameFocusChangeListener(hasFocus: Boolean) {
         if (hasFocus) {
             requestScroll(AddGifticonScroll.GIFTICON_NAME)
+        }
+        nameFocus.value = hasFocus
+    }
+
+    val nameRemoveVisible = name.combine(nameFocus) { name, focus ->
+        !name.isNullOrEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeName() {
+        updateSelectedGifticon {
+            it.copy(name = "")
         }
     }
 
@@ -104,9 +117,22 @@ class AddGifticonViewModel @Inject constructor(
         it?.brandName
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val brandFocus = MutableStateFlow(false)
+
     fun onBrandFocusChangeListener(hasFocus: Boolean) {
         if (hasFocus) {
             requestScroll(AddGifticonScroll.BRAND_NAME)
+        }
+        brandFocus.value = hasFocus
+    }
+
+    val brandRemoveVisible = brand.combine(brandFocus) { brand, focus ->
+        !brand.isNullOrEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeBrand() {
+        updateSelectedGifticon {
+            it.copy(brandName = "")
         }
     }
 
@@ -115,6 +141,25 @@ class AddGifticonViewModel @Inject constructor(
     val barcode = selectedGifticon.map {
         it?.barcode ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private val barcodeFocus = MutableStateFlow(false)
+
+    fun onBarcodeFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonScroll.BARCODE)
+        }
+        barcodeFocus.value = hasFocus
+    }
+
+    val barcodeRemoveVisible = barcode.combine(barcodeFocus) { barcode, focus ->
+        barcode.isNotEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeBarcode() {
+        updateSelectedGifticon {
+            it.copy(barcode = "")
+        }
+    }
 
     private fun barcodeToTransformed(text: String): String {
         return text.chunked(4).joinToString(" ")
@@ -134,6 +179,25 @@ class AddGifticonViewModel @Inject constructor(
     val balance = selectedGifticon.map {
         it?.balance ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private val balanceFocus = MutableStateFlow(false)
+
+    fun onBalanceFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonScroll.BALANCE)
+        }
+        balanceFocus.value = hasFocus
+    }
+
+    val balanceRemoveVisible = balance.combine(balanceFocus) { balance, focus ->
+        balance != "0" && balance.isNotEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeBalance() {
+        updateSelectedGifticon {
+            it.copy(balance = "")
+        }
+    }
 
     private val balanceFormat = DecimalFormat("###,###,###")
 

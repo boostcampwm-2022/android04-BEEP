@@ -219,8 +219,8 @@
                         android:hint="@string/add_gifticon_name_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textNoSuggestions"
-                        android:maxLength="100"
                         android:lines="1"
+                        android:maxLength="100"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeGifticonName(text)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="72dp"
@@ -241,6 +241,8 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_remove"
+                    android:onClick="@{() -> vm.removeName()}"
+                    app:isVisible="@{vm.nameRemoveVisible}"
                     app:layout_constraintBottom_toBottomOf="@id/til_name"
                     app:layout_constraintEnd_toStartOf="@id/iv_name_crop"
                     app:tint="?attr/colorOnSurface" />
@@ -290,8 +292,8 @@
                         android:hint="@string/add_gifticon_brand_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textNoSuggestions"
-                        android:maxLength="100"
                         android:lines="1"
+                        android:maxLength="100"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBrandName(text)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="72dp"
@@ -312,6 +314,8 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_remove"
+                    android:onClick="@{() -> vm.removeBrand()}"
+                    app:isVisible="@{vm.brandRemoveVisible}"
                     app:layout_constraintBottom_toBottomOf="@id/til_brand"
                     app:layout_constraintEnd_toStartOf="@id/iv_brand_crop"
                     app:tint="?attr/colorOnSurface" />
@@ -360,7 +364,6 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_barcode_hint"
                         android:imeOptions="actionNext"
-
                         android:inputType="number"
                         android:lines="1"
                         android:maxLength="29"
@@ -368,6 +371,7 @@
                         android:paddingStart="0dp"
                         android:paddingEnd="72dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
+                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBarcodeFocusChangeListener(hasFocus)}"
                         app:setEditTextInfo="@{vm.displayBarcode}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -383,6 +387,8 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_remove"
+                    android:onClick="@{() -> vm.removeBarcode()}"
+                    app:isVisible="@{vm.barcodeRemoveVisible}"
                     app:layout_constraintBottom_toBottomOf="@id/til_barcode"
                     app:layout_constraintEnd_toStartOf="@id/iv_barcode_crop"
                     app:tint="?attr/colorOnSurface" />
@@ -405,7 +411,7 @@
                 <androidx.constraintlayout.widget.Group
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="tv_balance, til_balance, iv_balance_remove, iv_balance_crop"
+                    app:constraint_referenced_ids="tv_balance, til_balance, iv_balance_crop"
                     app:isVisible="@{vm.selectedGifticon.cashCard}" />
 
                 <TextView
@@ -444,6 +450,7 @@
                         android:paddingStart="0dp"
                         android:paddingEnd="72dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
+                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBalanceFocusChangeListener(hasFocus)}"
                         app:setEditTextInfo="@{vm.displayBalance}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -459,6 +466,8 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_remove"
+                    android:onClick="@{() -> vm.removeBalance()}"
+                    app:isVisible="@{vm.balanceRemoveVisible}"
                     app:layout_constraintBottom_toBottomOf="@id/til_balance"
                     app:layout_constraintEnd_toStartOf="@id/iv_balance_crop"
                     app:tint="?attr/colorOnSurface" />

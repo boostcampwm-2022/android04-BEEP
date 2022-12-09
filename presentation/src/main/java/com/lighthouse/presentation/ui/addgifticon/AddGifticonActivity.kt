@@ -263,6 +263,8 @@ class AddGifticonActivity : AppCompatActivity() {
         val focusView = when (scroll) {
             AddGifticonScroll.GIFTICON_NAME -> binding.tvName
             AddGifticonScroll.BRAND_NAME -> binding.tvBrand
+            AddGifticonScroll.BARCODE -> binding.tvBarcode
+            AddGifticonScroll.BALANCE -> binding.tvBalance
         }
         binding.nsv.smoothScrollTo(0, focusView.top)
     }
