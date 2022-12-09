@@ -40,7 +40,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Calendar
@@ -76,31 +75,66 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
-        return if (result.resultCode == Activity.RESULT_OK) {
-            val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
-            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
+    private suspend fun getCropResult(result: ActivityResult): Uri? {
+        return withContext(Dispatchers.IO) {
+            result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java)
+        }
+    }
 
-            withContext(Dispatchers.IO) {
-                FileInputStream(croppedUri.path).copyTo(
-                    FileOutputStream(output)
-                )
+    private suspend fun getCropResult(result: ActivityResult, id: Long): CroppedImage? {
+        return withContext(Dispatchers.IO) {
+            val output = getFileStreamPath("$TEMP_GIFTICON_PREFIX$id")
+
+            if (result.resultCode == Activity.RESULT_OK) {
+                val croppedUri =
+                    result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return@withContext null
+                val croppedRect =
+                    result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return@withContext null
+
+                FileInputStream(croppedUri.path).copyTo(FileOutputStream(output))
+                CroppedImage(output.toUri(), croppedRect)
+            } else {
+                null
             }
-            CroppedImage(output.toUri(), croppedRect)
-        } else {
-            null
         }
     }
 
     private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val gifticon = viewModel.selectedGifticon.value ?: return@registerForActivityResult
-        val output = getFileStreamPath("$TEMP_GIFTICON_PREFIX${gifticon.id}")
-
         lifecycleScope.launch {
-            val croppedImage = withContext(Dispatchers.IO) {
-                getCropResult(result, output)
-            } ?: return@launch
-            viewModel.croppedGifticonImage(croppedImage)
+            val gifticon = viewModel.selectedGifticon.value ?: return@launch
+            val croppedImage = getCropResult(result, gifticon.id) ?: return@launch
+            viewModel.updateCroppedGifticonImage(croppedImage)
+        }
+    }
+
+    private val cropGifticonName =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            lifecycleScope.launch {
+                viewModel.recognizeGifticonName(getCropResult(result))
+            }
+        }
+
+    private val cropBrandName = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        lifecycleScope.launch {
+            viewModel.recognizeBrand(getCropResult(result))
+        }
+    }
+
+    private val cropBarcode = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        lifecycleScope.launch {
+            viewModel.recognizeBarcode(getCropResult(result))
+        }
+    }
+
+    private val cropBalance = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        lifecycleScope.launch {
+            viewModel.recognizeBalance(getCropResult(result))
+        }
+    }
+
+    private val cropExpired = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        lifecycleScope.launch {
+            viewModel.recognizeExpired(getCropResult(result))
         }
     }
 
@@ -132,19 +166,19 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private fun collectEvent() {
         repeatOnStarted {
-            viewModel.eventFlow.collect { events ->
-                when (events) {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
                     is AddGifticonEvent.PopupBackStack -> cancelAddGifticon()
                     is AddGifticonEvent.ShowCancelConfirmation -> showConfirmationCancelDialog()
-                    is AddGifticonEvent.ShowDeleteConfirmation -> showConfirmationDeleteDialog(events.gifticon)
-                    is AddGifticonEvent.NavigateToGallery -> gotoGallery(events.list)
-                    is AddGifticonEvent.NavigateToCropGifticon -> gotoCropGifticon(events.origin, events.croppedRect)
-                    is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(events.origin)
-                    is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(events.date)
-                    is AddGifticonEvent.RequestLoading -> requestLoading(events.loading)
-                    is AddGifticonEvent.RequestFocus -> requestFocus(events.focus)
-                    is AddGifticonEvent.RequestScroll -> requestScroll(events.scroll)
-                    is AddGifticonEvent.ShowSnackBar -> showSnackBar(events.uiText)
+                    is AddGifticonEvent.ShowDeleteConfirmation -> showConfirmationDeleteDialog(event.gifticon)
+                    is AddGifticonEvent.NavigateToGallery -> gotoGallery(event.list)
+                    is AddGifticonEvent.NavigateToCrop -> gotoCrop(event.crop, event.origin, event.croppedRect)
+                    is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(event.origin)
+                    is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(event.date)
+                    is AddGifticonEvent.RequestLoading -> requestLoading(event.loading)
+                    is AddGifticonEvent.RequestFocus -> requestFocus(event.focus)
+                    is AddGifticonEvent.RequestScroll -> requestScroll(event.scroll)
+                    is AddGifticonEvent.ShowSnackBar -> showSnackBar(event.uiText)
                     is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
             }
@@ -173,12 +207,23 @@ class AddGifticonActivity : AppCompatActivity() {
         gallery.launch(intent)
     }
 
-    private fun gotoCropGifticon(uri: Uri, croppedRect: RectF) {
+    private fun gotoCrop(crop: AddGifticonCrop, uri: Uri, croppedRect: RectF) {
+        val launcher = when (crop) {
+            AddGifticonCrop.GIFTICON_IMAGE -> cropGifticon
+            AddGifticonCrop.GIFTICON_NAME -> cropGifticonName
+            AddGifticonCrop.BRAND_NAME -> cropBrandName
+            AddGifticonCrop.BARCODE -> cropBarcode
+            AddGifticonCrop.BALANCE -> cropBalance
+            AddGifticonCrop.EXPIRED -> cropExpired
+        }
         val intent = Intent(this, CropGifticonActivity::class.java).apply {
             putExtra(Extras.KEY_ORIGIN_IMAGE, uri)
             putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
+            if (crop != AddGifticonCrop.GIFTICON_IMAGE) {
+                putExtra(Extras.KEY_ENABLE_ASPECT_RATIO, false)
+            }
         }
-        cropGifticon.launch(intent)
+        launcher.launch(intent)
     }
 
     private fun showOriginGifticonDialog(uri: Uri) {
@@ -196,7 +241,7 @@ class AddGifticonActivity : AppCompatActivity() {
                     it.set(year, month - 1, dayOfMonth)
                     it.time
                 }
-                viewModel.changeExpiredAt(newDate)
+                viewModel.updateExpiredAt(newDate)
             }
         }.apply {
             setDate(date)

@@ -127,7 +127,7 @@
                     android:background="@drawable/bg_on_surface_12"
                     android:contentDescription="@string/add_gifticon_image_description"
                     android:enabled="@{vm.isSelected}"
-                    android:onClick="@{() -> vm.gotoCropGifticon()}"
+                    android:onClick="@{() -> vm.gotoCropGifticonImage()}"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -187,7 +187,7 @@
                     android:onClick="@{() -> vm.requestCashCard()}"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintTop_toBottomOf="@id/tv_origin_image"
-                    app:onCheckedChangeListener="@{(view, checked) -> vm.changeCashCard(checked)}" />
+                    app:onCheckedChangeListener="@{(view, checked) -> vm.updateCashCard(checked)}" />
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -221,7 +221,7 @@
                         android:inputType="textNoSuggestions"
                         android:lines="1"
                         android:maxLength="100"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeGifticonName(text)}"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.updateGifticonName(text)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="72dp"
                         android:text="@{vm.name}"
@@ -258,6 +258,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_crop"
+                    android:onClick="@{() -> vm.gotoCropGifticonName()}"
                     app:layout_constraintBottom_toBottomOf="@id/til_name"
                     app:layout_constraintEnd_toEndOf="@id/til_name"
                     app:tint="?attr/colorOnSurface" />
@@ -294,7 +295,7 @@
                         android:inputType="textNoSuggestions"
                         android:lines="1"
                         android:maxLength="100"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBrandName(text)}"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.updateBrandName(text)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="72dp"
                         android:text="@{vm.brand}"
@@ -331,6 +332,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_crop"
+                    android:onClick="@{() -> vm.gotoCropBrandName()}"
                     app:layout_constraintBottom_toBottomOf="@id/til_brand"
                     app:layout_constraintEnd_toEndOf="@id/til_brand"
                     app:tint="?attr/colorOnSurface" />
@@ -404,6 +406,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_crop"
+                    android:onClick="@{() -> vm.gotoCropBarcode()}"
                     app:layout_constraintBottom_toBottomOf="@id/til_barcode"
                     app:layout_constraintEnd_toEndOf="@id/til_barcode"
                     app:tint="?attr/colorOnSurface" />
@@ -483,6 +486,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_crop"
+                    android:onClick="@{() -> vm.gotoCropBalance()}"
                     app:layout_constraintBottom_toBottomOf="@id/til_balance"
                     app:layout_constraintEnd_toEndOf="@id/til_balance"
                     app:tint="?attr/colorOnSurface" />
@@ -551,6 +555,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:src="@drawable/ic_crop"
+                    android:onClick="@{() -> vm.gotoCropExpired()}"
                     app:layout_constraintBottom_toBottomOf="@id/til_expire_date"
                     app:layout_constraintEnd_toEndOf="@id/til_expire_date"
                     app:tint="?attr/colorOnSurface" />
@@ -587,7 +592,7 @@
                         android:hint="@string/add_gifticon_memo_hint"
                         android:inputType="textNoSuggestions|textMultiLine"
                         android:minHeight="80dp"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeMemo(text)}"
+                        android:onTextChanged="@{(text, start, end, count) -> vm.updateMemo(text)}"
                         android:text="@{vm.memo}" />
 
                 </com.google.android.material.textfield.TextInputLayout>

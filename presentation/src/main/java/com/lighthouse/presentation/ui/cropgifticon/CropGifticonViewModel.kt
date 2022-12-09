@@ -29,6 +29,9 @@ class CropGifticonViewModel @Inject constructor(
         savedStateHandle.get<RectF>(Extras.KEY_CROPPED_RECT)
     )
 
+    val enableAspectRatio = savedStateHandle.get<Boolean>(Extras.KEY_ENABLE_ASPECT_RATIO) ?: true
+    val aspectRatio = savedStateHandle.get<Float>(Extras.KEY_ASPECT_RATIO) ?: 1f
+
     fun cancelCropImage() {
         viewModelScope.launch {
             _eventsFlow.emit(CropGifticonEvent.PopupBackStack)

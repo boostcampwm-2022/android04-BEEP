@@ -1,10 +1,12 @@
 package com.lighthouse.presentation.ui.addgifticon
 
+import android.graphics.RectF
+import android.net.Uri
 import android.text.InputFilter
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.usecase.addgifticon.RecognizeGifticonImageUseCase
+import com.lighthouse.domain.usecase.addgifticon.RecognizeUseCase
 import com.lighthouse.domain.usecase.addgifticon.SaveGifticonsUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDate
@@ -25,6 +27,7 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,7 +46,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddGifticonViewModel @Inject constructor(
     private val saveGifticonsUseCase: SaveGifticonsUseCase,
-    private val recognizeGifticonImageUseCase: RecognizeGifticonImageUseCase
+    private val recognizeUseCase: RecognizeUseCase
 ) : ViewModel() {
 
     private val today = Calendar.getInstance().let {
@@ -294,22 +297,20 @@ class AddGifticonViewModel @Inject constructor(
         }
 
         requestLoading(true)
-        var count = 0
-        list.forEach { gallery ->
-            viewModelScope.launch {
-                recognizeGifticonItem(gallery)
-                synchronized(this@AddGifticonViewModel) {
-                    count += 1
-                    if (count >= list.size) {
-                        requestLoading(false)
+        viewModelScope.launch {
+            launch(Dispatchers.IO) {
+                list.forEach { gallery ->
+                    launch {
+                        recognizeGifticonItem(gallery)
                     }
                 }
-            }
+            }.join()
+            requestLoading(false)
         }
     }
 
     private suspend fun recognizeGifticonItem(gallery: GalleryUIModel.Gallery) {
-        val result = recognizeGifticonImageUseCase(gallery.toDomain()) ?: return
+        val result = recognizeUseCase.gifticon(gallery.toDomain()) ?: return
         val updated = updateGifticon(gallery.id) {
             result.toPresentation(gallery.id)
         } ?: return
@@ -318,6 +319,53 @@ class AddGifticonViewModel @Inject constructor(
                 thumbnailImage = updated.thumbnailImage,
                 isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
             )
+        }
+    }
+
+    fun recognizeGifticonName(uri: Uri?) {
+        uri ?: return
+        viewModelScope.launch {
+            val result = recognizeUseCase.gifticonName(uri.toString())
+            updateGifticonName(result)
+        }
+    }
+
+    fun recognizeBrand(uri: Uri?) {
+        uri ?: return
+        viewModelScope.launch {
+            val result = recognizeUseCase.brandName(uri.toString())
+            updateBrandName(result)
+        }
+    }
+
+    fun recognizeBarcode(uri: Uri?) {
+        uri ?: return
+        viewModelScope.launch {
+            val result = recognizeUseCase.barcode(uri.toString())
+            updateBarcode(result)
+        }
+    }
+
+    fun recognizeBalance(uri: Uri?) {
+        uri ?: return
+        viewModelScope.launch {
+            val result = recognizeUseCase.balance(uri.toString())
+            updateBalance(result)
+        }
+    }
+
+    private fun updateBalance(balance: Int) {
+        val updated = updateSelectedGifticon { it.copy(isCashCard = balance > 0, balance = balance.toString()) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
+    }
+
+    fun recognizeExpired(uri: Uri?) {
+        uri ?: return
+        viewModelScope.launch {
+            val result = recognizeUseCase.expired(uri.toString())
+            updateExpiredAt(result)
         }
     }
 
@@ -388,27 +436,37 @@ class AddGifticonViewModel @Inject constructor(
         return false
     }
 
-    fun croppedGifticonImage(croppedImage: CroppedImage) {
+    fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
         updateSelectedDisplayGifticon { it.copy(thumbnailImage = croppedImage) }
         updateSelectedGifticon { it.copy(thumbnailImage = croppedImage) }
     }
 
-    fun changeCashCard(checked: Boolean) {
+    fun updateCashCard(checked: Boolean) {
         val updated = updateSelectedGifticon { it.copy(isCashCard = checked) }
         if (updated != null) {
             updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
         }
     }
 
-    fun changeGifticonName(name: CharSequence) {
+    fun updateGifticonName(name: CharSequence) {
         val updated = updateSelectedGifticon { it.copy(name = name.toString()) }
         if (updated != null) {
             updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
         }
     }
 
-    fun changeBrandName(brandName: CharSequence) {
+    fun updateBrandName(brandName: CharSequence) {
         val updated = updateSelectedGifticon { it.copy(brandName = brandName.toString()) }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
+    }
+
+    private fun updateBarcode(barcode: String, selection: Int = barcode.length) {
+        val updated = updateSelectedGifticon { it.copy(barcode = barcode) }
+        viewModelScope.launch {
+            displayBarcodeSelection.emit(selection)
+        }
         if (updated != null) {
             updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
         }
@@ -452,14 +510,7 @@ class AddGifticonViewModel @Inject constructor(
             }
             newBarcode.lastIndex - index + 1
         }
-
-        val updated = updateSelectedGifticon { it.copy(barcode = newValue) }
-        viewModelScope.launch {
-            displayBarcodeSelection.emit(newSelection)
-        }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
+        updateBarcode(newValue, newSelection)
     }
 
     val balanceFilters = arrayOf(
@@ -479,6 +530,16 @@ class AddGifticonViewModel @Inject constructor(
             }
         }
     )
+
+    private fun updateBalance(balance: String, selection: Int = balance.length) {
+        val updated = updateSelectedGifticon { it.copy(balance = balance) }
+        viewModelScope.launch {
+            displayBalanceSelection.emit(selection)
+        }
+        if (updated != null) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
+        }
+    }
 
     fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
         val newString = charSequence.toString()
@@ -521,24 +582,17 @@ class AddGifticonViewModel @Inject constructor(
             }
             newBalance.lastIndex - index + 1
         }
-
-        val updated = updateSelectedGifticon { it.copy(balance = newValue) }
-        viewModelScope.launch {
-            displayBalanceSelection.emit(newSelection)
-        }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
+        updateBalance(newValue, newSelection)
     }
 
-    fun changeExpiredAt(expiredAt: Date) {
+    fun updateExpiredAt(expiredAt: Date) {
         val updated = updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
         if (updated != null) {
             updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
         }
     }
 
-    fun changeMemo(memo: CharSequence) {
+    fun updateMemo(memo: CharSequence) {
         updateSelectedGifticon { it.copy(memo = memo.toString()) }
     }
 
@@ -684,17 +738,46 @@ class AddGifticonViewModel @Inject constructor(
         }
     }
 
-    fun gotoCropGifticon() {
+    fun gotoCropGifticonImage() {
+        val gifticon = selectedGifticon.value ?: return
+        gotoCropGifticon(
+            crop = AddGifticonCrop.GIFTICON_IMAGE,
+            croppedRect = gifticon.thumbnailImage.croppedRect
+        )
+    }
+
+    fun gotoCropGifticonName() {
+        gotoCropGifticon(crop = AddGifticonCrop.GIFTICON_NAME)
+    }
+
+    fun gotoCropBrandName() {
+        gotoCropGifticon(crop = AddGifticonCrop.BRAND_NAME)
+    }
+
+    fun gotoCropBarcode() {
+        gotoCropGifticon(crop = AddGifticonCrop.BARCODE)
+    }
+
+    fun gotoCropBalance() {
+        gotoCropGifticon(crop = AddGifticonCrop.BALANCE)
+    }
+
+    fun gotoCropExpired() {
+        gotoCropGifticon(crop = AddGifticonCrop.EXPIRED)
+    }
+
+    private fun gotoCropGifticon(
+        crop: AddGifticonCrop,
+        uri: Uri? = selectedGifticon.value?.origin,
+        croppedRect: RectF = RectF()
+    ) {
+        uri ?: return
         changeDeleteMode(false)
 
-        val gifticon = selectedGifticon.value ?: return
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonFocus.NONE))
             _eventFlow.emit(
-                AddGifticonEvent.NavigateToCropGifticon(
-                    gifticon.origin,
-                    gifticon.thumbnailImage.croppedRect
-                )
+                AddGifticonEvent.NavigateToCrop(crop, uri, croppedRect)
             )
         }
     }

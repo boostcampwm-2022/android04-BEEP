@@ -83,6 +83,6 @@ class ExpiredParser {
 
     fun parseExpiredDate(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
         val result = parseExpiredDate(info.candidate)
-        return GifticonRecognizeInfo(expiredAt = result.expired, candidate = result.filtered)
+        return info.copy(expiredAt = result.expired, candidate = result.filtered)
     }
 }

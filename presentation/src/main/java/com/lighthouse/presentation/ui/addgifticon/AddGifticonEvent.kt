@@ -14,7 +14,9 @@ sealed class AddGifticonEvent {
     object RegistrationCompleted : AddGifticonEvent()
     data class ShowDeleteConfirmation(val gifticon: AddGifticonItemUIModel.Gifticon) : AddGifticonEvent()
     data class NavigateToGallery(val list: List<GalleryUIModel.Gallery> = emptyList()) : AddGifticonEvent()
-    data class NavigateToCropGifticon(val origin: Uri, val croppedRect: RectF) : AddGifticonEvent()
+    data class NavigateToCrop(val crop: AddGifticonCrop, val origin: Uri, val croppedRect: RectF = RectF()) :
+        AddGifticonEvent()
+
     data class ShowOriginGifticon(val origin: Uri) : AddGifticonEvent()
     data class ShowExpiredAtDatePicker(val date: Date) : AddGifticonEvent()
     data class RequestLoading(val loading: Boolean) : AddGifticonEvent()
