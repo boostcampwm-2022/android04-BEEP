@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -106,11 +106,12 @@ fun AllBrandChipsDialog(
             Surface(
                 modifier = modifier,
                 shape = RoundedCornerShape(12.dp),
-                color = Color.White
+                color = MaterialTheme.colors.background
             ) {
                 Column {
                     TextCheckbox(
                         checked = showExpiredGifticon,
+                        textStyle = MaterialTheme.typography.body2,
                         text = stringResource(R.string.gifticon_list_brands_dialog_show_expired_gifticon_option)
                     ) { checked ->
                         viewModel.filterUsedGifticon(checked)
@@ -154,8 +155,9 @@ fun BrandChip(
         },
         modifier = modifier.wrapContentWidth(),
         colors = ChipDefaults.filterChipColors(
-            backgroundColor = colorResource(id = R.color.black).copy(alpha = 0.1f),
-            selectedBackgroundColor = colorResource(id = R.color.beep_pink),
+            backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.2f),
+            contentColor = MaterialTheme.colors.onSurface,
+            selectedBackgroundColor = MaterialTheme.colors.primary,
             selectedContentColor = Color.White
         )
     ) {
@@ -167,7 +169,7 @@ fun BrandChip(
             Text(
                 text = brand.count.toString(),
                 modifier = Modifier.padding(start = 4.dp),
-                color = colorResource(id = R.color.gray_500)
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
             )
         }
     }

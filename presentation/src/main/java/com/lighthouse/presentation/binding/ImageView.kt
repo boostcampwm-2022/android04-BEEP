@@ -63,6 +63,8 @@ fun ImageView.applyFilterGray(applyFilter: Boolean = true) {
         setColorFilter(Color.parseColor("#55000000"), PorterDuff.Mode.DARKEN)
     } else {
         clearColorFilter()
+    }
+}
 
 @BindingAdapter("loadWithFileStreamPath")
 fun ImageView.loadWithFileStreamPath(filename: String?) {

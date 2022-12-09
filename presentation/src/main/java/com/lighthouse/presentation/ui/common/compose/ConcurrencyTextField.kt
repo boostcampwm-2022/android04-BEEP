@@ -24,6 +24,7 @@ fun ConcurrencyField(
     textStyle: TextStyle? = null,
     editable: Boolean = true,
     suffixText: String = stringResource(id = R.string.all_cash_origin_unit),
+    upperLimit: Int = Int.MAX_VALUE,
     onValueChanged: (Int) -> Unit = {}
 ) {
     val typography = textStyle ?: MaterialTheme.typography.body1
@@ -40,6 +41,9 @@ fun ConcurrencyField(
                 return@BasicTextField
             }
             if (inputText.length >= MAX_LENGTH) {
+                return@BasicTextField
+            }
+            if (inputText.toInt() > upperLimit) {
                 return@BasicTextField
             }
             text = inputText
