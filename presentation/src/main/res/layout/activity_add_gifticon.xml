@@ -138,13 +138,13 @@
                     android:id="@+id/tv_edit_gifticon_image"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_on_surface_50"
                     android:gravity="center"
                     android:padding="8dp"
                     android:text="@string/add_gifticon_edit_image"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="?attr/colorSurface"
                     android:textStyle="bold"
-                    android:background="@drawable/bg_on_surface_50"
                     app:layout_constraintBottom_toBottomOf="@id/iv_gifticon_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
                     app:layout_constraintStart_toStartOf="@id/iv_gifticon_image" />
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="@{vm.isSelected}"
                     app:boxBackgroundColor="@null"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="none"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -219,13 +219,46 @@
                         android:hint="@string/add_gifticon_name_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textNoSuggestions"
+                        android:maxLength="100"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeGifticonName(text)}"
-                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onNameFocusChangeListener(hasFocus)}"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="72dp"
                         android:text="@{vm.name}"
-                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
+                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
+                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onNameFocusChangeListener(hasFocus)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/iv_name_remove"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_name_remove_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_remove"
+                    app:layout_constraintBottom_toBottomOf="@id/til_name"
+                    app:layout_constraintEnd_toStartOf="@id/iv_name_crop"
+                    app:tint="?attr/colorOnSurface" />
+
+                <ImageView
+                    android:id="@+id/iv_name_crop"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_name_crop_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_crop"
+                    app:layout_constraintBottom_toBottomOf="@id/til_name"
+                    app:layout_constraintEnd_toEndOf="@id/til_name"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/tv_brand"
@@ -244,7 +277,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="@{vm.isSelected}"
                     app:boxBackgroundColor="@null"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="none"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -257,13 +290,46 @@
                         android:hint="@string/add_gifticon_brand_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textNoSuggestions"
+                        android:maxLength="100"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBrandName(text)}"
-                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBrandFocusChangeListener(hasFocus)}"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="72dp"
                         android:text="@{vm.brand}"
-                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}" />
+                        app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
+                        app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBrandFocusChangeListener(hasFocus)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/iv_brand_remove"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_brand_remove_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_remove"
+                    app:layout_constraintBottom_toBottomOf="@id/til_brand"
+                    app:layout_constraintEnd_toStartOf="@id/iv_brand_crop"
+                    app:tint="?attr/colorOnSurface" />
+
+                <ImageView
+                    android:id="@+id/iv_brand_crop"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_brand_crop_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_crop"
+                    app:layout_constraintBottom_toBottomOf="@id/til_brand"
+                    app:layout_constraintEnd_toEndOf="@id/til_brand"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/tv_barcode"
@@ -282,7 +348,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="@{vm.isSelected}"
                     app:boxBackgroundColor="@null"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="none"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -294,19 +360,52 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/add_gifticon_barcode_hint"
                         android:imeOptions="actionNext"
+
                         android:inputType="number"
                         android:lines="1"
-                        android:maxLength="19"
+                        android:maxLength="29"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="72dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:setEditTextInfo="@{vm.displayBarcode}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <ImageView
+                    android:id="@+id/iv_barcode_remove"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_barcode_remove_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_remove"
+                    app:layout_constraintBottom_toBottomOf="@id/til_barcode"
+                    app:layout_constraintEnd_toStartOf="@id/iv_barcode_crop"
+                    app:tint="?attr/colorOnSurface" />
+
+                <ImageView
+                    android:id="@+id/iv_barcode_crop"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_barcode_crop_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_crop"
+                    app:layout_constraintBottom_toBottomOf="@id/til_barcode"
+                    app:layout_constraintEnd_toEndOf="@id/til_barcode"
+                    app:tint="?attr/colorOnSurface" />
+
                 <androidx.constraintlayout.widget.Group
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="tv_balance, til_balance"
+                    app:constraint_referenced_ids="tv_balance, til_balance, iv_balance_remove, iv_balance_crop"
                     app:isVisible="@{vm.selectedGifticon.cashCard}" />
 
                 <TextView
@@ -326,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="@{vm.isSelected}"
                     app:boxBackgroundColor="@null"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="none"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -342,10 +441,43 @@
                         android:inputType="number"
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="72dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:setEditTextInfo="@{vm.displayBalance}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/iv_balance_remove"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_balance_remove_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_remove"
+                    app:layout_constraintBottom_toBottomOf="@id/til_balance"
+                    app:layout_constraintEnd_toStartOf="@id/iv_balance_crop"
+                    app:tint="?attr/colorOnSurface" />
+
+                <ImageView
+                    android:id="@+id/iv_balance_crop"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_balance_crop_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_crop"
+                    app:layout_constraintBottom_toBottomOf="@id/til_balance"
+                    app:layout_constraintEnd_toEndOf="@id/til_balance"
+                    app:tint="?attr/colorOnSurface" />
+
 
                 <TextView
                     android:id="@+id/tv_expire_date"
@@ -365,7 +497,7 @@
                     android:enabled="@{vm.isSelected}"
                     app:boxBackgroundColor="@null"
                     app:endIconDrawable="@drawable/ic_add_gifticon_calendar"
-                    app:endIconMode="custom"
+                    app:endIconMode="none"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -381,9 +513,38 @@
                         android:inputType="none"
                         android:lines="1"
                         android:onClick="@{() -> vm.showExpiredAtDatePicker()}"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="72dp"
                         app:setUIText="@{vm.expiredAt}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/iv_expire_calender"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:contentDescription="@string/add_gifticon_expire_calendar_description"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_add_gifticon_calendar"
+                    app:layout_constraintBottom_toBottomOf="@id/til_expire_date"
+                    app:layout_constraintEnd_toStartOf="@id/iv_expire_crop"
+                    app:tint="?attr/colorOnSurface" />
+
+                <ImageView
+                    android:id="@+id/iv_expire_crop"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_expire_crop_description"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_crop"
+                    app:layout_constraintBottom_toBottomOf="@id/til_expire_date"
+                    app:layout_constraintEnd_toEndOf="@id/til_expire_date"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/tv_memo"
@@ -413,10 +574,10 @@
                         android:id="@+id/tiet_memo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="top"
                         android:hint="@string/add_gifticon_memo_hint"
                         android:inputType="textNoSuggestions|textMultiLine"
                         android:minHeight="80dp"
-                        android:gravity="top"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeMemo(text)}"
                         android:text="@{vm.memo}" />
 
