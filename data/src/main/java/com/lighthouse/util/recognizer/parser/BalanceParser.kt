@@ -18,11 +18,11 @@ class BalanceParser {
             }
         } ?: 0
 
-        return BalanceParserResult(isCashCard = balance > 0, balance = balance)
+        return BalanceParserResult(balance = balance)
     }
 
     fun parseCashCard(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
         val result = parseCashCard(info.candidate)
-        return info.copy(isCashCard = result.isCashCard, balance = result.balance)
+        return info.copy(isCashCard = result.balance > 0, balance = result.balance)
     }
 }

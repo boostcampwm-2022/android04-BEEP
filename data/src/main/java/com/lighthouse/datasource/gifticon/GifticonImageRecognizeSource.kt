@@ -12,12 +12,17 @@ import android.os.Build
 import android.provider.MediaStore
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.mapper.toDomain
+import com.lighthouse.util.recognizer.BalanceRecognizer
+import com.lighthouse.util.recognizer.BarcodeRecognizer
+import com.lighthouse.util.recognizer.ExpiredRecognizer
 import com.lighthouse.util.recognizer.GifticonRecognizer
+import com.lighthouse.util.recognizer.TextRecognizer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Date
 import javax.inject.Inject
 
 class GifticonImageRecognizeSource @Inject constructor(
@@ -25,16 +30,7 @@ class GifticonImageRecognizeSource @Inject constructor(
 ) {
 
     suspend fun recognize(id: Long, path: String): GifticonForAddition? {
-        val originUri = Uri.parse(path)
-        val originBitmap = when (originUri.scheme) {
-            SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, originUri))
-            } else {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, originUri)
-            }
-            SCHEME_FILE -> BitmapFactory.decodeFile(originUri.path)
-            else -> return null
-        }
+        val originBitmap = getBitmap(path) ?: return null
         val info = GifticonRecognizer().recognize(originBitmap) ?: return null
         val croppedBitmap = info.croppedImage
         var croppedPath = ""
@@ -44,19 +40,52 @@ class GifticonImageRecognizeSource @Inject constructor(
             croppedPath = croppedFile.path
         }
 
-        return GifticonForAddition(
-            true,
-            info.name,
-            info.brand,
-            info.barcode,
-            info.expiredAt,
-            info.isCashCard,
-            info.balance,
-            path,
-            croppedPath,
-            info.croppedRect.toDomain(),
-            ""
-        )
+        return info.toDomain(path, croppedPath)
+    }
+
+    suspend fun recognizeGifticonName(path: String): String {
+        val bitmap = getBitmap(path) ?: return ""
+        val inputs = TextRecognizer().recognize(bitmap)
+        return inputs.joinToString("")
+    }
+
+    suspend fun recognizeBrandName(path: String): String {
+        val bitmap = getBitmap(path) ?: return ""
+        val inputs = TextRecognizer().recognize(bitmap)
+        return inputs.joinToString("")
+    }
+
+    suspend fun recognizeBarcode(path: String): String {
+        val bitmap = getBitmap(path) ?: return ""
+        val result = BarcodeRecognizer().recognize(bitmap)
+        return result.barcode
+    }
+
+    suspend fun recognizeBalance(path: String): Int {
+        val bitmap = getBitmap(path) ?: return 0
+        val result = BalanceRecognizer().recognize(bitmap)
+        return result.balance
+    }
+
+    suspend fun recognizeExpired(path: String): Date {
+        val bitmap = getBitmap(path) ?: return Date(0)
+        val result = ExpiredRecognizer().recognize(bitmap)
+        return result.expired
+    }
+
+    private suspend fun getBitmap(path: String): Bitmap? {
+        return withContext(Dispatchers.IO) {
+            val originUri = Uri.parse(path)
+            when (originUri.scheme) {
+                SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, originUri))
+                } else {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, originUri)
+                }
+                SCHEME_FILE -> BitmapFactory.decodeFile(originUri.path)
+                else -> null
+            }
+        }
     }
 
     private suspend fun saveBitmap(bitmap: Bitmap, format: CompressFormat, quality: Int, file: File) {
