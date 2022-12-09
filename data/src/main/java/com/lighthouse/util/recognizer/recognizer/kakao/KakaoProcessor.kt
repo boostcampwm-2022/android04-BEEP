@@ -32,6 +32,6 @@ class KakaoProcessor : BaseProcessor() {
     }
 
     override fun processGifticonImage(bitmap: Bitmap): GifticonProcessImage {
-        return cropImage(bitmap, 0.13125f, 0.05282f, 0.86875f, 0.41951f)
+        return cropGifticonImage(bitmap, 0.13125f, 0.05282f, 0.86875f, 0.41951f)
     }
 }

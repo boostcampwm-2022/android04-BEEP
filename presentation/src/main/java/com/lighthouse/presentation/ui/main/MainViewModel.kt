@@ -84,7 +84,7 @@ class MainViewModel @Inject constructor(
 
     fun gotoList() {
         viewModelScope.launch {
-            _pageFlow.emit(MainPage.List)
+            gotoMenuItem(R.id.menu_list)
         }
     }
 
