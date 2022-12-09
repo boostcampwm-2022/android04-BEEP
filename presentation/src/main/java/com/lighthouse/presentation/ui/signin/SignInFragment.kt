@@ -42,6 +42,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     private val auth: FirebaseAuth = Firebase.auth
     private val activityLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            progressDialog.dismiss()
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
@@ -50,8 +51,7 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                     Snackbar.make(requireView(), getString(R.string.signin_google_fail), Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT)
-                    .show()
+                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -98,11 +98,11 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
 
     private fun signInWithGoogle(account: GoogleSignInAccount) {
         account.email?.let { email ->
-            progressDialog.dismiss()
             auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { task ->
                 val isInitial = task.result.signInMethods?.size == 0
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
+                    progressDialog.dismiss()
                     if (signInTask.isSuccessful) {
                         Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
                         viewModel.saveGuestOption(false)
@@ -120,8 +120,9 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
     }
 
     private fun gotoMain() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val intent = Intent(requireContext(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         startActivity(intent)
     }
 
