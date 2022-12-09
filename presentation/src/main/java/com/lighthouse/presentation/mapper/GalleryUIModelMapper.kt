@@ -39,7 +39,7 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(
         hasImage = hasImage,
         name = name,
         brandName = brandName,
-        brandConfirm = brandConfirm,
+        isBrandConfirm = brandConfirm,
         barcode = barcode,
         expiredAt = expiredAt,
         isCashCard = isCashCard,

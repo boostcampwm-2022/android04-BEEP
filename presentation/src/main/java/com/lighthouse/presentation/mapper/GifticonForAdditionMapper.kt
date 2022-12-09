@@ -14,7 +14,7 @@ fun GifticonForAddition.toPresentation(id: Long): AddGifticonUIModel {
         hasImage = hasImage,
         name = name,
         brandName = brandName,
-        brandConfirm = false,
+        isBrandConfirm = false,
         barcode = barcode,
         expiredAt = expiredAt,
         isCashCard = isCashCard,

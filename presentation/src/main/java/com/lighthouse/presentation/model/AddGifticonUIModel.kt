@@ -9,7 +9,7 @@ data class AddGifticonUIModel(
     val hasImage: Boolean,
     val name: String,
     val brandName: String,
-    val brandConfirm: Boolean,
+    val isBrandConfirm: Boolean,
     val barcode: String,
     val expiredAt: Date,
     val isCashCard: Boolean,

@@ -176,8 +176,8 @@ class AddGifticonActivity : AppCompatActivity() {
                     is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(event.origin)
                     is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(event.date)
                     is AddGifticonEvent.RequestLoading -> requestLoading(event.loading)
-                    is AddGifticonEvent.RequestFocus -> requestFocus(event.focus)
-                    is AddGifticonEvent.RequestScroll -> requestScroll(event.scroll)
+                    is AddGifticonEvent.RequestFocus -> requestFocus(event.tag)
+                    is AddGifticonEvent.RequestScroll -> requestScroll(event.tag)
                     is AddGifticonEvent.ShowSnackBar -> showSnackBar(event.uiText)
                     is AddGifticonEvent.RegistrationCompleted -> completeAddGifticon()
                 }
@@ -286,31 +286,33 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestFocus(focus: AddGifticonFocus) {
-        val focusView = when (focus) {
-            AddGifticonFocus.GIFTICON_NAME -> binding.tietName
-            AddGifticonFocus.BRAND_NAME -> binding.tietBrand
-            AddGifticonFocus.BARCODE -> binding.tietBarcode
-            AddGifticonFocus.BALANCE -> binding.tietBalance
-            AddGifticonFocus.MEMO -> binding.tietMemo
-            AddGifticonFocus.NONE -> binding.clContainer
+    private fun requestFocus(tag: AddGifticonTag) {
+        val focusView = when (tag) {
+            AddGifticonTag.GIFTICON_NAME -> binding.tietName
+            AddGifticonTag.BRAND_NAME -> binding.tietBrand
+            AddGifticonTag.BRAND_CONFIRM -> binding.ivBrandConfirm
+            AddGifticonTag.BARCODE -> binding.tietBarcode
+            AddGifticonTag.BALANCE -> binding.tietBalance
+            AddGifticonTag.NONE -> binding.clContainer
         }
         focusView.requestFocus()
         val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (focus != AddGifticonFocus.NONE) {
+        if (tag.needKeyboard) {
             inputMethodService.showSoftInput(focusView, 0)
         } else {
             inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
-    private fun requestScroll(scroll: AddGifticonScroll) {
-        val focusView = when (scroll) {
-            AddGifticonScroll.GIFTICON_NAME -> binding.tvName
-            AddGifticonScroll.BRAND_NAME -> binding.tvBrand
-            AddGifticonScroll.BARCODE -> binding.tvBarcode
-            AddGifticonScroll.BALANCE -> binding.tvBalance
-        }
+    private fun requestScroll(tag: AddGifticonTag) {
+        val focusView = when (tag) {
+            AddGifticonTag.GIFTICON_NAME -> binding.tvName
+            AddGifticonTag.BRAND_NAME -> binding.tvBrand
+            AddGifticonTag.BRAND_CONFIRM -> binding.ivBrandConfirm
+            AddGifticonTag.BARCODE -> binding.tvBarcode
+            AddGifticonTag.BALANCE -> binding.tvBalance
+            else -> null
+        } ?: return
         binding.nsv.smoothScrollTo(0, focusView.top)
     }
 
