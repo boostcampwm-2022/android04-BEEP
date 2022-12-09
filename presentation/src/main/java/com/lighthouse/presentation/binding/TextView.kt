@@ -14,6 +14,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDate
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
+import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.resource.UIText
 import java.text.DecimalFormat
 import java.util.Date
@@ -85,4 +86,18 @@ fun TextView.applyClickable(targetText: String, onClickListener: View.OnClickLis
     }
     movementMethod = LinkMovementMethod()
     setText(spannableString, TextView.BufferType.SPANNABLE)
+}
+
+@BindingAdapter("setDday")
+fun setDday(view: TextView, date: Date) {
+    val dDay = TimeCalculator.formatDdayToInt(date.time)
+    view.text = when {
+        dDay == TimeCalculator.MIN_DAY -> view.context.getString(R.string.all_d_very_day)
+        dDay in TimeCalculator.MIN_DAY until TimeCalculator.MAX_DAY -> String.format(
+            view.context.getString(R.string.all_d_day),
+            dDay
+        )
+        dDay < TimeCalculator.MIN_DAY -> view.context.getString(R.string.all_d_day_expired)
+        else -> view.context.getString(R.string.all_d_day_more_than_year)
+    }
 }

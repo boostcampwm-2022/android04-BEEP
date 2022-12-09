@@ -79,7 +79,7 @@
                 android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:setExportedDate="@{gifticon.expireAt}"
+                app:dateFormat="@{gifticon.expireAt}"
                 tools:text="~ 2022-11-08" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
