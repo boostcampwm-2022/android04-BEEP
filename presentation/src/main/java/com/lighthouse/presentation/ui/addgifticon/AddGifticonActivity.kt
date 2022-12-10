@@ -316,7 +316,11 @@ class AddGifticonActivity : AppCompatActivity() {
             AddGifticonTag.BALANCE -> binding.tvBalance
             else -> null
         } ?: return
-        binding.nsv.smoothScrollTo(0, focusView.top)
+
+        val dir = if (binding.nsv.scrollY - focusView.top > 0) SCROLL_DIR_UP else SCROLL_DIR_DOWN
+        if (binding.nsv.canScrollVertically(dir)) {
+            binding.nsv.smoothScrollTo(0, focusView.top)
+        }
     }
 
     private fun showSnackBar(uiText: UIText) {
@@ -324,6 +328,9 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val SCROLL_DIR_UP = 1
+        private const val SCROLL_DIR_DOWN = -1
+
         private const val CONFIRMATION_CANCEL_DIALOG = "Tag.ConfirmationCancelDialog"
         private const val CONFIRMATION_DELETE_DIALOG = "Tag.ConfirmationDeleteDialog"
 

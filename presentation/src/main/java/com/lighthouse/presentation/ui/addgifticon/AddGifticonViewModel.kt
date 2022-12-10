@@ -710,8 +710,8 @@ class AddGifticonViewModel @Inject constructor(
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
             !gifticon.isBrandConfirm -> AddGifticonValid.INVALID_BRAND_CONFIRM
             gifticon.barcode.length !in VALID_BARCODE_COUNT -> AddGifticonValid.INVALID_BARCODE
-            gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
             gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
+            gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
             else -> AddGifticonValid.VALID
         }
     }
