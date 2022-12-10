@@ -84,8 +84,11 @@ fun ImageView.loadWithFileStreamPath(filename: String?) {
 
 @BindingAdapter("setImageRes")
 fun setImageRes(view: ImageView, @DrawableRes resId: Int?) {
-    resId ?: return
-    view.setImageResource(resId)
+    if (resId != null) {
+        view.setImageResource(resId)
+    } else {
+        view.setImageBitmap(null)
+    }
 }
 
 @BindingAdapter("setTintRes")
