@@ -23,7 +23,7 @@ fun AddGifticonUIModel.toDomain(): GifticonForAddition {
         balance = balance.toIntOrNull() ?: 0,
         memo = memo,
         originUri = origin.toString(),
-        croppedUri = thumbnailImage.uri?.path ?: "",
+        croppedUri = thumbnailImage.uri?.toString() ?: "",
         croppedRect = thumbnailImage.croppedRect.toRect().toDomain()
     )
 }

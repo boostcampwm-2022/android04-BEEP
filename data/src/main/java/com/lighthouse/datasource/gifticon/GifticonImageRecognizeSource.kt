@@ -33,7 +33,7 @@ class GifticonImageRecognizeSource @Inject constructor(
     suspend fun recognize(id: Long, uri: Uri?): GifticonForAddition? {
         uri ?: return null
         val originBitmap = decodeBitmap(uri) ?: return null
-        val info = GifticonRecognizer().recognize(originBitmap) ?: return null
+        val info = GifticonRecognizer().recognize(originBitmap)
         val croppedBitmap = info.croppedImage
         var croppedUri: Uri? = null
         if (croppedBitmap != null) {
