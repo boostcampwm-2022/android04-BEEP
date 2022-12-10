@@ -33,6 +33,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.placeholder
+import com.google.accompanist.placeholder.material.shimmer
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
@@ -143,6 +146,92 @@ fun GifticonItem(gifticon: Gifticon) {
                     } else {
                         Spacer(Modifier.height(16.dp))
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GifticonLoadingList() {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 36.dp)
+    ) {
+        items(5) {
+            GifticonLoadingItem()
+        }
+    }
+}
+
+@Composable
+fun GifticonLoadingItem() {
+    val cornerSize = 8.dp
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(130.dp),
+        shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize))
+    ) {
+        Row {
+            Spacer(
+                modifier = Modifier.fillMaxHeight()
+                    .clip(RoundedCornerShape(topStart = cornerSize, bottomStart = cornerSize))
+                    .aspectRatio(1f)
+                    .align(Alignment.CenterVertically)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = "D-00",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(cornerSize))
+                        .placeholder(
+                            visible = true,
+                            highlight = PlaceholderHighlight.shimmer()
+                        )
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .align(Alignment.TopEnd)
+                )
+                Text(
+                    text = "~ 2022.00.00",
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 16.dp, end = 16.dp)
+                        .placeholder(
+                            visible = true,
+                            highlight = PlaceholderHighlight.shimmer()
+                        )
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                            .placeholder(
+                                visible = true,
+                                highlight = PlaceholderHighlight.shimmer()
+                            ),
+                        text = "브랜드 자리"
+                    )
+                    Text(
+                        modifier = Modifier
+                            .placeholder(
+                                visible = true,
+                                highlight = PlaceholderHighlight.shimmer()
+                            ),
+                        text = "제목이 들어갈 자리입니다"
+                    )
                 }
             }
         }

@@ -63,10 +63,14 @@ fun GifticonListScreen(
                     )
                 }
             }
-            GifticonList(
-                gifticons = viewState.gifticons,
-                Modifier.padding(top = 8.dp)
-            )
+            if (true) {
+                GifticonLoadingList()
+            } else {
+                GifticonList(
+                    gifticons = viewState.gifticons,
+                    Modifier.padding(top = 8.dp)
+                )
+            }
         }
         if (viewState.entireBrandsDialogShown) {
             AllBrandChipsDialog(
