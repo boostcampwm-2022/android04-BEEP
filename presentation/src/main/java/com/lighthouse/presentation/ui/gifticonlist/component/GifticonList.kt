@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toConcurrency
 import com.lighthouse.presentation.extension.toDday
@@ -63,7 +64,9 @@ fun GifticonItem(gifticon: Gifticon) {
     val cornerSize = 8.dp
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(130.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(130.dp),
         shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize)),
         onClick = {
             context.startActivity(
@@ -94,7 +97,13 @@ fun GifticonItem(gifticon: Gifticon) {
                     text = gifticon.expireAt.toDday(context),
                     modifier = Modifier
                         .clip(RoundedCornerShape(cornerSize))
-                        .background(MaterialTheme.colors.primary)
+                        .background(
+                            if (gifticon.expireAt.isExpired()) {
+                                Color.Gray
+                            } else {
+                                MaterialTheme.colors.primary
+                            }
+                        )
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .align(Alignment.TopEnd),
                     color = Color.White,
@@ -109,7 +118,9 @@ fun GifticonItem(gifticon: Gifticon) {
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                 )
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
