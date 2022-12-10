@@ -16,6 +16,7 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.adapter.list.GalleryAdapter
 import com.lighthouse.presentation.ui.gallery.adapter.selected.SelectedGalleryAdapter
+import com.lighthouse.presentation.ui.gallery.event.GalleryEvent
 import com.lighthouse.presentation.util.recycler.GridSectionSpaceItemDecoration
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint

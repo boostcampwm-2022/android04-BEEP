@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.ui.cropgifticon.event.CropGifticonEvent
 import com.lighthouse.presentation.ui.cropgifticon.view.CropImageInfo
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
@@ -28,6 +29,9 @@ class CropGifticonViewModel @Inject constructor(
         savedStateHandle.get<Uri>(Extras.KEY_ORIGIN_IMAGE),
         savedStateHandle.get<RectF>(Extras.KEY_CROPPED_RECT)
     )
+
+    val enableAspectRatio = savedStateHandle.get<Boolean>(Extras.KEY_ENABLE_ASPECT_RATIO) ?: true
+    val aspectRatio = savedStateHandle.get<Float>(Extras.KEY_ASPECT_RATIO) ?: 1f
 
     fun cancelCropImage() {
         viewModelScope.launch {

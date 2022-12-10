@@ -6,6 +6,10 @@ import kotlin.math.max
 
 abstract class BaseProcessor : ScaleProcessor() {
 
+    open val enableCenterCrop = false
+
+    open val centerCropAspectRatio = 1f
+
     private fun calculateRect(
         bitmap: Bitmap,
         leftPercent: Float,
@@ -54,21 +58,39 @@ abstract class BaseProcessor : ScaleProcessor() {
         return GifticonProcessText(tag, cropBitmap(bitmap, cropRect))
     }
 
-    protected open fun preprocess(bitmap: Bitmap): Bitmap = bitmap
-
     protected abstract fun processTextImage(bitmap: Bitmap): List<GifticonProcessText>
 
     protected abstract fun processGifticonImage(bitmap: Bitmap): GifticonProcessImage
 
-    fun process(bitmap: Bitmap): GifticonProcessResult {
-        val newBitmap = preprocess(bitmap)
-        val result = GifticonProcessResult(
-            processGifticonImage(bitmap),
-            processTextImage(bitmap)
-        )
-        if (newBitmap != bitmap) {
-            newBitmap.recycle()
+    private fun centerCropBitmap(bitmap: Bitmap): Bitmap {
+        val bitmapAspectRatio = bitmap.width.toFloat() / bitmap.height
+        return if (bitmapAspectRatio > centerCropAspectRatio) {
+            val newWidth = (bitmap.height * centerCropAspectRatio).toInt()
+            Bitmap.createBitmap(bitmap, (bitmap.width - newWidth) / 2, 0, newWidth, bitmap.height)
+        } else {
+            val newHeight = (bitmap.width / centerCropAspectRatio).toInt()
+            Bitmap.createBitmap(bitmap, 0, (bitmap.height - newHeight) / 2, bitmap.width, newHeight)
         }
-        return result
+    }
+
+    private fun adjustCropRect(origin: Bitmap, cropped: Bitmap, image: GifticonProcessImage): GifticonProcessImage {
+        val offsetX = (origin.width - cropped.width) / 2
+        val offsetY = (origin.height - cropped.height) / 2
+        return image.copy(
+            rect = image.rect.apply {
+                offset(offsetX, offsetY)
+            }
+        )
+    }
+
+    fun process(bitmap: Bitmap): GifticonProcessResult {
+        val newBitmap = if (enableCenterCrop) centerCropBitmap(bitmap) else bitmap
+        val image = processGifticonImage(newBitmap)
+        val textList = processTextImage(newBitmap)
+        return if (enableCenterCrop) {
+            GifticonProcessResult(adjustCropRect(bitmap, newBitmap, image), textList)
+        } else {
+            GifticonProcessResult(image, textList)
+        }
     }
 }

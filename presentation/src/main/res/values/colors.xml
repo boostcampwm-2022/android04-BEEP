@@ -17,6 +17,7 @@
     <color name="gray_500">#8C8C8C</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/beep_pink</color>
 
+    <color name="yellow">#FEDD16</color>
     <color name="point_green">#06DA79</color>
     <color name="widget_background">#FFFFFFFF</color>
 </resources>
