@@ -87,7 +87,8 @@
                 <TextView
                     android:id="@+id/tv_registered"
                     android:layout_width="wrap_content"
-                    android:layout_height="38dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:gravity="center"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textStyle="bold"
@@ -111,6 +112,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +124,7 @@
                     android:id="@+id/iv_gifticon_image"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/bg_on_surface_12"
                     android:contentDescription="@string/add_gifticon_image_description"
                     android:enabled="@{vm.isSelected}"
@@ -131,7 +133,21 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rv_gifticon"
-                    app:loadUriWithoutCache="@{vm.thumbnailImage}" />
+                    app:loadUriWithoutCache="@{vm.displayGifticonImage}" />
+
+                <ImageView
+                    android:id="@+id/iv_origin_gifticon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="6dp"
+                    android:enabled="@{vm.isSelected}"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@string/add_gifticon_origin_gifticon"
+                    android:onClick="@{() -> vm.showOriginGifticon()}"
+                    app:layout_constraintTop_toTopOf="@id/iv_gifticon_image"
+                    app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
+                    android:background="@drawable/bg_origin_gifticon"/>
 
                 <TextView
                     android:id="@+id/tv_edit_gifticon_image"
@@ -147,23 +163,6 @@
                     app:layout_constraintBottom_toBottomOf="@id/iv_gifticon_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
                     app:layout_constraintStart_toStartOf="@id/iv_gifticon_image" />
-
-                <TextView
-                    android:id="@+id/tv_origin_image"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_on_surface_12"
-                    android:enabled="@{vm.isSelected}"
-                    android:gravity="center"
-                    android:onClick="@{() -> vm.showOriginGifticon()}"
-                    android:padding="12dp"
-                    android:text="@string/add_gifticon_confirm_origin_image"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                    app:layout_constraintStart_toStartOf="@id/guideline_start"
-                    app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image" />
 
                 <TextView
                     android:id="@+id/tv_cash_card"
@@ -185,8 +184,26 @@
                     android:enabled="@{vm.isSelected}"
                     android:onClick="@{() -> vm.requestCashCard()}"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                    app:layout_constraintTop_toBottomOf="@id/tv_origin_image"
+                    app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image"
                     app:onCheckedChangeListener="@{(view, checked) -> vm.updateCashCard(checked)}" />
+
+                <TextView
+                    android:id="@+id/tv_approve_gifticon_image_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_primary_corner_4"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/add_gifticon_approve_gifticon_image"
+                    android:textAppearance="@style/BEEP.TextStyle.Caption"
+                    android:textColor="@color/white"
+                    android:onClick="@{() -> vm.approveGifticonImage()}"
+                    app:isVisible="@{vm.isApproveGifticonImageDescriptionVisible}"
+                    app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"/>
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -317,7 +334,7 @@
                     android:src="@drawable/ic_remove"
                     app:isVisible="@{vm.brandRemoveVisible}"
                     app:layout_constraintBottom_toBottomOf="@id/til_brand"
-                    app:layout_constraintEnd_toStartOf="@id/iv_brand_confirm"
+                    app:layout_constraintEnd_toStartOf="@id/iv_approve_brand_name"
                     app:tint="?attr/colorOnSurface" />
 
                 <ProgressBar
@@ -331,7 +348,7 @@
                     app:layout_constraintEnd_toStartOf="@id/iv_brand_crop" />
 
                 <TextView
-                    android:id="@+id/tv_brand_confirm_description"
+                    android:id="@+id/tv_approve_brand_name_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
@@ -340,29 +357,30 @@
                     android:paddingTop="4dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
-                    android:text="@string/add_gifticon_brand_confirm"
+                    android:text="@string/add_gifticon_approve_brand_name"
                     android:textAppearance="@style/BEEP.TextStyle.Caption"
                     android:textColor="@color/white"
-                    app:isVisible="@{vm.isConfirmBrandDescriptionVisible}"
-                    app:layout_constraintBottom_toTopOf="@id/iv_brand_confirm"
+                    android:onClick="@{() -> vm.approveBrandName()}"
+                    app:isVisible="@{vm.isApproveBrandNameDescriptionVisible}"
+                    app:layout_constraintBottom_toTopOf="@id/iv_approve_brand_name"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end" />
 
                 <ImageView
-                    android:id="@+id/iv_brand_confirm"
+                    android:id="@+id/iv_approve_brand_name"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_brand_confirm_description"
+                    android:contentDescription="@string/add_gifticon_approve_brand_name_description"
                     android:focusable="true"
-                    android:onClick="@{() -> vm.confirmBrand()}"
+                    android:onClick="@{() -> vm.approveBrandName()}"
                     android:padding="6dp"
                     app:layout_constraintBottom_toBottomOf="@id/til_brand"
                     app:layout_constraintEnd_toStartOf="@id/iv_brand_crop"
-                    app:setImageRes="@{vm.isConfirmBrandResId}"
-                    app:setTintRes="@{vm.isConfirmBrandTint}"
-                    app:visibility="@{vm.isConfirmBrandVisibility}" />
+                    app:setImageRes="@{vm.isApproveBrandNameResId}"
+                    app:setTintRes="@{vm.isApproveBrandNameTint}"
+                    app:visibility="@{vm.isApproveBrandNameVisibility}" />
 
                 <ImageView
                     android:id="@+id/iv_brand_crop"

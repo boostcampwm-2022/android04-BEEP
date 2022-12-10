@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.mapper
 
+import android.graphics.RectF
 import com.lighthouse.domain.model.GalleryImage
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
@@ -21,31 +22,26 @@ fun GalleryUIModel.Gallery.toAddGifticonItemUIModel(
     )
 }
 
-fun GalleryUIModel.Gallery.toAddGifticonUIModel(
-    hasImage: Boolean = true,
-    name: String = "",
-    brandName: String = "",
-    brandConfirm: Boolean = false,
-    barcode: String = "",
-    expiredAt: Date = Date(0),
-    isCashCard: Boolean = false,
-    balance: String = "",
-    memo: String = "",
-    thumbnailImage: CroppedImage = CroppedImage()
-): AddGifticonUIModel {
+fun GalleryUIModel.Gallery.toAddGifticonUIModel(): AddGifticonUIModel {
     return AddGifticonUIModel(
         id = id,
         origin = uri,
-        hasImage = hasImage,
-        name = name,
-        brandName = brandName,
-        isBrandConfirm = brandConfirm,
-        barcode = barcode,
-        expiredAt = expiredAt,
-        isCashCard = isCashCard,
-        balance = balance,
-        memo = memo,
-        thumbnailImage = thumbnailImage
+        hasImage = true,
+        name = "",
+        nameRectF = RectF(),
+        brandName = "",
+        brandNameRectF = RectF(),
+        approveBrandName = "",
+        barcode = "",
+        barcodeRectF = RectF(),
+        expiredAt = Date(0),
+        expiredAtRectF = RectF(),
+        isCashCard = false,
+        balance = "",
+        balanceRectF = RectF(),
+        memo = "",
+        gifticonImage = CroppedImage(),
+        approveGifticonImage = false
     )
 }
 

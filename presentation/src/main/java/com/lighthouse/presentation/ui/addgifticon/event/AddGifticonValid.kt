@@ -16,9 +16,9 @@ enum class AddGifticonValid(val tag: AddGifticonTag, val text: UIText) {
         AddGifticonTag.BRAND_NAME,
         UIText.StringResource(R.string.add_gifticon_invalid_brand_name)
     ),
-    INVALID_BRAND_CONFIRM(
-        AddGifticonTag.BRAND_CONFIRM,
-        UIText.StringResource(R.string.add_gifticon_invalid_brand_confirm)
+    INVALID_APPROVE_BRAND_NAME(
+        AddGifticonTag.APPROVE_BRAND_NAME,
+        UIText.StringResource(R.string.add_gifticon_invalid_approve_brand_name)
     ),
     INVALID_BARCODE(
         AddGifticonTag.BARCODE,
@@ -31,6 +31,10 @@ enum class AddGifticonValid(val tag: AddGifticonTag, val text: UIText) {
     INVALID_BALANCE(
         AddGifticonTag.BALANCE,
         UIText.StringResource(R.string.add_gifticon_invalid_balance)
+    ),
+    INVALID_APPROVE_GIFTICON_IMAGE(
+        AddGifticonTag.APPROVE_GIFTICON_IMAGE,
+        UIText.StringResource(R.string.add_gifticon_invalid_approve_gifticon_image)
     ),
     VALID(AddGifticonTag.NONE, UIText.Empty)
 }

@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.mapper
 
+import android.graphics.RectF
 import android.net.Uri
 import androidx.core.graphics.toRectF
 import com.lighthouse.domain.model.GifticonForAddition
@@ -11,17 +12,23 @@ fun GifticonForAddition.toPresentation(id: Long): AddGifticonUIModel {
         id = id,
         hasImage = hasImage,
         name = name,
+        nameRectF = RectF(),
         brandName = brandName,
-        isBrandConfirm = false,
+        brandNameRectF = RectF(),
+        approveBrandName = "",
         barcode = barcode,
+        barcodeRectF = RectF(),
         expiredAt = expiredAt,
+        expiredAtRectF = RectF(),
         isCashCard = isCashCard,
         balance = balance.toString(),
+        balanceRectF = RectF(),
         memo = memo,
         origin = Uri.parse(originUri),
-        thumbnailImage = CroppedImage(
+        gifticonImage = CroppedImage(
             uri = if (croppedUri != "") Uri.parse(croppedUri) else null,
             croppedRect = croppedRect.toPresentation().toRectF()
-        )
+        ),
+        approveGifticonImage = false
     )
 }

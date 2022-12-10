@@ -1,7 +1,6 @@
 package com.lighthouse.presentation.ui.addgifticon
 
 import android.graphics.RectF
-import android.net.Uri
 import android.text.InputFilter
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -33,15 +32,13 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.lang.Integer.max
@@ -79,225 +76,6 @@ class AddGifticonViewModel @Inject constructor(
 
     private val gifticonList = MutableStateFlow<List<AddGifticonUIModel>>(emptyList())
 
-    private var selectedId = MutableStateFlow(-1L)
-
-    val selectedGifticon = selectedId.combine(gifticonList) { id, list ->
-        list.find { it.id == id }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    private val expiredAtDate: Date?
-        get() = selectedGifticon.value?.expiredAt?.let {
-            if (it == EMPTY_DATE) today else it
-        }
-
-    val isSelected = selectedGifticon.map {
-        it != null
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val isCashCard = selectedGifticon.map {
-        it?.isCashCard
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val thumbnailImage = selectedGifticon.map {
-        it?.thumbnailImage?.uri ?: it?.origin
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val name = selectedGifticon.map {
-        it?.name
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    private val nameFocus = MutableStateFlow(false)
-
-    fun onNameFocusChangeListener(hasFocus: Boolean) {
-        if (hasFocus) {
-            requestScroll(AddGifticonTag.GIFTICON_NAME)
-        }
-        nameFocus.value = hasFocus
-    }
-
-    val nameRemoveVisible = name.combine(nameFocus) { name, focus ->
-        !name.isNullOrEmpty() && focus
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    fun removeName() {
-        updateSelectedGifticon {
-            it.copy(name = "")
-        }
-    }
-
-    val brand = selectedGifticon.map {
-        it?.brandName ?: ""
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    private val brandFocus = MutableStateFlow(false)
-
-    fun onBrandFocusChangeListener(hasFocus: Boolean) {
-        if (hasFocus) {
-            requestScroll(AddGifticonTag.BRAND_NAME)
-        }
-        brandFocus.value = hasFocus
-    }
-
-    val brandRemoveVisible = brand.combine(brandFocus) { brand, focus ->
-        brand.isNotEmpty() && focus
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    fun removeBrand() {
-        updateSelectedGifticon {
-            it.copy(brandName = "")
-        }
-    }
-
-    val isLoadingConfirmBrand = MutableStateFlow(false)
-
-    @OptIn(FlowPreview::class)
-    private val isExistBrand = brand
-        .onEach {
-            if (it.isNotEmpty()) {
-                isLoadingConfirmBrand.value = true
-            }
-        }
-        .debounce(1000L)
-        .map { hasGifticonBrandUseCase(it) }
-        .onEach { isConfirm ->
-            isLoadingConfirmBrand.value = false
-            updateBrandConfirm(isConfirm)
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    private val isConfirmBrand = selectedGifticon.map {
-        it?.isBrandConfirm ?: false
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    private val isApproveBrand = isExistBrand.combine(isConfirmBrand) { exist, confirm ->
-        exist || confirm
-    }
-
-    private fun updateBrandConfirm(isConfirm: Boolean) {
-        val updated = updateSelectedGifticon {
-            it.copy(isBrandConfirm = isConfirm)
-        }
-        if (updated != null) {
-            updateSelectedDisplayGifticon {
-                it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID)
-            }
-        }
-    }
-
-    private val isConfirmVisible = brand.combine(isLoadingConfirmBrand) { brand, isLoading ->
-        brand != "" && !isLoading
-    }
-
-    val isConfirmBrandVisibility = isConfirmVisible.map { isVisible ->
-        if (isVisible) View.VISIBLE else View.INVISIBLE
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val isConfirmBrandDescriptionVisible = isConfirmVisible.combine(isApproveBrand) { visible, approve ->
-        visible && !approve
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val isConfirmBrandResId = isApproveBrand.map { isApprove ->
-        if (isApprove) R.drawable.ic_confirm else R.drawable.ic_question
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val isConfirmBrandTint = isApproveBrand.map { isApprove ->
-        if (isApprove) R.color.point_green else R.color.yellow
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    fun confirmBrand() {
-        updateBrandConfirm(true)
-    }
-
-    private val displayBarcodeSelection = MutableStateFlow(0)
-
-    val barcode = selectedGifticon.map {
-        it?.barcode ?: ""
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    private val barcodeFocus = MutableStateFlow(false)
-
-    fun onBarcodeFocusChangeListener(hasFocus: Boolean) {
-        if (hasFocus) {
-            requestScroll(AddGifticonTag.BARCODE)
-        }
-        barcodeFocus.value = hasFocus
-    }
-
-    val barcodeRemoveVisible = barcode.combine(barcodeFocus) { barcode, focus ->
-        barcode.isNotEmpty() && focus
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    fun removeBarcode() {
-        updateSelectedGifticon {
-            it.copy(barcode = "")
-        }
-    }
-
-    private fun barcodeToTransformed(text: String): String {
-        return text.chunked(4).joinToString(" ")
-    }
-
-    private fun transformedToBarcode(text: String): String {
-        return text.filter { it.isDigit() }
-    }
-
-    val displayBarcode = barcode.combine(displayBarcodeSelection) { barcode, selection ->
-        val displayText = barcodeToTransformed(barcode)
-        EditTextInfo(displayText, min(selection, displayText.length))
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditTextInfo())
-
-    private val displayBalanceSelection = MutableStateFlow(0)
-
-    val balance = selectedGifticon.map {
-        it?.balance ?: ""
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    private val balanceFocus = MutableStateFlow(false)
-
-    fun onBalanceFocusChangeListener(hasFocus: Boolean) {
-        if (hasFocus) {
-            requestScroll(AddGifticonTag.BALANCE)
-        }
-        balanceFocus.value = hasFocus
-    }
-
-    val balanceRemoveVisible = balance.combine(balanceFocus) { balance, focus ->
-        balance != "0" && balance.isNotEmpty() && focus
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    fun removeBalance() {
-        updateSelectedGifticon {
-            it.copy(balance = "")
-        }
-    }
-
-    private val balanceFormat = DecimalFormat("###,###,###")
-
-    private fun balanceToTransformed(text: String): String {
-        return balanceFormat.format(text.toDigit())
-    }
-
-    private fun transformedToBalance(text: String): String {
-        return text.filter { it.isDigit() }.toDigit().toString()
-    }
-
-    val displayBalance = balance.combine(displayBalanceSelection) { balance, selection ->
-        val displayText = balanceToTransformed(balance)
-        EditTextInfo(displayText, min(selection, displayText.length))
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditTextInfo())
-
-    val expiredAt = selectedGifticon.map {
-        val date = it?.expiredAt
-        if (date != null && date != EMPTY_DATE) {
-            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
-        } else {
-            UIText.Empty
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val memo = selectedGifticon.map {
-        it?.memo
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
     val registeredSizeText = gifticonList.map { list ->
         if (list.isNotEmpty()) {
             UIText.StringResource(R.string.add_gifticon_registered, list.size)
@@ -305,6 +83,96 @@ class AddGifticonViewModel @Inject constructor(
             UIText.Empty
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, UIText.Empty)
+
+    private fun updateSelectedDisplayGifticon(
+        update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
+    ) {
+        updateDisplayGifticon(selectedId.value, update)
+    }
+
+    private fun updateDisplayGifticon(
+        srcIndex: Long?,
+        update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
+    ) {
+        val index = displayList.value.indexOfFirst {
+            it is AddGifticonItemUIModel.Gifticon && it.id == srcIndex
+        }
+        if (index == -1) {
+            return
+        }
+        val oldList = _displayList.value
+        val oldItem = oldList[index] as? AddGifticonItemUIModel.Gifticon ?: return
+        val newItem = update(oldItem)
+        if (oldItem == newItem) {
+            return
+        }
+        _displayList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
+    }
+
+    private fun updateSelectedGifticon(
+        checkValid: Boolean = false,
+        update: (AddGifticonUIModel) -> AddGifticonUIModel
+    ) = updateGifticon(checkValid, selectedId.value, update)
+
+    private fun updateGifticon(
+        checkValid: Boolean = false,
+        srcIndex: Long? = selectedId.value,
+        update: (AddGifticonUIModel) -> AddGifticonUIModel
+    ): AddGifticonUIModel? {
+        val index = gifticonList.value.indexOfFirst { it.id == srcIndex }
+        if (index == -1) {
+            return null
+        }
+        val oldList = gifticonList.value
+        val oldItem = oldList[index]
+        val newItem = update(oldItem)
+        if (oldItem == newItem) {
+            return null
+        }
+        gifticonList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
+
+        if (checkValid) {
+            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
+        }
+        return newItem
+    }
+
+    private fun deleteDisplayGifticon(id: Long) {
+        val index = _displayList.value.indexOfFirst {
+            it is AddGifticonItemUIModel.Gifticon && it.id == id
+        }
+        if (index == -1) {
+            return
+        }
+        val oldList = _displayList.value
+        if (oldList[index] !is AddGifticonItemUIModel.Gifticon) {
+            return
+        }
+        _displayList.value = oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
+    }
+
+    private fun deleteGifticon(id: Long) {
+        val index = gifticonList.value.indexOfFirst { it.id == id }
+        if (index == -1) {
+            return
+        }
+        val oldList = gifticonList.value
+        gifticonList.value = oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
+    }
+
+    fun deleteGifticon(gifticon: AddGifticonItemUIModel.Gifticon) {
+        if (selectedId.value == gifticon.id) {
+            val oldList = gifticonList.value
+            val index = oldList.indexOfFirst { it.id == selectedId.value }
+            selectedId.value = when {
+                index + 1 < oldList.size -> oldList[index + 1].id
+                index - 1 >= 0 -> oldList[index - 1].id
+                else -> -1
+            }
+        }
+        deleteDisplayGifticon(gifticon.id)
+        deleteGifticon(gifticon.id)
+    }
 
     private val _isDeleteMode = MutableStateFlow(false)
 
@@ -330,6 +198,403 @@ class AddGifticonViewModel @Inject constructor(
             UIText.StringResource(R.string.add_gifticon_delete_mode)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, UIText.Empty)
+
+    private var selectedId = MutableStateFlow(-1L)
+
+    fun selectGifticon(gifticon: AddGifticonItemUIModel.Gifticon) {
+        selectedId.value = gifticon.id
+    }
+
+    val selectedGifticon = selectedId.combine(gifticonList) { id, list ->
+        list.find { it.id == id }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val expiredAtDate: Date?
+        get() = selectedGifticon.value?.expiredAt?.let {
+            if (it == EMPTY_DATE) today else it
+        }
+
+    val isSelected = selectedGifticon.map {
+        it != null
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    private val gifticonImage = selectedGifticon.map {
+        it?.gifticonImage
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val displayGifticonImage = selectedGifticon.map {
+        it?.gifticonImage?.uri ?: it?.origin
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
+        updateSelectedDisplayGifticon { it.copy(thumbnailImage = croppedImage) }
+        updateSelectedGifticon(true) { it.copy(gifticonImage = croppedImage) }
+    }
+
+    private val isApproveGifticonImage = selectedGifticon.map {
+        it?.approveGifticonImage ?: false
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val isApproveGifticonImageDescriptionVisible = gifticonImage.combine(isApproveGifticonImage) { image, isApprove ->
+        if (image == null) false else image.uri == null && isApprove.not()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun approveGifticonImage() {
+        updateSelectedGifticon(true) {
+            it.copy(approveGifticonImage = true)
+        }
+    }
+
+    val isCashCard = selectedGifticon.map {
+        it?.isCashCard
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun updateCashCard(checked: Boolean) {
+        updateSelectedGifticon(true) { it.copy(isCashCard = checked) }
+    }
+
+    val name = selectedGifticon.map {
+        it?.name
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun updateGifticonName(name: CharSequence) {
+        updateSelectedGifticon(true) { it.copy(name = name.toString()) }
+    }
+
+    private val nameFocus = MutableStateFlow(false)
+
+    fun onNameFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonTag.GIFTICON_NAME)
+        }
+        nameFocus.value = hasFocus
+    }
+
+    val nameRemoveVisible = name.combine(nameFocus) { name, focus ->
+        !name.isNullOrEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeName() {
+        updateGifticonName("")
+    }
+
+    val brand = selectedGifticon.map {
+        it?.brandName ?: ""
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private val confirmedBrandMap = hashMapOf<String, Boolean>()
+
+    private val approveBrandName = selectedGifticon.map {
+        it?.approveBrandName ?: ""
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private var hasGifticonBrandJob: Job? = null
+
+    private fun checkHasGifticonBrand(brand: String) {
+        hasGifticonBrandJob?.cancel()
+        if (brand.isNotEmpty() && brand != approveBrandName.value) {
+            hasGifticonBrandJob = viewModelScope.launch {
+                isLoadingConfirmBrand.value = true
+                delay(1000)
+                val approve = confirmedBrandMap[brand] ?: run {
+                    hasGifticonBrandUseCase(brand).also {
+                        confirmedBrandMap[brand] = it
+                    }
+                }
+                updateApproveBrandName(if (approve) brand else "")
+                isLoadingConfirmBrand.value = false
+            }
+        } else {
+            isLoadingConfirmBrand.value = false
+        }
+    }
+
+    fun updateBrandName(brandName: CharSequence) {
+        checkHasGifticonBrand(brandName.toString())
+        updateSelectedGifticon(true) { it.copy(brandName = brandName.toString()) }
+    }
+
+    private fun updateApproveBrandName(approveBrandName: String) {
+        updateSelectedGifticon(true) {
+            it.copy(approveBrandName = approveBrandName)
+        }
+    }
+
+    private val isApproveBrandName = brand.combine(approveBrandName) { brand, approveBrand ->
+        brand == approveBrand
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    private val brandFocus = MutableStateFlow(false)
+
+    fun onBrandFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonTag.BRAND_NAME)
+        }
+        brandFocus.value = hasFocus
+    }
+
+    val brandRemoveVisible = brand.combine(brandFocus) { brand, focus ->
+        brand.isNotEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeBrand() {
+        updateBrandName("")
+    }
+
+    val isLoadingConfirmBrand = MutableStateFlow(false)
+
+    private val isApproveBrandNameVisible = brand.combine(isLoadingConfirmBrand) { brand, isLoading ->
+        brand != "" && !isLoading
+    }
+
+    val isApproveBrandNameVisibility = isApproveBrandNameVisible.map { isVisible ->
+        if (isVisible) View.VISIBLE else View.INVISIBLE
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val isApproveBrandNameDescriptionVisible =
+        isApproveBrandName.combine(isApproveBrandNameVisible) { isApprove, isVisible ->
+            isVisible && !isApprove
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val isApproveBrandNameResId = isApproveBrandName.map { isApprove ->
+        if (isApprove) R.drawable.ic_confirm else R.drawable.ic_question
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val isApproveBrandNameTint = isApproveBrandName.map { isApprove ->
+        if (isApprove) R.color.point_green else R.color.yellow
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun approveBrandName() {
+        updateApproveBrandName(brand.value)
+    }
+
+    val barcode = selectedGifticon.map {
+        it?.barcode ?: ""
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private val displayBarcodeSelection = MutableStateFlow(0)
+
+    val displayBarcode = barcode.combine(displayBarcodeSelection) { barcode, selection ->
+        val displayText = barcodeToTransformed(barcode)
+        EditTextInfo(displayText, min(selection, displayText.length))
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditTextInfo())
+
+    private fun updateBarcode(barcode: String, selection: Int = barcode.length) {
+        updateSelectedGifticon(true) { it.copy(barcode = barcode) }
+        viewModelScope.launch {
+            displayBarcodeSelection.emit(selection)
+        }
+    }
+
+    private fun barcodeToTransformed(text: String): String {
+        return text.chunked(4).joinToString(" ")
+    }
+
+    private fun transformedToBarcode(text: String): String {
+        return text.filter { it.isDigit() }
+    }
+
+    fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+        val newString = charSequence.toString()
+        val oldBarcode = displayBarcode.value.text
+        if (oldBarcode == newString) {
+            return
+        }
+
+        val newValue = if (before == 1 && count == 0 && start < oldBarcode.length && oldBarcode[start] == ' ') {
+            transformedToBarcode(
+                newString.substring(0, max(start - 1, 0)) + newString.substring(
+                    max(start, 0),
+                    newString.length
+                )
+            )
+        } else {
+            transformedToBarcode(newString)
+        }
+
+        val newBarcode = barcodeToTransformed(newValue)
+        val newSelection = if (oldBarcode.length == start + before) {
+            newBarcode.length
+        } else {
+            val endStringCount = max(oldBarcode.length - start - before, 0)
+            val oldDividerCount = oldBarcode.substring(start + before, oldBarcode.length).filter { it == ' ' }.length
+            val endNumCount = max(endStringCount - oldDividerCount, 0)
+            var index = 0
+            var numCount = 0
+            while (newBarcode.lastIndex - index >= 0 && (numCount < endNumCount || newBarcode[newBarcode.lastIndex - index] == ' ')) {
+                if (newBarcode[newBarcode.lastIndex - index] != ' ') {
+                    numCount += 1
+                }
+                index += 1
+            }
+            newBarcode.lastIndex - index + 1
+        }
+        updateBarcode(newValue, newSelection)
+    }
+
+    private val barcodeFocus = MutableStateFlow(false)
+
+    fun onBarcodeFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonTag.BARCODE)
+        }
+        barcodeFocus.value = hasFocus
+    }
+
+    val barcodeRemoveVisible = barcode.combine(barcodeFocus) { barcode, focus ->
+        barcode.isNotEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeBarcode() {
+        updateBarcode("")
+    }
+
+    private val balanceFormat = DecimalFormat("###,###,###")
+
+    val balance = selectedGifticon.map {
+        it?.balance ?: ""
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private val displayBalanceSelection = MutableStateFlow(0)
+
+    val displayBalance = balance.combine(displayBalanceSelection) { balance, selection ->
+        val displayText = balanceToTransformed(balance)
+        EditTextInfo(displayText, min(selection, displayText.length))
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditTextInfo())
+
+    private fun updateBalance(balance: String, selection: Int = balance.length) {
+        updateSelectedGifticon(true) { it.copy(balance = balance) }
+        viewModelScope.launch {
+            displayBalanceSelection.emit(selection)
+        }
+    }
+
+    val balanceFilters = arrayOf(
+        InputFilter.LengthFilter(10),
+        InputFilter { source, _, _, _, dstStart, _ ->
+            return@InputFilter if (dstStart == 0) {
+                var zeroIndex = 0
+                for (char in source) {
+                    if (char != '0') {
+                        break
+                    }
+                    zeroIndex += 1
+                }
+                source.subSequence(zeroIndex, source.length)
+            } else {
+                source
+            }
+        }
+    )
+
+    private fun balanceToTransformed(text: String): String {
+        return balanceFormat.format(text.toDigit())
+    }
+
+    private fun transformedToBalance(text: String): String {
+        return text.filter { it.isDigit() }.toDigit().toString()
+    }
+
+    fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+        val newString = charSequence.toString()
+        val oldBalance = displayBalance.value.text
+        if (oldBalance == newString) {
+            return
+        }
+
+        val newValue = if (before == 1 && count == 0 && start < oldBalance.length && oldBalance[start] == ',') {
+            transformedToBalance(
+                newString.substring(0, max(start - 1, 0)) + newString.substring(
+                    max(start, 0),
+                    newString.length
+                )
+            )
+        } else {
+            transformedToBalance(newString)
+        }
+
+        val newBalance = balanceToTransformed(newValue)
+        val newSelection = if (oldBalance.length == start + before || oldBalance == "0") {
+            newBalance.length
+        } else {
+            val endStringCount = max(oldBalance.length - start - before, 0)
+            val oldDividerCount = oldBalance.substring(start + before, oldBalance.length).filter { it == ',' }.length
+            val endNumCount = max(endStringCount - oldDividerCount, 0)
+            var index = 0
+            var numCount = 0
+            while (newBalance.lastIndex - index >= 0 && (numCount < endNumCount || newBalance[newBalance.lastIndex - index] == ',')) {
+                if (newBalance.lastIndex - index < 0) {
+                    break
+                }
+                if (newBalance[newBalance.lastIndex - index] != ',') {
+                    numCount += 1
+                }
+                index += 1
+            }
+            newBalance.lastIndex - index + 1
+        }
+        updateBalance(newValue, newSelection)
+    }
+
+    private val balanceFocus = MutableStateFlow(false)
+
+    fun onBalanceFocusChangeListener(hasFocus: Boolean) {
+        if (hasFocus) {
+            requestScroll(AddGifticonTag.BALANCE)
+        }
+        balanceFocus.value = hasFocus
+    }
+
+    val balanceRemoveVisible = balance.combine(balanceFocus) { balance, focus ->
+        balance != "0" && balance.isNotEmpty() && focus
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    fun removeBalance() {
+        updateBalance("")
+    }
+
+    val expiredAt = selectedGifticon.map {
+        val date = it?.expiredAt
+        if (date != null && date != EMPTY_DATE) {
+            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
+        } else {
+            UIText.Empty
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun updateExpiredAt(expiredAt: Date) {
+        updateSelectedGifticon(true) { it.copy(expiredAt = expiredAt) }
+    }
+
+    val memo = selectedGifticon.map {
+        it?.memo
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun updateMemo(memo: CharSequence) {
+        updateSelectedGifticon { it.copy(memo = memo.toString()) }
+    }
+
+    fun onActionNextListener(actionId: Int): Boolean {
+        val gifticon = selectedGifticon.value ?: return false
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            val event = when (checkGifticonValid(gifticon)) {
+                AddGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.GIFTICON_NAME)
+                AddGifticonValid.INVALID_BRAND_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.BRAND_NAME)
+                AddGifticonValid.INVALID_BARCODE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BARCODE)
+                AddGifticonValid.INVALID_BALANCE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BALANCE)
+                AddGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(expiredAtDate ?: today)
+                else -> {
+                    requestAddGifticon()
+                    return true
+                }
+            }
+            viewModelScope.launch {
+                _eventFlow.emit(event)
+            }
+            return true
+        }
+        return false
+    }
 
     fun loadGalleryImages(list: List<GalleryUIModel.Gallery>) {
         if (list.find { selectedId.value == it.id } == null) {
@@ -366,7 +631,7 @@ class AddGifticonViewModel @Inject constructor(
 
         requestLoading(true)
         viewModelScope.launch {
-            launch(Dispatchers.IO) {
+            launch {
                 list.forEach { gallery ->
                     launch {
                         recognizeGifticonItem(gallery)
@@ -379,339 +644,73 @@ class AddGifticonViewModel @Inject constructor(
 
     private suspend fun recognizeGifticonItem(gallery: GalleryUIModel.Gallery) {
         val result = recognizeUseCase.gifticon(gallery.toDomain()) ?: return
-        val updated = updateGifticon(gallery.id) {
+        val updated = updateGifticon(srcIndex = gallery.id) {
             result.toPresentation(gallery.id)
         } ?: return
         updateDisplayGifticon(gallery.id) {
             it.copy(
-                thumbnailImage = updated.thumbnailImage,
+                thumbnailImage = updated.gifticonImage,
                 isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
             )
         }
     }
 
-    fun recognizeGifticonName(uri: Uri?) {
-        uri ?: return
+    fun recognizeGifticonName(croppedImage: CroppedImage?) {
+        croppedImage ?: return
+        val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.gifticonName(uri.toString())
-            updateGifticonName(result)
+            updateGifticon(true) { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
         }
     }
 
-    fun recognizeBrand(uri: Uri?) {
-        uri ?: return
+    fun recognizeBrand(croppedImage: CroppedImage?) {
+        croppedImage ?: return
+        val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.brandName(uri.toString())
-            updateBrandName(result)
+            updateGifticon(true) { it.copy(brandName = result, brandNameRectF = croppedImage.croppedRect) }
         }
     }
 
-    fun recognizeBarcode(uri: Uri?) {
-        uri ?: return
+    fun recognizeBarcode(croppedImage: CroppedImage?) {
+        croppedImage ?: return
+        val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.barcode(uri.toString())
-            updateBarcode(result)
+            updateGifticon(true) { it.copy(barcode = result, barcodeRectF = croppedImage.croppedRect) }
         }
     }
 
-    fun recognizeBalance(uri: Uri?) {
-        uri ?: return
+    fun recognizeBalance(croppedImage: CroppedImage?) {
+        croppedImage ?: return
+        val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.balance(uri.toString())
-            updateBalance(result)
+            updateGifticon(true) {
+                it.copy(isCashCard = result > 0, balance = result.toString(), balanceRectF = croppedImage.croppedRect)
+            }
         }
     }
 
-    private fun updateBalance(balance: Int) {
-        val updated = updateSelectedGifticon { it.copy(isCashCard = balance > 0, balance = balance.toString()) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    fun recognizeExpired(uri: Uri?) {
-        uri ?: return
+    fun recognizeExpired(croppedImage: CroppedImage?) {
+        croppedImage ?: return
+        val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.expired(uri.toString())
-            updateExpiredAt(result)
+            updateGifticon(true) { it.copy(expiredAt = result, expiredAtRectF = croppedImage.croppedRect) }
         }
-    }
-
-    private fun updateSelectedDisplayGifticon(
-        update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
-    ) {
-        updateDisplayGifticon(selectedId.value, update)
-    }
-
-    private fun updateDisplayGifticon(
-        srcIndex: Long?,
-        update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
-    ) {
-        val index = displayList.value.indexOfFirst {
-            it is AddGifticonItemUIModel.Gifticon && it.id == srcIndex
-        }
-        if (index == -1) {
-            return
-        }
-        val oldList = _displayList.value
-        val oldItem = oldList[index] as? AddGifticonItemUIModel.Gifticon ?: return
-        val newItem = update(oldItem)
-        if (oldItem == newItem) {
-            return
-        }
-        _displayList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
-    }
-
-    private fun updateSelectedGifticon(
-        update: (AddGifticonUIModel) -> AddGifticonUIModel
-    ) = updateGifticon(selectedId.value, update)
-
-    private fun updateGifticon(
-        srcIndex: Long?,
-        update: (AddGifticonUIModel) -> AddGifticonUIModel
-    ): AddGifticonUIModel? {
-        val index = gifticonList.value.indexOfFirst { it.id == srcIndex }
-        if (index == -1) {
-            return null
-        }
-        val oldList = gifticonList.value
-        val oldItem = oldList[index]
-        val newItem = update(oldItem)
-        if (oldItem == newItem) {
-            return null
-        }
-        gifticonList.value =
-            oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
-        return newItem
-    }
-
-    fun onActionNextListener(actionId: Int): Boolean {
-        val gifticon = selectedGifticon.value ?: return false
-        if (actionId == EditorInfo.IME_ACTION_NEXT) {
-            val event = when (checkGifticonValid(gifticon)) {
-                AddGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.GIFTICON_NAME)
-                AddGifticonValid.INVALID_BRAND_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.BRAND_NAME)
-                AddGifticonValid.INVALID_BARCODE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BARCODE)
-                AddGifticonValid.INVALID_BALANCE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BALANCE)
-                AddGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(expiredAtDate ?: today)
-                else -> {
-                    requestAddGifticon()
-                    return true
-                }
-            }
-            viewModelScope.launch {
-                _eventFlow.emit(event)
-            }
-            return true
-        }
-        return false
-    }
-
-    fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
-        updateSelectedDisplayGifticon { it.copy(thumbnailImage = croppedImage) }
-        updateSelectedGifticon { it.copy(thumbnailImage = croppedImage) }
-    }
-
-    fun updateCashCard(checked: Boolean) {
-        val updated = updateSelectedGifticon { it.copy(isCashCard = checked) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    fun updateGifticonName(name: CharSequence) {
-        val updated = updateSelectedGifticon { it.copy(name = name.toString()) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    fun updateBrandName(brandName: CharSequence) {
-        val updated = updateSelectedGifticon { it.copy(brandName = brandName.toString()) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    private fun updateBarcode(barcode: String, selection: Int = barcode.length) {
-        val updated = updateSelectedGifticon { it.copy(barcode = barcode) }
-        viewModelScope.launch {
-            displayBarcodeSelection.emit(selection)
-        }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-        val newString = charSequence.toString()
-        val oldBarcode = displayBarcode.value.text
-        if (oldBarcode == newString) {
-            return
-        }
-
-        val newValue = if (before == 1 && count == 0 && start < oldBarcode.length && oldBarcode[start] == ' ') {
-            transformedToBarcode(
-                newString.substring(0, max(start - 1, 0)) + newString.substring(
-                    max(start, 0),
-                    newString.length
-                )
-            )
-        } else {
-            transformedToBarcode(newString)
-        }
-
-        val newBarcode = barcodeToTransformed(newValue)
-        val newSelection = if (oldBarcode.length == start + before) {
-            newBarcode.length
-        } else {
-            val endStringCount = max(oldBarcode.length - start - before, 0)
-            val oldDividerCount = oldBarcode.substring(start + before, oldBarcode.length).filter { it == ' ' }.length
-            val endNumCount = max(endStringCount - oldDividerCount, 0)
-            var index = 0
-            var numCount = 0
-            while (
-                newBarcode.lastIndex - index >= 0 &&
-                (numCount < endNumCount || newBarcode[newBarcode.lastIndex - index] == ' ')
-            ) {
-                if (newBarcode[newBarcode.lastIndex - index] != ' ') {
-                    numCount += 1
-                }
-                index += 1
-            }
-            newBarcode.lastIndex - index + 1
-        }
-        updateBarcode(newValue, newSelection)
-    }
-
-    val balanceFilters = arrayOf(
-        InputFilter.LengthFilter(10),
-        InputFilter { source, _, _, _, dstStart, _ ->
-            return@InputFilter if (dstStart == 0) {
-                var zeroIndex = 0
-                for (char in source) {
-                    if (char != '0') {
-                        break
-                    }
-                    zeroIndex += 1
-                }
-                source.subSequence(zeroIndex, source.length)
-            } else {
-                source
-            }
-        }
-    )
-
-    private fun updateBalance(balance: String, selection: Int = balance.length) {
-        val updated = updateSelectedGifticon { it.copy(balance = balance) }
-        viewModelScope.launch {
-            displayBalanceSelection.emit(selection)
-        }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-        val newString = charSequence.toString()
-        val oldBalance = displayBalance.value.text
-        if (oldBalance == newString) {
-            return
-        }
-
-        val newValue = if (before == 1 && count == 0 && start < oldBalance.length && oldBalance[start] == ',') {
-            transformedToBalance(
-                newString.substring(0, max(start - 1, 0)) + newString.substring(
-                    max(start, 0),
-                    newString.length
-                )
-            )
-        } else {
-            transformedToBalance(newString)
-        }
-
-        val newBalance = balanceToTransformed(newValue)
-        val newSelection = if (oldBalance.length == start + before || oldBalance == "0") {
-            newBalance.length
-        } else {
-            val endStringCount = max(oldBalance.length - start - before, 0)
-            val oldDividerCount = oldBalance.substring(start + before, oldBalance.length).filter { it == ',' }.length
-            val endNumCount = max(endStringCount - oldDividerCount, 0)
-            var index = 0
-            var numCount = 0
-            while (
-                newBalance.lastIndex - index >= 0 &&
-                (numCount < endNumCount || newBalance[newBalance.lastIndex - index] == ',')
-            ) {
-                if (newBalance.lastIndex - index < 0) {
-                    break
-                }
-                if (newBalance[newBalance.lastIndex - index] != ',') {
-                    numCount += 1
-                }
-                index += 1
-            }
-            newBalance.lastIndex - index + 1
-        }
-        updateBalance(newValue, newSelection)
-    }
-
-    fun updateExpiredAt(expiredAt: Date) {
-        val updated = updateSelectedGifticon { it.copy(expiredAt = expiredAt) }
-        if (updated != null) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(updated) == AddGifticonValid.VALID) }
-        }
-    }
-
-    fun updateMemo(memo: CharSequence) {
-        updateSelectedGifticon { it.copy(memo = memo.toString()) }
-    }
-
-    fun selectGifticon(gifticon: AddGifticonItemUIModel.Gifticon) {
-        selectedId.value = gifticon.id
-    }
-
-    private fun deleteDisplayGifticon(id: Long) {
-        val index = _displayList.value.indexOfFirst {
-            it is AddGifticonItemUIModel.Gifticon && it.id == id
-        }
-        if (index == -1) {
-            return
-        }
-        val oldList = _displayList.value
-        if (oldList[index] !is AddGifticonItemUIModel.Gifticon) {
-            return
-        }
-        _displayList.value =
-            oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
-    }
-
-    private fun deleteGifticon(id: Long) {
-        val index = gifticonList.value.indexOfFirst { it.id == id }
-        if (index == -1) {
-            return
-        }
-        val oldList = gifticonList.value
-        gifticonList.value =
-            oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
-    }
-
-    fun deleteGifticon(gifticon: AddGifticonItemUIModel.Gifticon) {
-        if (selectedId.value == gifticon.id) {
-            selectedId.value = -1
-        }
-        deleteDisplayGifticon(gifticon.id)
-        deleteGifticon(gifticon.id)
     }
 
     private fun checkGifticonValid(gifticon: AddGifticonUIModel): AddGifticonValid {
         return when {
             gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
             gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
-            !gifticon.isBrandConfirm -> AddGifticonValid.INVALID_BRAND_CONFIRM
+            gifticon.brandName != gifticon.approveBrandName -> AddGifticonValid.INVALID_APPROVE_BRAND_NAME
             gifticon.barcode.length !in VALID_BARCODE_COUNT -> AddGifticonValid.INVALID_BARCODE
             gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
+            gifticon.gifticonImage.uri == null && gifticon.approveGifticonImage.not() -> AddGifticonValid.INVALID_APPROVE_GIFTICON_IMAGE
             else -> AddGifticonValid.VALID
         }
     }
@@ -815,42 +814,61 @@ class AddGifticonViewModel @Inject constructor(
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
             crop = AddGifticonCrop.GIFTICON_IMAGE,
-            croppedRect = gifticon.thumbnailImage.croppedRect
+            croppedRect = gifticon.gifticonImage.croppedRect
         )
     }
 
     fun gotoCropGifticonName() {
-        gotoCropGifticon(crop = AddGifticonCrop.GIFTICON_NAME)
+        val gifticon = selectedGifticon.value ?: return
+        gotoCropGifticon(
+            crop = AddGifticonCrop.GIFTICON_NAME,
+            croppedRect = gifticon.nameRectF
+        )
     }
 
     fun gotoCropBrandName() {
-        gotoCropGifticon(crop = AddGifticonCrop.BRAND_NAME)
+        val gifticon = selectedGifticon.value ?: return
+        gotoCropGifticon(
+            crop = AddGifticonCrop.BRAND_NAME,
+            croppedRect = gifticon.brandNameRectF
+        )
     }
 
     fun gotoCropBarcode() {
-        gotoCropGifticon(crop = AddGifticonCrop.BARCODE)
+        val gifticon = selectedGifticon.value ?: return
+        gotoCropGifticon(
+            crop = AddGifticonCrop.BARCODE,
+            croppedRect = gifticon.barcodeRectF
+        )
     }
 
     fun gotoCropBalance() {
-        gotoCropGifticon(crop = AddGifticonCrop.BALANCE)
+        val gifticon = selectedGifticon.value ?: return
+        gotoCropGifticon(
+            crop = AddGifticonCrop.BALANCE,
+            croppedRect = gifticon.balanceRectF
+        )
     }
 
     fun gotoCropExpired() {
-        gotoCropGifticon(crop = AddGifticonCrop.EXPIRED)
+        val gifticon = selectedGifticon.value ?: return
+        gotoCropGifticon(
+            crop = AddGifticonCrop.EXPIRED,
+            croppedRect = gifticon.expiredAtRectF
+        )
     }
 
     private fun gotoCropGifticon(
         crop: AddGifticonCrop,
-        uri: Uri? = selectedGifticon.value?.origin,
         croppedRect: RectF = RectF()
     ) {
-        uri ?: return
+        val originUri = selectedGifticon.value?.origin ?: return
         changeDeleteMode(false)
 
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(
-                AddGifticonEvent.NavigateToCrop(crop, uri, croppedRect)
+                AddGifticonEvent.NavigateToCrop(crop, originUri, croppedRect)
             )
         }
     }

@@ -78,10 +78,10 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getCropResult(result: ActivityResult): Uri? {
-        return withContext(Dispatchers.IO) {
-            result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java)
-        }
+    private fun getCropResult(result: ActivityResult): CroppedImage? {
+        val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
+        val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
+        return CroppedImage(croppedUri, croppedRect)
     }
 
     private suspend fun getCropResult(result: ActivityResult, id: Long): CroppedImage? {
@@ -112,33 +112,23 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private val cropGifticonName =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            lifecycleScope.launch {
-                viewModel.recognizeGifticonName(getCropResult(result))
-            }
+            viewModel.recognizeGifticonName(getCropResult(result))
         }
 
     private val cropBrandName = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        lifecycleScope.launch {
-            viewModel.recognizeBrand(getCropResult(result))
-        }
+        viewModel.recognizeBrand(getCropResult(result))
     }
 
     private val cropBarcode = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        lifecycleScope.launch {
-            viewModel.recognizeBarcode(getCropResult(result))
-        }
+        viewModel.recognizeBarcode(getCropResult(result))
     }
 
     private val cropBalance = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        lifecycleScope.launch {
-            viewModel.recognizeBalance(getCropResult(result))
-        }
+        viewModel.recognizeBalance(getCropResult(result))
     }
 
     private val cropExpired = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        lifecycleScope.launch {
-            viewModel.recognizeExpired(getCropResult(result))
-        }
+        viewModel.recognizeExpired(getCropResult(result))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -211,7 +201,7 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun gotoCrop(crop: AddGifticonCrop, uri: Uri, croppedRect: RectF) {
-        val launcher = when (crop) {
+        val gotoCropLauncher = when (crop) {
             AddGifticonCrop.GIFTICON_IMAGE -> cropGifticon
             AddGifticonCrop.GIFTICON_NAME -> cropGifticonName
             AddGifticonCrop.BRAND_NAME -> cropBrandName
@@ -226,7 +216,7 @@ class AddGifticonActivity : AppCompatActivity() {
                 putExtra(Extras.KEY_ENABLE_ASPECT_RATIO, false)
             }
         }
-        launcher.launch(intent)
+        gotoCropLauncher.launch(intent)
     }
 
     private fun showOriginGifticonDialog(uri: Uri) {
@@ -293,10 +283,9 @@ class AddGifticonActivity : AppCompatActivity() {
         val focusView = when (tag) {
             AddGifticonTag.GIFTICON_NAME -> binding.tietName
             AddGifticonTag.BRAND_NAME -> binding.tietBrand
-            AddGifticonTag.BRAND_CONFIRM -> binding.ivBrandConfirm
             AddGifticonTag.BARCODE -> binding.tietBarcode
             AddGifticonTag.BALANCE -> binding.tietBalance
-            AddGifticonTag.NONE -> binding.clContainer
+            else -> binding.clContainer
         }
         focusView.requestFocus()
         val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -311,13 +300,14 @@ class AddGifticonActivity : AppCompatActivity() {
         val focusView = when (tag) {
             AddGifticonTag.GIFTICON_NAME -> binding.tvName
             AddGifticonTag.BRAND_NAME -> binding.tvBrand
-            AddGifticonTag.BRAND_CONFIRM -> binding.ivBrandConfirm
+            AddGifticonTag.APPROVE_BRAND_NAME -> binding.tvApproveBrandNameDescription
             AddGifticonTag.BARCODE -> binding.tvBarcode
             AddGifticonTag.BALANCE -> binding.tvBalance
+            AddGifticonTag.APPROVE_GIFTICON_IMAGE -> binding.ivGifticonImage
             else -> null
         } ?: return
 
-        val dir = if (binding.nsv.scrollY - focusView.top > 0) SCROLL_DIR_UP else SCROLL_DIR_DOWN
+        val dir = if (binding.nsv.scrollY - focusView.top > 0) SCROLL_DIR_DOWN else SCROLL_DIR_UP
         if (binding.nsv.canScrollVertically(dir)) {
             binding.nsv.smoothScrollTo(0, focusView.top)
         }
