@@ -688,11 +688,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedLeft < max(curImageRect.left, 0f)) {
+        if (resizedLeft < boundLeft) {
             resizedLeft = boundLeft
-        }
-        if (resizedLeft > curImageRect.right - minCropWidth) {
-            resizedLeft = curImageRect.right - minCropWidth
         }
         if (resizedLeft > curCropRect.right - minCropWidth) {
             resizedLeft = curCropRect.right - minCropWidth
@@ -739,11 +736,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedRight > min(curImageRect.right, width.toFloat())) {
+        if (resizedRight > boundRight) {
             resizedRight = boundRight
-        }
-        if (resizedRight < curImageRect.left + minCropWidth) {
-            resizedRight = curImageRect.left + minCropWidth
         }
         if (resizedRight < curCropRect.left + minCropWidth) {
             resizedRight = curCropRect.left + minCropWidth
@@ -790,11 +784,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedTop < max(curImageRect.top, 0f)) {
+        if (resizedTop < boundTop) {
             resizedTop = boundTop
-        }
-        if (resizedTop > curImageRect.bottom - minCropHeight) {
-            resizedTop = curImageRect.bottom - minCropHeight
         }
         if (resizedTop > curCropRect.bottom - minCropHeight) {
             resizedTop = curCropRect.bottom - minCropHeight
@@ -840,11 +831,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedBottom > min(curImageRect.bottom, height.toFloat())) {
+        if (resizedBottom > boundBottom) {
             resizedBottom = boundBottom
-        }
-        if (resizedBottom < curImageRect.top + minCropHeight) {
-            resizedBottom = curImageRect.top + minCropHeight
         }
         if (resizedBottom < curCropRect.top + minCropHeight) {
             resizedBottom = curCropRect.top + minCropHeight
@@ -946,8 +934,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun resizeLeftTopWithAspectRatio(diff: PointF) {
         if (calculateAspectRatio(
-                curCropRect.left + diff.x,
-                curCropRect.top + diff.y,
+                min(curCropRect.left + diff.x, curCropRect.right - calculateMinCropWidth),
+                min(curCropRect.top + diff.y, curCropRect.bottom - calculateMinCropHeight),
                 curCropRect.right,
                 curCropRect.bottom
             ) < aspectRatio
@@ -968,8 +956,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private fun resizeRightTopWithAspectRatio(diff: PointF) {
         if (calculateAspectRatio(
                 curCropRect.left,
-                curCropRect.top + diff.y,
-                curCropRect.right + diff.x,
+                min(curCropRect.top + diff.y, curCropRect.bottom - calculateMinCropHeight),
+                max(curCropRect.right + diff.x, curCropRect.left + calculateMinCropWidth),
                 curCropRect.bottom
             ) < aspectRatio
         ) {
@@ -990,8 +978,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         if (calculateAspectRatio(
                 curCropRect.left,
                 curCropRect.top,
-                curCropRect.right + diff.x,
-                curCropRect.bottom + diff.y
+                max(curCropRect.right + diff.x, curCropRect.left + calculateMinCropWidth),
+                max(curCropRect.bottom + diff.y, curCropRect.top + calculateMinCropHeight)
             ) < aspectRatio
         ) {
             resizeBottom(diff.y, ResizeAddDir.RIGHT)
@@ -1009,10 +997,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun resizeLeftBottomWithAspectRatio(diff: PointF) {
         if (calculateAspectRatio(
-                curCropRect.left + diff.x,
+                min(curCropRect.left + diff.x, curCropRect.right - calculateMinCropWidth),
                 curCropRect.top,
                 curCropRect.right,
-                curCropRect.bottom + diff.y
+                max(curCropRect.bottom + diff.y, curCropRect.top + calculateMinCropHeight)
             ) < aspectRatio
         ) {
             resizeBottom(diff.y, ResizeAddDir.LEFT)
