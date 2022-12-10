@@ -67,6 +67,6 @@ class BrandLocalDataSourceImpl @Inject constructor(
     }
 
     companion object {
-        fun combineSectionId(x: String, y: String, brandName: String) = "${x}_${y}_$brandName"
+        fun combineSectionId(x: String, y: String, brandName: String) = "${x}_${y}_${brandName.lowercase()}"
     }
 }

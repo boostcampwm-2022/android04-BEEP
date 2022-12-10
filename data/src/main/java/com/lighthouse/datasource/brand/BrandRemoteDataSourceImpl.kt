@@ -5,6 +5,7 @@ import com.lighthouse.domain.LocationConverter
 import com.lighthouse.model.BeepErrorData
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.network.NetworkApiService
+import timber.log.Timber
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class BrandRemoteDataSourceImpl @Inject constructor(
         val vertex = LocationConverter.getVertex(x, y)
 
         val result = runCatching { networkApiService.getAllBrandPlaceInfo(brandName, vertex, size).documents }
+        Timber.tag("TAG").d("${javaClass.simpleName} brandName -> $brandName $result")
         return when (val exception = result.exceptionOrNull()) {
             null -> result
             is UnknownHostException -> Result.failure(BeepErrorData.NetworkFailure)

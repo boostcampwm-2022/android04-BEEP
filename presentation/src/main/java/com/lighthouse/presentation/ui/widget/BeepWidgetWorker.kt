@@ -41,14 +41,14 @@ class BeepWidgetWorker @AssistedInject constructor(
 
     private val allBrands = gifticonsDbResult.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            emit(gifticons.data.map { it.brand }.distinct())
+            emit(gifticons.data.map { it.brandLowerName }.distinct())
         }
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyList())
 
     private val gifticonsCount = gifticonsDbResult.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             val gifticonGroup = gifticons.data
-                .groupBy { it.brand }
+                .groupBy { it.brandLowerName }
                 .map { it.key to it.value.count() }
                 .toMap()
             emit(gifticonGroup)
