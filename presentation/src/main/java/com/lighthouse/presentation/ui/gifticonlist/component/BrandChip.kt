@@ -36,16 +36,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.common.compose.TextCheckbox
-import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
-import timber.log.Timber
 
 @Composable
 fun BrandChipListScreen(
@@ -54,7 +50,7 @@ fun BrandChipListScreen(
     filters: Set<String>,
     onClickEntireBrandDialog: () -> Unit = {},
     onClickTotalChip: () -> Unit = {},
-    onClickChip: (Brand) -> Unit
+    onClickChip: (Brand) -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -127,10 +123,10 @@ fun AllBrandChipsDialog(
     brands: List<Brand> = emptyList(),
     showExpiredGifticon: Boolean = false,
     selectedFilters: Set<String> = emptySet(),
-    viewModel: GifticonListViewModel = viewModel(),
+    onCheckFilterExpired: (Boolean) -> Unit = {},
+    onClickChip: (Brand) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
-    Timber.tag("Compose").d("AllBrandChipsDialog: ${viewModel.viewModelScope.coroutineContext}")
     val interactionSource = remember { MutableInteractionSource() }
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -160,7 +156,7 @@ fun AllBrandChipsDialog(
                         textStyle = MaterialTheme.typography.body2,
                         text = stringResource(R.string.gifticon_list_brands_dialog_show_expired_gifticon_option)
                     ) { checked ->
-                        viewModel.filterUsedGifticon(checked)
+                        onCheckFilterExpired(checked)
                     }
                     val scrollState = rememberScrollState()
                     FlowRow(
@@ -176,7 +172,7 @@ fun AllBrandChipsDialog(
                                 brand = it,
                                 selected = selectedFilters.contains(it.name)
                             ) { selected ->
-                                viewModel.toggleFilterSelection(selected)
+                                onClickChip(selected)
                             }
                         }
                     }
