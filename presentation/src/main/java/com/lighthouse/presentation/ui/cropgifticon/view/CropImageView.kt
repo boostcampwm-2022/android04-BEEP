@@ -228,6 +228,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
             if (croppedRect != null && croppedRect != RECT_F_EMPTY) {
                 curCropRect.set(croppedRect)
+                applyZoom()
             } else {
                 if (enableAspectRatio) {
                     // AspectRatio 에 맞춰서 CropRect 를 변경 한다
@@ -255,6 +256,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun applyZoom() {
+        if (width == 0 || height == 0 || originBitmap == null) {
+            return
+        }
+
         val cropWidth = curCropRect.width()
         val cropHeight = curCropRect.height()
 
@@ -362,7 +367,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
-        applyMatrix(animate = false)
+        applyZoom()
     }
 
     override fun onDraw(canvas: Canvas) {
