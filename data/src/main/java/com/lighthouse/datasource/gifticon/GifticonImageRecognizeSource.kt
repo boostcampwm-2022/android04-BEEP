@@ -45,13 +45,15 @@ class GifticonImageRecognizeSource @Inject constructor(
 
     suspend fun recognizeGifticonName(path: String): String {
         val bitmap = getBitmap(path) ?: return ""
-        val inputs = TextRecognizer().recognize(bitmap)
+        val recognizer = TextRecognizer()
+        val inputs = recognizer.recognize(bitmap)
         return inputs.joinToString("")
     }
 
     suspend fun recognizeBrandName(path: String): String {
         val bitmap = getBitmap(path) ?: return ""
-        val inputs = TextRecognizer().recognize(bitmap)
+        val recognizer = TextRecognizer()
+        val inputs = recognizer.recognize(bitmap)
         return inputs.joinToString("")
     }
 
