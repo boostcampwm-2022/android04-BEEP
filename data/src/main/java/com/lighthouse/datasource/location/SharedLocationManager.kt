@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.shareIn
-import timber.log.Timber
 
 @SuppressLint("MissingPermission")
 class SharedLocationManager constructor(
@@ -52,7 +51,6 @@ class SharedLocationManager constructor(
         setProviderRequest()
 
         awaitClose {
-            Timber.tag("TAG").d("${javaClass.simpleName} Stopping Location Updates")
             locationCallback?.let { fusedLocationProviderClient.removeLocationUpdates(it) }
         }
     }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed())
@@ -80,10 +78,8 @@ class SharedLocationManager constructor(
                 Looper.getMainLooper()
             ).addOnFailureListener { e ->
                 receivingLocationUpdates.value = false
-                Timber.tag("TAG").d("${javaClass.simpleName} onFailure Location $e")
             }.addOnSuccessListener {
                 receivingLocationUpdates.value = true
-                Timber.tag("TAG").d("${javaClass.simpleName} Start Location Updates")
             }
         }
     }
