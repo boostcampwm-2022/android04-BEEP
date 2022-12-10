@@ -10,6 +10,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import androidx.core.net.toUri
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.mapper.toDomain
 import com.lighthouse.util.recognizer.BalanceRecognizer
@@ -29,62 +30,64 @@ class GifticonImageRecognizeSource @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    suspend fun recognize(id: Long, path: String): GifticonForAddition? {
-        val originBitmap = getBitmap(path) ?: return null
+    suspend fun recognize(id: Long, uri: Uri?): GifticonForAddition? {
+        uri ?: return null
+        val originBitmap = decodeBitmap(uri) ?: return null
         val info = GifticonRecognizer().recognize(originBitmap) ?: return null
         val croppedBitmap = info.croppedImage
-        var croppedPath = ""
+        var croppedUri: Uri? = null
         if (croppedBitmap != null) {
             val croppedFile = context.getFileStreamPath("$TEMP_CROPPED_PREFIX$id")
             saveBitmap(croppedBitmap, CompressFormat.JPEG, 100, croppedFile)
-            croppedPath = croppedFile.path
+            croppedUri = croppedFile.toUri()
         }
-
-        return info.toDomain(path, croppedPath)
+        return info.toDomain(uri, croppedUri)
     }
 
-    suspend fun recognizeGifticonName(path: String): String {
-        val bitmap = getBitmap(path) ?: return ""
-        val recognizer = TextRecognizer()
-        val inputs = recognizer.recognize(bitmap)
+    suspend fun recognizeGifticonName(uri: Uri?): String {
+        uri ?: return ""
+        val bitmap = decodeBitmap(uri) ?: return ""
+        val inputs = TextRecognizer().recognize(bitmap)
         return inputs.joinToString("")
     }
 
-    suspend fun recognizeBrandName(path: String): String {
-        val bitmap = getBitmap(path) ?: return ""
-        val recognizer = TextRecognizer()
-        val inputs = recognizer.recognize(bitmap)
+    suspend fun recognizeBrandName(uri: Uri?): String {
+        uri ?: return ""
+        val bitmap = decodeBitmap(uri) ?: return ""
+        val inputs = TextRecognizer().recognize(bitmap)
         return inputs.joinToString("")
     }
 
-    suspend fun recognizeBarcode(path: String): String {
-        val bitmap = getBitmap(path) ?: return ""
+    suspend fun recognizeBarcode(uri: Uri?): String {
+        uri ?: return ""
+        val bitmap = decodeBitmap(uri) ?: return ""
         val result = BarcodeRecognizer().recognize(bitmap)
         return result.barcode
     }
 
-    suspend fun recognizeBalance(path: String): Int {
-        val bitmap = getBitmap(path) ?: return 0
+    suspend fun recognizeBalance(uri: Uri?): Int {
+        uri ?: return 0
+        val bitmap = decodeBitmap(uri) ?: return 0
         val result = BalanceRecognizer().recognize(bitmap)
         return result.balance
     }
 
-    suspend fun recognizeExpired(path: String): Date {
-        val bitmap = getBitmap(path) ?: return Date(0)
+    suspend fun recognizeExpired(uri: Uri?): Date {
+        uri ?: return Date(0)
+        val bitmap = decodeBitmap(uri) ?: return Date(0)
         val result = ExpiredRecognizer().recognize(bitmap)
         return result.expired
     }
 
-    private suspend fun getBitmap(path: String): Bitmap? {
+    private suspend fun decodeBitmap(uri: Uri): Bitmap? {
         return withContext(Dispatchers.IO) {
-            val originUri = Uri.parse(path)
-            when (originUri.scheme) {
+            when (uri.scheme) {
                 SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, originUri))
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
                 } else {
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, originUri)
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
                 }
-                SCHEME_FILE -> BitmapFactory.decodeFile(originUri.path)
+                SCHEME_FILE -> BitmapFactory.decodeFile(uri.path)
                 else -> null
             }
         }

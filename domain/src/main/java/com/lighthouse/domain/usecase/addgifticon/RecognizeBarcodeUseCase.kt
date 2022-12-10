@@ -7,7 +7,7 @@ class RecognizeBarcodeUseCase @Inject constructor(
     private val gifticonImageRecognizeRepository: GifticonImageRecognizeRepository
 ) {
 
-    suspend operator fun invoke(path: String): String {
-        return gifticonImageRecognizeRepository.recognizeBarcode(path)
+    suspend operator fun invoke(uri: String): String {
+        return gifticonImageRecognizeRepository.recognizeBarcode(uri)
     }
 }

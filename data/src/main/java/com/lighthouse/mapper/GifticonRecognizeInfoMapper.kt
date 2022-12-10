@@ -1,9 +1,10 @@
 package com.lighthouse.mapper
 
+import android.net.Uri
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.util.recognizer.GifticonRecognizeInfo
 
-fun GifticonRecognizeInfo.toDomain(path: String, croppedPath: String): GifticonForAddition {
+fun GifticonRecognizeInfo.toDomain(originUri: Uri, croppedUri: Uri?): GifticonForAddition {
     return GifticonForAddition(
         true,
         name,
@@ -12,8 +13,8 @@ fun GifticonRecognizeInfo.toDomain(path: String, croppedPath: String): GifticonF
         expiredAt,
         isCashCard,
         balance,
-        path,
-        croppedPath,
+        originUri.toString(),
+        croppedUri?.toString() ?: "",
         croppedRect.toDomain(),
         ""
     )

@@ -1,5 +1,7 @@
 package com.lighthouse.datasource.gifticon
 
+import android.content.ContentResolver.SCHEME_CONTENT
+import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -8,68 +10,54 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.lighthouse.domain.model.GifticonForAddition
+import androidx.core.net.toFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 import javax.inject.Inject
-import kotlin.math.min
 
 class GifticonImageSource @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val screenWidth = context.resources.displayMetrics.widthPixels
 
+    private val screenWidth = context.resources.displayMetrics.widthPixels
     private val screenHeight = context.resources.displayMetrics.heightPixels
 
-    suspend fun saveImage(id: String, gifticon: GifticonForAddition) {
-        if (gifticon.hasImage.not()) {
-            return
-        }
+    suspend fun saveImage(id: String, originUri: Uri?, croppedUri: Uri?) {
+        originUri ?: return
+        croppedUri ?: return
 
-        val originUri = Uri.parse(gifticon.originUri) ?: return
-        val outputOrigin = context.getFileStreamPath("$ORIGIN_PREFIX$id")
+        val outputOriginFile = context.getFileStreamPath("$ORIGIN_PREFIX$id")
 
-        val inputOrigin = context.contentResolver.openInputStream(originUri) ?: return
-        val sampleSize = calculateSampleSize(inputOrigin)
+        val inputOriginStream = openInputStream(originUri) ?: return
+        val sampleSize = calculateSampleSize(inputOriginStream)
 
-        val sampledOrigin = decodeSampledBitmap(originUri, sampleSize) ?: return
-        saveBitmap(sampledOrigin, CompressFormat.JPEG, 100, outputOrigin)
-        sampledOrigin.recycle()
+        val originBitmap = decodeBitmap(originUri) ?: return
+        val sampledOriginBitmap = samplingBitmap(originBitmap, sampleSize)
+        saveBitmap(sampledOriginBitmap, CompressFormat.JPEG, 100, outputOriginFile)
 
-        val inputCropped = File(gifticon.croppedUri)
-        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id")
-        val cropped = if (inputCropped.exists()) {
-            decodeBitmap(inputCropped).also {
-                inputCropped.delete()
-            }
+        val outputCroppedFile = context.getFileStreamPath("$CROPPED_PREFIX$id")
+        val cropped = if (exists(croppedUri)) {
+            decodeBitmap(croppedUri).also { deleteIfFile(croppedUri) } ?: return
         } else {
-            val originBitmap = BitmapFactory.decodeFile(outputOrigin.path)
-            val minSize = min(originBitmap.width, originBitmap.height)
-            Bitmap.createBitmap(
-                originBitmap,
-                (originBitmap.width - minSize) / 2,
-                (originBitmap.height - minSize) / 2,
-                minSize,
-                minSize
-            )
+            centerCropBitmap(sampledOriginBitmap, 1f)
         }
-        saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCropped)
+        saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCroppedFile)
     }
 
-    suspend fun updateImage(id: String, croppedUri: String) {
+    suspend fun updateImage(id: String, croppedUri: Uri?) {
+        croppedUri ?: return
         val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id")
         withContext(Dispatchers.IO) {
-            FileInputStream(croppedUri).use { input ->
+            openInputStream(croppedUri)?.use { input ->
                 FileOutputStream(outputCropped).use { output ->
                     input.copyTo(output)
                 }
-            }
+            } ?: return@withContext
         }
     }
 
@@ -88,24 +76,64 @@ class GifticonImageSource @Inject constructor(
         return inSampleSize
     }
 
-    private suspend fun decodeSampledBitmap(originUri: Uri, sampleSize: Int): Bitmap? {
+    private suspend fun openInputStream(uri: Uri): InputStream? {
         return withContext(Dispatchers.IO) {
-            try {
-                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, originUri))
-                } else {
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, originUri)
-                }
-                Bitmap.createScaledBitmap(bitmap, bitmap.width / sampleSize, bitmap.height / sampleSize, false)
-            } catch (e: IOException) {
-                null
+            when (uri.scheme) {
+                SCHEME_CONTENT -> context.contentResolver.openInputStream(uri)
+                SCHEME_FILE -> FileInputStream(uri.path)
+                else -> null
             }
         }
     }
 
-    private suspend fun decodeBitmap(file: File): Bitmap {
+    private suspend fun decodeBitmap(uri: Uri): Bitmap? {
         return withContext(Dispatchers.IO) {
-            BitmapFactory.decodeFile(file.path)
+            when (uri.scheme) {
+                SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+                } else {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                }
+                SCHEME_FILE -> BitmapFactory.decodeFile(uri.path)
+                else -> null
+            }
+        }
+    }
+
+    private fun deleteIfFile(uri: Uri) {
+        if (uri.scheme == SCHEME_FILE) {
+            uri.toFile().delete()
+        }
+    }
+
+    private fun exists(uri: Uri): Boolean {
+        return when (uri.scheme) {
+            SCHEME_CONTENT -> {
+                context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                    cursor.moveToFirst()
+                } ?: false
+            }
+            SCHEME_FILE -> uri.toFile().exists()
+            else -> false
+        }
+    }
+
+    private suspend fun samplingBitmap(bitmap: Bitmap, sampleSize: Int): Bitmap {
+        return withContext(Dispatchers.IO) {
+            Bitmap.createScaledBitmap(bitmap, bitmap.width / sampleSize, bitmap.height / sampleSize, false)
+        }
+    }
+
+    private suspend fun centerCropBitmap(bitmap: Bitmap, aspectRatio: Float): Bitmap {
+        return withContext(Dispatchers.IO) {
+            val bitmapAspectRatio = bitmap.width.toFloat() / bitmap.height
+            if (bitmapAspectRatio > aspectRatio) {
+                val newWidth = (bitmap.height * aspectRatio).toInt()
+                Bitmap.createBitmap(bitmap, (bitmap.width - newWidth) / 2, 0, newWidth, bitmap.height)
+            } else {
+                val newHeight = (bitmap.width / aspectRatio).toInt()
+                Bitmap.createBitmap(bitmap, 0, (bitmap.height - newHeight) / 2, bitmap.width, newHeight)
+            }
         }
     }
 

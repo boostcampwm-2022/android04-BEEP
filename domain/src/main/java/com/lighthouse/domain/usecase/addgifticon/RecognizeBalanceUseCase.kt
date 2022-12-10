@@ -7,7 +7,7 @@ class RecognizeBalanceUseCase @Inject constructor(
     private val gifticonImageRecognizeRepository: GifticonImageRecognizeRepository
 ) {
 
-    suspend operator fun invoke(path: String): Int {
-        return gifticonImageRecognizeRepository.recognizeBalance(path)
+    suspend operator fun invoke(uri: String): Int {
+        return gifticonImageRecognizeRepository.recognizeBalance(uri)
     }
 }

@@ -1,5 +1,6 @@
 package com.lighthouse.repository
 
+import android.net.Uri
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
@@ -15,11 +16,9 @@ import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.mapper.toDomain
 import com.lighthouse.mapper.toEntity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
@@ -82,7 +81,10 @@ class GifticonRepositoryImpl @Inject constructor(
         for ((newGifticon, addition) in newGifticons.zip(gifticons)) {
             val gifticonCrop = GifticonCrop(newGifticon.id, addition.croppedRect)
             gifticonLocalCropDataSource.insertGifticonCrop(gifticonCrop.toEntity())
-            gifticonImageSource.saveImage(newGifticon.id, addition)
+            if (!addition.hasImage) {
+                continue
+            }
+            gifticonImageSource.saveImage(newGifticon.id, Uri.parse(addition.originUri), Uri.parse(addition.croppedUri))
         }
     }
 
@@ -146,10 +148,8 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getGifticonCrop(gifticonId: String) = gifticonLocalCropDataSource.getGifticonCrop(gifticonId)
 
     override suspend fun updateGifticonCrop(gifticonCropForUpdate: GifticonCropForUpdate) {
-        withContext(Dispatchers.IO) {
-            gifticonLocalCropDataSource.updateGifticonCrop(gifticonCropForUpdate.toEntity())
-            gifticonImageSource.updateImage(gifticonCropForUpdate.gifticonId, gifticonCropForUpdate.croppedUri)
-        }
+        gifticonLocalCropDataSource.updateGifticonCrop(gifticonCropForUpdate.toEntity())
+        gifticonImageSource.updateImage(gifticonCropForUpdate.gifticonId, Uri.parse(gifticonCropForUpdate.croppedUri))
     }
 
     override suspend fun hasGifticonBrand(brand: String) = gifticonLocalDataSource.hasGifticonBrand(brand)

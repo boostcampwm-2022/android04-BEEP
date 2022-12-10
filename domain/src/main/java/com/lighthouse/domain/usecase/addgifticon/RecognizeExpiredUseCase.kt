@@ -8,7 +8,7 @@ class RecognizeExpiredUseCase @Inject constructor(
     private val gifticonImageRecognizeRepository: GifticonImageRecognizeRepository
 ) {
 
-    suspend operator fun invoke(path: String): Date {
-        return gifticonImageRecognizeRepository.recognizeExpired(path)
+    suspend operator fun invoke(uri: String): Date {
+        return gifticonImageRecognizeRepository.recognizeExpired(uri)
     }
 }
