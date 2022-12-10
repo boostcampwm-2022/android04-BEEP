@@ -85,9 +85,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private var eventType = EventType.NONE
     private var touchRange: TouchRange? = null
 
+    private val touchMatrix = Matrix()
+    private val touchImageRect = RectF()
     private val touchCropRect = RectF()
     private val touchStartPos = PointF()
-    private val touchBeforePos = PointF()
     private val touchEndPos = PointF()
 
     // CropRect 가 움직일 수 있는 최대 범위
@@ -509,13 +510,18 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         return activePointerId == curPointerId
     }
 
+    private fun initTouchInfo() {
+        touchStartPos.set(touchEndPos)
+        touchCropRect.set(curCropRect)
+        touchImageRect.set(curImageRect)
+        touchMatrix.set(mainMatrix)
+    }
+
     private fun setTouchPos(event: MotionEvent) {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            touchStartPos.set(event.x, event.y)
-            touchBeforePos.set(event.x, event.y)
-            touchCropRect.set(curCropRect)
-        }
         touchEndPos.set(event.x, event.y)
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            initTouchInfo()
+        }
     }
 
     private fun getEventType(event: MotionEvent): EventType {
@@ -552,7 +558,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                 eventType = EventType.NONE
                 activePointerId = null
             }
-            else -> touchBeforePos.set(touchEndPos)
         }
     }
 
@@ -602,44 +607,50 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private fun containCenter(x: Float, y: Float) = curCropRect.contains(x, y)
 
     private fun moveCrop() {
-        val diff = touchEndPos.minus(touchBeforePos)
-        // bound 를 벗어 나지 않는 이동 위치를 계산 한다
-        val offsetX = when {
-            curCropRect.left + diff.x < curImageRect.left + SNAP_RADIUS -> curImageRect.left - curCropRect.left
-            curCropRect.right + diff.x > curImageRect.right - SNAP_RADIUS -> curImageRect.right - curCropRect.right
+        val diff = touchEndPos.minus(touchStartPos)
+
+        val screenStart = max(curImageRect.left, 0f)
+        val screenEnd = min(curImageRect.right, width.toFloat())
+        val screenTop = max(curImageRect.top, 0f)
+        val screenBottom = min(curImageRect.bottom, height.toFloat())
+
+        val cropOffsetX = when {
+            touchCropRect.left + diff.x < screenStart -> screenStart - touchCropRect.left
+            touchCropRect.right + diff.x > screenEnd -> screenEnd - touchCropRect.right
             else -> diff.x
         }
-        val offsetY = when {
-            curCropRect.top + diff.y < curImageRect.top + SNAP_RADIUS -> curImageRect.top - curCropRect.top
-            curCropRect.bottom + diff.y > curImageRect.bottom - SNAP_RADIUS -> curImageRect.bottom - curCropRect.bottom
+        val cropOffsetY = when {
+            touchCropRect.top + diff.y < screenTop -> screenTop - touchCropRect.top
+            touchCropRect.bottom + diff.y > screenBottom -> screenBottom - touchCropRect.bottom
             else -> diff.y
         }
-        // Crop 의 경우 벽에 닿은 경우 닿은 상태로 유지 해야한다.
-        val screenMoveX = when {
-            curCropRect.left + offsetX < 0f -> -(curCropRect.left + offsetX)
-            curCropRect.right + offsetX > width -> width - (curCropRect.right + offsetX)
-            else -> 0f
-        }
-        val screenMoveY = when {
-            curCropRect.top + offsetY < 0f -> -(curCropRect.top + offsetY)
-            curCropRect.bottom + offsetY > height -> height - (curCropRect.bottom + offsetY)
-            else -> 0f
-        }
-        // 이미지의 경우 현재 화면에 보이는 이미지 크기를 넘어서 이동하면 안된다
-        val imageMoveX = when {
-            screenMoveX > 0f -> if (curImageRect.left + screenMoveX * 2 > 0) -curImageRect.left else screenMoveX * 2
-            screenMoveX < 0f -> if (curImageRect.right - width + screenMoveX * 2 < 0) width - curImageRect.right else screenMoveX * 2
-            else -> 0f
-        }
-        val imageMoveY = when {
-            screenMoveY > 0f -> if (curImageRect.top + screenMoveY * 2 > 0) -curImageRect.top else screenMoveY * 2
-            screenMoveY < 0f -> if (curImageRect.bottom - height + screenMoveY * 2 < 0) height - curImageRect.bottom else screenMoveY * 2
-            else -> 0f
+
+        curCropRect.apply {
+            set(touchCropRect)
+            offset(cropOffsetX, cropOffsetY)
         }
 
-        curCropRect.offset(offsetX + screenMoveX, offsetY + screenMoveY)
-        mainMatrix.postTranslate(imageMoveX, imageMoveY)
-        mapCurrentImageRectByMatrix()
+        val overOffsetX = (cropOffsetX - diff.x) * zoom
+        val overOffsetY = (cropOffsetY - diff.y) * zoom
+
+        val imageOffsetX = when {
+            touchImageRect.left + overOffsetX > screenStart -> screenStart - touchImageRect.left
+            touchImageRect.right + overOffsetX < screenEnd -> screenEnd - touchImageRect.right
+            else -> overOffsetX
+        }
+
+        val imageOffsetY = when {
+            touchImageRect.top + overOffsetY > screenTop -> screenTop - touchImageRect.top
+            touchImageRect.bottom + overOffsetY < screenBottom -> screenBottom - touchImageRect.bottom
+            else -> overOffsetY
+        }
+
+        if (imageOffsetX != 0f || imageOffsetY != 0f) {
+            mainMatrix.set(touchMatrix)
+            mainMatrix.postTranslate(imageOffsetX, imageOffsetY)
+            mapCurrentImageRectByMatrix()
+            initTouchInfo()
+        }
         invalidate()
     }
 
@@ -677,7 +688,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedLeft < max(curImageRect.left + SNAP_RADIUS, SNAP_RADIUS)) {
+        if (resizedLeft < max(curImageRect.left, 0f)) {
             resizedLeft = boundLeft
         }
         if (resizedLeft > curImageRect.right - minCropWidth) {
@@ -728,7 +739,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedRight > min(curImageRect.right - SNAP_RADIUS, width - SNAP_RADIUS)) {
+        if (resizedRight > min(curImageRect.right, width.toFloat())) {
             resizedRight = boundRight
         }
         if (resizedRight < curImageRect.left + minCropWidth) {
@@ -779,7 +790,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedTop < max(curImageRect.top + SNAP_RADIUS, SNAP_RADIUS)) {
+        if (resizedTop < max(curImageRect.top, 0f)) {
             resizedTop = boundTop
         }
         if (resizedTop > curImageRect.bottom - minCropHeight) {
@@ -829,7 +840,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val minCropWidth = calculateMinCropWidth
         val minCropHeight = calculateMinCropHeight
 
-        if (resizedBottom > min(curImageRect.bottom - SNAP_RADIUS, height - SNAP_RADIUS)) {
+        if (resizedBottom > min(curImageRect.bottom, height.toFloat())) {
             resizedBottom = boundBottom
         }
         if (resizedBottom < curImageRect.top + minCropHeight) {
@@ -1039,6 +1050,5 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         private val CORNER_LENGTH = 12.dp.toInt()
         private val MIN_SIZE = (CORNER_LENGTH + CORNER_THICKNESS) * 2
         private val EDGE_TOUCH_RANGE = 24.dp.toInt()
-        private val SNAP_RADIUS = 3.dp
     }
 }
