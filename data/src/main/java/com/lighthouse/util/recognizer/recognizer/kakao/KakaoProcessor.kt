@@ -8,22 +8,9 @@ import com.lighthouse.util.recognizer.processor.GifticonProcessTextTag
 
 class KakaoProcessor : BaseProcessor() {
 
-    private val aspectRatio: Float = 0.48f
+    override val enableCenterCrop = true
 
-    override fun preprocess(bitmap: Bitmap): Bitmap {
-        val originWidth = bitmap.width
-        val originHeight = bitmap.height
-        val originAspect = originWidth.toFloat() / originHeight
-        return if (aspectRatio > originAspect) {
-            val croppedHeight = (originWidth / aspectRatio).toInt()
-            val verticalMargin = (originHeight - croppedHeight) / 2
-            Bitmap.createBitmap(bitmap, 0, verticalMargin, originWidth, croppedHeight)
-        } else {
-            val croppedWidth = (originHeight * aspectRatio).toInt()
-            val horizontalMargin = (originWidth - croppedWidth) / 2
-            Bitmap.createBitmap(bitmap, horizontalMargin, 0, croppedWidth, originHeight)
-        }
-    }
+    override val centerCropAspectRatio = 0.48f
 
     override fun processTextImage(bitmap: Bitmap): List<GifticonProcessText> {
         return listOf(

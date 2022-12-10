@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="com.lighthouse.domain.model.UserPreferenceOption" />
 
         <variable
@@ -34,6 +35,14 @@
                     app:title="@string/main_menu_setting"
                     app:titleCentered="true" />
             </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95"
+                />
 
             <TextView
                 android:id="@+id/tv_used_gifticon"
@@ -70,9 +79,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="@{vm.userPreferenceState.notification}"
-                app:layout_constraintHorizontal_bias="0.95"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_imminent_notification"
                 app:layout_constraintEnd_toEndOf="@+id/tv_imminent_notification"
+                app:layout_constraintHorizontal_bias="0.95"
                 app:layout_constraintStart_toStartOf="@+id/tv_imminent_notification"
                 app:layout_constraintTop_toTopOf="@+id/tv_imminent_notification" />
 
@@ -83,33 +92,30 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_security"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_imminent_notification" />
 
             <TextView
                 android:id="@+id/tv_security_option"
+                style="@style/BEEP.TextStyle.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{vm.userPreferenceState.security.text}"
-                style="@style/BEEP.TextStyle.Caption"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_security"
                 app:layout_constraintEnd_toEndOf="@+id/tv_security"
-                app:layout_constraintStart_toStartOf="@+id/tv_security"
-                app:layout_constraintTop_toTopOf="@+id/tv_security"
                 app:layout_constraintHorizontal_bias="0.85"
-                />
+                app:layout_constraintStart_toStartOf="@+id/tv_security"
+                app:layout_constraintTop_toTopOf="@+id/tv_security" />
 
             <ImageView
                 android:id="@+id/iv_arrow_forward"
-                android:src="@drawable/ic_arrow_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_security"
-                app:layout_constraintEnd_toEndOf="@+id/tv_security"
-                app:layout_constraintStart_toStartOf="@+id/tv_security"
-                app:layout_constraintTop_toTopOf="@+id/tv_security"
                 android:contentDescription="@string/setting_security"
-                />
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_security"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_security" />
 
             <TextView
                 android:id="@+id/tv_location"
@@ -118,39 +124,38 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_location"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_security" />
 
             <TextView
                 android:id="@+id/tv_location_option"
+                style="@style/BEEP.TextStyle.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/BEEP.TextStyle.Caption"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_location"
                 app:layout_constraintEnd_toEndOf="@+id/tv_location"
-                app:layout_constraintStart_toStartOf="@+id/tv_location"
-                app:layout_constraintTop_toTopOf="@+id/tv_location"
                 app:layout_constraintHorizontal_bias="0.85"
-                />
+                app:layout_constraintStart_toStartOf="@+id/tv_location"
+                app:layout_constraintTop_toTopOf="@+id/tv_location" />
 
             <ImageView
                 android:id="@+id/iv_arrow_forward_location"
-                android:src="@drawable/ic_arrow_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_location"
-                app:layout_constraintEnd_toEndOf="@+id/tv_location"
-                app:layout_constraintStart_toStartOf="@+id/tv_location"
-                app:layout_constraintTop_toTopOf="@+id/tv_location"
                 android:contentDescription="@string/setting_security"
-                />
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintHorizontal_bias="0.95"
+                app:layout_constraintTop_toTopOf="@+id/tv_location" />
 
             <TextView
                 android:id="@+id/tv_divider_user"
                 style="@style/Theme.BEEP.SettingDividerTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.3"                android:background="@color/gray_500"
+                android:alpha="0.3"
+                android:background="@color/gray_500"
                 android:paddingVertical="8dp"
                 android:text="@string/setting_all"
                 app:layout_constraintTop_toBottomOf="@+id/tv_location" />
@@ -163,7 +168,18 @@
                 android:paddingVertical="16dp"
                 android:text="@string/setting_sign_out"
                 app:isVisible="@{!vm.userPreferenceState.guest}"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_divider_user" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_sign_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_sign_out"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_sign_out"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_sign_out" />
 
             <TextView
                 android:id="@+id/tv_sign_in"
@@ -173,7 +189,18 @@
                 android:paddingVertical="16dp"
                 android:text="@string/setting_sign_in"
                 app:isVisible="@{vm.userPreferenceState.guest}"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sign_out" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_sign_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_sign_in"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_sign_in"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_sign_in" />
 
             <TextView
                 android:id="@+id/tv_withdrawal"
@@ -182,7 +209,18 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_withdrawal"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sign_in" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_withdrawal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_withdrawal"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_withdrawal"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_withdrawal" />
 
             <TextView
                 android:id="@+id/tv_divider_etc"
@@ -202,7 +240,18 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_coffee"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_divider_etc" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_coffee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_coffee"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_coffee"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_coffee" />
 
             <TextView
                 android:id="@+id/tv_terms_of_use"
@@ -211,7 +260,18 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_terms_of_use"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_coffee" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_terms_of_use"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_terms_of_use"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_terms_of_use"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_terms_of_use" />
 
             <TextView
                 android:id="@+id/tv_personal_info_policy"
@@ -220,7 +280,18 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_personal_info_policy"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_terms_of_use" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_personal_info_policy"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_personal_info_policy"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_personal_info_policy" />
 
             <TextView
                 android:id="@+id/tv_open_source_license"
@@ -229,7 +300,18 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_open_source_license"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintTop_toBottomOf="@+id/tv_personal_info_policy" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_forward_license"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/setting_open_source_license"
+                android:src="@drawable/ic_arrow_forward"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_open_source_license"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
+                app:layout_constraintTop_toTopOf="@+id/tv_open_source_license" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

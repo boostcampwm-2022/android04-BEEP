@@ -36,7 +36,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private val backgroundPaint by lazy {
         Paint().apply {
-            color = context.getColor(R.color.black_a60)
+            color = context.getColor(R.color.black_60)
         }
     }
     private val guidelinePaint by lazy {
@@ -79,8 +79,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private var zoom = 1f
 
     // AspectRatio = Width / Height
-    private var aspectRatioEnable = true
-    private var aspectRatio = 1f
+    var enableAspectRatio = true
+    var aspectRatio = 1f
 
     private var eventType = EventType.NONE
     private var touchRange: TouchRange? = null
@@ -105,14 +105,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     // CropRect 를 줄일 수 있는 최소 범위
     private val calculateMinCropWidth
-        get() = if (aspectRatioEnable) {
+        get() = if (enableAspectRatio) {
             if (aspectRatio > 1f) MIN_SIZE * aspectRatio else MIN_SIZE
         } else {
             MIN_SIZE
         }
 
     private val calculateMinCropHeight
-        get() = if (aspectRatioEnable) {
+        get() = if (enableAspectRatio) {
             if (aspectRatio > 1f) MIN_SIZE else MIN_SIZE / aspectRatio
         } else {
             MIN_SIZE
@@ -229,7 +229,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             if (croppedRect != null && croppedRect != RECT_F_EMPTY) {
                 curCropRect.set(croppedRect)
             } else {
-                if (aspectRatioEnable) {
+                if (enableAspectRatio) {
                     // AspectRatio 에 맞춰서 CropRect 를 변경 한다
                     val aspectWidth = min(realImageRect.width(), realImageRect.height() * aspectRatio)
                     val aspectHeight = min(realImageRect.width() / aspectRatio, realImageRect.height())
@@ -527,7 +527,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun actionEvent() {
         when (eventType) {
-            EventType.RESIZE -> if (aspectRatioEnable && aspectRatio > 0f) {
+            EventType.RESIZE -> if (enableAspectRatio && aspectRatio > 0f) {
                 resizeCropWithFixedAspectRatio()
             } else {
                 resizeCropWithFreeAspectRatio()

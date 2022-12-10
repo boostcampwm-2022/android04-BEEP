@@ -13,7 +13,7 @@
     <string name="all_expired_date">~ %4d.%02d.%02d</string>
     <string name="all_date">%4d.%02d.%02d</string>
     <string name="all_yes">네</string>
-    <string name="all_ok">OK</string>
+    <string name="all_ok">확인</string>
     <string name="all_year">년</string>
     <string name="all_month">월</string>
     <string name="all_day">일</string>
@@ -41,10 +41,10 @@
     <string name="add_gifticon_registered">%d개 등록됨</string>
     <string name="add_gifticon_goto_gallery_description">갤러리 이동하기 버튼</string>
     <string name="add_gifticon_delete_description">등록된 이미지 삭제 버튼</string>
+    <string name="add_gifticon_invalid_description">등록된 이미지가 유효하지 않음</string>
     <string name="add_gifticon_candidate_description">기프티콘 후보 버튼</string>
     <string name="add_gifticon_image_description">선택된 기프티콘 이미지</string>
     <string name="add_gifticon_edit_image">편집하기</string>
-    <string name="add_gifticon_confirm_origin_image">원본이미지 확인</string>
     <string name="add_gifticon_cash_card">금액권</string>
     <string name="add_gifticon_delete_mode">삭제하기</string>
     <string name="add_gifticon_edit_mode">편집하기</string>
@@ -64,12 +64,30 @@
     <string name="add_gifticon_cancel">취소</string>
     <string name="add_gifticon_register">등록하기</string>
 
+    <string name="add_gifticon_origin_gifticon">원본 이미지 보기 아이콘</string>
+    <string name="add_gifticon_name_remove_description">이름 지우기 아이콘</string>
+    <string name="add_gifticon_name_crop_description">이름 크롭 아이콘</string>
+    <string name="add_gifticon_brand_remove_description">브랜드 지우기 아이콘</string>
+    <string name="add_gifticon_brand_crop_description">브랜드 크롭 아이콘</string>
+    <string name="add_gifticon_approve_brand_name_description">유효한 브랜드 확인 아이콘</string>
+    <string name="add_gifticon_barcode_remove_description">바코드 지우기 아이콘</string>
+    <string name="add_gifticon_barcode_crop_description">바코드 크롭 아이콘</string>
+    <string name="add_gifticon_balance_remove_description">잔액 지우기 아이콘</string>
+    <string name="add_gifticon_balance_crop_description">잔액 크롭 아이콘</string>
+    <string name="add_gifticon_expire_calendar_description">유효기간 달력 아이콘</string>
+    <string name="add_gifticon_expire_crop_description">유효기간 크롭 아이콘</string>
+
+    <string name="add_gifticon_approve_brand_name">입력한 브랜드가 맞다면 클릭해주세요</string>
+    <string name="add_gifticon_approve_gifticon_image">지금 이미지가 맞다면 클릭해주세요</string>
+
     <string name="add_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
     <string name="add_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
     <string name="add_gifticon_invalid_barcode">바코드를 입력해주세요</string>
     <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
+    <string name="add_gifticon_invalid_approve_brand_name">브랜드 정보를 확인해주세요</string>
     <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
     <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
+    <string name="add_gifticon_invalid_approve_gifticon_image">기프티콘 이미지를 확인해주세요</string>
 
     <string name="add_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
     <string name="add_gifticon_confirmation_cancel_message">등록중인 기프티콘이 존재합니다.</string>
@@ -96,12 +114,12 @@
 
 
     <string name="fingerprint_info_obtain_fail">기기의 지문 정보를 가져올 수 없습니다.</string>
-    <string name="fingerprint_error_no_hardware">지문 인증을 사용할 수 없는 기기입니다.</string>
-    <string name="fingerprint_unavailable">지문 인증을 사용할 수 없습니다.</string>
-    <string name="fingerprint_authentication">지문 인증</string>
+    <string name="fingerprint_error_no_hardware">생체 인증을 사용할 수 없는 기기입니다.</string>
+    <string name="fingerprint_unavailable">생체 인증을 사용할 수 없습니다.</string>
+    <string name="fingerprint_authentication">생체 인증</string>
     <string name="fingerprint_description">기기에 저장된 기프티콘을 보호합니다.</string>
-    <string name="fingerprint_authentication_success">지문 인증 성공</string>
-    <string name="fingerprint_authentication_fail">지문 인증 실패</string>
+    <string name="fingerprint_authentication_success">생체 인증 성공</string>
+    <string name="fingerprint_authentication_fail">생체 인증 실패</string>
     <string name="fingerprint_not_enrolled">등록된 지문이 없습니다.</string>
     <string name="fingerprint_error_lockout">5회 인증에 실패했습니다. 잠시 후 다시 시도해주세요</string>
     <string name="fingerprint_error_lockout_permanent">잦은 실패로 지문 센서가 비활성화 되었습니다</string>

@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.gallery
+package com.lighthouse.presentation.ui.gallery.event
 
 sealed class GalleryEvent {
 

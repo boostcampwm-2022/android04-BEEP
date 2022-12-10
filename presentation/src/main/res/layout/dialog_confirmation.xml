@@ -73,10 +73,13 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toStartOf="@id/tv_ok"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:padding="8dp"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
-                    android:text="@string/confirmation_cancel"/>
+                    android:text="@string/confirmation_cancel"
+                    android:background="@drawable/ripple_rect_corner_8_on_surface_12"/>
 
                 <TextView
                     android:id="@+id/tv_ok"
@@ -85,13 +88,16 @@
                     android:layout_marginTop="36dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_message"
                     android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
-                    android:text="@string/confirmation_ok"/>
+                    android:text="@string/confirmation_ok"
+                    android:background="@drawable/ripple_rect_corner_8_on_surface_12"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

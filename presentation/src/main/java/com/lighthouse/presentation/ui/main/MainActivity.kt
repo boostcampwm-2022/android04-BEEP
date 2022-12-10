@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ import com.lighthouse.presentation.ui.home.HomeFragmentContainer
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
+import com.lighthouse.presentation.ui.setting.SettingSecurityFragment
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -33,6 +35,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            when (supportFragmentManager.fragments.first { it.isVisible }) {
+                is HomeFragmentContainer -> finish()
+                is SettingSecurityFragment -> {} // SettingSecurityFragment 에서 관리하는 부분을 옮기려고 했는데 안 되네요...
+                else -> {
+                    binding.bnv.selectedItemId = R.id.menu_home
+                    viewModel.gotoHome()
+                }
+            }
+        }
+    }
 
     private val storagePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -64,6 +78,8 @@ class MainActivity : AppCompatActivity() {
             lifecycleOwner = this@MainActivity
             vm = viewModel
         }
+
+        onBackPressedDispatcher.addCallback(this, callback)
 
         checkUserPreferenceOption()
         collectEvent()

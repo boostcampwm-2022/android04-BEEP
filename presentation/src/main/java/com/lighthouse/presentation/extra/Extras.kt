@@ -5,6 +5,8 @@ object Extras {
     const val KEY_SELECTED_GALLERY_ITEM = "Extra.SELECTED_GALLERY_ITEM"
     const val KEY_ORIGIN_IMAGE = "Extra.OriginImage"
 
+    const val KEY_ENABLE_ASPECT_RATIO = "Extra.EnableAspectRatio"
+    const val KEY_ASPECT_RATIO = "Extra.AspectRatio"
     const val KEY_CROPPED_IMAGE = "Extra.CroppedImage"
     const val KEY_CROPPED_RECT = "Extra.CroppedRect"
 
