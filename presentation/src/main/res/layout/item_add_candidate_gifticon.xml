@@ -19,7 +19,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/add_gifticon_goto_gallery_description"
-            android:onClickListener="@{() -> dm.onClickItem()}"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -27,18 +26,48 @@
             app:layout_constraintTop_toTopOf="parent"
             app:loadUriWithoutCache="@{dm.item.uri}" />
 
+        <View
+            android:id="@+id/view_candidate_ripple_effect"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> dm.onClickItem()}"
+            app:layout_constraintBottom_toBottomOf="@id/iv_candidate"
+            app:layout_constraintEnd_toEndOf="@id/iv_candidate"
+            app:layout_constraintStart_toStartOf="@id/iv_candidate"
+            app:layout_constraintTop_toTopOf="@id/iv_candidate" />
+
         <ImageView
-            android:id="@+id/iv_badge"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:id="@+id/iv_delete"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/bg_circle_black_50"
             android:contentDescription="@string/add_gifticon_delete_description"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="3dp"
+            android:padding="1dp"
+            android:src="@drawable/img_item_delete"
             android:visibility="invisible"
-            app:imageResource="@{dm.badgeResId}"
+            app:isVisible="@{dm.deleteVisible}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:isVisible="@{dm.badgeVisible}"/>
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_invalid"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:contentDescription="@string/add_gifticon_invalid_description"
+            android:padding="1dp"
+            android:src="@drawable/ic_item_invalid"
+            android:visibility="invisible"
+            app:isVisible="@{dm.invalidVisible}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
