@@ -581,25 +581,25 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun containLeft(x: Float, y: Float): Boolean {
-        val innerRange = min((curCropRect.width().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE)
+        val innerRange = min((curCropRect.width().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE / 2)
         return x in curCropRect.left - EDGE_TOUCH_RANGE..curCropRect.left + innerRange &&
             y in curCropRect.top - EDGE_TOUCH_RANGE..curCropRect.bottom + EDGE_TOUCH_RANGE
     }
 
     private fun containRight(x: Float, y: Float): Boolean {
-        val innerRange = min((curCropRect.width().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE)
+        val innerRange = min((curCropRect.width().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE / 2)
         return x in curCropRect.right - innerRange..curCropRect.right + EDGE_TOUCH_RANGE &&
             y in curCropRect.top - EDGE_TOUCH_RANGE..curCropRect.bottom + EDGE_TOUCH_RANGE
     }
 
     private fun containTop(x: Float, y: Float): Boolean {
-        val innerRange = min((curCropRect.height().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE)
+        val innerRange = min((curCropRect.height().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE / 2)
         return x in curCropRect.left - EDGE_TOUCH_RANGE..curCropRect.right + EDGE_TOUCH_RANGE &&
             y in curCropRect.top - EDGE_TOUCH_RANGE..curCropRect.top + innerRange
     }
 
     private fun containBottom(x: Float, y: Float): Boolean {
-        val innerRange = min((curCropRect.height().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE)
+        val innerRange = min((curCropRect.height().toInt() - EDGE_TOUCH_RANGE) / 2, EDGE_TOUCH_RANGE / 2)
         return x in curCropRect.left - EDGE_TOUCH_RANGE..curCropRect.right + EDGE_TOUCH_RANGE &&
             y in curCropRect.bottom - innerRange..curCropRect.bottom + EDGE_TOUCH_RANGE
     }
