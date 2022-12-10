@@ -61,8 +61,7 @@ class GifticonImageRecognizeSource @Inject constructor(
     suspend fun recognizeBarcode(uri: Uri?): String {
         uri ?: return ""
         val bitmap = decodeBitmap(uri) ?: return ""
-        val result = BarcodeRecognizer().recognize(bitmap)
-        return result.barcode
+        return BarcodeRecognizer().recognize(bitmap).barcode
     }
 
     suspend fun recognizeBalance(uri: Uri?): Int {
