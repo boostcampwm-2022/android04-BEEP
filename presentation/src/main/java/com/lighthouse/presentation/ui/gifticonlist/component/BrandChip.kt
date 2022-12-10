@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -17,15 +18,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,11 +48,50 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 import timber.log.Timber
 
 @Composable
+fun BrandChipListScreen(
+    modifier: Modifier,
+    brands: List<Brand>,
+    filters: Set<String>,
+    onClickEntireBrandDialog: () -> Unit = {},
+    onClickTotalChip: () -> Unit = {},
+    onClickChip: (Brand) -> Unit
+) {
+    Row(
+        modifier = modifier
+    ) {
+        BrandChipList(
+            modifier = Modifier.weight(1f),
+            brands = brands,
+            selectedFilters = filters,
+            onClickTotalChip = {
+                onClickTotalChip()
+            },
+            onClickChip = {
+                onClickChip(it)
+            }
+        )
+        IconButton(
+            modifier = Modifier,
+            onClick = {
+                onClickEntireBrandDialog()
+            }
+        ) {
+            Image(
+                imageVector = Icons.Outlined.Tune,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                contentDescription = stringResource(R.string.gifticon_list_show_all_brand_chips_button)
+            )
+        }
+    }
+}
+
+@Composable
 fun BrandChipList(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
-    viewModel: GifticonListViewModel = viewModel(),
-    selectedFilters: Set<String> = emptySet()
+    selectedFilters: Set<String> = emptySet(),
+    onClickTotalChip: () -> Unit = {},
+    onClickChip: (Brand) -> Unit = {}
 ) {
     LazyRow(
         modifier = modifier,
@@ -62,7 +106,7 @@ fun BrandChipList(
                 brand = entireChipBrand,
                 selected = selectedFilters.isEmpty()
             ) {
-                viewModel.clearFilter()
+                onClickTotalChip()
             }
         }
         items(brands) { brand ->
@@ -70,7 +114,7 @@ fun BrandChipList(
                 brand = brand,
                 selected = selectedFilters.contains(brand.name)
             ) {
-                viewModel.toggleFilterSelection(brand)
+                onClickChip(brand)
             }
         }
     }
@@ -96,12 +140,14 @@ fun AllBrandChipsDialog(
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize().clickable(
-                interactionSource = interactionSource, // Ripple 효과 제거
-                indication = null
-            ) {
-                onDismiss()
-            }
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = interactionSource, // Ripple 효과 제거
+                    indication = null
+                ) {
+                    onDismiss()
+                }
         ) {
             Surface(
                 modifier = modifier,
