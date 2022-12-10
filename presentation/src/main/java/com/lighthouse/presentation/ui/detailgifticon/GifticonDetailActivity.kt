@@ -201,6 +201,13 @@ class GifticonDetailActivity : AppCompatActivity() {
             is GifticonDetailEvent.EditButtonClicked -> {
                 showCheckEditDialog()
             }
+            is GifticonDetailEvent.ExistEmptyInfo -> {
+                Toast.makeText(
+                    this,
+                    getString(R.string.gifticon_detail_exist_empty_info_toast),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             is GifticonDetailEvent.OnGifticonInfoChanged -> {
                 if (event.before == event.after) {
                     showGifticonInfoNotChangedToast()

@@ -142,9 +142,12 @@ class GifticonDetailViewModel @Inject constructor(
                 }
             }
             GifticonDetailMode.EDIT -> {
-                // TODO(수정사항 반영)
-                _mode.update { GifticonDetailMode.UNUSED }
-                endEdit()
+                if (checkEditValidation().not()) {
+                    event(GifticonDetailEvent.ExistEmptyInfo)
+                } else {
+                    _mode.value = GifticonDetailMode.UNUSED
+                    endEdit()
+                }
             }
         }
     }
@@ -266,6 +269,11 @@ class GifticonDetailViewModel @Inject constructor(
         event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
         tempGifticonCrop.value = null
         _tempGifticon.value = null
+    }
+
+    private fun checkEditValidation(): Boolean {
+        val temp = tempGifticon.value ?: return true
+        return (temp.name.trim().isBlank() || temp.brand.trim().isBlank()).not()
     }
 
     private fun event(event: GifticonDetailEvent) {

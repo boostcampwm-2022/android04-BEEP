@@ -243,4 +243,5 @@
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
     <string name="map_back_button">맵에서 뒤로가기 버튼</string>
+    <string name="gifticon_detail_exist_empty_info_toast">빈 값이 존재합니다</string>
 </resources>
