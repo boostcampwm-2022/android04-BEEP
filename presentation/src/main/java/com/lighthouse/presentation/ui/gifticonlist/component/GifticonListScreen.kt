@@ -31,20 +31,24 @@ fun GifticonListScreen(
         color = Color.Transparent
     ) {
         Column {
-            BrandChipListScreen(
-                modifier = Modifier.padding(top = 24.dp),
-                brands = viewState.brands,
-                filters = viewState.selectedFilter,
-                onClickEntireBrandDialog = {
-                    viewModel.showEntireBrandsDialog()
-                },
-                onClickTotalChip = {
-                    viewModel.clearFilter()
-                },
-                onClickChip = {
-                    viewModel.toggleFilterSelection(it)
-                }
-            )
+            if (viewState.loading) {
+                BrandChipLoadingScreen(modifier = Modifier.padding(top = 24.dp))
+            } else {
+                BrandChipListScreen(
+                    modifier = Modifier.padding(top = 24.dp),
+                    brands = viewState.brands,
+                    filters = viewState.selectedFilter,
+                    onClickEntireBrandDialog = {
+                        viewModel.showEntireBrandsDialog()
+                    },
+                    onClickTotalChip = {
+                        viewModel.clearFilter()
+                    },
+                    onClickChip = {
+                        viewModel.toggleFilterSelection(it)
+                    }
+                )
+            }
             if (viewState.loading) {
                 GifticonLoadingList()
             } else {
