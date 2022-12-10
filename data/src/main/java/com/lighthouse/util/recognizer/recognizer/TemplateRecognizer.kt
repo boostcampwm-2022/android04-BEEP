@@ -16,15 +16,14 @@ abstract class TemplateRecognizer {
 
     fun match(inputs: List<String>) = parser.match(inputs)
 
-    suspend fun recognize(bitmap: Bitmap, info: GifticonRecognizeInfo): GifticonRecognizeInfo {
-        var newInfo = parser.parseKeyword(info)
+    suspend fun recognize(bitmap: Bitmap, inputs: List<String>): GifticonRecognizeInfo {
         val result = processor.process(bitmap)
-
+        var newInfo = GifticonRecognizeInfo(candidate = inputs)
         newInfo = newInfo.copy(croppedImage = result.image.bitmap, croppedRect = result.image.rect)
         for (text in result.textList) {
-            val inputs = textRecognizer.recognize(text.bitmap)
+            val newInputs = textRecognizer.recognize(text.bitmap)
             text.bitmap.recycle()
-            newInfo = parser.parseText(newInfo, text.tag, inputs)
+            newInfo = parser.parseText(newInfo, text.tag, newInputs)
         }
         return newInfo
     }

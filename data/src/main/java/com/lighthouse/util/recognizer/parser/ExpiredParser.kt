@@ -1,6 +1,5 @@
 package com.lighthouse.util.recognizer.parser
 
-import com.lighthouse.util.recognizer.GifticonRecognizeInfo
 import java.util.Calendar
 import java.util.Date
 import java.util.LinkedList
@@ -79,10 +78,5 @@ class ExpiredParser {
         val expiredFormatResult = parseExpiredFormat(dateFormatResult.filtered)
         val expiredDate = dateFormatResult.expired.coerceAtLeast(expiredFormatResult.expired)
         return ExpiredParserResult(expiredDate, expiredFormatResult.filtered)
-    }
-
-    fun parseExpiredDate(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
-        val result = parseExpiredDate(info.candidate)
-        return info.copy(expiredAt = result.expired, candidate = result.filtered)
     }
 }

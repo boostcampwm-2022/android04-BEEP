@@ -1,7 +1,5 @@
 package com.lighthouse.util.recognizer.parser
 
-import com.lighthouse.util.recognizer.GifticonRecognizeInfo
-
 class BalanceParser {
     private val cashCardFilterRegex = listOf(
         CashCardRegex("(\\d{0,3}[,]?\\d{0,3}[,]\\d{1,3})".toRegex(), 1),
@@ -19,10 +17,5 @@ class BalanceParser {
         } ?: 0
 
         return BalanceParserResult(balance = balance)
-    }
-
-    fun parseCashCard(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
-        val result = parseCashCard(info.candidate)
-        return info.copy(isCashCard = result.balance > 0, balance = result.balance)
     }
 }

@@ -34,19 +34,25 @@ class GifticonRecognizer {
         }
     }
 
-    suspend fun recognize(bitmap: Bitmap) = withContext(Dispatchers.IO) {
+    suspend fun recognize(bitmap: Bitmap): GifticonRecognizeInfo? = withContext(Dispatchers.IO) {
         val origin = scaleProcessor.scaleProcess(bitmap)
         val inputs = textRecognizer.recognize(origin)
         origin.recycle()
-        var info = GifticonRecognizeInfo(candidate = inputs)
-        info = barcodeParser.parseBarcode(info)
-        if (info.barcode == "") {
+        val barcodeResult = barcodeParser.parseBarcode(inputs)
+        if (barcodeResult.barcode == "") {
             return@withContext null
         }
-        info = expiredParser.parseExpiredDate(info)
+        val expiredResult = expiredParser.parseExpiredDate(barcodeResult.filtered)
+        var info = GifticonRecognizeInfo(candidate = expiredResult.filtered)
         getTemplateRecognizer(info.candidate)?.run {
-            info = recognize(bitmap, info)
+            info = recognize(bitmap, info.candidate)
         }
-        balanceParser.parseCashCard(info)
+        val balanceResult = balanceParser.parseCashCard(info.candidate)
+        info.copy(
+            barcode = barcodeResult.barcode,
+            expiredAt = expiredResult.expired,
+            isCashCard = balanceResult.balance > 0,
+            balance = balanceResult.balance
+        )
     }
 }

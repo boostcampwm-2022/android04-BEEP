@@ -23,6 +23,7 @@ object Versions {
     const val FIREBASE_AUTH = "21.1.0"
     const val FIREBASE_FIRESTORE_KTX = "24.4.0"
     const val FIREBASE_STORAGE_KTX = "20.1.0"
+    const val TEXT_RECOGNITION = "16.0.0-beta6"
     const val TEXT_RECOGNITION_KOREAN = "16.0.0-beta6"
     const val PLAY_SERVICES_AUTH = "20.3.0"
 
@@ -102,6 +103,8 @@ object Libraries {
     private const val FIREBASE_FIRESTORE_KTX =
         "com.google.firebase:firebase-firestore-ktx:${Versions.FIREBASE_FIRESTORE_KTX}"
     private const val FIREBASE_STORAGE_KTX = "com.google.firebase:firebase-storage-ktx:${Versions.FIREBASE_STORAGE_KTX}"
+    private const val TEXT_RECOGNITION =
+        "com.google.mlkit:text-recognition:${Versions.TEXT_RECOGNITION}"
     private const val TEXT_RECOGNITION_KOREAN =
         "com.google.mlkit:text-recognition-korean:${Versions.TEXT_RECOGNITION_KOREAN}"
 
@@ -194,6 +197,7 @@ object Libraries {
         FIREBASE_AUTH_KTX,
         FIREBASE_FIRESTORE_KTX,
         FIREBASE_STORAGE_KTX,
+        TEXT_RECOGNITION,
         TEXT_RECOGNITION_KOREAN,
         WORK_MANAGER,
         TIMBER,

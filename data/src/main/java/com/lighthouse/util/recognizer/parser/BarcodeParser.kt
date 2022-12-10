@@ -1,7 +1,5 @@
 package com.lighthouse.util.recognizer.parser
 
-import com.lighthouse.util.recognizer.GifticonRecognizeInfo
-
 class BarcodeParser {
     private val barcodeFilterRegex = listOf(
         "\\b(\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4}\\s*[- ]\\s*\\d{4})\\b".toRegex(),
@@ -32,10 +30,5 @@ class BarcodeParser {
             }
         }
         return BarcodeParserResult(barcode, barcodeFiltered)
-    }
-
-    fun parseBarcode(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
-        val result = parseBarcode(info.candidate)
-        return info.copy(barcode = result.barcode, candidate = result.filtered)
     }
 }
