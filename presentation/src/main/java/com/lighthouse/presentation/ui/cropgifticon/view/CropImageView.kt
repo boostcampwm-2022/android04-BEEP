@@ -1023,7 +1023,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         private const val MAX_ZOOM = 4f
 
         private val CORNER_THICKNESS = 3.dp
-        private val CORNER_LENGTH = 24.dp.toInt()
+        private val CORNER_LENGTH = 12.dp.toInt()
         private val MIN_SIZE = (CORNER_LENGTH + CORNER_THICKNESS) * 2
         private val EDGE_TOUCH_RANGE = 24.dp.toInt()
         private val SNAP_RADIUS = 3.dp
