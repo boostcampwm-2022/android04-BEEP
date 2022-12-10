@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
@@ -153,12 +154,12 @@ fun GifticonItem(gifticon: Gifticon) {
 }
 
 @Composable
-fun GifticonLoadingList() {
+fun GifticonLoadingList(count: Int = 5) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 36.dp)
     ) {
-        items(5) {
+        items(count) {
             GifticonLoadingItem()
         }
     }
@@ -236,4 +237,16 @@ fun GifticonLoadingItem() {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun GifticonLoadingPreview() {
+    GifticonLoadingItem()
+}
+
+@Preview
+@Composable
+fun GifticonListLoadingPreview() {
+    GifticonLoadingList(3)
 }
