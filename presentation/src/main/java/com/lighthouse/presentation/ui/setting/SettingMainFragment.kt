@@ -45,7 +45,6 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     private val activityViewModel: MainViewModel by activityViewModels()
 
     private val settingSecurityFragment by lazy { SettingSecurityFragment() }
-    private val usedGifticonFragment by lazy { UsedGifticonFragment() }
     private val progressDialog by lazy { ProgressDialog() }
 
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -118,7 +117,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     private fun gotoUsedGifticon() {
         activityViewModel.gotoMenuItem(-1)
         parentFragmentManager.commit {
-            add(R.id.fcv_setting, usedGifticonFragment)
+            add(R.id.fcv_setting, UsedGifticonFragment())
         }
     }
 
