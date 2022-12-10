@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.detailgifticon
 
+import android.graphics.Rect
 import com.lighthouse.domain.model.Gifticon
 
 sealed class GifticonDetailEvent {
@@ -12,4 +13,5 @@ sealed class GifticonDetailEvent {
     object ExpireDateClicked : GifticonDetailEvent()
     object UseGifticonButtonClicked : GifticonDetailEvent()
     object UseGifticonComplete : GifticonDetailEvent()
+    data class NavigateToCropGifticon(val originPath: String, val croppedRect: Rect) : GifticonDetailEvent()
 }

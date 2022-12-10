@@ -2,43 +2,56 @@ package com.lighthouse.presentation.ui.detailgifticon
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.RectF
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toRect
+import androidx.core.graphics.toRectF
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.binding.loadUriWithoutCache
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
-import com.lighthouse.presentation.extension.dp
+import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.mapper.toDomain
+import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
+import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -59,7 +72,6 @@ class GifticonDetailActivity : AppCompatActivity() {
     private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
-    private lateinit var gifticonInfoChangedSnackbar: Snackbar
     private lateinit var gifticonInfoNotChangedToast: Toast
 
     private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
@@ -76,6 +88,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 else -> authCallback.onAuthError()
             }
         }
+
     private val authCallback = object : AuthCallback {
         override fun onAuthSuccess() {
             showUseGifticonDialog()
@@ -90,6 +103,19 @@ class GifticonDetailActivity : AppCompatActivity() {
             } else {
                 authenticate()
             }
+        }
+    }
+
+    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val gifticon = viewModel.gifticon.value ?: return@registerForActivityResult
+        val output = getFileStreamPath(gifticon.croppedPath)
+
+        lifecycleScope.launch {
+            val croppedImage = withContext(Dispatchers.IO) {
+                getCropResult(result, output)
+            } ?: return@launch
+            viewModel.updateGifticonCrop(GifticonCrop(gifticon.id, croppedImage.croppedRect.toRect().toDomain()))
+            binding.ivProductImage.loadUriWithoutCache(croppedImage.uri)
         }
     }
 
@@ -125,10 +151,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                     }
                 }
                 val output = getFileStreamPath(gifticon?.croppedPath ?: return@collect)
-                Glide.with(binding.ivProductImage)
-                    .load(output)
-                    .transform(RoundedCorners(8.dp.toInt()))
-                    .into(binding.ivProductImage)
+                binding.ivProductImage.loadUriWithoutCache(output.toUri())
             }
         }
         repeatOnStarted {
@@ -190,6 +213,12 @@ class GifticonDetailActivity : AppCompatActivity() {
             }
             is GifticonDetailEvent.ShowOriginalImage -> {
                 showOriginGifticonDialog(event.origin)
+            }
+            is GifticonDetailEvent.NavigateToCropGifticon -> {
+                gotoCropGifticon(
+                    getFileStreamPath(event.originPath).toUri(),
+                    event.croppedRect.toRectF()
+                )
             }
             else -> { // TODO(이벤트 처리)
             }
@@ -282,21 +311,41 @@ class GifticonDetailActivity : AppCompatActivity() {
         }.show(supportFragmentManager, OriginImageDialog::class.java.name)
     }
 
-    private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
-        if (::gifticonInfoChangedSnackbar.isInitialized.not()) {
-            gifticonInfoChangedSnackbar = Snackbar.make(
-                binding.clGifticonDetail,
-                getString(R.string.gifticon_detail_info_changed_snackbar_text),
-                INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND
-            ).apply {
-                animationMode = Snackbar.ANIMATION_MODE_SLIDE
+    private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
+        return if (result.resultCode == Activity.RESULT_OK) {
+            val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
+            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
+
+            withContext(Dispatchers.IO) {
+                FileInputStream(croppedUri.path).copyTo(
+                    FileOutputStream(output)
+                )
             }
+            CroppedImage(output.toUri(), croppedRect)
+        } else {
+            null
         }
-        gifticonInfoChangedSnackbar.setAction(getString(R.string.gifticon_detail_info_changed_snackbar_action_text)) {
-            viewModel.rollbackChangedGifticonInfo(before)
-        }.also { snackbar ->
-            snackbar.show()
+    }
+
+    private fun gotoCropGifticon(uri: Uri, croppedRect: RectF) {
+        val intent = Intent(this, CropGifticonActivity::class.java).apply {
+            putExtra(Extras.KEY_ORIGIN_IMAGE, uri)
+            putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
         }
+        cropGifticon.launch(intent)
+    }
+
+    private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
+        Snackbar.make(
+            binding.clGifticonDetail,
+            getString(R.string.gifticon_detail_info_changed_snackbar_text),
+            INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND
+        ).apply {
+            animationMode = Snackbar.ANIMATION_MODE_SLIDE
+            setAction(getString(R.string.gifticon_detail_info_changed_snackbar_action_text)) {
+                viewModel.rollbackChangedGifticonInfo(before)
+            }
+        }.show()
     }
 
     private fun showGifticonInfoNotChangedToast() {

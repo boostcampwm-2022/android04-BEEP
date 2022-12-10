@@ -5,17 +5,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
+import com.lighthouse.domain.usecase.detail.GetGifticonCropUseCase
+import com.lighthouse.domain.usecase.detail.UpdateGifticonCropUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
+import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.CashAmountPreset
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +45,9 @@ class GifticonDetailViewModel @Inject constructor(
     private val useGifticonUseCase: UseGifticonUseCase,
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
     private val unUseGifticonUseCase: UnUseGifticonUseCase,
-    private val updateGifticonInfoUseCase: UpdateGifticonInfoUseCase
+    private val updateGifticonInfoUseCase: UpdateGifticonInfoUseCase,
+    getGifticonCropUseCase: GetGifticonCropUseCase,
+    private val updateGifticonCropUseCase: UpdateGifticonCropUseCase
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
@@ -96,6 +102,9 @@ class GifticonDetailViewModel @Inject constructor(
 
     private val _tempGifticon = MutableStateFlow<Gifticon?>(null)
     val tempGifticon = _tempGifticon.asStateFlow()
+
+    private val gifticonCrop = getGifticonCropUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    private var tempGifticonCrop = MutableStateFlow<GifticonCrop?>(null)
 
     fun switchMode(mode: GifticonDetailMode) {
         Timber.tag("Bug").d("mode: ${mode.name}")
@@ -152,6 +161,25 @@ class GifticonDetailViewModel @Inject constructor(
                 useGifticonUseCase(gifticonId)
                 event(GifticonDetailEvent.UseGifticonComplete)
             }
+        }
+    }
+
+    fun cropGifticonImage() {
+        tempGifticonCrop.value = gifticonCrop.value?.copy()
+        viewModelScope.launch {
+            val temp = tempGifticonCrop.value ?: return@launch
+            event(
+                GifticonDetailEvent.NavigateToCropGifticon(
+                    temp.originPath,
+                    temp.rect.toPresentation()
+                )
+            )
+        }
+    }
+
+    fun updateGifticonCrop(gifticonCrop: GifticonCrop) {
+        viewModelScope.launch {
+            updateGifticonCropUseCase(gifticonCrop)
         }
     }
 
@@ -231,6 +259,7 @@ class GifticonDetailViewModel @Inject constructor(
             }
         }
         event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
+        tempGifticonCrop.value = null
         _tempGifticon.value = null
     }
 
