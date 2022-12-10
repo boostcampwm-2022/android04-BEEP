@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.lighthouse.presentation.ui.setting.UsedGifticonViewModel" />
@@ -38,7 +39,6 @@
             app:setItems="@{vm.usedGifticons}"
             app:spanCount="2"
             tools:listitem="@layout/item_gifticon_vertical" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
