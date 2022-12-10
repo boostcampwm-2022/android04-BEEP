@@ -45,6 +45,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     private val activityViewModel: MainViewModel by activityViewModels()
 
     private val settingSecurityFragment by lazy { SettingSecurityFragment() }
+    private val usedGifticonFragment by lazy { UsedGifticonFragment() }
     private val progressDialog by lazy { ProgressDialog() }
 
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -86,6 +87,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        binding.tvUsedGifticon.setOnClickListener { gotoUsedGifticon() }
         binding.tvSecurity.setOnClickListener { authenticate() }
         binding.tvSignOut.setOnClickListener { signOut() }
         binding.tvWithdrawal.setOnClickListener { withdrawal() }
@@ -110,6 +112,13 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         activityViewModel.gotoMenuItem(-1)
         parentFragmentManager.commit {
             add(R.id.fcv_setting, settingSecurityFragment)
+        }
+    }
+
+    private fun gotoUsedGifticon() {
+        activityViewModel.gotoMenuItem(-1)
+        parentFragmentManager.commit {
+            add(R.id.fcv_setting, usedGifticonFragment)
         }
     }
 

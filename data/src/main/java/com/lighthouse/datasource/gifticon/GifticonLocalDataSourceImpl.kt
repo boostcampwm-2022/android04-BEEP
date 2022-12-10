@@ -36,6 +36,12 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override fun getAllUsedGifticons(userId: String): Flow<List<Gifticon>> {
+        return gifticonDao.getAllUsedGifticons(userId).map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
     override fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy): Flow<List<Gifticon>> {
         val gifticons = when (sortBy) {
             SortBy.DEADLINE -> gifticonDao.getFilteredGifticonsSortByDeadline(userId, filter)
