@@ -43,7 +43,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:rotationX="0">
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/gl_start"
@@ -73,15 +74,26 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@mipmap/ic_launcher" />
 
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/img_stamp"
+                    app:isStamp="@{vm.gifticon.used}"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
+                    app:layout_constraintEnd_toEndOf="@id/iv_product_image"
+                    app:layout_constraintStart_toStartOf="@id/iv_product_image"
+                    app:layout_constraintTop_toTopOf="@id/iv_product_image" />
+
                 <TextView
                     style="@style/BEEP.TextStyle.H5"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:padding="16dp"
+                    android:rotation="-20"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    app:isVisible="@{vm.gifticon.used}"
+                    app:isStamp="@{vm.gifticon.used}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_product_image"
                     app:layout_constraintStart_toStartOf="@id/iv_product_image"
