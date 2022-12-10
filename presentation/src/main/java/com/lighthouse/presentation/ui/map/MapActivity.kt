@@ -42,6 +42,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @SuppressLint("MissingPermission")
 @AndroidEntryPoint
@@ -126,6 +127,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setFocusMarker(marker: Marker) {
+        Timber.tag("TAG").d("${javaClass.simpleName} setFocusMarker $marker")
         marker.iconTintColor = getColor(R.color.beep_pink)
         marker.captionColor = getColor(R.color.beep_pink)
         marker.zIndex = 1
@@ -166,6 +168,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 currentLocation(it, brandPlaceInfo)
             } ?: return@addOnSuccessListener
             moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
+            Timber.tag("TAG").d("${javaClass.simpleName}pager setFocusMarker ")
             setFocusMarker(currentFocusMarker)
             if (isLoadGifticonList) viewModel.updateGifticons()
         }
@@ -174,7 +177,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
         it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
 
-    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText == brand
+    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText.lowercase() == brand
 
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
