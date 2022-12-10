@@ -50,11 +50,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:padding="8dp"
                     android:background="@drawable/ripple_rect_corner_8_on_primary_12"
                     android:clickable="true"
                     android:focusable="true"
                     android:onClick="@{() -> vm.requestCropImage()}"
+                    android:padding="8dp"
                     android:text="@string/crop_gifticon_complete"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textColor="?attr/colorOnPrimary"
@@ -76,6 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
-            app:onCropImageListener="@{(bitmap, rect) -> vm.onCropImageListener(bitmap, rect)}" />
+            app:onChangeCropRectListener="@{(rect) -> vm.onChangeCropRect(rect)}"
+            app:onCropImageListener="@{(bitmap, rect) -> vm.onCropImage(bitmap, rect)}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

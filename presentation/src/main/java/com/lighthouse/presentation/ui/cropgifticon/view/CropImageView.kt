@@ -184,6 +184,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.onCropImageListener = onCropImageListener
     }
 
+    private var onChangeCropRectListener: OnChangeCropRectListener? = null
+    fun setOnChangeCropRectListener(onChangeCropRectListener: OnChangeCropRectListener?) {
+        this.onChangeCropRectListener = onChangeCropRectListener
+    }
+
     fun setCropInfo(info: CropImageInfo) {
         coroutineScope.launch {
             originBitmap = withContext(Dispatchers.IO) {
@@ -555,8 +560,14 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                 if (eventType == EventType.RESIZE) {
                     applyZoom()
                 }
+
                 eventType = EventType.NONE
                 activePointerId = null
+
+                val croppedRect = RectF(curCropRect)
+                mainMatrix.invert(mainInverseMatrix)
+                mainInverseMatrix.mapRect(croppedRect)
+                onChangeCropRectListener?.onChange(croppedRect)
             }
         }
     }
