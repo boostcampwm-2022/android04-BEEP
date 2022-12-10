@@ -107,7 +107,6 @@ class GifticonDetailViewModel @Inject constructor(
     private var tempGifticonCrop = MutableStateFlow<GifticonCrop?>(null)
 
     fun switchMode(mode: GifticonDetailMode) {
-        Timber.tag("Bug").d("mode: ${mode.name}")
         _mode.value = mode
     }
 
@@ -247,6 +246,12 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun startEdit() {
         _tempGifticon.value = gifticon.value ?: return
+    }
+
+    fun cancelEdit() {
+        val origin = gifticon.value ?: return
+        switchMode(if (origin.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
+        _tempGifticon.value = null
     }
 
     private fun endEdit() {

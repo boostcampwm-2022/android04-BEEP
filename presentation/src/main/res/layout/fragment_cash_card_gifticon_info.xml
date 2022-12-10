@@ -51,7 +51,7 @@
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.gifticon.name}"
+            android:text="@{vm.tempGifticon.name ?? vm.gifticon.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
             tools:text="딸기마카롱설빙" />
@@ -83,7 +83,7 @@
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.gifticon.brand}"
+            android:text="@{vm.tempGifticon.brand ?? vm.gifticon.brand}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
             tools:text="설빙" />
@@ -236,7 +236,7 @@
             android:inputType="none"
             android:minHeight="150dp"
             android:padding="16dp"
-            android:text="@{vm.gifticon.memo}"
+            android:text="@{vm.tempGifticon.memo ?? vm.gifticon.memo}"
             android:textAppearance="@style/BEEP.TextStyle.Body1"
             android:textColorHint="@color/gray"
             app:layout_constraintEnd_toEndOf="parent"

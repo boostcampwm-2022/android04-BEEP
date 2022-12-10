@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -116,6 +117,16 @@ class GifticonDetailActivity : AppCompatActivity() {
             } ?: return@launch
             viewModel.updateGifticonCrop(GifticonCrop(gifticon.id, croppedImage.croppedRect.toRect().toDomain()))
             binding.ivProductImage.loadUriWithoutCache(croppedImage.uri)
+        }
+    }
+
+    private val backKeyCallback by lazy {
+        onBackPressedDispatcher.addCallback {
+            if (viewModel.mode.value == GifticonDetailMode.EDIT) {
+                showNotSavedEditInfoDialog()
+            } else {
+                finish()
+            }
         }
     }
 
@@ -247,6 +258,17 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun showNotSavedEditInfoDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("수정이 완료되지 않았습니다")
+            .setMessage("수정된 내용이 반영되지 않습니다. 그래도 취소하시겠습니까?")
+            .setPositiveButton("취소하기") { dialog, _ ->
+                viewModel.cancelEdit()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
     private fun showDatePickerDialog() {
         spinnerDatePicker.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
     }
@@ -353,6 +375,21 @@ class GifticonDetailActivity : AppCompatActivity() {
             gifticonInfoNotChangedToast = Toast.makeText(this, "변경된 내용이 없습니다", Toast.LENGTH_SHORT)
         }
         gifticonInfoNotChangedToast.show()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        backKeyCallback.isEnabled = true
+    }
+
+    override fun onStop() {
+        backKeyCallback.isEnabled = false
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        backKeyCallback.remove()
+        super.onDestroy()
     }
 
     companion object {
