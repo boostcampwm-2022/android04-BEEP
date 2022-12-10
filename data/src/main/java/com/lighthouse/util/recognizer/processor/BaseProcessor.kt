@@ -63,12 +63,9 @@ abstract class BaseProcessor : ScaleProcessor() {
     fun process(bitmap: Bitmap): GifticonProcessResult {
         val newBitmap = preprocess(bitmap)
         val result = GifticonProcessResult(
-            processGifticonImage(bitmap),
-            processTextImage(bitmap)
+            processGifticonImage(newBitmap),
+            processTextImage(newBitmap)
         )
-        if (newBitmap != bitmap) {
-            newBitmap.recycle()
-        }
         return result
     }
 }

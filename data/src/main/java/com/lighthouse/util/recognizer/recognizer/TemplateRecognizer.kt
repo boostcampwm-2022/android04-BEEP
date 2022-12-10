@@ -22,7 +22,6 @@ abstract class TemplateRecognizer {
         newInfo = newInfo.copy(croppedImage = result.image.bitmap, croppedRect = result.image.rect)
         for (text in result.textList) {
             val newInputs = textRecognizer.recognize(text.bitmap)
-            text.bitmap.recycle()
             newInfo = parser.parseText(newInfo, text.tag, newInputs)
         }
         return newInfo
