@@ -644,8 +644,12 @@ class AddGifticonViewModel @Inject constructor(
 
     private suspend fun recognizeGifticonItem(gallery: GalleryUIModel.Gallery) {
         val result = recognizeUseCase.gifticon(gallery.toDomain()) ?: return
+        var approveBrandName = ""
+        if (result.brandName != "" && hasGifticonBrandUseCase(result.brandName)) {
+            approveBrandName = result.brandName
+        }
         val updated = updateGifticon(srcIndex = gallery.id) {
-            result.toPresentation(gallery.id)
+            result.toPresentation(gallery.id, approveBrandName = approveBrandName)
         } ?: return
         updateDisplayGifticon(gallery.id) {
             it.copy(
