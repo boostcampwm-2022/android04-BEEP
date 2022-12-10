@@ -36,6 +36,14 @@
                     app:titleCentered="true" />
             </com.google.android.material.appbar.AppBarLayout>
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95"
+                />
+
             <TextView
                 android:id="@+id/tv_used_gifticon"
                 style="@style/Theme.BEEP.SettingTextView"
@@ -106,9 +114,7 @@
                 android:contentDescription="@string/setting_security"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_security"
-                app:layout_constraintEnd_toEndOf="@+id/tv_security"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_security"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_security" />
 
             <TextView
@@ -139,9 +145,8 @@
                 android:contentDescription="@string/setting_security"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_location"
-                app:layout_constraintEnd_toEndOf="@+id/tv_location"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_location"
                 app:layout_constraintTop_toTopOf="@+id/tv_location" />
 
             <TextView
@@ -173,9 +178,7 @@
                 android:contentDescription="@string/setting_sign_out"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_sign_out"
-                app:layout_constraintEnd_toEndOf="@+id/tv_sign_out"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_sign_out"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_sign_out" />
 
             <TextView
@@ -196,9 +199,7 @@
                 android:contentDescription="@string/setting_sign_in"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_sign_in"
-                app:layout_constraintEnd_toEndOf="@+id/tv_sign_in"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_sign_in"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_sign_in" />
 
             <TextView
@@ -218,9 +219,7 @@
                 android:contentDescription="@string/setting_withdrawal"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_withdrawal"
-                app:layout_constraintEnd_toEndOf="@+id/tv_withdrawal"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_withdrawal"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_withdrawal" />
 
             <TextView
@@ -251,9 +250,7 @@
                 android:contentDescription="@string/setting_coffee"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_coffee"
-                app:layout_constraintEnd_toEndOf="@+id/tv_coffee"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_coffee"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_coffee" />
 
             <TextView
@@ -273,9 +270,7 @@
                 android:contentDescription="@string/setting_terms_of_use"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_terms_of_use"
-                app:layout_constraintEnd_toEndOf="@+id/tv_terms_of_use"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_terms_of_use"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_terms_of_use" />
 
             <TextView
@@ -295,9 +290,7 @@
                 android:contentDescription="@string/setting_personal_info_policy"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_personal_info_policy"
-                app:layout_constraintEnd_toEndOf="@+id/tv_personal_info_policy"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_personal_info_policy"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_personal_info_policy" />
 
             <TextView
@@ -317,9 +310,7 @@
                 android:contentDescription="@string/setting_open_source_license"
                 android:src="@drawable/ic_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_open_source_license"
-                app:layout_constraintEnd_toEndOf="@+id/tv_open_source_license"
-                app:layout_constraintHorizontal_bias="0.95"
-                app:layout_constraintStart_toStartOf="@+id/tv_open_source_license"
+                app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
                 app:layout_constraintTop_toTopOf="@+id/tv_open_source_license" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

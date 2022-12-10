@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            when (supportFragmentManager.fragments.filter { it.isVisible }[0]) {
+            when (supportFragmentManager.fragments.first { it.isVisible }) {
                 is HomeFragmentContainer -> finish()
                 is SettingSecurityFragment -> {} // SettingSecurityFragment 에서 관리하는 부분을 옮기려고 했는데 안 되네요...
                 else -> {
