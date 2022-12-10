@@ -142,7 +142,7 @@ class MapViewModel @Inject constructor(
 
     private fun combineLocationGifticon() {
         viewModelScope.launch {
-            prevVertex.combine(resultGifticons) { location, _ ->
+            prevVertex.combine(allBrands) { location, _ ->
                 location
             }.collectLatest { location ->
                 location ?: run {
