@@ -14,12 +14,14 @@ class GetBrandPlaceInfosUseCase @Inject constructor(
         x: Double,
         y: Double,
         size: Int
-    ): List<BrandPlaceInfo> {
+    ): Result<List<BrandPlaceInfo>> {
         val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
 
-        return cardinalLocations.flatMap { location ->
-            brandNames.flatMap { brandName ->
-                brandRepository.getBrandPlaceInfo(brandName, location.x, location.y, size).getOrThrow()
+        return runCatching {
+            cardinalLocations.flatMap { location ->
+                brandNames.flatMap { brandName ->
+                    brandRepository.getBrandPlaceInfo(brandName, location.x, location.y, size).getOrThrow()
+                }
             }
         }
     }

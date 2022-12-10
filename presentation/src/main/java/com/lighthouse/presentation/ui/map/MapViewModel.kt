@@ -82,7 +82,7 @@ class MapViewModel @Inject constructor(
 
     private var removeMarker = allBrands.transform {
         val brands = it ?: return@transform
-        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText).not() }
+        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
         emit(removeMarkers)
     }
 
@@ -152,7 +152,7 @@ class MapViewModel @Inject constructor(
                 val brands = allBrands.value ?: return@collectLatest
 
                 _state.emit(UiState.Loading)
-                runCatching { getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE) }
+                getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE)
                     .mapCatching { it.toPresentation() }
                     .onSuccess { brandPlaceInfos ->
                         val diffBrandPlaceInfo = brandPlaceInfos.filter {

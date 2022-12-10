@@ -75,7 +75,7 @@ class BeepWidgetWorker @AssistedInject constructor(
     }
 
     private suspend fun getNearBrands(x: Double, y: Double) = withContext(Dispatchers.IO) {
-        runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
+        getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
             .mapCatching { brandPlaceInfos -> brandPlaceInfos.toPresentation() }
             .onSuccess { brandPlaceInfoUiModel ->
                 val nearGifticonBrands = brandPlaceInfoUiModel

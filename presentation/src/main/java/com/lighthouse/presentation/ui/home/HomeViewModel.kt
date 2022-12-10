@@ -128,7 +128,7 @@ class HomeViewModel @Inject constructor(
             val x = location.longitude
             val y = location.latitude
 
-            runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
+            getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it.x, it.y, x, y) }
