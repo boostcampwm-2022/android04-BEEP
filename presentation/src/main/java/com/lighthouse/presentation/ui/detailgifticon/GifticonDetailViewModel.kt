@@ -181,7 +181,7 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun updateGifticonCrop(gifticonCrop: GifticonCrop) {
         viewModelScope.launch {
-            updateGifticonCropUseCase(gifticonCrop)
+            // TODO 크롭 수정
         }
     }
 

@@ -556,7 +556,7 @@ class AddGifticonViewModel @Inject constructor(
     val expiredAt = selectedGifticon.map {
         val date = it?.expiredAt
         if (date != null && date != EMPTY_DATE) {
-            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
+            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDayOfMonth())
         } else {
             UIText.Empty
         }
