@@ -7,6 +7,7 @@
     <string name="all_concurrency_format">#,###</string>
     <string name="all_balance_label">남은 금액:%s</string>
     <string name="all_cancel">취소</string>
+    <string name="all_do_cancel">취소하기</string>
     <string name="all_d_day_more_than_year">D-365+</string>
     <string name="all_d_day_expired">만료</string>
     <string name="all_d_very_day">D-Day</string>
@@ -20,6 +21,7 @@
     <string name="all_next">다음</string>
     <string name="all_prev">이전</string>
     <string name="all_close_button">닫기</string>
+    <string name="all_not_use">사용 안 함</string>
 
     <string name="confirmation_ok">확인</string>
     <string name="confirmation_title">권한 필요</string>
@@ -112,7 +114,6 @@
     <string name="signin_fail">로그인 실패</string>
     <string name="signin_guest">게스트로 시작하기</string>
 
-
     <string name="fingerprint_info_obtain_fail">기기의 지문 정보를 가져올 수 없습니다.</string>
     <string name="fingerprint_error_no_hardware">생체 인증을 사용할 수 없는 기기입니다.</string>
     <string name="fingerprint_unavailable">생체 인증을 사용할 수 없습니다.</string>
@@ -146,6 +147,17 @@
     <string name="gifticon_detail_unused_mode_button_text">기프티콘 사용</string>
     <string name="gifticon_detail_used_mode_button_text">사용 취소</string>
     <string name="gifticon_detail_used_image_label">사용완료\n%4d.%02d.%02d</string>
+    <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
+    <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
+    <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
+    <string name="gifticon_detail_invalid_dialog_title">유효하지 않은 기프티콘입니다</string>
+    <string name="gifticon_detail_invalid_dialog_message">%d 초 뒤에 창이 닫힙니다</string>
+    <string name="gifticon_detail_info_changed_snackbar_text">기프티콘 정보가 변경되었습니다</string>
+    <string name="gifticon_detail_info_changed_snackbar_action_text">되돌리기</string>
+    <string name="gifticon_detail_exist_empty_info_toast">빈 값이 존재합니다</string>
+    <string name="gifticon_detail_back_in_edit_dialog_title">수정이 완료되지 않았습니다</string>
+    <string name="gifticon_detail_back_in_edit_dialog_message">수정된 내용이 반영되지 않습니다. 그래도 취소하시겠습니까?</string>
+    <string name="gifticon_detail_nothing_changed_toast">변경된 내용이 없습니다</string>
 
     <string name="use_gifticon_dialog_barcode_description">기프티콘 바코드</string>
     <string name="use_gifticon_dialog_complete_button_text">사용 완료</string>
@@ -157,12 +169,6 @@
 
     <string name="secure_later">나중에 설정</string>
     <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
-
-    <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
-    <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
-    <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
-    <string name="gifticon_detail_invalid_dialog_title">유효하지 않은 기프티콘입니다</string>
-    <string name="gifticon_detail_invalid_dialog_message">%d 초 뒤에 창이 닫힙니다</string>
 
     <string name="error_network_failure">알 수 없는 오류가 생겼습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="error_not_found_results">검색 결과가 존재하지 않습니다.</string>
@@ -193,9 +199,6 @@
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
 
-    <string name="gifticon_detail_info_changed_snackbar_text">기프티콘 정보가 변경되었습니다</string>
-    <string name="gifticon_detail_info_changed_snackbar_action_text">되돌리기</string>
-
     <string name="setting_used_gifticon">사용한 기프티콘 확인</string>
     <string name="setting_imminent_notification">사용 임박 알림</string>
     <string name="setting_security">보안 인증</string>
@@ -213,6 +216,7 @@
 
     <string name="gifticon_list_sort_by_deadline">디데이순</string>
     <string name="gifticon_list_sort_by_recent">최신순</string>
+    <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
     <string name="gifticon_list_show_all_brand_chips_button">브랜드 전체 보기 버튼</string>
     <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
     <string name="gifticon_product_image">기프티콘 상품 이미지</string>
@@ -235,22 +239,19 @@
     <string name="security_setting_change_failure">보안 설정 변경에 실패했습니다.</string>
     <string name="security_setting_change_cancel">보안 설정 변경을 취소했습니다.</string>
 
-    <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
     <string name="security_not_set">보안 수단 미설정</string>
     <string name="security_not_set_description">소중한 기프티콘을 지킬 수 있는 보안을 설정하시겠어요?</string>
-    <string name="all_not_use">사용 안 함</string>
 
     <string name="notification_title">만료 임박 기프티콘 알림</string>
     <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>
     <string name="notification_channel_description">만료일에 가까워진 기프티콘을 알려드립니다.</string>
 
-    <string name="widget_loading">로딩중입니다.</string>
-    
     <string name="location_setting">위치권한설정</string>
     <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
     <string name="location_not_allowed">허용 안 함</string>
     <string name="location_allowed">허용됨</string>
 
+    <string name="widget_loading">로딩중입니다.</string>
     <string name="widget_common_error">데이터를 불러오던 중 문제가 생겼습니다. 새로고침을 눌러주세요.</string>
     <string name="widget_refresh_button">새로고침</string>
     <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
@@ -261,5 +262,4 @@
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
     <string name="map_back_button">맵에서 뒤로가기 버튼</string>
-    <string name="gifticon_detail_exist_empty_info_toast">빈 값이 존재합니다</string>
 </resources>

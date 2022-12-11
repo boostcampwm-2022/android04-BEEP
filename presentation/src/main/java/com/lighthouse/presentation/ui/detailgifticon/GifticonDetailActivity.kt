@@ -50,7 +50,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -268,9 +267,9 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun showNotSavedEditInfoDialog() {
         AlertDialog.Builder(this)
-            .setTitle("수정이 완료되지 않았습니다")
-            .setMessage("수정된 내용이 반영되지 않습니다. 그래도 취소하시겠습니까?")
-            .setPositiveButton("취소하기") { dialog, _ ->
+            .setTitle(getString(R.string.gifticon_detail_back_in_edit_dialog_title))
+            .setMessage(getString(R.string.gifticon_detail_back_in_edit_dialog_message))
+            .setPositiveButton(getString(R.string.all_do_cancel)) { dialog, _ ->
                 viewModel.cancelEdit()
                 dialog.dismiss()
             }
@@ -297,7 +296,6 @@ class GifticonDetailActivity : AppCompatActivity() {
             )
             usageHistoryView.vm = viewModel
             usageHistoryView.rvUsageHistory.adapter = usageHistoryAdapter
-            Timber.tag("usageHistory").d("${usageHistoryAdapter.currentList}")
             usageHistoryDialog = AlertDialog.Builder(this).setView(usageHistoryView.root).create()
         }
 
@@ -380,7 +378,7 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun showGifticonInfoNotChangedToast() {
         if (::gifticonInfoNotChangedToast.isInitialized.not()) {
-            gifticonInfoNotChangedToast = Toast.makeText(this, "변경된 내용이 없습니다", Toast.LENGTH_SHORT)
+            gifticonInfoNotChangedToast = Toast.makeText(this, getString(R.string.gifticon_detail_nothing_changed_toast), Toast.LENGTH_SHORT)
         }
         gifticonInfoNotChangedToast.show()
     }
