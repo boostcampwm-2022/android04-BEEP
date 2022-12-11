@@ -9,6 +9,7 @@ sealed class AddGifticonItemUIModel {
         val id: Long,
         val origin: Uri,
         val thumbnailImage: CroppedImage,
+        val isSelected: Boolean,
         val isDelete: Boolean,
         val isValid: Boolean
     ) : AddGifticonItemUIModel() {

@@ -9,17 +9,14 @@ import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import java.util.Date
 
-fun GalleryUIModel.Gallery.toAddGifticonItemUIModel(
-    thumbnailImage: CroppedImage = CroppedImage(),
-    isDelete: Boolean = false,
-    isValid: Boolean = false
-): AddGifticonItemUIModel.Gifticon {
+fun GalleryUIModel.Gallery.toAddGifticonItemUIModel(): AddGifticonItemUIModel.Gifticon {
     return AddGifticonItemUIModel.Gifticon(
         id = id,
         origin = uri,
-        thumbnailImage = thumbnailImage,
-        isDelete = isDelete,
-        isValid = isValid
+        thumbnailImage = CroppedImage(),
+        isSelected = false,
+        isDelete = false,
+        isValid = false
     )
 }
 

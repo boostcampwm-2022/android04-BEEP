@@ -209,7 +209,15 @@ class AddGifticonViewModel @Inject constructor(
     val displayName = MutableStateFlow("")
     val displayBrand = MutableStateFlow("")
 
-    val selectedGifticon = selectedId.combine(gifticonList) { id, list ->
+    val selectedGifticon = selectedId.onEach { selectedId ->
+        _displayList.value = displayList.value.map {
+            if (it is AddGifticonItemUIModel.Gifticon) {
+                it.copy(isSelected = it.id == selectedId)
+            } else {
+                it
+            }
+        }
+    }.combine(gifticonList) { id, list ->
         list.find { it.id == id }
     }.onEach {
         displayName.value = it?.name ?: ""

@@ -28,4 +28,9 @@ class AddCandidateGifticonViewHolder(
         binding.ivDelete.isVisible = dm?.deleteVisible ?: false
         binding.ivInvalid.isVisible = dm?.invalidVisible ?: false
     }
+
+    fun bindSelected(item: AddGifticonItemUIModel.Gifticon) {
+        dm?.item = item
+        binding.viewCandidateRippleEffect.isSelected = item.isSelected
+    }
 }
