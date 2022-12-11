@@ -265,7 +265,7 @@
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateGifticonName(text)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="78dp"
-                        android:text="@{vm.name}"
+                        android:text="@={vm.displayName}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onNameFocusChangeListener(hasFocus)}" />
 
@@ -339,7 +339,7 @@
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateBrandName(text)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="114dp"
-                        android:text="@{vm.brand}"
+                        android:text="@={vm.displayBrand}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBrandFocusChangeListener(hasFocus)}" />
 

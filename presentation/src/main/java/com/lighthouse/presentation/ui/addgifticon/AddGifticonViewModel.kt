@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.lang.Integer.max
@@ -205,8 +206,14 @@ class AddGifticonViewModel @Inject constructor(
         selectedId.value = gifticon.id
     }
 
+    val displayName = MutableStateFlow("")
+    val displayBrand = MutableStateFlow("")
+
     val selectedGifticon = selectedId.combine(gifticonList) { id, list ->
         list.find { it.id == id }
+    }.onEach {
+        displayName.value = it?.name ?: ""
+        displayBrand.value = it?.brandName ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val expiredAtDate: Date?
@@ -253,7 +260,7 @@ class AddGifticonViewModel @Inject constructor(
         updateSelectedGifticon(true) { it.copy(isCashCard = checked) }
     }
 
-    val name = selectedGifticon.map {
+    private val name = selectedGifticon.map {
         it?.name
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -278,7 +285,7 @@ class AddGifticonViewModel @Inject constructor(
         updateGifticonName("")
     }
 
-    val brand = selectedGifticon.map {
+    private val brand = selectedGifticon.map {
         it?.brandName ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
@@ -310,8 +317,8 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     fun updateBrandName(brandName: CharSequence) {
-        checkHasGifticonBrand(brandName.toString())
         updateSelectedGifticon(true) { it.copy(brandName = brandName.toString()) }
+        checkHasGifticonBrand(brandName.toString())
     }
 
     private fun updateApproveBrandName(approveBrandName: String) {
