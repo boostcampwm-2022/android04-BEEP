@@ -20,4 +20,5 @@ data class Gifticon(
 
     val croppedPath = "cropped$id"
     val originPath = "origin$id"
+    val brandLowerName = brand.lowercase()
 }

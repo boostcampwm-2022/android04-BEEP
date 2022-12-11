@@ -40,8 +40,4 @@ class BrandRepositoryImpl @Inject constructor(
             result.onSuccess { brandLocalSource.insertBrands(it, x, y, brandName) }
         }
     }
-
-    companion object {
-        private const val DEFAULT_SIZE = 15
-    }
 }

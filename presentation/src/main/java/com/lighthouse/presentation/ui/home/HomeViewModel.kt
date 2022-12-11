@@ -50,13 +50,13 @@ class HomeViewModel @Inject constructor(
 
     private val allBrands = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            emit(gifticons.data.map { it.brand }.distinct())
+            emit(gifticons.data.map { it.brandLowerName }.distinct())
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            val gifticonGroup = gifticons.data.groupBy { it.brand }
+            val gifticonGroup = gifticons.data.groupBy { it.brandLowerName }
             emit(gifticonGroup)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
@@ -98,7 +98,10 @@ class HomeViewModel @Inject constructor(
     private fun setLocationFlowJob() {
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
-                if (result) observeLocationFlow()
+                when (result) {
+                    true -> observeLocationFlow()
+                    false -> isShimmer.value = false
+                }
                 combineLocationGifticon()
             }
         }
@@ -128,12 +131,12 @@ class HomeViewModel @Inject constructor(
             val x = location.longitude
             val y = location.latitude
 
-            runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
+            getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it.x, it.y, x, y) }
-                    _nearGifticons.value = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
-                        gifticonsMap.value[placeInfo.brand]?.first()
+                    _nearGifticons.value = nearBrandsInfo.distinctBy { it.brandLowerName }.mapNotNull { placeInfo ->
+                        gifticonsMap.value[placeInfo.brandLowerName]?.first()
                             ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
                     when (_nearGifticons.value.isNullOrEmpty()) {
