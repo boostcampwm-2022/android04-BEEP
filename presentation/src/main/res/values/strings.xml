@@ -255,8 +255,6 @@
     <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>
     <string name="notification_channel_description">만료일에 가까워진 기프티콘을 알려드립니다.</string>
 
-    <string name="widget_loading">로딩중입니다.</string>
-
     <string name="location_setting">위치권한설정</string>
     <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
     <string name="location_not_allowed">허용 안 함</string>
