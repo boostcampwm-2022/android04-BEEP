@@ -133,7 +133,7 @@ class AddGifticonViewModel @Inject constructor(
         gifticonList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
 
         if (checkValid) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
+            updateDisplayGifticon(gifticonId) { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
         }
         return newItem
     }
@@ -242,8 +242,10 @@ class AddGifticonViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
-        updateSelectedDisplayGifticon { it.copy(thumbnailImage = croppedImage) }
-        updateSelectedGifticon(true) { it.copy(gifticonImage = croppedImage) }
+        val updated = updateSelectedGifticon { it.copy(gifticonImage = croppedImage) } ?: return
+        updateSelectedDisplayGifticon {
+            it.copy(thumbnailImage = croppedImage, isValid = checkGifticonValid(updated) == AddGifticonValid.VALID)
+        }
     }
 
     private val isApproveGifticonImage = selectedGifticon.map {
