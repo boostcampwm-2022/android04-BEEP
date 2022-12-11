@@ -23,7 +23,8 @@ data class AddGifticonUIModel(
     val balanceRectF: RectF,
     val memo: String,
     val gifticonImage: CroppedImage,
-    val approveGifticonImage: Boolean
+    val approveGifticonImage: Boolean,
+    val createdDate: String
 ) {
     val uri: Uri
         get() = gifticonImage.uri ?: origin

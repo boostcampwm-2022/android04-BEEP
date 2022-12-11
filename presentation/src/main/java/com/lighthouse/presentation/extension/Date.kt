@@ -5,8 +5,10 @@ import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.resource.UIText
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 fun Date.toYear(): Int {
     val calendar = Calendar.getInstance()
@@ -45,4 +47,9 @@ fun Date.toExpireDate(context: Context): String {
         toMonth(),
         toDate()
     ).asString(context)
+}
+
+fun Date.toString(pattern: String): String {
+    val format = SimpleDateFormat(pattern, Locale.getDefault())
+    return format.format(this)
 }

@@ -684,7 +684,11 @@ class AddGifticonViewModel @Inject constructor(
             approveBrandName = result.brandName
         }
         val updated = updateGifticon(srcIndex = gallery.id) {
-            result.toPresentation(gallery.id, approveBrandName = approveBrandName)
+            result.toPresentation(
+                id = gallery.id,
+                createdDate = gallery.createdDate,
+                approveBrandName = approveBrandName
+            )
         } ?: return
         updateDisplayGifticon(gallery.id) {
             it.copy(
