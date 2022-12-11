@@ -1,5 +1,8 @@
 package com.lighthouse.presentation.util
 
+import com.lighthouse.domain.util.calcDday
+import java.util.Date
+
 object TimeCalculator {
 
     private const val EXPIRED_DAY = -1
@@ -7,15 +10,11 @@ object TimeCalculator {
     const val MIN_DAY = 0
 
     fun formatDdayToInt(endTime: Long): Int {
-        val today = System.currentTimeMillis()
-        val diffDate = (endTime - today) / (24 * 60 * 60 * 1000)
-
-        return if (diffDate in MIN_DAY until MAX_DAY) {
-            diffDate.toInt()
-        } else if (diffDate >= MAX_DAY) {
-            MAX_DAY
-        } else {
-            EXPIRED_DAY
+        val diffDate = Date(endTime).calcDday()
+        return when {
+            diffDate in MIN_DAY until MAX_DAY -> diffDate
+            diffDate >= MAX_DAY -> MAX_DAY
+            else -> EXPIRED_DAY
         }
     }
 }

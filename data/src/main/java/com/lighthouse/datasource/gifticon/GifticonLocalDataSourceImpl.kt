@@ -37,9 +37,10 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     }
 
     override fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy): Flow<List<Gifticon>> {
+        val upperFilter = filter.map { it.uppercase() }.toSet()
         val gifticons = when (sortBy) {
-            SortBy.DEADLINE -> gifticonDao.getFilteredGifticonsSortByDeadline(userId, filter)
-            SortBy.RECENT -> gifticonDao.getFilteredGifticons(userId, filter)
+            SortBy.DEADLINE -> gifticonDao.getFilteredGifticonsSortByDeadline(userId, upperFilter)
+            SortBy.RECENT -> gifticonDao.getFilteredGifticons(userId, upperFilter)
         }
         return gifticons.map { list ->
             list.map { it.toDomain() }
@@ -55,9 +56,9 @@ class GifticonLocalDataSourceImpl @Inject constructor(
             } else {
                 it
             }.groupBy { entity ->
-                entity.brand
+                entity.brand.uppercase()
             }.map { entry ->
-                Brand(entry.key, entry.value.size)
+                Brand(entry.key.uppercase(), entry.value.size)
             }
         }
     }

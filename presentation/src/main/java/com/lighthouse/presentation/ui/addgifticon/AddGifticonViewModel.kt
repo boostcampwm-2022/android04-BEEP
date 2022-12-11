@@ -10,7 +10,7 @@ import com.lighthouse.domain.usecase.addgifticon.HasGifticonBrandUseCase
 import com.lighthouse.domain.usecase.addgifticon.RecognizeUseCase
 import com.lighthouse.domain.usecase.addgifticon.SaveGifticonsUseCase
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toDigit
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
@@ -556,7 +556,7 @@ class AddGifticonViewModel @Inject constructor(
     val expiredAt = selectedGifticon.map {
         val date = it?.expiredAt
         if (date != null && date != EMPTY_DATE) {
-            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
+            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDayOfMonth())
         } else {
             UIText.Empty
         }
