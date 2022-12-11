@@ -130,4 +130,10 @@ class MainViewModel @Inject constructor(
             saveNotificationOptionUseCase(true)
         }
     }
+
+    fun gotoHome() {
+        viewModelScope.launch {
+            _pageFlow.emit(MainPage.Home)
+        }
+    }
 }

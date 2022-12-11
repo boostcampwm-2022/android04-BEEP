@@ -141,8 +141,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     viewModel.updatePagerFocus(true)
                     return
                 }
-                if (isRecentSelected(gifticonAdapter.currentList[position].brand)) return
-                val currentItem = gifticonAdapter.currentList[position].brand
+                if (isRecentSelected(gifticonAdapter.currentList[position].brandLowerName)) return
+                val currentItem = gifticonAdapter.currentList[position].brandLowerName
                 findBrandPlaceInfo(currentItem)
             }
         })
@@ -155,7 +155,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun findBrandPlaceInfo(brandName: String, isLoadGifticonList: Boolean = false) {
         client.lastLocation.addOnSuccessListener { currentLocation ->
             val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
-                brandPlaceInfo.brand == brandName
+                brandPlaceInfo.brandLowerName == brandName
             }.minByOrNull { location ->
                 diffLocation(location.x, location.y, currentLocation.longitude, currentLocation.latitude)
             } ?: return@addOnSuccessListener
@@ -174,7 +174,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
         it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
 
-    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText == brand
+    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText.lowercase() == brand
 
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
@@ -232,7 +232,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             iconTintColor = getColor(R.color.point_green)
             tag = brandPlaceSearchResult.placeUrl
             map = naverMap
-            captionText = brandPlaceSearchResult.brand
+            captionText = brandPlaceSearchResult.brand.uppercase()
             isHideCollidedSymbols = true
             zIndex = 0
         }

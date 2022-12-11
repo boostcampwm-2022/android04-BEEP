@@ -64,7 +64,7 @@ class MapViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val allBrands = allGifticons.transform { gifticons ->
-        emit(gifticons.map { it.brand }.distinct())
+        emit(gifticons.map { it.brandLowerName }.distinct())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _gifticonData = MutableStateFlow<List<Gifticon>>(emptyList())
@@ -82,7 +82,7 @@ class MapViewModel @Inject constructor(
 
     private var removeMarker = allBrands.transform {
         val brands = it ?: return@transform
-        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText).not() }
+        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
         emit(removeMarkers)
     }
 
@@ -142,7 +142,7 @@ class MapViewModel @Inject constructor(
 
     private fun combineLocationGifticon() {
         viewModelScope.launch {
-            prevVertex.combine(resultGifticons) { location, _ ->
+            prevVertex.combine(allBrands) { location, _ ->
                 location
             }.collectLatest { location ->
                 location ?: run {
@@ -152,7 +152,7 @@ class MapViewModel @Inject constructor(
                 val brands = allBrands.value ?: return@collectLatest
 
                 _state.emit(UiState.Loading)
-                runCatching { getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE) }
+                getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE)
                     .mapCatching { it.toPresentation() }
                     .onSuccess { brandPlaceInfos ->
                         val diffBrandPlaceInfo = brandPlaceInfos.filter {
@@ -191,14 +191,14 @@ class MapViewModel @Inject constructor(
     }
 
     fun updateGifticons() {
-        val brandName = focusMarker.captionText
+        val brandName = focusMarker.captionText.lowercase()
         _gifticonData.value = when (brandName.isEmpty()) {
             true -> {
                 allGifticons.value.filter { gifticon ->
-                    brandInfos.map { it.brand }.contains(gifticon.brand)
+                    brandInfos.map { it.brandLowerName }.contains(gifticon.brandLowerName)
                 }
             }
-            false -> allGifticons.value.filter { it.brand == brandName }
+            false -> allGifticons.value.filter { it.brandLowerName == brandName }
         }
     }
 

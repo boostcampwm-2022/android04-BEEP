@@ -137,6 +137,8 @@ object Libraries {
     private const val COMPOSE_LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-compose:+"
     private const val COMPOSE_ACCOMPANIST_FLOWLAYOUT =
         "com.google.accompanist:accompanist-flowlayout:${Versions.COMPOSE_ACCOMPANIST}"
+    private const val COMPOSE_ACCOMPANIST_PLACEHOLDER =
+        "com.google.accompanist:accompanist-placeholder-material:${Versions.COMPOSE_ACCOMPANIST}"
 
     private const val SHIMMER = "com.facebook.shimmer:shimmer:${Versions.SHIMMER}"
     private const val LOTTIE = "com.airbnb.android:lottie:${Versions.LOTTIE}"
@@ -175,6 +177,7 @@ object Libraries {
         COMPOSE_LIFECYCLE_RUNTIME,
         COMPOSE_ACCOMPANIST_FLOWLAYOUT,
         COMPOSE_LIFECYCLE_RUNTIME,
+        COMPOSE_ACCOMPANIST_PLACEHOLDER,
         SHIMMER,
         LOTTIE,
         WORK_MANAGER,

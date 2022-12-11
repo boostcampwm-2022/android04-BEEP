@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.util.TimeCalculator
@@ -22,7 +22,7 @@ import java.util.Date
 @BindingAdapter("dateFormat")
 fun applyDateFormat(view: TextView, date: Date?) {
     date ?: return
-    view.text = view.context.getString(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
+    view.text = view.context.getString(R.string.all_date, date.toYear(), date.toMonth(), date.toDayOfMonth())
 }
 
 @BindingAdapter("concurrencyFormat")
