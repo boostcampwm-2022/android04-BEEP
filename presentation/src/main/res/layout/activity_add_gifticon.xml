@@ -134,8 +134,6 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/bg_on_surface_12"
                     android:contentDescription="@string/add_gifticon_image_description"
-                    android:enabled="@{vm.isSelected}"
-                    android:onClick="@{() -> vm.gotoCropGifticonImage()}"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +148,7 @@
                     android:clickable="true"
                     android:enabled="@{vm.isSelected}"
                     android:focusable="true"
-                    android:onClick="@{() -> vm.showOriginGifticon()}"
+                    android:onClick="@{() -> vm.gotoCropGifticonImage()}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_gifticon_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
                     app:layout_constraintStart_toStartOf="@id/iv_gifticon_image"
@@ -165,13 +163,14 @@
                     android:background="@drawable/bg_origin_gifticon"
                     android:clickable="true"
                     android:contentDescription="@string/add_gifticon_origin_gifticon"
+                    android:enabled="@{vm.isSelected}"
                     android:focusable="true"
+                    android:onClick="@{() -> vm.showOriginGifticon()}"
                     android:padding="6dp"
                     android:src="@drawable/ic_origin_gifticon"
                     app:layout_constraintEnd_toEndOf="@id/iv_gifticon_image"
                     app:layout_constraintTop_toTopOf="@id/iv_gifticon_image"
                     app:tint="@color/white" />
-
 
                 <TextView
                     android:id="@+id/tv_edit_gifticon_image"
@@ -265,8 +264,8 @@
                         android:maxLength="100"
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateGifticonName(text)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
-                        android:text="@{vm.name}"
+                        android:paddingEnd="78dp"
+                        android:text="@={vm.displayName}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onNameFocusChangeListener(hasFocus)}" />
 
@@ -339,8 +338,8 @@
                         android:maxLength="100"
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateBrandName(text)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
-                        android:text="@{vm.brand}"
+                        android:paddingEnd="114dp"
+                        android:text="@={vm.displayBrand}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBrandFocusChangeListener(hasFocus)}" />
 
@@ -460,7 +459,7 @@
                         android:maxLength="29"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBarcodeFocusChangeListener(hasFocus)}"
                         app:setEditTextInfo="@{vm.displayBarcode}" />
@@ -540,7 +539,7 @@
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBalanceFocusChangeListener(hasFocus)}"
                         app:setEditTextInfo="@{vm.displayBalance}" />
@@ -616,10 +615,47 @@
                         android:lines="1"
                         android:onClick="@{() -> vm.showExpiredAtDatePicker()}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
-                        app:setUIText="@{vm.expiredAt}" />
+                        android:paddingEnd="114dp"
+                        app:setUIText="@{vm.expiredAtUIText}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_approve_expired_at_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/ripple_primary_corner_4"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{() -> vm.approveExpiredAt()}"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/add_gifticon_approve_expired_at"
+                    android:textAppearance="@style/BEEP.TextStyle.Caption"
+                    android:textColor="@color/white"
+                    app:isVisible="@{vm.isApproveExpiredAtDescriptionVisible}"
+                    app:layout_constraintBottom_toTopOf="@id/iv_approve_expired_at"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+
+                <ImageView
+                    android:id="@+id/iv_approve_expired_at"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/ripple_circle_on_surface_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_approve_expire_description"
+                    android:focusable="true"
+                    android:onClick="@{() -> vm.approveExpiredAt()}"
+                    android:padding="6dp"
+                    app:isVisible="@{vm.isApproveExpiredAtVisible}"
+                    app:layout_constraintBottom_toBottomOf="@id/til_expire_date"
+                    app:layout_constraintEnd_toStartOf="@id/iv_expire_calender"
+                    app:setImageRes="@{vm.isApproveExpiredAtResId}"
+                    app:setTintRes="@{vm.isApproveExpiredAtTint}" />
 
                 <ImageView
                     android:id="@+id/iv_expire_calender"

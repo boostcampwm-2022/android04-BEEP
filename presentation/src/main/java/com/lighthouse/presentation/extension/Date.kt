@@ -44,3 +44,8 @@ fun Date.toExpireDate(context: Context): String {
         toDayOfMonth()
     ).asString(context)
 }
+
+fun Date.toString(pattern: String): String {
+    val format = SimpleDateFormat(pattern, Locale.getDefault())
+    return format.format(this)
+}

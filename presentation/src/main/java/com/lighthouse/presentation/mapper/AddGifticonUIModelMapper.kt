@@ -9,7 +9,7 @@ fun AddGifticonUIModel.toGalleryUIModel(order: Int): GalleryUIModel.Gallery = Ga
     id = id,
     uri = origin,
     selectedOrder = order,
-    date = expiredAt
+    createdDate = createdDate
 )
 
 fun AddGifticonUIModel.toDomain(): GifticonForAddition {

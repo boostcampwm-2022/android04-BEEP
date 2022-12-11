@@ -10,19 +10,21 @@ data class AddGifticonUIModel(
     val hasImage: Boolean,
     val name: String,
     val nameRectF: RectF,
-    val approveBrandName: String,
     val brandName: String,
     val brandNameRectF: RectF,
+    val approveBrandName: String,
     val barcode: String,
     val barcodeRectF: RectF,
     val expiredAt: Date,
     val expiredAtRectF: RectF,
+    val approveExpiredAt: Boolean,
     val isCashCard: Boolean,
     val balance: String,
     val balanceRectF: RectF,
     val memo: String,
+    val gifticonImage: CroppedImage,
     val approveGifticonImage: Boolean,
-    val gifticonImage: CroppedImage
+    val createdDate: String
 ) {
     val uri: Uri
         get() = gifticonImage.uri ?: origin

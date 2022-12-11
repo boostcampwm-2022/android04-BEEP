@@ -2,6 +2,7 @@ package com.lighthouse.presentation.mapper
 
 import android.graphics.RectF
 import com.lighthouse.domain.model.GalleryImage
+import com.lighthouse.presentation.extension.toDate
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
@@ -36,17 +37,19 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(): AddGifticonUIModel {
         barcodeRectF = RectF(),
         expiredAt = Date(0),
         expiredAtRectF = RectF(),
+        approveExpiredAt = false,
         isCashCard = false,
         balance = "",
         balanceRectF = RectF(),
         memo = "",
         gifticonImage = CroppedImage(),
-        approveGifticonImage = false
+        approveGifticonImage = false,
+        createdDate = createdDate
     )
 }
 
 fun GalleryUIModel.Gallery.toDomain(): GalleryImage = GalleryImage(
     id = id,
     contentUri = uri.toString(),
-    date = date
+    date = createdDate.toDate("")
 )

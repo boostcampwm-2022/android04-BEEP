@@ -5,6 +5,9 @@ import android.content.res.Resources
 import android.util.TypedValue
 import com.lighthouse.presentation.R
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 val Int.dp
     get() = Resources.getSystem().displayMetrics?.let { dm ->
@@ -41,4 +44,9 @@ fun String.toNumberFormat(): String {
         .chunked(3)
         .joinToString(",")
         .reversed()
+}
+
+fun String.toDate(pattern: String): Date {
+    val format = SimpleDateFormat(pattern, Locale.getDefault())
+    return format.parse(this) ?: Date(0)
 }

@@ -28,6 +28,10 @@ enum class AddGifticonValid(val tag: AddGifticonTag, val text: UIText) {
         AddGifticonTag.NONE,
         UIText.StringResource(R.string.add_gifticon_invalid_expired_at)
     ),
+    INVALID_APPROVE_EXPIRED_AT(
+        AddGifticonTag.NONE,
+        UIText.StringResource(R.string.add_gifticon_invalid_approve_expired_at)
+    ),
     INVALID_BALANCE(
         AddGifticonTag.BALANCE,
         UIText.StringResource(R.string.add_gifticon_invalid_balance)

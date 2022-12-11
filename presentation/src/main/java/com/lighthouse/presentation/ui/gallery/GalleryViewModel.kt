@@ -17,6 +17,7 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,8 +25,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,8 +37,6 @@ class GalleryViewModel @Inject constructor(
     private val _eventsFlow = MutableEventFlow<GalleryEvent>()
     val eventsFlow = _eventsFlow.asEventFlow()
 
-    private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
     private val _pagingData = getGalleryImagesUseCase().cachedIn(viewModelScope)
 
     private val _selectedList = MutableStateFlow<List<GalleryUIModel.Gallery>>(
@@ -48,25 +46,28 @@ class GalleryViewModel @Inject constructor(
 
     val list = _pagingData.combine(_selectedList) { pagingData, selectedList ->
         pagingData.map { galleryImage ->
-            galleryImage.toPresentation(
-                selectedList.indexOfFirst { gallery -> galleryImage.id == gallery.id }
-            )
+            withContext(Dispatchers.IO) {
+                galleryImage.toPresentation(
+                    selectedList.indexOfFirst { gallery -> galleryImage.id == gallery.id }
+                )
+            }
         }.insertSeparators { before: GalleryUIModel.Gallery?, after: GalleryUIModel.Gallery? ->
-            if (before == null && after != null) {
-                GalleryUIModel.Header(format.format(after.date))
-            } else if (before != null && after != null) {
-                val beforeDate = format.format(before.date)
-                val afterDate = format.format(after.date)
-                if (beforeDate != afterDate) {
-                    GalleryUIModel.Header(afterDate)
+            withContext(Dispatchers.IO) {
+                if (before == null && after != null) {
+                    GalleryUIModel.Header(after.createdDate)
+                } else if (before != null && after != null) {
+                    if (before.createdDate != after.createdDate) {
+                        GalleryUIModel.Header(after.createdDate)
+                    } else {
+                        null
+                    }
                 } else {
                     null
                 }
-            } else {
-                null
             }
         }
-    }.cachedIn(viewModelScope).stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+    }.cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
     val isSelected = _selectedList.map { list ->
         list.isNotEmpty()

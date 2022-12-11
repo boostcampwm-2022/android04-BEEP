@@ -3,7 +3,6 @@ package com.lighthouse.presentation.model
 import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.util.Date
 
 sealed class GalleryUIModel {
     data class Header(val date: String) : GalleryUIModel()
@@ -13,6 +12,6 @@ sealed class GalleryUIModel {
         val id: Long,
         val uri: Uri,
         val selectedOrder: Int,
-        val date: Date
+        val createdDate: String
     ) : GalleryUIModel(), Parcelable
 }
