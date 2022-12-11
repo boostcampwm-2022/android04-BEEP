@@ -14,6 +14,7 @@ interface GifticonRepository {
 
     fun getGifticon(id: String): Flow<DbResult<Gifticon>>
     fun getAllGifticons(userId: String, sortBy: SortBy = SortBy.DEADLINE): Flow<DbResult<List<Gifticon>>>
+    fun getAllUsedGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
     fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,

@@ -45,6 +45,15 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
+    override fun getAllUsedGifticons(userId: String): Flow<DbResult<List<Gifticon>>> = flow {
+        emit(DbResult.Loading)
+        gifticonLocalDataSource.getAllUsedGifticons(userId).collect {
+            emit(DbResult.Success(it))
+        }
+    }.catch { e ->
+        emit(DbResult.Failure(e))
+    }
+
     override fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,

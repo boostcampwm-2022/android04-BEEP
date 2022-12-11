@@ -51,7 +51,6 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/setting_used_gifticon"
-                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/ab_setting" />
 
             <TextView
