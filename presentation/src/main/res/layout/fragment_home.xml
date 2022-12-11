@@ -18,6 +18,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ab_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tb_home"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:title="@string/home_appbar_name"
+                app:titleCentered="true" />
+        </com.google.android.material.appbar.AppBarLayout>
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_start"
             android:layout_width="wrap_content"
@@ -32,21 +48,15 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.95" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05" />
-
         <TextView
             android:id="@+id/tv_near_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
             android:text="@string/home_near_title"
             android:textAppearance="@style/BEEP.TextStyle.H5"
             app:layout_constraintStart_toStartOf="@id/gl_start"
-            app:layout_constraintTop_toTopOf="@id/gl_top" />
+            app:layout_constraintTop_toBottomOf="@id/ab_home" />
 
         <TextView
             android:id="@+id/tv_near_more_label"
