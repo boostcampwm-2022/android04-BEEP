@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:layout_scrollFlags="scroll"
                 app:title="@string/home_appbar_name"
                 app:titleCentered="true" />
         </com.google.android.material.appbar.AppBarLayout>
