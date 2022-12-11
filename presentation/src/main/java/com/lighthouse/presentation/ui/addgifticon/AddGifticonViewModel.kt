@@ -584,8 +584,8 @@ class AddGifticonViewModel @Inject constructor(
         expiredAt >= today || approve
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    val isApproveExpiredAtDescriptionVisible = isApproveExpired.map { isApprove ->
-        isApprove.not()
+    val isApproveExpiredAtDescriptionVisible = expiredAt.combine(approveExpiredAt) { expiredAt, approve ->
+        expiredAt != EMPTY_DATE && (expiredAt < today && approve.not())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val isApproveExpiredAtVisible = expiredAt.map { expiredAt ->
