@@ -234,7 +234,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
             if (croppedRect != null && croppedRect != RECT_F_EMPTY) {
                 curCropRect.set(croppedRect)
-                applyZoom()
+                applyZoom(bitmap.width, bitmap.height)
             } else {
                 if (enableAspectRatio) {
                     // AspectRatio 에 맞춰서 CropRect 를 변경 한다
@@ -261,7 +261,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
     }
 
-    private fun applyZoom() {
+    private fun applyZoom(width: Int, height: Int) {
         if (width == 0 || height == 0 || originBitmap == null) {
             return
         }
@@ -373,7 +373,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
-        applyZoom()
+        applyZoom(right - left, bottom - top)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -558,7 +558,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_UP -> {
                 if (eventType == EventType.RESIZE) {
-                    applyZoom()
+                    applyZoom(width, height)
                 }
 
                 eventType = EventType.NONE
