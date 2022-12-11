@@ -98,7 +98,10 @@ class HomeViewModel @Inject constructor(
     private fun setLocationFlowJob() {
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
-                if (result) observeLocationFlow()
+                when (result) {
+                    true -> observeLocationFlow()
+                    false -> isShimmer.value = false
+                }
                 combineLocationGifticon()
             }
         }
