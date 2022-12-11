@@ -29,4 +29,6 @@ object Extras {
     const val KEY_WIDGET_BRAND = "Extra.Widget.Item.id"
     const val KEY_WIDGET_EVENT = "Extra.Widget.Event"
     const val WIDGET_EVENT_MAP = "gotoMap"
+
+    const val TAG_DETAIL_SETTING = "Extra.Detail.Setting"
 }
