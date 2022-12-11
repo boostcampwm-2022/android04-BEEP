@@ -7,6 +7,8 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
+import com.lighthouse.domain.usecase.RemoveGifticonUseCase
+import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.GifticonSortBy
@@ -27,7 +29,9 @@ import javax.inject.Inject
 @HiltViewModel
 class GifticonListViewModel @Inject constructor(
     getAllBrandsUseCase: GetAllBrandsUseCase,
-    private val getFilteredGifticonsUseCase: GetFilteredGifticonsUseCase
+    private val getFilteredGifticonsUseCase: GetFilteredGifticonsUseCase,
+    private val useGifticonUseCase: UseGifticonUseCase,
+    private val removeGifticonUseCase: RemoveGifticonUseCase
 ) : ViewModel() {
 
     private val filter = MutableStateFlow(setOf<String>())
@@ -93,7 +97,6 @@ class GifticonListViewModel @Inject constructor(
                 )
             }
             is DbResult.Loading -> {
-                // TODO Shimmer UI
                 val gifticons = gifticons.value.let {
                     if (it is DbResult.Success) it.data else emptyList()
                 }
@@ -134,6 +137,18 @@ class GifticonListViewModel @Inject constructor(
 
     fun clearFilter() {
         filter.value = emptySet()
+    }
+
+    fun completeUsage(gifticon: Gifticon) {
+        viewModelScope.launch {
+            useGifticonUseCase(gifticon.id)
+        }
+    }
+
+    fun removeGifticon(gifticon: Gifticon) {
+        viewModelScope.launch {
+            removeGifticonUseCase(gifticon.id)
+        }
     }
 
     fun sort(newSortBy: GifticonSortBy) {

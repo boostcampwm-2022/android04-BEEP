@@ -54,7 +54,13 @@ fun GifticonListScreen(
             } else {
                 GifticonList(
                     gifticons = viewState.gifticons,
-                    Modifier.padding(top = 8.dp)
+                    Modifier.padding(top = 8.dp),
+                    onUse = {
+                        viewModel.completeUsage(it)
+                    },
+                    onRemove = {
+                        viewModel.removeGifticon(it)
+                    }
                 )
             }
         }

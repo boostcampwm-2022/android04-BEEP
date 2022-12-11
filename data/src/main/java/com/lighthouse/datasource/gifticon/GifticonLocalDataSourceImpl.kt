@@ -89,6 +89,10 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         gifticonDao.unUseGifticon(gifticonId)
     }
 
+    override suspend fun removeGifticon(gifticonId: String) {
+        gifticonDao.removeGifticon(gifticonId)
+    }
+
     override fun getUsageHistory(gifticonId: String): Flow<List<UsageHistory>> {
         return gifticonDao.getUsageHistory(gifticonId).map { list ->
             list.map { entity ->

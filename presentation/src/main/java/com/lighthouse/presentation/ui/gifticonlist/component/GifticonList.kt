@@ -65,21 +65,30 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun GifticonList(gifticons: List<Gifticon>, modifier: Modifier = Modifier, onDelete: (Gifticon) -> Unit = {}) {
+fun GifticonList(
+    gifticons: List<Gifticon>,
+    modifier: Modifier = Modifier,
+    onUse: (Gifticon) -> Unit = {},
+    onRemove: (Gifticon) -> Unit = {}
+) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 36.dp)
     ) {
-        items(gifticons) { gifticon ->
-            GifticonItem(gifticon = gifticon)
+        items(gifticons, key = { it.id }) { gifticon ->
+            GifticonItem(
+                gifticon = gifticon,
+                onUse = { onUse(it) },
+                onRemove = { onRemove(it) }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GifticonItem(gifticon: Gifticon, onUse: (Gifticon) -> Unit = {}, onDelete: (Gifticon) -> Unit = {}) {
+fun GifticonItem(gifticon: Gifticon, onUse: (Gifticon) -> Unit = {}, onRemove: (Gifticon) -> Unit = {}) {
     val context = LocalContext.current
     val cornerSize = 8.dp
 
@@ -107,7 +116,7 @@ fun GifticonItem(gifticon: Gifticon, onUse: (Gifticon) -> Unit = {}, onDelete: (
     ) {
         TextButton(
             onClick = {
-                onDelete(gifticon)
+                onRemove(gifticon)
                 scope.launch {
                     swipeableState.animateTo(0, tween(600, 0))
                 }
