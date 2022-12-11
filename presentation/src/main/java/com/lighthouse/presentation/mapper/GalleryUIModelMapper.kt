@@ -36,6 +36,7 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(): AddGifticonUIModel {
         barcodeRectF = RectF(),
         expiredAt = Date(0),
         expiredAtRectF = RectF(),
+        approveExpiredAt = false,
         isCashCard = false,
         balance = "",
         balanceRectF = RectF(),

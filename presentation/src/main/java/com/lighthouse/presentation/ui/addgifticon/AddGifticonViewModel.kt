@@ -553,17 +553,50 @@ class AddGifticonViewModel @Inject constructor(
         updateBalance("")
     }
 
-    val expiredAt = selectedGifticon.map {
-        val date = it?.expiredAt
-        if (date != null && date != EMPTY_DATE) {
+    private val expiredAt = selectedGifticon.map {
+        it?.expiredAt ?: EMPTY_DATE
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, EMPTY_DATE)
+
+    val expiredAtUIText = expiredAt.map { date ->
+        if (date != EMPTY_DATE) {
             UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDate())
         } else {
             UIText.Empty
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, UIText.Empty)
+
+    private val approveExpiredAt = selectedGifticon.map {
+        it?.approveExpiredAt ?: false
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun updateExpiredAt(expiredAt: Date) {
         updateSelectedGifticon(true) { it.copy(expiredAt = expiredAt) }
+    }
+
+    private val isApproveExpired = expiredAt.combine(approveExpiredAt) { expiredAt, approve ->
+        expiredAt >= today || approve
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val isApproveExpiredAtDescriptionVisible = isApproveExpired.map { isApprove ->
+        isApprove.not()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val isApproveExpiredAtVisible = expiredAt.map { expiredAt ->
+        expiredAt != EMPTY_DATE
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val isApproveExpiredAtResId = isApproveExpired.map { isApprove ->
+        if (isApprove) R.drawable.ic_confirm else R.drawable.ic_question
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val isApproveExpiredAtTint = isApproveExpired.map { isApprove ->
+        if (isApprove) R.color.point_green else R.color.yellow
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun approveExpiredAt() {
+        updateSelectedGifticon(true) {
+            it.copy(approveExpiredAt = true)
+        }
     }
 
     val memo = selectedGifticon.map {
@@ -709,6 +742,7 @@ class AddGifticonViewModel @Inject constructor(
             gifticon.barcode.length !in VALID_BARCODE_COUNT -> AddGifticonValid.INVALID_BARCODE
             gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
             gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
+            gifticon.expiredAt < today && gifticon.approveExpiredAt.not() -> AddGifticonValid.INVALID_APPROVE_EXPIRED_AT
             gifticon.gifticonImage.uri == null && gifticon.approveGifticonImage.not() -> AddGifticonValid.INVALID_APPROVE_GIFTICON_IMAGE
             else -> AddGifticonValid.VALID
         }

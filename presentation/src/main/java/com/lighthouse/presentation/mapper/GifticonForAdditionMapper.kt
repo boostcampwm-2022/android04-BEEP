@@ -20,6 +20,7 @@ fun GifticonForAddition.toPresentation(id: Long, approveBrandName: String = ""):
         barcodeRectF = RectF(),
         expiredAt = expiredAt,
         expiredAtRectF = RectF(),
+        approveExpiredAt = false,
         isCashCard = isCashCard,
         balance = balance.toString(),
         balanceRectF = RectF(),
