@@ -18,7 +18,7 @@ import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
-import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
+import com.lighthouse.presentation.util.recycler.GridSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,12 +28,9 @@ class UsedGifticonFragment : Fragment(R.layout.fragment_used_gifticon) {
     private val viewModel: UsedGifticonViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
 
-    private val itemDecoration = ListSpaceItemDecoration(
-        space = 4.dp,
-        start = 2.dp,
-        top = 4.dp,
-        end = 2.dp,
-        bottom = 4.dp
+    private val itemDecoration = GridSpaceItemDecoration(
+        4.dp,
+        4.dp
     )
 
     private lateinit var callback: OnBackPressedCallback
