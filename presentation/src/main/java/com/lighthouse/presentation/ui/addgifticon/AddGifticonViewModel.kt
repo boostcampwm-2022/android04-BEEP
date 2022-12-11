@@ -699,7 +699,11 @@ class AddGifticonViewModel @Inject constructor(
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.gifticonName(uri.toString())
-            updateGifticon(true) { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
+            if (result != "") {
+                updateGifticon(true) { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
+            } else {
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_name)))
+            }
         }
     }
 
@@ -708,7 +712,11 @@ class AddGifticonViewModel @Inject constructor(
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.brandName(uri.toString())
-            updateGifticon(true) { it.copy(brandName = result, brandNameRectF = croppedImage.croppedRect) }
+            if (result != "") {
+                updateGifticon(true) { it.copy(brandName = result, brandNameRectF = croppedImage.croppedRect) }
+            } else {
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_brand)))
+            }
         }
     }
 
@@ -717,7 +725,11 @@ class AddGifticonViewModel @Inject constructor(
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.barcode(uri.toString())
-            updateGifticon(true) { it.copy(barcode = result, barcodeRectF = croppedImage.croppedRect) }
+            if (result != "") {
+                updateGifticon(true) { it.copy(barcode = result, barcodeRectF = croppedImage.croppedRect) }
+            } else {
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_barcode)))
+            }
         }
     }
 
@@ -726,8 +738,12 @@ class AddGifticonViewModel @Inject constructor(
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.balance(uri.toString())
-            updateGifticon(true) {
-                it.copy(isCashCard = result > 0, balance = result.toString(), balanceRectF = croppedImage.croppedRect)
+            if (result > 0) {
+                updateGifticon(true) {
+                    it.copy(isCashCard = true, balance = result.toString(), balanceRectF = croppedImage.croppedRect)
+                }
+            } else {
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_balance)))
             }
         }
     }
@@ -737,7 +753,11 @@ class AddGifticonViewModel @Inject constructor(
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
             val result = recognizeUseCase.expired(uri.toString())
-            updateGifticon(true) { it.copy(expiredAt = result, expiredAtRectF = croppedImage.croppedRect) }
+            if (result != EMPTY_DATE) {
+                updateGifticon(true) { it.copy(expiredAt = result, expiredAtRectF = croppedImage.croppedRect) }
+            } else {
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_expired_at)))
+            }
         }
     }
 
