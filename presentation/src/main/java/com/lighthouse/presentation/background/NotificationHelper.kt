@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
@@ -47,25 +48,28 @@ class NotificationHelper @Inject constructor(
 
     fun applyNotification(gifticon: Gifticon, remainDays: Int) {
         val intent = Intent(context, GifticonDetailActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
         }
 
         val code = gifticon.barcode.hashCode()
 
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            code,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val gifticonDetailPendingIntent = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(code, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
         val builder = NotificationCompat.Builder(context, Extras.NOTIFICATION_CHANNEL)
             .setSmallIcon(R.drawable.ic_splash_beep)
             .setContentTitle(context.getString(R.string.notification_title))
-            .setContentText(String.format(context.getString(R.string.notification_description), gifticon.name, remainDays))
+            .setContentText(
+                String.format(
+                    context.getString(R.string.notification_description),
+                    gifticon.name,
+                    remainDays
+                )
+            )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(gifticonDetailPendingIntent)
             .setGroup(channelGroup)
 
         val notification = builder.build().apply {

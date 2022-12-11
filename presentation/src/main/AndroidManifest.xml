@@ -35,7 +35,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.detailgifticon.GifticonDetailActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".ui.main.MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".ui.map.MapActivity"
             android:screenOrientation="portrait" />
