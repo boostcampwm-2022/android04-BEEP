@@ -33,6 +33,7 @@ import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
+import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.CroppedImage
@@ -277,7 +278,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showDatePickerDialog() {
-        spinnerDatePicker.show(supportFragmentManager, SpinnerDatePicker::class.java.name)
+        spinnerDatePicker.show(supportFragmentManager)
     }
 
     private fun showUseGifticonDialog() {
