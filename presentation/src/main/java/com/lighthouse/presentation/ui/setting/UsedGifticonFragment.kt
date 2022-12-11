@@ -28,10 +28,7 @@ class UsedGifticonFragment : Fragment(R.layout.fragment_used_gifticon) {
     private val viewModel: UsedGifticonViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
 
-    private val itemDecoration = GridSpaceItemDecoration(
-        4.dp,
-        4.dp
-    )
+    private val itemDecoration = GridSpaceItemDecoration(8.dp, 8.dp)
 
     private lateinit var callback: OnBackPressedCallback
 
@@ -57,8 +54,8 @@ class UsedGifticonFragment : Fragment(R.layout.fragment_used_gifticon) {
         with(binding.rvUsedGifticon) {
             adapter = GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
                 gotoGifticonDetail(gifticon.id)
-                addItemDecoration(itemDecoration)
             }
+            addItemDecoration(itemDecoration)
         }
     }
 
