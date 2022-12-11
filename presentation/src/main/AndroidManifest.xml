@@ -38,7 +38,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.map.MapActivity"
-            android:noHistory="true"
             android:screenOrientation="portrait" />
 
         <receiver

@@ -10,4 +10,7 @@ data class BrandPlaceInfoUiModel(
     val brand: String,
     val x: String,
     val y: String
-) : Serializable
+) : Serializable {
+
+    val brandLowerName = brand.lowercase()
+}

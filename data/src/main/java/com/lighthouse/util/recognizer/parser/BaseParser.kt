@@ -11,15 +11,6 @@ abstract class BaseParser {
         inputs.any { it.lowercase().contains(keyword) }
     } != null
 
-    fun parseKeyword(info: GifticonRecognizeInfo): GifticonRecognizeInfo {
-        val keywordFiltered = info.candidate.filter { text ->
-            keywordText.none { keyword ->
-                text.lowercase().contains(keyword)
-            }
-        }
-        return info.copy(candidate = keywordFiltered)
-    }
-
     private fun parseGifticonName(info: GifticonRecognizeInfo, inputs: List<String>): GifticonRecognizeInfo {
         val name = inputs.joinToString("")
         return info.copy(name = name, candidate = info.candidate + listOf(name))

@@ -25,13 +25,7 @@ class AddCandidateGifticonViewHolder(
 
     fun bindBadge(item: AddGifticonItemUIModel.Gifticon) {
         dm?.item = item
-        val badgeVisible = dm?.badgeVisible ?: false
-        val badgeResId = dm?.badgeResId
-        binding.ivBadge.apply {
-            isVisible = badgeVisible
-            if (badgeResId != null) {
-                setImageResource(badgeResId)
-            }
-        }
+        binding.ivDelete.isVisible = dm?.deleteVisible ?: false
+        binding.ivInvalid.isVisible = dm?.invalidVisible ?: false
     }
 }

@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.ui.common.dialog.datepicker
 
 import androidx.lifecycle.ViewModel
-import com.lighthouse.presentation.extension.toDate
+import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ class SpinnerDatePickerViewModel : ViewModel() {
     fun setDate(date: Date) {
         year = date.toYear()
         month = date.toMonth()
-        dayOfMonth = date.toDate()
+        dayOfMonth = date.toDayOfMonth()
         _maxDayOfMonth.value = getMaxDayOfMonth(year, month)
     }
 

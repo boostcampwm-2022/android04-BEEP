@@ -16,9 +16,9 @@ import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,8 +35,15 @@ class MainViewModel @Inject constructor(
     private val _eventFlow = MutableEventFlow<MainEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
+    val selectedMenuItem = MutableStateFlow(R.id.menu_home)
+
     private val _pageFlow = MutableStateFlow<MainPage>(MainPage.Home)
-    val pageFlow = _pageFlow.asStateFlow()
+    val pageFlow = _pageFlow
+        .onEach { page ->
+            pageToMenuId(page)?.let { menuId ->
+                gotoMenuItem(menuId)
+            }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, MainPage.Home)
 
     val hasVariableGifticon = hasVariableGifticonUseCase()
 
@@ -44,7 +51,7 @@ class MainViewModel @Inject constructor(
     private val widgetBrandName = savedStateHandle.get<String>(Extras.KEY_WIDGET_BRAND)
 
     init {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             widgetEvent ?: return@launch
             widgetBrandName ?: return@launch
             when (widgetEvent) {
@@ -74,8 +81,6 @@ class MainViewModel @Inject constructor(
     val isSecurityOptionExist = getOptionStoredUseCase(UserPreferenceOption.SECURITY)
     val isNotificationOptionExist = getOptionStoredUseCase(UserPreferenceOption.NOTIFICATION)
 
-    val selectedMenuItem = MutableStateFlow(R.id.menu_home)
-
     fun gotoAddGifticon() {
         viewModelScope.launch {
             _eventFlow.emit(MainEvent.NavigateAddGifticon)
@@ -84,7 +89,16 @@ class MainViewModel @Inject constructor(
 
     fun gotoList() {
         viewModelScope.launch {
-            gotoMenuItem(R.id.menu_list)
+            _pageFlow.emit(MainPage.List)
+        }
+    }
+
+    private fun pageToMenuId(page: MainPage): Int? {
+        return when (page) {
+            MainPage.List -> R.id.menu_list
+            MainPage.Home -> R.id.menu_home
+            MainPage.Setting -> R.id.menu_setting
+            else -> null
         }
     }
 
@@ -114,6 +128,12 @@ class MainViewModel @Inject constructor(
     fun saveNotificationUse() {
         viewModelScope.launch {
             saveNotificationOptionUseCase(true)
+        }
+    }
+
+    fun gotoHome() {
+        viewModelScope.launch {
+            _pageFlow.emit(MainPage.Home)
         }
     }
 }

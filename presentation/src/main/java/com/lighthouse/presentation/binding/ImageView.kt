@@ -1,9 +1,12 @@
 package com.lighthouse.presentation.binding
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -77,4 +80,19 @@ fun ImageView.loadWithFileStreamPath(filename: String?) {
     } else {
         setImageBitmap(null)
     }
+}
+
+@BindingAdapter("setImageRes")
+fun setImageRes(view: ImageView, @DrawableRes resId: Int?) {
+    if (resId != null) {
+        view.setImageResource(resId)
+    } else {
+        view.setImageBitmap(null)
+    }
+}
+
+@BindingAdapter("setTintRes")
+fun setTintRes(view: ImageView, @ColorRes resId: Int?) {
+    resId ?: return
+    view.imageTintList = ColorStateList.valueOf(view.context.getColor(resId))
 }

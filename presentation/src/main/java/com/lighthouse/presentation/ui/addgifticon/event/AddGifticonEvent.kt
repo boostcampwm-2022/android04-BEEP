@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.addgifticon
+package com.lighthouse.presentation.ui.addgifticon.event
 
 import android.graphics.RectF
 import android.net.Uri
@@ -14,11 +14,13 @@ sealed class AddGifticonEvent {
     object RegistrationCompleted : AddGifticonEvent()
     data class ShowDeleteConfirmation(val gifticon: AddGifticonItemUIModel.Gifticon) : AddGifticonEvent()
     data class NavigateToGallery(val list: List<GalleryUIModel.Gallery> = emptyList()) : AddGifticonEvent()
-    data class NavigateToCropGifticon(val origin: Uri, val croppedRect: RectF) : AddGifticonEvent()
+    data class NavigateToCrop(val crop: AddGifticonCrop, val origin: Uri, val croppedRect: RectF = RectF()) :
+        AddGifticonEvent()
+
     data class ShowOriginGifticon(val origin: Uri) : AddGifticonEvent()
     data class ShowExpiredAtDatePicker(val date: Date) : AddGifticonEvent()
     data class RequestLoading(val loading: Boolean) : AddGifticonEvent()
-    data class RequestFocus(val focus: AddGifticonFocus) : AddGifticonEvent()
-    data class RequestScroll(val scroll: AddGifticonScroll) : AddGifticonEvent()
+    data class RequestFocus(val tag: AddGifticonTag) : AddGifticonEvent()
+    data class RequestScroll(val tag: AddGifticonTag) : AddGifticonEvent()
     data class ShowSnackBar(val uiText: UIText) : AddGifticonEvent()
 }

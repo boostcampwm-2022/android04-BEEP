@@ -1,10 +1,10 @@
 package com.lighthouse.util.recognizer
 
 import android.graphics.Bitmap
-import com.lighthouse.util.recognizer.parser.OriginParser
-import com.lighthouse.util.recognizer.processor.ScaleProcessor
+import com.lighthouse.util.recognizer.parser.BalanceParser
+import com.lighthouse.util.recognizer.parser.BarcodeParser
+import com.lighthouse.util.recognizer.parser.ExpiredParser
 import com.lighthouse.util.recognizer.recognizer.TemplateRecognizer
-import com.lighthouse.util.recognizer.recognizer.TextRecognizer
 import com.lighthouse.util.recognizer.recognizer.giftishow.GiftishowRecognizer
 import com.lighthouse.util.recognizer.recognizer.kakao.KakaoRecognizer
 import com.lighthouse.util.recognizer.recognizer.smilecon.SmileConRecognizer
@@ -13,9 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GifticonRecognizer {
+    private val barcodeParser = BarcodeParser()
+    private val expiredParser = ExpiredParser()
+    private val balanceParser = BalanceParser()
 
-    private val originParser = OriginParser()
-    private val scaleProcessor = ScaleProcessor()
     private val textRecognizer = TextRecognizer()
 
     private val templateRecognizerList = listOf(
@@ -31,16 +32,20 @@ class GifticonRecognizer {
         }
     }
 
-    suspend fun recognize(bitmap: Bitmap) = withContext(Dispatchers.IO) {
-        val origin = scaleProcessor.scaleProcess(bitmap)
-        val originInputs = textRecognizer.recognize(origin)
-        origin.recycle()
-        var info = originParser.parseBarcode(originInputs) ?: return@withContext null
-        info = originParser.parseDate(info)
-        info = originParser.filterTrash(info)
+    suspend fun recognize(bitmap: Bitmap): GifticonRecognizeInfo = withContext(Dispatchers.IO) {
+        val inputs = textRecognizer.recognize(bitmap)
+        val barcodeResult = barcodeParser.parseBarcode(inputs)
+        val expiredResult = expiredParser.parseExpiredDate(barcodeResult.filtered)
+        var info = GifticonRecognizeInfo(candidate = expiredResult.filtered)
         getTemplateRecognizer(info.candidate)?.run {
-            info = recognize(bitmap, info)
+            info = recognize(bitmap, info.candidate)
         }
-        originParser.parseCashCard(info)
+        val balanceResult = balanceParser.parseCashCard(info.candidate)
+        info.copy(
+            barcode = barcodeResult.barcode,
+            expiredAt = expiredResult.expired,
+            isCashCard = balanceResult.balance > 0,
+            balance = balanceResult.balance
+        )
     }
 }

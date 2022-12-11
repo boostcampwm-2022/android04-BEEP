@@ -15,7 +15,7 @@ class AddGotoGalleryViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     init {
-        itemView.setOnClickListener {
+        binding.viewGotoGalleryRippleEffect.setOnClickListener {
             onClick()
         }
     }

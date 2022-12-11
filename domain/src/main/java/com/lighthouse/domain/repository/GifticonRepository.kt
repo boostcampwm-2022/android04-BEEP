@@ -4,6 +4,7 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonCrop
+import com.lighthouse.domain.model.GifticonCropForUpdate
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
@@ -34,6 +35,6 @@ interface GifticonRepository {
     suspend fun hasGifticonBrand(brand: String): Boolean
 
     fun getGifticonCrop(gifticonId: String): Flow<GifticonCrop>
-    suspend fun updateGifticonCrop(gifticonCrop: GifticonCrop)
+    suspend fun updateGifticonCrop(gifticonCropForUpdate: GifticonCropForUpdate)
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
 }

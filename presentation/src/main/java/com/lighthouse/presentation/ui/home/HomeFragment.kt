@@ -35,7 +35,6 @@ import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -121,7 +120,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun setObserveViewModel() {
         viewLifecycleOwner.repeatOnStarted {
             homeViewModel.uiState.collectLatest { state ->
-                Timber.tag("TAG").d("${javaClass.simpleName} UiState -> $state")
                 when (state) {
                     is UiState.NetworkFailure -> showSnackBar(R.string.error_network_error)
                     is UiState.Failure -> showSnackBar(R.string.error_network_failure)

@@ -50,13 +50,13 @@ class HomeViewModel @Inject constructor(
 
     private val allBrands = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            emit(gifticons.data.map { it.brand }.distinct())
+            emit(gifticons.data.map { it.brandLowerName }.distinct())
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            val gifticonGroup = gifticons.data.groupBy { it.brand }
+            val gifticonGroup = gifticons.data.groupBy { it.brandLowerName }
             emit(gifticonGroup)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
@@ -76,11 +76,18 @@ class HomeViewModel @Inject constructor(
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
     val hasLocationPermission = hasLocationPermissionsUseCase()
-    val isShimmer = MutableStateFlow(false)
-    val isEmptyNearBrands = MutableStateFlow(false)
+    val isShimmer = MutableStateFlow(true)
 
-    private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>> = MutableStateFlow(emptyList())
+    private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>?> = MutableStateFlow(null)
     val nearGifticons = _nearGifticons.asStateFlow()
+
+    val isEmptyNearBrands = nearGifticons.transform {
+        val data = nearGifticons.value ?: kotlin.run {
+            emit(false)
+            return@transform
+        }
+        emit(data.isEmpty())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private var prevVertex = MutableStateFlow<VertexLocation?>(null)
 
@@ -91,7 +98,10 @@ class HomeViewModel @Inject constructor(
     private fun setLocationFlowJob() {
         viewModelScope.launch {
             hasLocationPermission.collectLatest { result ->
-                if (result) observeLocationFlow()
+                when (result) {
+                    true -> observeLocationFlow()
+                    false -> isShimmer.value = false
+                }
                 combineLocationGifticon()
             }
         }
@@ -120,21 +130,17 @@ class HomeViewModel @Inject constructor(
             location ?: return@collectLatest
             val x = location.longitude
             val y = location.latitude
-            isEmptyNearBrands.value = false
 
-            runCatching { getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE) }
+            getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
                     nearBrandsInfo = brands.sortedBy { diffLocation(it.x, it.y, x, y) }
-                    _nearGifticons.value = nearBrandsInfo.distinctBy { it.brand }.mapNotNull { placeInfo ->
-                        gifticonsMap.value[placeInfo.brand]?.first()
+                    _nearGifticons.value = nearBrandsInfo.distinctBy { it.brandLowerName }.mapNotNull { placeInfo ->
+                        gifticonsMap.value[placeInfo.brandLowerName]?.first()
                             ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
-                    when (_nearGifticons.value.isEmpty()) {
-                        true -> {
-                            _uiState.emit(UiState.NotFoundResults)
-                            isEmptyNearBrands.value = true
-                        }
+                    when (_nearGifticons.value.isNullOrEmpty()) {
+                        true -> _uiState.emit(UiState.NotFoundResults)
                         false -> _uiState.emit(UiState.Success(Unit))
                     }
                 }

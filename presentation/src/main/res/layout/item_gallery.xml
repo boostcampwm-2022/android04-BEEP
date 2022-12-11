@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="dm"
             type="com.lighthouse.presentation.ui.gallery.adapter.list.GalleryDisplayModel" />
@@ -17,24 +18,36 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/gallery_image_description"
-            android:onClickListener="@{() -> dm.onClickItem()}"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:loadThumbnailByContentUri="@{dm.item.uri}"/>
+            app:loadThumbnailByContentUri="@{dm.item.uri}" />
 
         <View
             android:id="@+id/view_shadow"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/bg_gallery_selected"
+            app:isVisible="@{dm.isSelected}"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
             app:layout_constraintEnd_toEndOf="@id/iv_thumbnail"
             app:layout_constraintStart_toStartOf="@id/iv_thumbnail"
-            app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
-            app:isVisible="@{dm.isSelected}"/>
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail" />
+
+        <View
+            android:id="@+id/view_thumbnail_ripple_effect"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> dm.onClickItem()}"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail" />
 
         <TextView
             android:id="@+id/view_selected"
@@ -45,12 +58,12 @@
             android:background="@drawable/bg_gallery"
             android:gravity="center"
             android:selected="@{dm.isSelected}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:textAppearance="@style/BEEP.TextStyle.Caption"
             android:textColor="?attr/colorOnPrimary"
             android:textStyle="bold"
-            app:setUIText="@{dm.selectedOrder}"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setUIText="@{dm.selectedOrder}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
