@@ -55,9 +55,9 @@ class GifticonLocalDataSourceImpl @Inject constructor(
             } else {
                 it
             }.groupBy { entity ->
-                entity.brand
+                entity.brand.uppercase()
             }.map { entry ->
-                Brand(entry.key, entry.value.size)
+                Brand(entry.key.uppercase(), entry.value.size)
             }
         }
     }
