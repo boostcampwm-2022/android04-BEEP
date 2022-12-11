@@ -163,6 +163,7 @@
                     android:background="@drawable/bg_origin_gifticon"
                     android:clickable="true"
                     android:contentDescription="@string/add_gifticon_origin_gifticon"
+                    android:enabled="@{vm.isSelected}"
                     android:focusable="true"
                     android:onClick="@{() -> vm.showOriginGifticon()}"
                     android:padding="6dp"
@@ -263,7 +264,7 @@
                         android:maxLength="100"
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateGifticonName(text)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="78dp"
                         android:text="@{vm.name}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onNameFocusChangeListener(hasFocus)}" />
@@ -337,7 +338,7 @@
                         android:maxLength="100"
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateBrandName(text)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="114dp"
                         android:text="@{vm.brand}"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBrandFocusChangeListener(hasFocus)}" />
@@ -458,7 +459,7 @@
                         android:maxLength="29"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBarcodeFocusChangeListener(hasFocus)}"
                         app:setEditTextInfo="@{vm.displayBarcode}" />
@@ -538,7 +539,7 @@
                         android:lines="1"
                         android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBalanceFocusChangeListener(hasFocus)}"
                         app:setEditTextInfo="@{vm.displayBalance}" />
@@ -614,7 +615,7 @@
                         android:lines="1"
                         android:onClick="@{() -> vm.showExpiredAtDatePicker()}"
                         android:paddingStart="0dp"
-                        android:paddingEnd="72dp"
+                        android:paddingEnd="114dp"
                         app:setUIText="@{vm.expiredAtUIText}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
