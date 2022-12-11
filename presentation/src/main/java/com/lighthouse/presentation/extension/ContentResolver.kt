@@ -7,7 +7,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Size
 import java.io.IOException
 
 fun ContentResolver.getBitmap(uri: Uri): Bitmap? {
@@ -22,22 +21,5 @@ fun ContentResolver.getBitmap(uri: Uri): Bitmap? {
         }
     } catch (e: IOException) {
         null
-    }
-}
-
-fun ContentResolver.getThumbnail(uri: Uri?): Bitmap? {
-    if (uri?.scheme != SCHEME_CONTENT) {
-        return null
-    }
-
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val size = screenWidth / 4
-        try {
-            loadThumbnail(uri, Size(size, size), null)
-        } catch (e: Exception) {
-            null
-        }
-    } else {
-        return null
     }
 }
