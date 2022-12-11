@@ -59,7 +59,7 @@ fun GifticonAppBar(
                     Text(
                         text = stringResource(id = sortBy.stringRes),
                         color = Color.White,
-                        style = MaterialTheme.typography.h5
+                        style = MaterialTheme.typography.h6
                     )
                     Icon(
                         modifier = Modifier.align(Alignment.CenterVertically),

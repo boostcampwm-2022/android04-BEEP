@@ -29,6 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:navigationIcon="@drawable/ic_back"
+                app:navigationIconTint="?attr/colorOnPrimary"
                 app:title="@string/gifticon_detail_gifticon_detail_title"
                 app:titleCentered="true" />
         </com.google.android.material.appbar.AppBarLayout>
