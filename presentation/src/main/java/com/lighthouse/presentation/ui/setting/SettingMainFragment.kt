@@ -118,6 +118,7 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
     private fun gotoUsedGifticon() {
         activityViewModel.gotoMenuItem(-1)
         parentFragmentManager.commit {
+            setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top)
             add(R.id.fcv_setting, UsedGifticonFragment())
         }
     }
