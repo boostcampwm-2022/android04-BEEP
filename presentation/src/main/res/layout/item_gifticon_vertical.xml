@@ -24,10 +24,38 @@
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                app:filterToGray="@{gifticon.isUsed}"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/img_stamp"
+                app:isVisible="@{gifticon.isUsed}"
+                app:layout_constraintBottom_toBottomOf="@id/iv_product"
+                app:layout_constraintEnd_toEndOf="@id/iv_product"
+                app:layout_constraintStart_toStartOf="@id/iv_product"
+                app:layout_constraintTop_toTopOf="@id/iv_product"
+                android:contentDescription="@string/gifticon_detail_used_image_label_not_date" />
+
+            <TextView
+                style="@style/BEEP.TextStyle.H5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@string/gifticon_detail_used_image_label_not_date"
+                android:gravity="center"
+                android:rotation="-20"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:isVisible="@{gifticon.isUsed}"
+                app:layout_constraintBottom_toBottomOf="@id/iv_product"
+                app:layout_constraintEnd_toEndOf="@id/iv_product"
+                app:layout_constraintStart_toStartOf="@id/iv_product"
+                app:layout_constraintTop_toTopOf="@id/iv_product"
+                 />
 
             <TextView
                 android:id="@+id/tv_expire_at_label"
