@@ -34,8 +34,17 @@ class ExpiredParser {
                 dateFiltered.add(text)
             } else {
                 val year = find.groupValues.getOrNull(1)?.toInt() ?: continue
+                if (year in 2000..2100) {
+                    continue
+                }
                 val month = find.groupValues.getOrNull(2)?.toInt() ?: continue
+                if (month in 1..12) {
+                    continue
+                }
                 val dayOfMonth = find.groupValues.getOrNull(3)?.toInt() ?: continue
+                if (dayOfMonth in 1..31) {
+                    continue
+                }
                 val date = Calendar.getInstance(Locale.getDefault()).let {
                     it.set(year, month - 1, dayOfMonth)
                     it.time
