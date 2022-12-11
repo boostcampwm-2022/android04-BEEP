@@ -14,7 +14,8 @@
             type="com.lighthouse.presentation.ui.home.HomeViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/cl_gifticon_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,7 +23,8 @@
             android:id="@+id/ab_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:liftOnScroll="true">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/tb_home"
@@ -34,164 +36,177 @@
                 app:titleCentered="true" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
+        <ScrollView
+            android:id="@+id/sv_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:nestedScrollingEnabled="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
-
-        <TextView
-            android:id="@+id/tv_near_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="@string/home_near_title"
-            android:textAppearance="@style/BEEP.TextStyle.H5"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
-            app:layout_constraintTop_toBottomOf="@id/ab_home" />
-
-        <TextView
-            android:id="@+id/tv_near_more_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:onClickListener="@{() -> homeVm.gotoMap()}"
-            android:padding="8dp"
-            android:text="@string/home_near_more_label"
-            android:textAlignment="gravity"
-            android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
-            app:layout_constraintBottom_toBottomOf="@id/tv_near_title"
-            app:layout_constraintEnd_toEndOf="@id/gl_end"
-            app:layout_constraintTop_toTopOf="@id/tv_near_title" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_near_gifticon"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_near_title"
-            app:setItems="@{homeVm.nearGifticons}"
-            tools:listitem="@layout/item_gifticon_vertical" />
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer"
-            android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
-            app:layout_constraintTop_toBottomOf="@id/tv_near_title"
-            app:setShimmerState="@{homeVm.isShimmer}">
-
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-                <include layout="@layout/item_gifticon_vertical_loading" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.05" />
 
-                <include layout="@layout/item_gifticon_vertical_loading" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.95" />
 
-                <include layout="@layout/item_gifticon_vertical_loading" />
+                <TextView
+                    android:id="@+id/tv_near_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:text="@string/home_near_title"
+                    android:textAppearance="@style/BEEP.TextStyle.H5"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_near_more_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:onClickListener="@{() -> homeVm.gotoMap()}"
+                    android:padding="8dp"
+                    android:text="@string/home_near_more_label"
+                    android:textAlignment="gravity"
+                    android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_near_title"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintTop_toTopOf="@id/tv_near_title" />
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_near_gifticon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_near_title"
+                    app:setItems="@{homeVm.nearGifticons}"
+                    tools:listitem="@layout/item_gifticon_vertical" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/group_near_announcement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="tv_not_allow_location_permission, btn_location_permission_check"
-            app:isVisible="@{!homeVm.hasLocationPermission}" />
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmer"
+                    android:layout_width="0dp"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@id/tv_near_title"
+                    app:setShimmerState="@{homeVm.isShimmer}">
 
-        <TextView
-            android:id="@+id/tv_not_allow_location_permission"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home_location_has_not_permission_description"
-            android:textAlignment="center"
-            android:textAppearance="@style/BEEP.TextStyle.Body1"
-            app:layout_constraintBottom_toTopOf="@id/btn_location_permission_check"
-            app:layout_constraintEnd_toEndOf="@id/gl_end"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
-            app:layout_constraintTop_toBottomOf="@id/tv_near_title"
-            app:layout_constraintVertical_chainStyle="packed" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_location_permission_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:onClickListener="@{() -> homeVm.requestLocationPermission()}"
-            android:padding="4dp"
-            android:text="@string/home_location_permission_button"
-            android:textAppearance="@style/BEEP.TextStyle.Body2"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/tv_expire_title"
-            app:layout_constraintEnd_toEndOf="@id/gl_end"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
-            app:layout_constraintTop_toBottomOf="@id/tv_not_allow_location_permission" />
+                        <include layout="@layout/item_gifticon_vertical_loading" />
 
-        <TextView
-            android:id="@+id/tv_empty_near_brands"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home_empty_near_brands"
-            android:textAlignment="center"
-            android:textAppearance="@style/BEEP.TextStyle.Body1"
-            app:isVisible="@{homeVm.isEmptyNearBrands()}"
-            app:layout_constraintBottom_toBottomOf="@id/rv_near_gifticon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_near_title" />
+                        <include layout="@layout/item_gifticon_vertical_loading" />
 
-        <TextView
-            android:id="@+id/tv_expire_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/home_expire_title"
-            android:textAppearance="@style/BEEP.TextStyle.H5"
-            app:layout_constraintStart_toStartOf="@id/gl_start"
-            app:layout_constraintTop_toBottomOf="@+id/rv_near_gifticon" />
+                        <include layout="@layout/item_gifticon_vertical_loading" />
 
-        <TextView
-            android:id="@+id/tv_expire_more_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:onClickListener="@{() -> mainVm.gotoList()}"
-            android:padding="8dp"
-            android:text="@string/home_expire_more_label"
-            android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
-            app:layout_constraintBottom_toBottomOf="@id/tv_expire_title"
-            app:layout_constraintEnd_toEndOf="@id/gl_end"
-            app:layout_constraintTop_toTopOf="@id/tv_expire_title" />
+                    </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_expire_gifticon"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_expire_title"
-            app:setItems="@{homeVm.expiredGifticon}"
-            tools:listitem="@layout/item_gifticon_vertical" />
+                </com.facebook.shimmer.ShimmerFrameLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/group_near_announcement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="tv_not_allow_location_permission, btn_location_permission_check"
+                    app:isVisible="@{!homeVm.hasLocationPermission}" />
+
+                <TextView
+                    android:id="@+id/tv_not_allow_location_permission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_location_has_not_permission_description"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/BEEP.TextStyle.Body1"
+                    app:layout_constraintBottom_toTopOf="@id/btn_location_permission_check"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@id/tv_near_title"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <Button
+                    android:id="@+id/btn_location_permission_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:onClickListener="@{() -> homeVm.requestLocationPermission()}"
+                    android:padding="4dp"
+                    android:text="@string/home_location_permission_button"
+                    android:textAppearance="@style/BEEP.TextStyle.Body2"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_title"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@id/tv_not_allow_location_permission" />
+
+                <TextView
+                    android:id="@+id/tv_empty_near_brands"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_empty_near_brands"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/BEEP.TextStyle.Body1"
+                    app:isVisible="@{homeVm.isEmptyNearBrands()}"
+                    app:layout_constraintBottom_toBottomOf="@id/rv_near_gifticon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_near_title" />
+
+                <TextView
+                    android:id="@+id/tv_expire_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/home_expire_title"
+                    android:textAppearance="@style/BEEP.TextStyle.H5"
+                    app:layout_constraintStart_toStartOf="@id/gl_start"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_near_gifticon" />
+
+                <TextView
+                    android:id="@+id/tv_expire_more_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:onClickListener="@{() -> mainVm.gotoList()}"
+                    android:padding="8dp"
+                    android:text="@string/home_expire_more_label"
+                    android:textAppearance="@style/BEEP.TextStyle.Caption.Gray"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_expire_title"
+                    app:layout_constraintEnd_toEndOf="@id/gl_end"
+                    app:layout_constraintTop_toTopOf="@id/tv_expire_title" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_expire_gifticon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_expire_title"
+                    app:setItems="@{homeVm.expiredGifticon}"
+                    tools:listitem="@layout/item_gifticon_vertical" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
