@@ -22,6 +22,7 @@
     <string name="all_prev">이전</string>
     <string name="all_close_button">닫기</string>
     <string name="all_not_use">사용 안 함</string>
+    <string name="all_remove">제거</string>
 
     <string name="confirmation_ok">확인</string>
     <string name="confirmation_title">권한 필요</string>
@@ -228,6 +229,7 @@
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
     <string name="gifticon_list_show_all_brand_chips_button">브랜드 전체 보기 버튼</string>
     <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
+    <string name="gifticon_list_use_complete">사용\n처리</string>
     <string name="gifticon_product_image">기프티콘 상품 이미지</string>
 
     <string name="home_near_title">근처에서 사용할 수 있어요</string>
