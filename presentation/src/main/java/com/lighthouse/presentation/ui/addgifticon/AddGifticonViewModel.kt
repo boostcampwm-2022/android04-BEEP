@@ -92,11 +92,11 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     private fun updateDisplayGifticon(
-        srcIndex: Long?,
+        gifticonId: Long?,
         update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
     ) {
         val index = displayList.value.indexOfFirst {
-            it is AddGifticonItemUIModel.Gifticon && it.id == srcIndex
+            it is AddGifticonItemUIModel.Gifticon && it.id == gifticonId
         }
         if (index == -1) {
             return
@@ -117,10 +117,10 @@ class AddGifticonViewModel @Inject constructor(
 
     private fun updateGifticon(
         checkValid: Boolean = false,
-        srcIndex: Long? = selectedId.value,
+        gifticonId: Long? = selectedId.value,
         update: (AddGifticonUIModel) -> AddGifticonUIModel
     ): AddGifticonUIModel? {
-        val index = gifticonList.value.indexOfFirst { it.id == srcIndex }
+        val index = gifticonList.value.indexOfFirst { it.id == gifticonId }
         if (index == -1) {
             return null
         }
@@ -378,7 +378,7 @@ class AddGifticonViewModel @Inject constructor(
         val approveBrandName = brand.value
         confirmedBrandMap[approveBrandName] = true
         gifticonList.value.forEach { gifticon ->
-            if (gifticon.brandName != approveBrandName || gifticon.approveBrandName == approveBrandName) {
+            if (gifticon.brandName != approveBrandName) {
                 return@forEach
             }
             updateGifticon(true, gifticon.id) {
@@ -695,7 +695,7 @@ class AddGifticonViewModel @Inject constructor(
         if (result.brandName != "" && hasGifticonBrandUseCase(result.brandName)) {
             approveBrandName = result.brandName
         }
-        val updated = updateGifticon(srcIndex = gallery.id) {
+        val updated = updateGifticon(gifticonId = gallery.id) {
             result.toPresentation(
                 id = gallery.id,
                 createdDate = gallery.createdDate,
