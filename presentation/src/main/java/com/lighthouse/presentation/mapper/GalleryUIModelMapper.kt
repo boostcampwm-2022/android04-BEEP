@@ -51,5 +51,5 @@ fun GalleryUIModel.Gallery.toAddGifticonUIModel(): AddGifticonUIModel {
 fun GalleryUIModel.Gallery.toDomain(): GalleryImage = GalleryImage(
     id = id,
     contentUri = uri.toString(),
-    date = createdDate.toDate("")
+    date = createdDate.toDate("yyyy-MM-dd")
 )
