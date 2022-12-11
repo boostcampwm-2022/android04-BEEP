@@ -597,13 +597,6 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     fun loadGalleryImages(list: List<GalleryUIModel.Gallery>) {
-        if (list.find { selectedId.value == it.id } == null) {
-            selectedId.value = -1L
-        }
-        if (selectedId.value == -1L) {
-            selectedId.value = list.getOrNull(0)?.id ?: -1L
-        }
-
         val oldDisplayList = _displayList.value
         _displayList.value = listOf(AddGifticonItemUIModel.Gallery) + list.map { newItem ->
             oldDisplayList.find { oldItem -> oldItem is AddGifticonItemUIModel.Gifticon && newItem.id == oldItem.id }
@@ -620,6 +613,8 @@ class AddGifticonViewModel @Inject constructor(
                 oldItem.id == newItem.id
             }
         }
+
+        selectedId.value = newList.getOrNull(0)?.id ?: selectedId.value
 
         recognizeGifticonList(newList)
     }
