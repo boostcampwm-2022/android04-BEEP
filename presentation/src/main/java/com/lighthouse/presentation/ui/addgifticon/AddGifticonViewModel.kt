@@ -372,7 +372,16 @@ class AddGifticonViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun approveBrandName() {
-        updateApproveBrandName(brand.value)
+        val approveBrandName = brand.value
+        confirmedBrandMap[approveBrandName] = true
+        gifticonList.value.forEach { gifticon ->
+            if (gifticon.brandName != approveBrandName || gifticon.approveBrandName == approveBrandName) {
+                return@forEach
+            }
+            updateGifticon(true, gifticon.id) {
+                it.copy(approveBrandName = approveBrandName)
+            }
+        }
     }
 
     val barcode = selectedGifticon.map {
