@@ -104,6 +104,9 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val boundBottom: Float
         get() = min(curImageRect.bottom, height.toFloat())
 
+    private var cropInitHorizontalMarginPercent = DEFAULT_MARGIN_PERCENT
+    private var cropInitVerticalMarginPercent = DEFAULT_MARGIN_PERCENT
+
     // CropRect 를 줄일 수 있는 최소 범위
     private val calculateMinCropWidth
         get() = if (enableAspectRatio) {
@@ -253,6 +256,11 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
                 } else {
                     curCropRect.set(realImageRect)
                 }
+
+                val widthMargin = curCropRect.width() * cropInitHorizontalMarginPercent
+                val heightMargin = curCropRect.height() * cropInitVerticalMarginPercent
+
+                curCropRect.inset(widthMargin, heightMargin)
             }
         } else {
             realImageRect.set(RECT_F_EMPTY)
@@ -1048,6 +1056,8 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
         private const val MIN_ZOOM = 1f
         private const val MAX_ZOOM = 4f
+
+        private const val DEFAULT_MARGIN_PERCENT = 0.1f
 
         private val CORNER_THICKNESS = 3.dp
         private val CORNER_LENGTH = 12.dp.toInt()

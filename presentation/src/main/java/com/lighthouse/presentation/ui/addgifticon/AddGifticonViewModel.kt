@@ -92,11 +92,11 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     private fun updateDisplayGifticon(
-        srcIndex: Long?,
+        gifticonId: Long?,
         update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
     ) {
         val index = displayList.value.indexOfFirst {
-            it is AddGifticonItemUIModel.Gifticon && it.id == srcIndex
+            it is AddGifticonItemUIModel.Gifticon && it.id == gifticonId
         }
         if (index == -1) {
             return
@@ -117,10 +117,10 @@ class AddGifticonViewModel @Inject constructor(
 
     private fun updateGifticon(
         checkValid: Boolean = false,
-        srcIndex: Long? = selectedId.value,
+        gifticonId: Long? = selectedId.value,
         update: (AddGifticonUIModel) -> AddGifticonUIModel
     ): AddGifticonUIModel? {
-        val index = gifticonList.value.indexOfFirst { it.id == srcIndex }
+        val index = gifticonList.value.indexOfFirst { it.id == gifticonId }
         if (index == -1) {
             return null
         }
@@ -133,7 +133,7 @@ class AddGifticonViewModel @Inject constructor(
         gifticonList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
 
         if (checkValid) {
-            updateSelectedDisplayGifticon { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
+            updateDisplayGifticon(gifticonId) { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
         }
         return newItem
     }
@@ -209,7 +209,15 @@ class AddGifticonViewModel @Inject constructor(
     val displayName = MutableStateFlow("")
     val displayBrand = MutableStateFlow("")
 
-    val selectedGifticon = selectedId.combine(gifticonList) { id, list ->
+    val selectedGifticon = selectedId.onEach { selectedId ->
+        _displayList.value = displayList.value.map {
+            if (it is AddGifticonItemUIModel.Gifticon) {
+                it.copy(isSelected = it.id == selectedId)
+            } else {
+                it
+            }
+        }
+    }.combine(gifticonList) { id, list ->
         list.find { it.id == id }
     }.onEach {
         displayName.value = it?.name ?: ""
@@ -234,8 +242,10 @@ class AddGifticonViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
-        updateSelectedDisplayGifticon { it.copy(thumbnailImage = croppedImage) }
-        updateSelectedGifticon(true) { it.copy(gifticonImage = croppedImage) }
+        val updated = updateSelectedGifticon { it.copy(gifticonImage = croppedImage) } ?: return
+        updateSelectedDisplayGifticon {
+            it.copy(thumbnailImage = croppedImage, isValid = checkGifticonValid(updated) == AddGifticonValid.VALID)
+        }
     }
 
     private val isApproveGifticonImage = selectedGifticon.map {
@@ -309,10 +319,10 @@ class AddGifticonViewModel @Inject constructor(
                     }
                 }
                 updateApproveBrandName(if (approve) brand else "")
+            }
+            hasGifticonBrandJob?.invokeOnCompletion {
                 isLoadingConfirmBrand.value = false
             }
-        } else {
-            isLoadingConfirmBrand.value = false
         }
     }
 
@@ -372,7 +382,16 @@ class AddGifticonViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun approveBrandName() {
-        updateApproveBrandName(brand.value)
+        val approveBrandName = brand.value
+        confirmedBrandMap[approveBrandName] = true
+        gifticonList.value.forEach { gifticon ->
+            if (gifticon.brandName != approveBrandName) {
+                return@forEach
+            }
+            updateGifticon(true, gifticon.id) {
+                it.copy(approveBrandName = approveBrandName)
+            }
+        }
     }
 
     val barcode = selectedGifticon.map {
@@ -683,7 +702,7 @@ class AddGifticonViewModel @Inject constructor(
         if (result.brandName != "" && hasGifticonBrandUseCase(result.brandName)) {
             approveBrandName = result.brandName
         }
-        val updated = updateGifticon(srcIndex = gallery.id) {
+        val updated = updateGifticon(gifticonId = gallery.id) {
             result.toPresentation(
                 id = gallery.id,
                 createdDate = gallery.createdDate,

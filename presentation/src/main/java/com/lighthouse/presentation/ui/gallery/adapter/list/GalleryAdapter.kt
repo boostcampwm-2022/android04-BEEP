@@ -74,7 +74,7 @@ class GalleryAdapter(
                 ) {
                     return UPDATE_SELECTED
                 }
-                return super.getChangePayload(oldItem, newItem)
+                return null
             }
         }
 

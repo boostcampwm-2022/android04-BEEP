@@ -29,10 +29,17 @@ class AddGifticonAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (UPDATE_BADGE in payloads) {
+        if (payloads.isNotEmpty()) {
+            val flag = payloads.getOrNull(0) as? Int ?: 0
             val item = getItem(position)
+
             if (holder is AddCandidateGifticonViewHolder && item is AddGifticonItemUIModel.Gifticon) {
-                holder.bindBadge(item)
+                if (flag and UPDATE_BADGE == UPDATE_BADGE) {
+                    holder.bindBadge(item)
+                }
+                if (flag and UPDATE_SELECTED == UPDATE_SELECTED) {
+                    holder.bindSelected(item)
+                }
             }
         } else {
             onBindViewHolder(holder, position)
@@ -65,18 +72,25 @@ class AddGifticonAdapter(
             override fun getChangePayload(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Any? {
                 if (oldItem is AddGifticonItemUIModel.Gifticon &&
                     newItem is AddGifticonItemUIModel.Gifticon &&
-                    newItem.thumbnailImage == oldItem.thumbnailImage &&
-                    (newItem.isDelete != oldItem.isDelete || newItem.isValid != oldItem.isValid)
+                    newItem.thumbnailImage == oldItem.thumbnailImage
                 ) {
-                    return UPDATE_BADGE
+                    var flag = 0
+                    if (newItem.isDelete != oldItem.isDelete || newItem.isValid != oldItem.isValid) {
+                        flag = flag xor UPDATE_BADGE
+                    }
+                    if (newItem.isSelected != oldItem.isSelected) {
+                        flag = flag xor UPDATE_SELECTED
+                    }
+                    return if (flag != 0) flag else null
                 }
-                return super.getChangePayload(oldItem, newItem)
+                return null
             }
         }
 
         private const val TYPE_GALLERY = 1
         private const val TYPE_GIFTICON = 2
 
-        private const val UPDATE_BADGE = 1
+        private const val UPDATE_BADGE = 1 shl 0
+        private const val UPDATE_SELECTED = 1 shl 1
     }
 }
