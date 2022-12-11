@@ -41,7 +41,7 @@ data class DmsLocation(
 
 object LocationConverter {
 
-    private const val gap = 10
+    private const val gap = 20
     private const val searchGap = gap * 2
 
     private val directions = listOf(
@@ -144,12 +144,11 @@ object LocationConverter {
      * @param coordinateToDouble -> x,y 좌표 double 값
      * @param degree -> 도
      * @param minutes -> 분
-     * @return 초 계산된거에서 내림 값 (32 -> 30)
      */
     private fun getSeconds(coordinateToDouble: Double, degree: Int, minutes: Int) =
         getMinutes((coordinateToDouble - degree) * 60, minutes)
 
-    private fun getDepression(value: Int) = value - value % 10
+    private fun getDepression(value: Int) = value - value % gap
 
     /**
      * x, y 좌표를 기준으로 각 꼭짓점을 찾아주는 함수입니다.
