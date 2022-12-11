@@ -706,6 +706,7 @@ class AddGifticonViewModel @Inject constructor(
             if (result != "") {
                 updateGifticon(true) { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
             } else {
+                updateGifticon { it.copy(nameRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_name)))
             }
         }
@@ -719,6 +720,7 @@ class AddGifticonViewModel @Inject constructor(
             if (result != "") {
                 updateGifticon(true) { it.copy(brandName = result, brandNameRectF = croppedImage.croppedRect) }
             } else {
+                updateGifticon { it.copy(brandNameRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_brand)))
             }
         }
@@ -732,6 +734,7 @@ class AddGifticonViewModel @Inject constructor(
             if (result != "") {
                 updateGifticon(true) { it.copy(barcode = result, barcodeRectF = croppedImage.croppedRect) }
             } else {
+                updateGifticon { it.copy(barcodeRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_barcode)))
             }
         }
@@ -747,6 +750,7 @@ class AddGifticonViewModel @Inject constructor(
                     it.copy(isCashCard = true, balance = result.toString(), balanceRectF = croppedImage.croppedRect)
                 }
             } else {
+                updateGifticon { it.copy(balanceRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_balance)))
             }
         }
@@ -760,6 +764,7 @@ class AddGifticonViewModel @Inject constructor(
             if (result != EMPTY_DATE) {
                 updateGifticon(true) { it.copy(expiredAt = result, expiredAtRectF = croppedImage.croppedRect) }
             } else {
+                updateGifticon { it.copy(expiredAtRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_expired_at)))
             }
         }
