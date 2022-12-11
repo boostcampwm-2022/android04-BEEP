@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -71,6 +72,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var currentFragment: Fragment = homeFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -80,6 +83,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         onBackPressedDispatcher.addCallback(this, callback)
+
+        supportFragmentManager.commit {
+            add(R.id.fl_container, homeFragment, homeFragment.javaClass.name)
+        }
 
         checkUserPreferenceOption()
         collectEvent()
@@ -124,23 +131,51 @@ class MainActivity : AppCompatActivity() {
     private fun collectPage() {
         repeatOnStarted {
             viewModel.pageFlow.collect { page ->
-                val fragment = when (page) {
-                    MainPage.List -> gifticonListFragment
-                    MainPage.Home -> homeFragment
-                    MainPage.Setting -> settingFragment
-                    else -> null
-                }
-                fragment?.let { fg ->
-                    supportFragmentManager.commit {
-                        if (fg != gifticonListFragment && gifticonListFragment.isAdded) hide(gifticonListFragment)
-                        if (fg != homeFragment && homeFragment.isAdded) hide(homeFragment)
-                        if (fg != settingFragment && settingFragment.isAdded) hide(settingFragment)
-                        if (fg.isAdded) {
-                            show(fragment)
-                        } else {
-                            add(R.id.fl_container, fg, fg.javaClass.name)
+                when (page) {
+                    MainPage.List -> {
+                        supportFragmentManager.commit {
+                            setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right)
+                            hide(currentFragment)
+                            if (gifticonListFragment.isAdded) {
+                                show(gifticonListFragment)
+                            } else {
+                                add(R.id.fl_container, gifticonListFragment, gifticonListFragment.javaClass.name)
+                            }
+                            currentFragment = gifticonListFragment
                         }
                     }
+                    MainPage.Setting -> {
+                        supportFragmentManager.commit {
+                            setCustomAnimations(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
+                            hide(currentFragment)
+                            if (settingFragment.isAdded) {
+                                show(settingFragment)
+                            } else {
+                                add(R.id.fl_container, settingFragment, settingFragment.javaClass.name)
+                            }
+                            currentFragment = settingFragment
+                        }
+                    }
+                    MainPage.Home -> {
+                        supportFragmentManager.commit {
+                            when (currentFragment) {
+                                is GifticonListFragment -> {
+                                    setCustomAnimations(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
+                                }
+                                is SettingFragment -> {
+                                    setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right)
+                                }
+                            }
+                            hide(currentFragment)
+                            if (homeFragment.isAdded) {
+                                show(homeFragment)
+                            } else {
+                                add(R.id.fl_container, homeFragment, homeFragment.javaClass.name)
+                            }
+                            currentFragment = homeFragment
+                        }
+                    }
+                    else -> {}
                 }
             }
         }
