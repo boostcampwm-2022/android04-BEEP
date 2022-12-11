@@ -319,13 +319,10 @@ class AddGifticonViewModel @Inject constructor(
                     }
                 }
                 updateApproveBrandName(if (approve) brand else "")
-                isLoadingConfirmBrand.value = false
             }
             hasGifticonBrandJob?.invokeOnCompletion {
                 isLoadingConfirmBrand.value = false
             }
-        } else {
-            isLoadingConfirmBrand.value = false
         }
     }
 
