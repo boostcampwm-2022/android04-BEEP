@@ -234,7 +234,7 @@
     <string name="home_near_more_label">지도보기</string>
     <string name="home_expire_title">사용 기한이 임박했어요!</string>
     <string name="home_expire_more_label">더보기</string>
-
+    <string name="home_appbar_name">홈</string>
     <string name="home_near_gifticon_distance">%dm</string>
     <string name="home_near_gifticon_announce">100m 이내</string>
     <string name="home_empty_gifticon_description">현재 사용 가능한 쿠폰이 존재하지 않습니다.</string>
