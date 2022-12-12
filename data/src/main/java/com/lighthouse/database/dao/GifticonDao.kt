@@ -69,6 +69,12 @@ interface GifticonDao {
     fun useCashCardGifticon(gifticonId: String, balance: Int)
 
     /**
+     * 기프티콘을 삭제한다
+     */
+    @Query("DELETE FROM $GIFTICON_TABLE WHERE id = :gifticonId")
+    suspend fun removeGifticon(gifticonId: String)
+
+    /**
      * 기프티콘의 사용 기록을 조회한다
      * */
     @Query("SELECT * FROM $USAGE_HISTORY_TABLE WHERE gifticon_id = :gifticonId")

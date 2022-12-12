@@ -205,7 +205,7 @@ fun BrandChip(
         },
         modifier = modifier.wrapContentWidth(),
         colors = ChipDefaults.filterChipColors(
-            backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.2f),
+            backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
             contentColor = MaterialTheme.colors.onSurface,
             selectedBackgroundColor = MaterialTheme.colors.primary,
             selectedContentColor = Color.White
