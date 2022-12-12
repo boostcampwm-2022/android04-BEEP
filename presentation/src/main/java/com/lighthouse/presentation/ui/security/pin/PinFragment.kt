@@ -61,7 +61,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
 
         managePinMode()
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pushedNum.collect { num ->
                 animateNumberPadBackground(num)
             }

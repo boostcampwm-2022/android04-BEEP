@@ -54,7 +54,7 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
             binding.ivBackspace
         )
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pushedNum.collect { num ->
                 animateNumberPadBackground(num)
             }
@@ -65,7 +65,7 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     }
 
     private fun managePinMode() {
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pinMode.collect { mode ->
                 when (mode) {
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
