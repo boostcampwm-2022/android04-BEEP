@@ -33,6 +33,10 @@
 
     <style name="BEEP.TextStyle.Caption" parent="TextAppearance.MaterialComponents.Caption" />
 
+    <style name="BEEP.TextStyle.Caption2" parent="TextAppearance.MaterialComponents.Caption" >
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="BEEP.TextStyle.Caption.White">
         <item name="android:textColor">@color/white</item>
     </style>
