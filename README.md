@@ -48,10 +48,10 @@
 
 ### 기프티콘 추가
 
-|등록화면|이미지확인|갤러리|이미지편집|
-|:-----:|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108320-3505e4fb-8cd6-4260-886a-5eadf9e1afbe.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108312-04a0033a-5f10-4325-b940-a51c42b3c31c.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015611-52d291cc-1ac3-4014-a25f-8006055becab.png">|<img width=200 src="https://user-images.githubusercontent.com/9216335/204015793-3062337d-b79e-40d6-aaec-2c5779a1d4f3.png">|
-|구현중|구현중|구현중|구현완료|
+|자동파싱|직접파싱|
+|:-----:|:-----:|
+|<img width=200 src="https://user-images.githubusercontent.com/44221447/207056513-c9f390f1-dfdf-44fb-868c-70bb1aaf0b62.gif">|<img width=200 src="https://user-images.githubusercontent.com/44221447/207055517-0a13df07-91a0-4f0d-bb81-f78b4000d4cb.gif">|
+|구현완료|구현완료|
 
 ### 목록 & 디테일
 
