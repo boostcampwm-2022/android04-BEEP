@@ -25,10 +25,6 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinDialogViewModel by viewModels()
 
-    private val shakeAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
-    }
-
     private val fadeUpAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
     }
@@ -69,10 +65,7 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
             viewModel.pinMode.collect { mode ->
                 when (mode) {
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
-                    PinSettingType.WRONG -> {
-                        binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
-                        playWrongPinAnimation()
-                    }
+                    PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> {
                         binding.ivCheck.apply {
                             visibility = View.VISIBLE
@@ -92,15 +85,6 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
         val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.clPin.minHeight = (screenHeight * 0.9).toInt()
-    }
-
-    private fun playWrongPinAnimation() {
-        binding.ivPin0.startAnimation(shakeAnimation)
-        binding.ivPin1.startAnimation(shakeAnimation)
-        binding.ivPin2.startAnimation(shakeAnimation)
-        binding.ivPin3.startAnimation(shakeAnimation)
-        binding.ivPin4.startAnimation(shakeAnimation)
-        binding.ivPin5.startAnimation(shakeAnimation)
     }
 
     private fun animateNumberPadBackground(num: Int) {

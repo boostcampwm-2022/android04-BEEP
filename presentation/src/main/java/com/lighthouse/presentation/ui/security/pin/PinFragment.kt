@@ -29,10 +29,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private val viewModel: PinSettingViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
 
-    private val shakeAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
-    }
-
     private val fadeUpAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
     }
@@ -87,7 +83,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                     }
                     PinSettingType.WRONG -> {
                         binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
-                        playWrongPinAnimation()
                     }
                     PinSettingType.COMPLETE -> {
                         Snackbar.make(requireView(), getString(R.string.pin_complete), Snackbar.LENGTH_SHORT)
@@ -119,15 +114,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                 }
             }
         }
-    }
-
-    private fun playWrongPinAnimation() {
-        binding.ivPin0.startAnimation(shakeAnimation)
-        binding.ivPin1.startAnimation(shakeAnimation)
-        binding.ivPin2.startAnimation(shakeAnimation)
-        binding.ivPin3.startAnimation(shakeAnimation)
-        binding.ivPin4.startAnimation(shakeAnimation)
-        binding.ivPin5.startAnimation(shakeAnimation)
     }
 
     private fun animateNumberPadBackground(num: Int) {

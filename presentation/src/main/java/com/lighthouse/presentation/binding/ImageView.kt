@@ -4,12 +4,14 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.lighthouse.presentation.R
 
 @BindingAdapter("loadUri")
 fun ImageView.loadUri(uri: Uri?) {
@@ -72,4 +74,13 @@ fun setImageRes(view: ImageView, @DrawableRes resId: Int?) {
 fun setTintRes(view: ImageView, @ColorRes resId: Int?) {
     resId ?: return
     view.imageTintList = ColorStateList.valueOf(view.context.getColor(resId))
+}
+
+@BindingAdapter("shakeAnimation")
+fun playShakeAnimation(view: ImageView, play: Boolean) {
+    val shakeAnimation = AnimationUtils.loadAnimation(view.context, R.anim.anim_shake)
+
+    if (play) {
+        view.startAnimation(shakeAnimation)
+    }
 }
