@@ -156,6 +156,7 @@
     <string name="gifticon_detail_unused_mode_button_text">기프티콘 사용</string>
     <string name="gifticon_detail_used_mode_button_text">사용 취소</string>
     <string name="gifticon_detail_used_image_label">사용완료\n%4d.%02d.%02d</string>
+    <string name="gifticon_detail_used_image_label_not_date">사용완료</string>
     <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
     <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
     <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>

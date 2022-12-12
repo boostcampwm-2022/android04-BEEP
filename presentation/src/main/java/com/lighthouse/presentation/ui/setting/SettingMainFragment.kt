@@ -28,6 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.background.BeepWorkManager
 import com.lighthouse.presentation.databinding.FragmentSettingMainBinding
+import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.main.MainViewModel
@@ -111,14 +112,15 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
         activityViewModel.gotoMenuItem(-1)
         parentFragmentManager.commit {
             setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top)
-            add(R.id.fcv_setting, settingSecurityFragment)
+            add(R.id.fcv_setting, settingSecurityFragment, Extras.TAG_DETAIL_SETTING)
         }
     }
 
     private fun gotoUsedGifticon() {
         activityViewModel.gotoMenuItem(-1)
         parentFragmentManager.commit {
-            add(R.id.fcv_setting, UsedGifticonFragment())
+            setCustomAnimations(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top)
+            add(R.id.fcv_setting, UsedGifticonFragment(), Extras.TAG_DETAIL_SETTING)
         }
     }
 
@@ -162,7 +164,8 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                     val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                     auth.signInWithCredential(credential).addOnCompleteListener { signInTask ->
                         if (signInTask.isSuccessful) {
-                            Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(requireView(), getString(R.string.signin_success), Snackbar.LENGTH_SHORT)
+                                .show()
                             auth.uid?.let { viewModel.moveGuestData(it) }
                         } else {
                             Snackbar.make(requireView(), getString(R.string.signin_fail), Snackbar.LENGTH_SHORT).show()
