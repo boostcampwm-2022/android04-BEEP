@@ -2,9 +2,7 @@ package com.lighthouse.presentation.binding
 
 import android.view.View
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.databinding.BindingAdapter
-import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.OnThrottleClickListener
 
 @BindingAdapter("isVisible")
@@ -21,30 +19,20 @@ fun View.setOnThrottleClickListener(listener: (View) -> Unit) {
     })
 }
 
-@BindingAdapter("isStamp")
-fun playStampAnimation(view: View, visible: Boolean) {
-    view.visibility = if (visible) View.VISIBLE else View.GONE
-    if (visible) {
-        val animation = AnimationUtils.loadAnimation(view.context, R.anim.anim_stamp)
-        view.startAnimation(animation)
-    } else {
-        val animation = AnimationUtils.loadAnimation(view.context, R.anim.anim_fade_out)
-        view.startAnimation(animation)
-    }
-}
-
-@BindingAdapter("isSmoothVisible")
-fun playSmoothVisibleAnimation(view: View, visible: Boolean) {
-    view.visibility = if (visible) View.VISIBLE else View.GONE
-    if (visible) {
-        val animation = AnimationUtils.loadAnimation(view.context, R.anim.anim_fadein_up)
-        view.startAnimation(animation)
-    }
-}
-
 @BindingAdapter(value = ["animation", "animationCondition"], requireAll = false)
 fun View.playAnimation(animation: Animation, condition: Boolean? = null) {
     if (condition != false) {
         startAnimation(animation)
+    }
+}
+
+@BindingAdapter(value = ["isAnimatedVisible", "visibleAnimation", "goneAnimation"], requireAll = false)
+fun View.playVisibilityAnimation(visible: Boolean, visibleAnimation: Animation?, goneAnimation: Animation?) {
+    if (visible) {
+        visibility = View.VISIBLE
+        visibleAnimation?.let { startAnimation(it) }
+    } else {
+        goneAnimation?.let { startAnimation(it) }
+        visibility = View.GONE
     }
 }

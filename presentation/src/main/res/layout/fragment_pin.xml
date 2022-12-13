@@ -52,11 +52,12 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
             android:src="@{vm.pinString.length &lt; 1 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:animation="@{@anim/anim_shake}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.WRONG}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_1"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:shakeAnimation="@{vm.pinMode == PinSettingType.WRONG}" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
 
         <ImageView
             android:id="@+id/iv_pin_1"
@@ -65,10 +66,11 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
             android:src="@{vm.pinString.length &lt; 2 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:animation="@{@anim/anim_shake}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.WRONG}"
             app:layout_constraintEnd_toEndOf="@id/iv_pin_2"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_0"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:shakeAnimation="@{vm.pinMode == PinSettingType.WRONG}" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
 
         <ImageView
             android:id="@+id/iv_pin_2"
@@ -77,10 +79,11 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
             android:src="@{vm.pinString.length &lt; 3 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:animation="@{@anim/anim_shake}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.WRONG}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_3"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_1"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:shakeAnimation="@{vm.pinMode == PinSettingType.WRONG}" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
 
         <ImageView
             android:id="@+id/iv_pin_3"
@@ -89,10 +92,11 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
             android:src="@{vm.pinString.length &lt; 4 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:animation="@{@anim/anim_shake}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.WRONG}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_4"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_2"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:shakeAnimation="@{vm.pinMode == PinSettingType.WRONG}" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
 
         <ImageView
             android:id="@+id/iv_pin_4"
@@ -101,10 +105,11 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/pin"
             android:src="@{vm.pinString.length &lt; 5 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:animation="@{@anim/anim_shake}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.WRONG}"
             app:layout_constraintEnd_toStartOf="@+id/iv_pin_5"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_3"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:shakeAnimation="@{vm.pinMode == PinSettingType.WRONG}" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
 
         <ImageView
             android:id="@+id/iv_pin_5"
@@ -114,10 +119,11 @@
             android:layout_marginEnd="100dp"
             android:contentDescription="@string/pin"
             android:src="@{vm.pinString.length &lt; 6 ? @drawable/ic_pin_border : @drawable/ic_pin_filled}"
+            app:animation="@{@anim/anim_shake}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.WRONG}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_4"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:shakeAnimation="@{vm.pinMode == PinSettingType.WRONG}" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_description" />
 
         <ImageView
             android:id="@+id/iv_check"
@@ -127,11 +133,11 @@
             android:layout_marginTop="28dp"
             android:contentDescription="@string/pin"
             android:src="@drawable/ic_check"
-            app:animation="@{@anim/anim_fadein_up}"
-            app:animationCondition="@{vm.pinMode == PinSettingType.COMPLETE}"
+            app:isAnimatedVisible="@{vm.pinMode == PinSettingType.COMPLETE}"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_5"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
-            app:tint="@color/point_green" />
+            app:tint="@color/point_green"
+            app:visibleAnimation="@{@anim/anim_fadein_up}" />
 
         <TextView
             android:id="@+id/tv_secure_not_use"
