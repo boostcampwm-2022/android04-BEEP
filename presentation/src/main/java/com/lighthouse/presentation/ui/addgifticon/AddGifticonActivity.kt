@@ -219,16 +219,29 @@ class AddGifticonActivity : AppCompatActivity() {
         gotoCropLauncher.launch(intent)
     }
 
+    private var originImageDialog: OriginImageDialog? = null
+
     private fun showOriginGifticonDialog(uri: Uri) {
-        OriginImageDialog().apply {
+        if (originImageDialog?.isAdded == true) {
+            originImageDialog?.dismiss()
+        }
+        originImageDialog = OriginImageDialog().apply {
             arguments = Bundle().apply {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
-        }.show(supportFragmentManager)
+        }
+        originImageDialog?.show(supportFragmentManager)
     }
 
+    private var spinnerDatePicker: SpinnerDatePicker? = null
+
     private fun showExpiredAtDatePicker(date: Date) {
-        SpinnerDatePicker().apply {
+        if (spinnerDatePicker?.isAdded == true) {
+            spinnerDatePicker?.dismiss()
+        }
+
+        spinnerDatePicker = SpinnerDatePicker().apply {
+            setDate(date)
             setOnDatePickListener { year, month, dayOfMonth ->
                 val newDate = Calendar.getInstance(Locale.getDefault()).let {
                     it.set(year, month - 1, dayOfMonth)
@@ -236,9 +249,8 @@ class AddGifticonActivity : AppCompatActivity() {
                 }
                 viewModel.updateExpiredAt(newDate)
             }
-        }.apply {
-            setDate(date)
-        }.show(supportFragmentManager)
+        }
+        spinnerDatePicker?.show(supportFragmentManager)
     }
 
     private var confirmationCancelDialog: ConfirmationDialog? = null
