@@ -34,6 +34,7 @@ import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,7 +89,7 @@ class AddGifticonViewModel @Inject constructor(
     private fun updateSelectedDisplayGifticon(
         update: (AddGifticonItemUIModel.Gifticon) -> AddGifticonItemUIModel.Gifticon
     ) {
-        updateDisplayGifticon(selectedId.value, update)
+        updateDisplayGifticon(selectedGifticon.value?.id, update)
     }
 
     private fun updateDisplayGifticon(
@@ -113,11 +114,11 @@ class AddGifticonViewModel @Inject constructor(
     private fun updateSelectedGifticon(
         checkValid: Boolean = false,
         update: (AddGifticonUIModel) -> AddGifticonUIModel
-    ) = updateGifticon(checkValid, selectedId.value, update)
+    ) = updateGifticon(checkValid, selectedGifticon.value?.id, update)
 
     private fun updateGifticon(
         checkValid: Boolean = false,
-        gifticonId: Long? = selectedId.value,
+        gifticonId: Long? = selectedGifticon.value?.id,
         update: (AddGifticonUIModel) -> AddGifticonUIModel
     ): AddGifticonUIModel? {
         val index = gifticonList.value.indexOfFirst { it.id == gifticonId }
@@ -162,14 +163,15 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     fun deleteGifticon(gifticon: AddGifticonItemUIModel.Gifticon) {
-        if (selectedId.value == gifticon.id) {
+        if (selectedGifticon.value?.id == gifticon.id) {
             val oldList = gifticonList.value
-            val index = oldList.indexOfFirst { it.id == selectedId.value }
-            selectedId.value = when {
+            val index = oldList.indexOfFirst { it.id == selectedGifticon.value?.id }
+            val id = when {
                 index + 1 < oldList.size -> oldList[index + 1].id
                 index - 1 >= 0 -> oldList[index - 1].id
                 else -> -1
             }
+            selectGifticonId(id)
         }
         deleteDisplayGifticon(gifticon.id)
         deleteGifticon(gifticon.id)
@@ -200,10 +202,17 @@ class AddGifticonViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, UIText.Empty)
 
-    private var selectedId = MutableStateFlow(-1L)
+    private var selectedId = MutableSharedFlow<Long>()
+
+    private fun selectGifticonId(id: Long?) {
+        id ?: return
+        viewModelScope.launch {
+            selectedId.emit(id)
+        }
+    }
 
     fun selectGifticon(gifticon: AddGifticonItemUIModel.Gifticon) {
-        selectedId.value = gifticon.id
+        selectGifticonId(gifticon.id)
     }
 
     val displayName = MutableStateFlow("")
@@ -217,11 +226,11 @@ class AddGifticonViewModel @Inject constructor(
                 it
             }
         }
+        val gifticon = gifticonList.value.find { it.id == selectedId }
+        displayName.value = gifticon?.name ?: ""
+        displayBrand.value = gifticon?.brandName ?: ""
     }.combine(gifticonList) { id, list ->
         list.find { it.id == id }
-    }.onEach {
-        displayName.value = it?.name ?: ""
-        displayBrand.value = it?.brandName ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val expiredAtDate: Date?
@@ -673,7 +682,7 @@ class AddGifticonViewModel @Inject constructor(
             }
         }
 
-        selectedId.value = newList.getOrNull(0)?.id ?: selectedId.value
+        selectGifticonId(newList.getOrNull(0)?.id)
 
         recognizeGifticonList(newList)
     }
@@ -714,6 +723,9 @@ class AddGifticonViewModel @Inject constructor(
                 thumbnailImage = updated.gifticonImage,
                 isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
             )
+        }
+        if (updated.id == selectedGifticon.value?.id) {
+            selectGifticonId(updated.id)
         }
     }
 
@@ -837,7 +849,7 @@ class AddGifticonViewModel @Inject constructor(
                 for (gifticon in gifticonList.value) {
                     valid = checkGifticonValid(gifticon)
                     if (valid != AddGifticonValid.VALID) {
-                        selectedId.emit(gifticon.id)
+                        selectGifticonId(gifticon.id)
                         break
                     }
                 }
