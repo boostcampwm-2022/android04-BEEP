@@ -45,7 +45,7 @@
         <receiver
             android:name=".ui.widget.BeepWidgetReceiver"
             android:exported="false"
-            android:label="Gifticon Widget">
+            android:label="Beep">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -1,7 +1,10 @@
 package com.lighthouse.presentation.ui.main
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,8 +27,6 @@ import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
 import com.lighthouse.presentation.ui.setting.SettingSecurityFragment
-import com.lighthouse.presentation.util.permission.StoragePermissionManager
-import com.lighthouse.presentation.util.permission.core.permissions
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -39,9 +40,14 @@ class MainActivity : AppCompatActivity() {
 
     val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            when (supportFragmentManager.fragments.first { it.isVisible }) {
+            when (val currentFragment = supportFragmentManager.fragments.first { it.isVisible }) {
                 is HomeFragmentContainer -> finish()
-                is SettingSecurityFragment -> {} // SettingSecurityFragment 에서 관리하는 부분을 옮기려고 했는데 안 되네요...
+                is SettingFragment -> {
+                    if (currentFragment.isSettingMainFragment()) {
+                        binding.bnv.selectedItemId = R.id.menu_home
+                        viewModel.gotoHome()
+                    }
+                }
                 else -> {
                     binding.bnv.selectedItemId = R.id.menu_home
                     viewModel.gotoHome()
@@ -202,12 +208,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isStoragePermissionGrant(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+        } else {
+            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun getStoragePermission(): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+    }
+
     private fun gotoAddGifticon() {
-        if (storagePermission.isGrant) {
+        if (isStoragePermissionGrant()) {
             val intent = Intent(this, AddGifticonActivity::class.java)
             addGifticon.launch(intent)
         } else {
-            storagePermissionLauncher.launch(storagePermission.permission)
+            storagePermissionLauncher.launch(getStoragePermission())
         }
     }
 

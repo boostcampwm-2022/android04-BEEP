@@ -51,18 +51,27 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
                     Snackbar.make(requireView(), getString(R.string.signin_google_fail), Snackbar.LENGTH_SHORT).show()
                 }
             } else {
-                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), getString(R.string.signin_google_connect_fail), Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         checkAutoLogin()
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val animatedVectorDrawable = binding.ivLogo.drawable as AnimatedVectorDrawable
         animatedVectorDrawable.start()
 
         binding.tvGuestSignin.setOnClickListener {
             guestSignIn()
+        }
+
+        binding.btnGoogleLogin.setOnClickListener {
+            activityLauncher.launch(googleSignInClient.signInIntent)
+            progressDialog.show(parentFragmentManager, "progress")
         }
     }
 
@@ -89,11 +98,6 @@ class SignInFragment : Fragment(R.layout.fragment_sign_in) {
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOptions)
-
-        binding.btnGoogleLogin.setOnClickListener {
-            activityLauncher.launch(googleSignInClient.signInIntent)
-            progressDialog.show(parentFragmentManager, "progress")
-        }
     }
 
     private fun signInWithGoogle(account: GoogleSignInAccount) {

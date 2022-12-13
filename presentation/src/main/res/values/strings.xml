@@ -22,6 +22,7 @@
     <string name="all_prev">이전</string>
     <string name="all_close_button">닫기</string>
     <string name="all_not_use">사용 안 함</string>
+    <string name="all_remove">제거</string>
 
     <string name="confirmation_ok">확인</string>
     <string name="confirmation_title">권한 필요</string>
@@ -156,6 +157,7 @@
     <string name="gifticon_detail_unused_mode_button_text">기프티콘 사용</string>
     <string name="gifticon_detail_used_mode_button_text">사용 취소</string>
     <string name="gifticon_detail_used_image_label">사용완료\n%4d.%02d.%02d</string>
+    <string name="gifticon_detail_used_image_label_not_date">사용완료</string>
     <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
     <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
     <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
@@ -228,13 +230,17 @@
     <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
     <string name="gifticon_list_show_all_brand_chips_button">브랜드 전체 보기 버튼</string>
     <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
+    <string name="gifticon_list_use_complete">사용\n처리</string>
+    <string name="gifticon_list_remove_gifticon_dialog_title">기프티콘을 삭제합니다</string>
+    <string name="gifticon_list_remove_gifticon_dialog_message">삭제하면 복구할 수 없습니다. 정말 삭제하시겠습니까?</string>
+    <string name="gifticon_list_remove_gifticon_dialog_remove_button">삭제하기</string>
     <string name="gifticon_product_image">기프티콘 상품 이미지</string>
 
     <string name="home_near_title">근처에서 사용할 수 있어요</string>
     <string name="home_near_more_label">지도보기</string>
     <string name="home_expire_title">사용 기한이 임박했어요!</string>
     <string name="home_expire_more_label">더보기</string>
-
+    <string name="home_appbar_name">홈</string>
     <string name="home_near_gifticon_distance">%dm</string>
     <string name="home_near_gifticon_announce">100m 이내</string>
     <string name="home_empty_gifticon_description">현재 사용 가능한 쿠폰이 존재하지 않습니다.</string>
@@ -271,6 +277,4 @@
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
     <string name="map_back_button">맵에서 뒤로가기 버튼</string>
-
-
 </resources>

@@ -53,12 +53,6 @@ class BrandLocalDataSourceImpl @Inject constructor(
         brandWithSectionDao.insertBrand(brandPlaceInfos.toEntity())
     }
 
-    override suspend fun insertSection(x: Dms, y: Dms, brandName: String) {
-        brandWithSectionDao.insertSection(
-            SectionEntity(combineSectionId(x.dmsToString(), y.dmsToString(), brandName), Date(), x, y)
-        )
-    }
-
     override suspend fun isNearBrand(x: Dms, y: Dms, brandName: String): List<BrandLocationEntity>? {
         val sectionResults =
             brandWithSectionDao.getBrands(combineSectionId(x.dmsToString(), y.dmsToString(), brandName)) ?: return null

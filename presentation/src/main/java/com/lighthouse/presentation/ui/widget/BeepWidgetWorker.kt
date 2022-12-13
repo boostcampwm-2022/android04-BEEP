@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.widget
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,29 +12,29 @@ import androidx.glance.appwidget.updateAll
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.google.android.gms.location.LocationServices
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
-import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltWorker
+@SuppressLint("MissingPermission")
 class BeepWidgetWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     getGifticonsUseCase: GetGifticonsUseCase,
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
-    private val getUserLocationUseCase: GetUserLocationUseCase
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : CoroutineWorker(context, workerParams) {
 
     private val gifticonsDbResult = getGifticonsUseCase.getUsableGifticons()
@@ -55,7 +56,10 @@ class BeepWidgetWorker @AssistedInject constructor(
         }
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
 
+    private var job: Job? = null
+
     override suspend fun doWork(): Result {
+        if (job?.isActive == true || job != null) job?.cancel()
         setWidgetState(WidgetState.Loading)
         return when (hasLocationPermission()) {
             true -> {
@@ -70,11 +74,14 @@ class BeepWidgetWorker @AssistedInject constructor(
     }
 
     private suspend fun startWidget() {
-        val lastLocation = getUserLocationUseCase().first()
-        getNearBrands(lastLocation.longitude, lastLocation.latitude)
+        LocationServices.getFusedLocationProviderClient(context).lastLocation.addOnSuccessListener { lastLocation ->
+            job = CoroutineScope(Dispatchers.IO).launch {
+                getNearBrands(lastLocation.longitude, lastLocation.latitude)
+            }
+        }
     }
 
-    private suspend fun getNearBrands(x: Double, y: Double) = withContext(Dispatchers.IO) {
+    private suspend fun getNearBrands(x: Double, y: Double) {
         getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
             .mapCatching { brandPlaceInfos -> brandPlaceInfos.toPresentation() }
             .onSuccess { brandPlaceInfoUiModel ->

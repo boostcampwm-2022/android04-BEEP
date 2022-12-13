@@ -19,5 +19,6 @@
 
     <color name="yellow">#FEDD16</color>
     <color name="point_green">#06DA79</color>
+    <color name="point_green_dark">#0EBA75</color>
     <color name="widget_background">#FFFFFFFF</color>
 </resources>

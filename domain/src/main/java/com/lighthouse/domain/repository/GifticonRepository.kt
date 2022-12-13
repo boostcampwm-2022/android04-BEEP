@@ -29,6 +29,7 @@ interface GifticonRepository {
     suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory)
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory)
     suspend fun unUseGifticon(gifticonId: String)
+    suspend fun removeGifticon(gifticonId: String)
     fun getGifticonByBrand(brand: String): Flow<DbResult<List<Gifticon>>>
     fun hasUsableGifticon(userId: String): Flow<Boolean>
     fun getUsableGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
