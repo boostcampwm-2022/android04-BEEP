@@ -94,6 +94,6 @@ class SharedLocationManager @Inject constructor(
     }
 
     companion object {
-        private const val LOCATION_INTERVAL = 30000L
+        private const val LOCATION_INTERVAL = 10000L
     }
 }
