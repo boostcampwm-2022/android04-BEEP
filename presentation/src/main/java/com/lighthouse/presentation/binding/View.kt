@@ -1,8 +1,8 @@
 package com.lighthouse.presentation.binding
 
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.annotation.AnimRes
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.OnThrottleClickListener
@@ -43,8 +43,8 @@ fun playSmoothVisibleAnimation(view: View, visible: Boolean) {
 }
 
 @BindingAdapter(value = ["animation", "animationCondition"], requireAll = false)
-fun View.playAnimation(@AnimRes id: Int, condition: Boolean? = null) {
+fun View.playAnimation(animation: Animation, condition: Boolean? = null) {
     if (condition != false) {
-        startAnimation(AnimationUtils.loadAnimation(context, id))
+        startAnimation(animation)
     }
 }
