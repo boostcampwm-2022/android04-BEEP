@@ -19,7 +19,10 @@ class PermissionDelegate<PM : PermissionManager>(
     init {
         lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
-                manager?.permissionFlow?.value = manager?.isGrant
+                val manager = manager
+                if (manager != null) {
+                    manager.permissionFlow.value = manager.isGrant
+                }
             }
 
             override fun onDestroy(owner: LifecycleOwner) {

@@ -12,7 +12,9 @@ abstract class PermissionManager(
     val permission
         get() = permissions.firstOrNull() ?: ""
 
-    val permissionFlow = MutableStateFlow<Boolean?>(null)
+    val permissionFlow by lazy {
+        MutableStateFlow(isGrant)
+    }
 
     val isGrant
         get() = permissions.all { permission ->
