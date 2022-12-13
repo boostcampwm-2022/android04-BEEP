@@ -127,7 +127,8 @@
             android:layout_marginTop="28dp"
             android:contentDescription="@string/pin"
             android:src="@drawable/ic_check"
-            app:isSmoothVisible="@{vm.pinMode == PinSettingType.COMPLETE}"
+            app:animation="@{@anim/anim_fadein_up}"
+            app:animationCondition="@{vm.pinMode == PinSettingType.COMPLETE}"
             app:layout_constraintStart_toEndOf="@+id/iv_pin_5"
             app:layout_constraintTop_toBottomOf="@+id/tv_pin_description"
             app:tint="@color/point_green" />

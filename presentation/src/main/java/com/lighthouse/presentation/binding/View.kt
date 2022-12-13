@@ -42,14 +42,9 @@ fun playSmoothVisibleAnimation(view: View, visible: Boolean) {
     }
 }
 
-@BindingAdapter("animation")
-fun playAnimation(view: View, @AnimRes id: Int) {
-    view.startAnimation(AnimationUtils.loadAnimation(view.context, id))
-}
-
-@BindingAdapter("animation", "animationCondition", requireAll = true)
-fun playConditionAnimation(view: View, @AnimRes animId: Int, playCondition: Boolean) {
-    if (playCondition) {
-        view.startAnimation(AnimationUtils.loadAnimation(view.context, animId))
+@BindingAdapter(value = ["animation", "animationCondition"], requireAll = false)
+fun View.playAnimation(@AnimRes id: Int, condition: Boolean? = null) {
+    if (condition != false) {
+        startAnimation(AnimationUtils.loadAnimation(context, id))
     }
 }
