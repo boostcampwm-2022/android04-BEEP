@@ -17,7 +17,6 @@ import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,24 +44,20 @@ class GalleryViewModel @Inject constructor(
 
     val list = _pagingData.combine(_selectedList) { pagingData, selectedList ->
         pagingData.map { galleryImage ->
-            withContext(Dispatchers.IO) {
-                galleryImage.toPresentation(
-                    selectedList.indexOfFirst { gallery -> galleryImage.id == gallery.id }
-                )
-            }
+            galleryImage.toPresentation(
+                selectedList.indexOfFirst { gallery -> galleryImage.id == gallery.id }
+            )
         }.insertSeparators { before: GalleryUIModel.Gallery?, after: GalleryUIModel.Gallery? ->
-            withContext(Dispatchers.IO) {
-                if (before == null && after != null) {
+            if (before == null && after != null) {
+                GalleryUIModel.Header(after.createdDate)
+            } else if (before != null && after != null) {
+                if (before.createdDate != after.createdDate) {
                     GalleryUIModel.Header(after.createdDate)
-                } else if (before != null && after != null) {
-                    if (before.createdDate != after.createdDate) {
-                        GalleryUIModel.Header(after.createdDate)
-                    } else {
-                        null
-                    }
                 } else {
                     null
                 }
+            } else {
+                null
             }
         }
     }.cachedIn(viewModelScope)
