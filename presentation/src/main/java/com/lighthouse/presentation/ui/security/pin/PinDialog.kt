@@ -5,8 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -25,36 +23,12 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinDialogViewModel by viewModels()
 
-    private val shakeAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
-    }
-
-    private val fadeUpAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
-    }
-
-    private lateinit var numberPadViews: List<View>
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        numberPadViews = listOf(
-            binding.tvNum0,
-            binding.tvNum1,
-            binding.tvNum2,
-            binding.tvNum3,
-            binding.tvNum4,
-            binding.tvNum5,
-            binding.tvNum6,
-            binding.tvNum7,
-            binding.tvNum8,
-            binding.tvNum9,
-            binding.ivBackspace
-        )
-
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pushedNum.collect { num ->
                 animateNumberPadBackground(num)
             }
@@ -65,19 +39,12 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     }
 
     private fun managePinMode() {
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pinMode.collect { mode ->
                 when (mode) {
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
-                    PinSettingType.WRONG -> {
-                        binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
-                        playWrongPinAnimation()
-                    }
+                    PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> {
-                        binding.ivCheck.apply {
-                            visibility = View.VISIBLE
-                            startAnimation(fadeUpAnimation)
-                        }
                         authCallback.onAuthSuccess()
                         delay(1000L)
                         dismiss()
@@ -94,17 +61,22 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
         binding.clPin.minHeight = (screenHeight * 0.9).toInt()
     }
 
-    private fun playWrongPinAnimation() {
-        binding.ivPin0.startAnimation(shakeAnimation)
-        binding.ivPin1.startAnimation(shakeAnimation)
-        binding.ivPin2.startAnimation(shakeAnimation)
-        binding.ivPin3.startAnimation(shakeAnimation)
-        binding.ivPin4.startAnimation(shakeAnimation)
-        binding.ivPin5.startAnimation(shakeAnimation)
-    }
-
     private fun animateNumberPadBackground(num: Int) {
         if (num < 0) return
+
+        val view = when (num) {
+            0 -> binding.tvNum0
+            1 -> binding.tvNum1
+            2 -> binding.tvNum2
+            3 -> binding.tvNum3
+            4 -> binding.tvNum4
+            5 -> binding.tvNum5
+            6 -> binding.tvNum6
+            7 -> binding.tvNum7
+            8 -> binding.tvNum8
+            9 -> binding.tvNum9
+            else -> binding.ivBackspace
+        }
 
         val startColor =
             when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
@@ -121,7 +93,7 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
             .apply {
                 duration = 300
                 addUpdateListener {
-                    numberPadViews[num].setBackgroundColor(it.animatedValue as Int)
+                    view.setBackgroundColor(it.animatedValue as Int)
                 }
             }.start()
     }

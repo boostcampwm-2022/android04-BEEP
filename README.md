@@ -32,54 +32,44 @@
 
 ## 기능 소개
 
-### 회원가입 & 로그인
+### 홈 및 보안설정
 
-|스플래시|로그인|지문|PIN 설정|
-|:-----:|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107188-59a7dda5-3fc3-4ffe-888e-e5f74b1ebdc8.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107180-8e674ed5-2156-4d1b-bb9f-40bc968fd62d.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107192-ec5cf9ef-e14b-4a99-81b1-f2e624ccb1dc.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203107196-211d1c54-b2fb-426e-a600-b8b952db6c8f.png">|
-|구현중|구현중|구현중|구현중|
+|스플래시|보안 설정|홈|
+|:-----:|:-----:|:-----:|
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207079377-583d2957-6f2d-4928-b0f9-1b38d93b0615.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207080095-5eb24b14-c827-4b6f-a8b7-ab4ceca51ac4.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207086186-77eb9038-1e16-4dea-9af9-606161c3aa1f.gif" />|
 
-### 메인 & 지도
+### 지도
 
-|                                                            메인화면                                                             |지도|
-|:---------------------------------------------------------------------------------------------------------------------------:|:-----:|
-| <img width=200 src="https://user-images.githubusercontent.com/53300830/203107992-6865e77f-b859-4b2d-92a5-f3a0359c2211.png"> |<img width=200 src="https://user-images.githubusercontent.com/53300830/203107998-302d96a0-1bb5-4523-99fb-d54f56824d7d.png">|
-|                                                            구현완료                                                             |                                                            구현완료                                                             |
+|사용 가능한 브랜드|마커 갱신|
+|:------:|:-----:|
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207081108-e8351a02-5536-426d-9030-eb87efc399d5.gif"> |<img width="200" src="https://user-images.githubusercontent.com/44221447/207081544-b7624a60-a5e5-44f4-bd7d-520a8b2b97f7.gif">|
+
+### 목록
+
+|목록 정렬|브랜드검색|삭제 및 사용처리|
+|:-----:|:-----:|:-----:|
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207083881-ba2cb1d0-f8b2-4891-b5d1-b78bf0fa6cf7.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207084281-5eacbcab-3d52-40b9-a5c6-b08cb2af0774.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207086841-e98b7388-5cf7-4909-a64c-733529c587c1.gif">|
+
+### 기프티콘 사용 및 사용기록
+
+|일반 기프티콘 사용|금액권 사용|사용 기록|
+|:-----:|:-----:|:-----:|
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207089697-90204358-eec4-4c39-a5fa-d043d66ecab0.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207089961-487b1a57-976d-4c7c-9cb0-f05c8a7e8b2f.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207090349-c0772934-867b-4014-bafb-9a7b65beb024.gif">|
 
 ### 기프티콘 추가
 
 |자동파싱|직접파싱|
 |:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/44221447/207056513-c9f390f1-dfdf-44fb-868c-70bb1aaf0b62.gif">|<img width=200 src="https://user-images.githubusercontent.com/44221447/207055517-0a13df07-91a0-4f0d-bb81-f78b4000d4cb.gif">|
-|구현완료|구현완료|
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207082258-6805a2a0-0def-432d-b1c5-2fa91a0a3ef6.gif">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207082945-486ea598-4340-4b00-a176-62b6320abe4e.gif">|
 
-### 목록 & 디테일
+### 위젯 및 알림
 
-|기프티콘 목록|삭제|브랜드검색|
-|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108857-d82f37aa-aabb-4891-a262-6adbbd89fe3a.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108834-08413935-9c7a-4423-8b6b-0f58f30523e4.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203108848-3119caab-f771-41d9-ac2f-92b2fe573a40.png">|
-|구현중|구현중|구현중|
-
-### 상세화면 - 금액권
-
-|상세화면|지문인식|바코드|사용완료|사용기록|
-|:-----:|:-----:|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110310-0f9d3c64-bcdd-45fd-b789-5cb657b42c70.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111268-56bd8370-bb8e-4a2a-9fd1-cfe074261db6.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110314-84c10bdc-0f7b-46d7-aab3-4f882d3eca2d.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110304-024a4b0c-78dd-485b-be7b-47c765259931.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203110309-d851a284-0adc-491b-97c8-dc5c70e74523.png">|
-|구현중|구현중|구현중|구현중|구현중|
-
-### 상세화면 - 상품
-
-|상세화면|지문인식|바코드|
-|:-----:|:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111258-376b7476-8cd9-464d-8c36-78f335fc7e90.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111268-56bd8370-bb8e-4a2a-9fd1-cfe074261db6.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203111265-589b1367-d6ca-4140-8494-424156bb1cfa.png">|
-|구현중|구현중|구현중|
+|위젯|알림|
+|:-----:|:-----:|
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207088846-ab41b231-52ae-4461-960d-bee90ef3e43f.gif" />|<img width="200" src="https://user-images.githubusercontent.com/44221447/207089143-29e855ca-c169-436c-bc8b-c19b343482b3.gif" />|
 
 ### 설정, 기프티콘 확인
 
 |설정|사용한 기프티콘|
 |:-----:|:-----:|
-|<img width=200 src="https://user-images.githubusercontent.com/53300830/203109879-f8ea58ab-feb6-4b70-a4c5-9fe2d4b21fe9.png">|<img width=200 src="https://user-images.githubusercontent.com/53300830/203109835-86cb188c-4c33-41a4-8a2b-a7bc159e2bba.png">|
-|구현중|구현중|
-
-
-
+|<img width="200" src="https://user-images.githubusercontent.com/44221447/207090920-777e3638-0e02-44a3-9d2a-80f9fa01da93.png">|<img width="200" src="https://user-images.githubusercontent.com/44221447/207090806-16132558-34b6-4f7f-a6b4-c36b270a26b6.png">|

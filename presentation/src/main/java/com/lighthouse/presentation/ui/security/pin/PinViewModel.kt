@@ -16,7 +16,7 @@ abstract class PinViewModel : ViewModel() {
     protected val _pinMode = MutableStateFlow(PinSettingType.INITIAL)
     val pinMode = _pinMode.asStateFlow()
 
-    protected val _pushedNum = MutableSharedFlow<Int>()
+    private val _pushedNum = MutableSharedFlow<Int>()
     val pushedNum = _pushedNum.asSharedFlow()
 
     fun inputPin(num: Int) {

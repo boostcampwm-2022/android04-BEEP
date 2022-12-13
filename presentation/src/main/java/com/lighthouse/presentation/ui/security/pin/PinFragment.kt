@@ -6,8 +6,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -29,39 +27,15 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private val viewModel: PinSettingViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
 
-    private val shakeAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_shake)
-    }
-
-    private val fadeUpAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
-    }
-
-    private lateinit var numberPadViews: List<View>
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         binding.tvSecureNotUse.visibility = if (activityViewModel.isRevise) View.INVISIBLE else View.VISIBLE
 
-        numberPadViews = listOf(
-            binding.tvNum0,
-            binding.tvNum1,
-            binding.tvNum2,
-            binding.tvNum3,
-            binding.tvNum4,
-            binding.tvNum5,
-            binding.tvNum6,
-            binding.tvNum7,
-            binding.tvNum8,
-            binding.tvNum9,
-            binding.ivBackspace
-        )
-
         managePinMode()
 
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             viewModel.pushedNum.collect { num ->
                 animateNumberPadBackground(num)
             }
@@ -87,16 +61,11 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                     }
                     PinSettingType.WRONG -> {
                         binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
-                        playWrongPinAnimation()
                     }
                     PinSettingType.COMPLETE -> {
                         Snackbar.make(requireView(), getString(R.string.pin_complete), Snackbar.LENGTH_SHORT)
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
-                        binding.ivCheck.apply {
-                            visibility = View.VISIBLE
-                            startAnimation(fadeUpAnimation)
-                        }
                         delay(1000L)
                         if (activityViewModel.isRevise) {
                             requireActivity().apply {
@@ -121,17 +90,22 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
         }
     }
 
-    private fun playWrongPinAnimation() {
-        binding.ivPin0.startAnimation(shakeAnimation)
-        binding.ivPin1.startAnimation(shakeAnimation)
-        binding.ivPin2.startAnimation(shakeAnimation)
-        binding.ivPin3.startAnimation(shakeAnimation)
-        binding.ivPin4.startAnimation(shakeAnimation)
-        binding.ivPin5.startAnimation(shakeAnimation)
-    }
-
     private fun animateNumberPadBackground(num: Int) {
         if (num < 0) return
+
+        val view = when (num) {
+            0 -> binding.tvNum0
+            1 -> binding.tvNum1
+            2 -> binding.tvNum2
+            3 -> binding.tvNum3
+            4 -> binding.tvNum4
+            5 -> binding.tvNum5
+            6 -> binding.tvNum6
+            7 -> binding.tvNum7
+            8 -> binding.tvNum8
+            9 -> binding.tvNum9
+            else -> binding.ivBackspace
+        }
 
         val startColor =
             when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
@@ -148,7 +122,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
             .apply {
                 duration = 300
                 addUpdateListener {
-                    numberPadViews[num].setBackgroundColor(it.animatedValue as Int)
+                    view.setBackgroundColor(it.animatedValue as Int)
                 }
             }.start()
     }

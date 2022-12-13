@@ -23,7 +23,9 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2" />
+            app:layout_constraintVertical_bias="0.2"
+            app:animation="@{@anim/anim_stamp}"
+            />
 
         <TextView
             android:id="@+id/tv_fingerprint_suggest"
@@ -60,7 +62,9 @@
             android:text="@string/all_yes"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_fingerprint_suggest" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_fingerprint_suggest"
+            app:animation="@{@anim/anim_bounce}"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

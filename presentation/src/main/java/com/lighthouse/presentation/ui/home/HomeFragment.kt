@@ -42,6 +42,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBindings()
     private val homeViewModel: HomeViewModel by viewModels({ requireParentFragment() })
     private val mainViewModel: MainViewModel by activityViewModels()
+
     private var getResultImage: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (isPermissionGranted()) {
@@ -191,7 +192,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     companion object {
-        private val PERMISSIONS =
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 }

@@ -219,16 +219,29 @@ class AddGifticonActivity : AppCompatActivity() {
         gotoCropLauncher.launch(intent)
     }
 
+    private var originImageDialog: OriginImageDialog? = null
+
     private fun showOriginGifticonDialog(uri: Uri) {
-        OriginImageDialog().apply {
+        if (originImageDialog?.isAdded == true) {
+            originImageDialog?.dismiss()
+        }
+        originImageDialog = OriginImageDialog().apply {
             arguments = Bundle().apply {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
-        }.show(supportFragmentManager)
+        }
+        originImageDialog?.show(supportFragmentManager)
     }
 
+    private var spinnerDatePicker: SpinnerDatePicker? = null
+
     private fun showExpiredAtDatePicker(date: Date) {
-        SpinnerDatePicker().apply {
+        if (spinnerDatePicker?.isAdded == true) {
+            spinnerDatePicker?.dismiss()
+        }
+
+        spinnerDatePicker = SpinnerDatePicker().apply {
+            setDate(date)
             setOnDatePickListener { year, month, dayOfMonth ->
                 val newDate = Calendar.getInstance(Locale.getDefault()).let {
                     it.set(year, month - 1, dayOfMonth)
@@ -236,32 +249,42 @@ class AddGifticonActivity : AppCompatActivity() {
                 }
                 viewModel.updateExpiredAt(newDate)
             }
-        }.apply {
-            setDate(date)
-        }.show(supportFragmentManager)
+        }
+        spinnerDatePicker?.show(supportFragmentManager)
     }
 
+    private var confirmationCancelDialog: ConfirmationDialog? = null
+
     private fun showConfirmationCancelDialog() {
+        if (confirmationCancelDialog?.isAdded == true) {
+            confirmationCancelDialog?.dismiss()
+        }
         val title = getString(R.string.add_gifticon_confirmation_cancel_title)
         val message = getString(R.string.add_gifticon_confirmation_cancel_message)
-        ConfirmationDialog().apply {
+        confirmationCancelDialog = ConfirmationDialog().apply {
             setTitle(title)
             setMessage(message)
             setOnOkClickListener {
                 cancelAddGifticon()
             }
-        }.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
+        }
+        confirmationCancelDialog?.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
     }
 
+    private var confirmationDeleteDialog: ConfirmationDialog? = null
+
     private fun showConfirmationDeleteDialog(gifticon: AddGifticonItemUIModel.Gifticon) {
+        if (confirmationDeleteDialog?.isAdded == true) {
+            confirmationDeleteDialog?.dismiss()
+        }
         val title = getString(R.string.add_gifticon_confirmation_delete_title)
-        ConfirmationDialog().apply {
+        confirmationDeleteDialog = ConfirmationDialog().apply {
             setTitle(title)
-        }.apply {
             setOnOkClickListener {
                 viewModel.deleteGifticon(gifticon)
             }
-        }.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
+        }
+        confirmationDeleteDialog?.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
     }
 
     private var progressDialog: ProgressDialog? = null
@@ -270,13 +293,8 @@ class AddGifticonActivity : AppCompatActivity() {
         if (progressDialog?.isAdded == true) {
             progressDialog?.dismiss()
         }
-        progressDialog = if (loading) {
-            ProgressDialog().also {
-                it.show(supportFragmentManager)
-            }
-        } else {
-            null
-        }
+        progressDialog = if (loading) ProgressDialog() else null
+        progressDialog?.show(supportFragmentManager)
     }
 
     private fun requestFocus(tag: AddGifticonTag) {
