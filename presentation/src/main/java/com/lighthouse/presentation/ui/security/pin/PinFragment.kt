@@ -27,27 +27,11 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private val viewModel: PinSettingViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
 
-    private lateinit var numberPadViews: List<View>
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.lifecycleOwner = this
         binding.tvSecureNotUse.visibility = if (activityViewModel.isRevise) View.INVISIBLE else View.VISIBLE
-
-        numberPadViews = listOf(
-            binding.tvNum0,
-            binding.tvNum1,
-            binding.tvNum2,
-            binding.tvNum3,
-            binding.tvNum4,
-            binding.tvNum5,
-            binding.tvNum6,
-            binding.tvNum7,
-            binding.tvNum8,
-            binding.tvNum9,
-            binding.ivBackspace
-        )
 
         managePinMode()
 
@@ -109,6 +93,20 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private fun animateNumberPadBackground(num: Int) {
         if (num < 0) return
 
+        val view = when (num) {
+            0 -> binding.tvNum0
+            1 -> binding.tvNum1
+            2 -> binding.tvNum2
+            3 -> binding.tvNum3
+            4 -> binding.tvNum4
+            5 -> binding.tvNum5
+            6 -> binding.tvNum6
+            7 -> binding.tvNum7
+            8 -> binding.tvNum8
+            9 -> binding.tvNum9
+            else -> binding.ivBackspace
+        }
+
         val startColor =
             when (requireContext().resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_YES -> requireContext().getColor(R.color.gray_500)
@@ -124,7 +122,7 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
             .apply {
                 duration = 300
                 addUpdateListener {
-                    numberPadViews[num].setBackgroundColor(it.animatedValue as Int)
+                    view.setBackgroundColor(it.animatedValue as Int)
                 }
             }.start()
     }
