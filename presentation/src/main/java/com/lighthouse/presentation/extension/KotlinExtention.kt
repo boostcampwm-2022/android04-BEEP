@@ -14,6 +14,16 @@ val Int.dp
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), dm)
     } ?: 0f
 
+val Int.dpToPx
+    get() = Resources.getSystem().displayMetrics?.let { dm ->
+        this * dm.density
+    } ?: 0f
+
+val Float.dpToPx
+    get() = Resources.getSystem().displayMetrics?.let { dm ->
+        this * dm.density
+    } ?: 0f
+
 fun Int.toConcurrency(context: Context, useUnit: Boolean = true): String {
     val format = context.resources.getString(R.string.all_concurrency_format)
     val formattedNumber = DecimalFormat(format).format(this)

@@ -126,6 +126,10 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.unUseGifticon(gifticonId)
     }
 
+    override suspend fun removeGifticon(gifticonId: String) {
+        gifticonLocalDataSource.removeGifticon(gifticonId)
+    }
+
     override fun getGifticonByBrand(brand: String) = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getGifticonByBrand(brand).collect { gifticons ->
