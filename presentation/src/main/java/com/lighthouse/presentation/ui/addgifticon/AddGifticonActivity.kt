@@ -241,27 +241,38 @@ class AddGifticonActivity : AppCompatActivity() {
         }.show(supportFragmentManager)
     }
 
+    private var confirmationCancelDialog: ConfirmationDialog? = null
+
     private fun showConfirmationCancelDialog() {
+        if (confirmationCancelDialog?.isAdded == true) {
+            confirmationCancelDialog?.dismiss()
+        }
         val title = getString(R.string.add_gifticon_confirmation_cancel_title)
         val message = getString(R.string.add_gifticon_confirmation_cancel_message)
-        ConfirmationDialog().apply {
+        confirmationCancelDialog = ConfirmationDialog().apply {
             setTitle(title)
             setMessage(message)
             setOnOkClickListener {
                 cancelAddGifticon()
             }
-        }.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
+        }
+        confirmationCancelDialog?.show(supportFragmentManager, CONFIRMATION_CANCEL_DIALOG)
     }
 
+    private var confirmationDeleteDialog: ConfirmationDialog? = null
+
     private fun showConfirmationDeleteDialog(gifticon: AddGifticonItemUIModel.Gifticon) {
+        if (confirmationDeleteDialog?.isAdded == true) {
+            confirmationDeleteDialog?.dismiss()
+        }
         val title = getString(R.string.add_gifticon_confirmation_delete_title)
-        ConfirmationDialog().apply {
+        confirmationDeleteDialog = ConfirmationDialog().apply {
             setTitle(title)
-        }.apply {
             setOnOkClickListener {
                 viewModel.deleteGifticon(gifticon)
             }
-        }.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
+        }
+        confirmationDeleteDialog?.show(supportFragmentManager, CONFIRMATION_DELETE_DIALOG)
     }
 
     private var progressDialog: ProgressDialog? = null
@@ -270,13 +281,8 @@ class AddGifticonActivity : AppCompatActivity() {
         if (progressDialog?.isAdded == true) {
             progressDialog?.dismiss()
         }
-        progressDialog = if (loading) {
-            ProgressDialog().also {
-                it.show(supportFragmentManager)
-            }
-        } else {
-            null
-        }
+        progressDialog = if (loading) ProgressDialog() else null
+        progressDialog?.show(supportFragmentManager)
     }
 
     private fun requestFocus(tag: AddGifticonTag) {
