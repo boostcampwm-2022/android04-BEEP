@@ -33,14 +33,23 @@ fun playStampAnimation(view: View, visible: Boolean) {
     }
 }
 
+@BindingAdapter("isSmoothVisible")
+fun playSmoothVisibleAnimation(view: View, visible: Boolean) {
+    view.visibility = if (visible) View.VISIBLE else View.GONE
+    if (visible) {
+        val animation = AnimationUtils.loadAnimation(view.context, R.anim.anim_fadein_up)
+        view.startAnimation(animation)
+    }
+}
+
 @BindingAdapter("animation")
 fun playAnimation(view: View, @AnimRes id: Int) {
     view.startAnimation(AnimationUtils.loadAnimation(view.context, id))
 }
 
-// @BindingAdapter("conditionAnimation")
-// fun playConditionAnimation(view: View, @AnimRes animId: Int, playCondition: Boolean) {
-//    if (playCondition) {
-//        view.startAnimation(AnimationUtils.loadAnimation(view.context, animId))
-//    }
-// }
+@BindingAdapter("animation", "animationCondition", requireAll = true)
+fun playConditionAnimation(view: View, @AnimRes animId: Int, playCondition: Boolean) {
+    if (playCondition) {
+        view.startAnimation(AnimationUtils.loadAnimation(view.context, animId))
+    }
+}

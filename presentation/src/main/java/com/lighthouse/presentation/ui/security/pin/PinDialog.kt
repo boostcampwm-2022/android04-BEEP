@@ -5,8 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -24,10 +22,6 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
 
     private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinDialogViewModel by viewModels()
-
-    private val fadeUpAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
-    }
 
     private lateinit var numberPadViews: List<View>
 
@@ -67,10 +61,6 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
                     PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> {
-                        binding.ivCheck.apply {
-                            visibility = View.VISIBLE
-                            startAnimation(fadeUpAnimation)
-                        }
                         authCallback.onAuthSuccess()
                         delay(1000L)
                         dismiss()

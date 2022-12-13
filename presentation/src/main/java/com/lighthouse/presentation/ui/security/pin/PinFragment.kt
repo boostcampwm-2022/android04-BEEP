@@ -6,8 +6,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -28,10 +26,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
     private val binding: FragmentPinBinding by viewBindings()
     private val viewModel: PinSettingViewModel by viewModels()
     private val activityViewModel: SecurityViewModel by activityViewModels()
-
-    private val fadeUpAnimation: Animation by lazy {
-        AnimationUtils.loadAnimation(requireActivity(), R.anim.anim_fadein_up)
-    }
 
     private lateinit var numberPadViews: List<View>
 
@@ -88,10 +82,6 @@ class PinFragment : Fragment(R.layout.fragment_pin) {
                         Snackbar.make(requireView(), getString(R.string.pin_complete), Snackbar.LENGTH_SHORT)
                             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)
                             .show()
-                        binding.ivCheck.apply {
-                            visibility = View.VISIBLE
-                            startAnimation(fadeUpAnimation)
-                        }
                         delay(1000L)
                         if (activityViewModel.isRevise) {
                             requireActivity().apply {
