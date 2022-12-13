@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+private var count = 0
+
 @HiltWorker
 class BeepWidgetWorker @AssistedInject constructor(
     @Assisted private val context: Context,
@@ -58,25 +60,31 @@ class BeepWidgetWorker @AssistedInject constructor(
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
 
     private var job: Job? = null
-    private var count = 0
     private var isSearchStart = WorkerState.WAITED
 
     override suspend fun doWork(): Result {
-        if (job?.isActive == true || job != null) job?.cancel()
         setWidgetState(WidgetState.Loading)
+        if (job?.isActive == true || job != null) job?.cancel()
         return when (hasLocationPermission()) {
             true -> {
                 startWidget()
-                delay(3000L)
-                if (isSearchStart == WorkerState.WAITED && count <= MAX_COUNT) {
+                delay(2000L)
+                Timber.tag("TAG").d("${javaClass.simpleName} $isSearchStart, $count")
+                if (isSearchStart == WorkerState.WAITED && count < MAX_COUNT) {
                     Timber.tag("TAG").d("${javaClass.simpleName} count $count")
                     count++
                     Result.retry()
+                } else if (count == MAX_COUNT) {
+                    count = 0
+                    setWidgetState(WidgetState.Unavailable("알 수 없는 오류가 발생했습니다."))
+                    Result.failure()
                 } else {
+                    count = 0
                     Result.success()
                 }
             }
             false -> {
+                count = 0
                 setWidgetState(WidgetState.NoExistsLocationPermission)
                 Result.failure()
             }
