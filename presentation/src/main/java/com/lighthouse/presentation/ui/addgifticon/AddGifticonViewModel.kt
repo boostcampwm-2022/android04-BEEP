@@ -757,6 +757,7 @@ class AddGifticonViewModel @Inject constructor(
                 updateGifticon { it.copy(nameRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_name)))
             }
+            selectGifticonId(selectedGifticon.value?.id)
         }
     }
 
@@ -771,6 +772,7 @@ class AddGifticonViewModel @Inject constructor(
                 updateGifticon { it.copy(brandNameRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_brand)))
             }
+            selectGifticonId(selectedGifticon.value?.id)
         }
     }
 
@@ -785,6 +787,7 @@ class AddGifticonViewModel @Inject constructor(
                 updateGifticon { it.copy(barcodeRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_barcode)))
             }
+            selectGifticonId(selectedGifticon.value?.id)
         }
     }
 
@@ -801,6 +804,7 @@ class AddGifticonViewModel @Inject constructor(
                 updateGifticon { it.copy(balanceRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_balance)))
             }
+            selectGifticonId(selectedGifticon.value?.id)
         }
     }
 
@@ -815,6 +819,7 @@ class AddGifticonViewModel @Inject constructor(
                 updateGifticon { it.copy(expiredAtRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_expired_at)))
             }
+            selectGifticonId(selectedGifticon.value?.id)
         }
     }
 
