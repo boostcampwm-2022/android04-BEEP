@@ -30,6 +30,7 @@ import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonValid
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
+import com.lighthouse.presentation.util.resource.AnimInfo
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -381,6 +382,14 @@ class AddGifticonViewModel @Inject constructor(
         if (isApprove) R.color.point_green else R.color.yellow
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val isApproveBrandNameAnimation = isApproveBrandName.combine(isApproveBrandNameVisible) { isApprove, isVisible ->
+        if (isApprove) {
+            AnimInfo.AnimResource(R.anim.anim_fadein_up, isVisible)
+        } else {
+            AnimInfo.AnimResource(R.anim.anim_jump, isVisible)
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AnimInfo.Empty)
+
     fun approveBrandName() {
         val approveBrandName = brand.value
         confirmedBrandMap[approveBrandName] = true
@@ -618,6 +627,14 @@ class AddGifticonViewModel @Inject constructor(
     val isApproveExpiredAtTint = isApproveExpired.map { isApprove ->
         if (isApprove) R.color.point_green else R.color.yellow
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val isApproveExpiredAtAnimation = isApproveExpired.combine(isApproveExpiredAtVisible) { isApprove, isVisible ->
+        if (isApprove) {
+            AnimInfo.AnimResource(R.anim.anim_fadein_up, isVisible)
+        } else {
+            AnimInfo.AnimResource(R.anim.anim_jump, isVisible)
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AnimInfo.Empty)
 
     fun approveExpiredAt() {
         updateSelectedGifticon(true) {

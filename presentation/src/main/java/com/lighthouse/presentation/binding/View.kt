@@ -2,8 +2,10 @@ package com.lighthouse.presentation.binding
 
 import android.view.View
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.util.OnThrottleClickListener
+import com.lighthouse.presentation.util.resource.AnimInfo
 
 @BindingAdapter("isVisible")
 fun applyVisibility(view: View, visible: Boolean) {
@@ -23,6 +25,31 @@ fun View.setOnThrottleClickListener(listener: (View) -> Unit) {
 fun View.playAnimation(animation: Animation, condition: Boolean? = null) {
     if (condition != false) {
         startAnimation(animation)
+    } else {
+        clearAnimation()
+    }
+}
+
+@BindingAdapter("animInfo")
+fun View.playAnimationByAnimInfo(animInfo: AnimInfo?) {
+    animInfo ?: return
+
+    when (animInfo) {
+        is AnimInfo.Empty -> return
+        is AnimInfo.AnimResource -> {
+            if (animInfo.condition) {
+                startAnimation(AnimationUtils.loadAnimation(context, animInfo.resId))
+            } else {
+                clearAnimation()
+            }
+        }
+        is AnimInfo.DynamicAnim -> {
+            if (animInfo.condition) {
+                startAnimation(animInfo.animation)
+            } else {
+                clearAnimation()
+            }
+        }
     }
 }
 

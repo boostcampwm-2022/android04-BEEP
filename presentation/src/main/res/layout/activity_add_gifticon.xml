@@ -207,7 +207,9 @@
                     android:onClick="@{() -> vm.requestCashCard()}"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image"
-                    app:onCheckedChangeListener="@{(view, checked) -> vm.updateCashCard(checked)}" />
+                    app:onCheckedChangeListener="@{(view, checked) -> vm.updateCashCard(checked)}"
+
+                    />
 
                 <TextView
                     android:id="@+id/tv_approve_gifticon_image_description"
@@ -223,9 +225,11 @@
                     android:text="@string/add_gifticon_approve_gifticon_image"
                     android:textAppearance="@style/BEEP.TextStyle.Caption2"
                     android:textColor="@color/white"
-                    app:isVisible="@{vm.isApproveGifticonImageDescriptionVisible}"
+                    app:goneAnimation="@{@anim/anim_fade_out}"
+                    app:isAnimatedVisible="@{vm.isApproveGifticonImageDescriptionVisible}"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
-                    app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image" />
+                    app:layout_constraintTop_toBottomOf="@id/iv_gifticon_image"
+                    app:visibleAnimation="@{@anim/anim_fade_in}" />
 
                 <TextView
                     android:id="@+id/tv_name"
@@ -383,9 +387,11 @@
                     android:text="@string/add_gifticon_approve_brand_name"
                     android:textAppearance="@style/BEEP.TextStyle.Caption2"
                     android:textColor="@color/white"
-                    app:isVisible="@{vm.isApproveBrandNameDescriptionVisible}"
+                    app:goneAnimation="@{@anim/anim_fade_out}"
+                    app:isAnimatedVisible="@{vm.isApproveBrandNameDescriptionVisible}"
                     app:layout_constraintBottom_toTopOf="@id/iv_approve_brand_name"
-                    app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:visibleAnimation="@{@anim/anim_fade_in}" />
 
                 <ImageView
                     android:id="@+id/iv_approve_brand_name"
@@ -398,11 +404,12 @@
                     android:focusable="true"
                     android:onClick="@{() -> vm.approveBrandName()}"
                     android:padding="6dp"
+                    android:visibility="@{vm.isApproveBrandNameVisibility}"
+                    app:animInfo="@{vm.isApproveBrandNameAnimation}"
                     app:layout_constraintBottom_toBottomOf="@id/til_brand"
                     app:layout_constraintEnd_toStartOf="@id/iv_brand_crop"
                     app:setImageRes="@{vm.isApproveBrandNameResId}"
-                    app:setTintRes="@{vm.isApproveBrandNameTint}"
-                    app:visibility="@{vm.isApproveBrandNameVisibility}" />
+                    app:setTintRes="@{vm.isApproveBrandNameTint}" />
 
                 <ImageView
                     android:id="@+id/iv_brand_crop"
@@ -613,6 +620,7 @@
                         android:paddingEnd="114dp"
                         app:setUIText="@{vm.expiredAtUIText}" />
 
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -629,9 +637,11 @@
                     android:text="@string/add_gifticon_approve_expired_at"
                     android:textAppearance="@style/BEEP.TextStyle.Caption2"
                     android:textColor="@color/white"
-                    app:isVisible="@{vm.isApproveExpiredAtDescriptionVisible}"
+                    app:goneAnimation="@{@anim/anim_fade_out}"
+                    app:isAnimatedVisible="@{vm.isApproveExpiredAtDescriptionVisible}"
                     app:layout_constraintBottom_toTopOf="@id/iv_approve_expired_at"
-                    app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:visibleAnimation="@{@anim/anim_fade_in}" />
 
                 <ImageView
                     android:id="@+id/iv_approve_expired_at"
@@ -648,7 +658,9 @@
                     app:layout_constraintBottom_toBottomOf="@id/til_expire_date"
                     app:layout_constraintEnd_toStartOf="@id/iv_expire_calender"
                     app:setImageRes="@{vm.isApproveExpiredAtResId}"
-                    app:setTintRes="@{vm.isApproveExpiredAtTint}" />
+                    app:setTintRes="@{vm.isApproveExpiredAtTint}"
+                    app:animInfo="@{vm.isApproveExpiredAtAnimation}"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_expire_calender"

@@ -9,7 +9,7 @@
 
     <translate
         android:duration="200"
-        android:fillAfter="true"
+        android:fillAfter="false"
         android:fromYDelta="50%"
         android:repeatCount="0"
         android:toYDelta="0%" />
