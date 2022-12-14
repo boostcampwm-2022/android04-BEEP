@@ -1,7 +1,6 @@
 package com.lighthouse.presentation.ui.widget
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -12,29 +11,33 @@ import androidx.glance.appwidget.updateAll
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.google.android.gms.location.LocationServices
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
+import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+private var count = 0
+
 @HiltWorker
-@SuppressLint("MissingPermission")
 class BeepWidgetWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     getGifticonsUseCase: GetGifticonsUseCase,
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
+    private val getUserLocationUseCase: GetUserLocationUseCase
 ) : CoroutineWorker(context, workerParams) {
 
     private val gifticonsDbResult = getGifticonsUseCase.getUsableGifticons()
@@ -57,16 +60,31 @@ class BeepWidgetWorker @AssistedInject constructor(
     }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, emptyMap())
 
     private var job: Job? = null
+    private var isSearchStart = WorkerState.WAITED
 
     override suspend fun doWork(): Result {
-        if (job?.isActive == true || job != null) job?.cancel()
         setWidgetState(WidgetState.Loading)
+        if (job?.isActive == true) job?.cancel()
         return when (hasLocationPermission()) {
             true -> {
                 startWidget()
-                Result.success()
+                delay(2000L)
+                Timber.tag("TAG").d("${javaClass.simpleName} $isSearchStart, $count")
+                if (isSearchStart == WorkerState.WAITED && count < MAX_COUNT) {
+                    Timber.tag("TAG").d("${javaClass.simpleName} count $count")
+                    count++
+                    Result.retry()
+                } else if (count == MAX_COUNT) {
+                    count = 0
+                    setWidgetState(WidgetState.Unavailable("알 수 없는 오류가 발생했습니다."))
+                    Result.failure()
+                } else {
+                    count = 0
+                    Result.success()
+                }
             }
             false -> {
+                count = 0
                 setWidgetState(WidgetState.NoExistsLocationPermission)
                 Result.failure()
             }
@@ -74,10 +92,10 @@ class BeepWidgetWorker @AssistedInject constructor(
     }
 
     private suspend fun startWidget() {
-        LocationServices.getFusedLocationProviderClient(context).lastLocation.addOnSuccessListener { lastLocation ->
-            job = CoroutineScope(Dispatchers.IO).launch {
-                getNearBrands(lastLocation.longitude, lastLocation.latitude)
-            }
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val lastLocation = getUserLocationUseCase().first()
+            isSearchStart = WorkerState.STARTED
+            getNearBrands(lastLocation.longitude, lastLocation.latitude)
         }
     }
 
@@ -105,6 +123,7 @@ class BeepWidgetWorker @AssistedInject constructor(
                 Timber.tag("TAG").d("${javaClass.simpleName} widget worker throw -> $throwable")
                 setWidgetState(WidgetState.Unavailable(throwable.message.orEmpty()))
             }
+        isSearchStart = WorkerState.ENDED
     }
 
     private suspend fun setWidgetState(state: WidgetState) {
@@ -137,5 +156,10 @@ class BeepWidgetWorker @AssistedInject constructor(
 
     companion object {
         private const val SEARCH_SIZE = 15
+        private const val MAX_COUNT = 3
     }
+}
+
+enum class WorkerState {
+    WAITED, STARTED, ENDED
 }

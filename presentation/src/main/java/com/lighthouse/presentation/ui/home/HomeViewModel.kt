@@ -70,8 +70,8 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _uiState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _uiState: MutableEventFlow<UiState<Unit>> = MutableEventFlow()
+    val uiState = _uiState.asEventFlow()
 
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
@@ -112,7 +112,7 @@ class HomeViewModel @Inject constructor(
 
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
-                _uiState.value = UiState.Loading
+                _uiState.emit(UiState.Loading)
                 val currentDms = setDmsLocation(location)
                 val prevDms = prevVertex.value?.let { setDmsLocation(it) }
                 if (prevDms != currentDms) {
