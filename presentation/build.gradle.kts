@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     kotlin("kapt")
     kotlin("plugin.serialization") version "1.5.0"
 }
@@ -58,9 +59,8 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    val composeBom = platform("androidx.compose:compose-bom:${Versions.COMPOSE_BOM}")
-    implementation(composeBom)
-
+    implementation(platform(Libraries.FIREBASE_BOM))
+    implementation(platform(Libraries.COMPOSE_BOM))
     implementation(Libraries.VIEW_LIBRARIES)
     testImplementation(TestImpl.TEST_LIBRARIES)
     kapt(Kapt.VIEW_LIBRARIES)
