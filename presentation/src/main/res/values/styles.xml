@@ -27,9 +27,7 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
-    <style name="BEEP.TextStyle.Button" parent="TextAppearance.MaterialComponents.Button">
-        <item name="android:textSize">20sp</item>
-    </style>
+    <style name="BEEP.TextStyle.Button" parent="TextAppearance.MaterialComponents.Button" />
 
     <style name="BEEP.TextStyle.Caption" parent="TextAppearance.MaterialComponents.Caption" />
 
@@ -56,7 +54,7 @@
     </style>
 
     <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">12dp</item>
         <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
     </style>
 
