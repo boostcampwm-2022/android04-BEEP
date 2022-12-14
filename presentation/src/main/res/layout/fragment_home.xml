@@ -23,15 +23,13 @@
             android:id="@+id/ab_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:liftOnScroll="true">
+            android:background="?attr/colorPrimarySurface"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/tb_home"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll"
                 app:title="@string/home_appbar_name"
                 app:titleCentered="true" />
         </com.google.android.material.appbar.AppBarLayout>
