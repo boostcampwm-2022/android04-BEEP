@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- TextAppearance -->
-    <style name="BEEP.TextStyle.H4" parent="TextAppearance.MaterialComponents.Headline4" />
+    <style name="BEEP.TextStyle.H4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
 
     <style name="BEEP.TextStyle.H5" parent="TextAppearance.MaterialComponents.Headline5" />
 
