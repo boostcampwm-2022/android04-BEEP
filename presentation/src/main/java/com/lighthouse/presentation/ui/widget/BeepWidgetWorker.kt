@@ -64,7 +64,7 @@ class BeepWidgetWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         setWidgetState(WidgetState.Loading)
-        if (job?.isActive == true || job != null) job?.cancel()
+        if (job?.isActive == true) job?.cancel()
         return when (hasLocationPermission()) {
             true -> {
                 startWidget()
