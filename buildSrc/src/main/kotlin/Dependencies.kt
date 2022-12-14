@@ -62,6 +62,8 @@ object Versions {
     const val LOTTIE = "5.2.0"
 
     const val GLANCE = "1.0.0-alpha05"
+
+    const val OSS = "17.0.0"
 }
 
 object Libraries {
@@ -144,6 +146,8 @@ object Libraries {
 
     private const val GLANCE = "androidx.glance:glance-appwidget:${Versions.GLANCE}"
 
+    private const val OSS_LICENSES = "com.google.android.gms:play-services-oss-licenses:${Versions.OSS}"
+
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
         CORE_SPLASH,
@@ -184,7 +188,8 @@ object Libraries {
         LOTTIE,
         WORK_MANAGER,
         GLANCE,
-        JSON
+        JSON,
+        OSS_LICENSES
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
@@ -225,7 +230,8 @@ object Libraries {
         TIMBER,
         DATASTORE,
         DATASTORE_CORE,
-        FIREBASE_AUTH_KTX
+        FIREBASE_AUTH_KTX,
+        OSS_LICENSES
     )
 }
 
