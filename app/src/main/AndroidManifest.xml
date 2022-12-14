@@ -28,11 +28,11 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.lighthouse.beep.androidx-startup"
+            android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.lighthouse.di.WorkManagerInitializer"
+                android:name="androidx.work.WorkManagerInitializer"
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
