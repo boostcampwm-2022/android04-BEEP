@@ -42,12 +42,10 @@ class MainActivity : AppCompatActivity() {
                 is HomeFragmentContainer -> finish()
                 is SettingFragment -> {
                     if (currentFragment.isSettingMainFragment()) {
-                        binding.bnv.selectedItemId = R.id.menu_home
                         viewModel.gotoHome()
                     }
                 }
                 else -> {
-                    binding.bnv.selectedItemId = R.id.menu_home
                     viewModel.gotoHome()
                 }
             }
