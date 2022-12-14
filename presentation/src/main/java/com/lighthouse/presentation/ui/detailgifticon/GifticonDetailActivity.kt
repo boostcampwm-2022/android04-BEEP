@@ -40,6 +40,7 @@ import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
+import com.lighthouse.presentation.ui.detailgifticon.dialog.LargeBarcodeDialog
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.security.AuthCallback
@@ -232,6 +233,9 @@ class GifticonDetailActivity : AppCompatActivity() {
             is GifticonDetailEvent.ShowOriginalImage -> {
                 showOriginGifticonDialog(event.origin)
             }
+            is GifticonDetailEvent.ShowLargeBarcode -> {
+                showLargeBarcodeDialog(event.barcode)
+            }
             is GifticonDetailEvent.NavigateToCropGifticon -> {
                 gotoCropGifticon(
                     getFileStreamPath(event.originPath).toUri(),
@@ -336,7 +340,15 @@ class GifticonDetailActivity : AppCompatActivity() {
             arguments = Bundle().apply {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
-        }.show(supportFragmentManager, OriginImageDialog::class.java.name)
+        }.show(supportFragmentManager)
+    }
+
+    private fun showLargeBarcodeDialog(barcode: String) {
+        LargeBarcodeDialog().apply {
+            arguments = Bundle().apply {
+                putString(Extras.KEY_BARCODE, barcode)
+            }
+        }.show(supportFragmentManager)
     }
 
     private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
@@ -378,7 +390,8 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun showGifticonInfoNotChangedToast() {
         if (::gifticonInfoNotChangedToast.isInitialized.not()) {
-            gifticonInfoNotChangedToast = Toast.makeText(this, getString(R.string.gifticon_detail_nothing_changed_toast), Toast.LENGTH_SHORT)
+            gifticonInfoNotChangedToast =
+                Toast.makeText(this, getString(R.string.gifticon_detail_nothing_changed_toast), Toast.LENGTH_SHORT)
         }
         gifticonInfoNotChangedToast.show()
     }

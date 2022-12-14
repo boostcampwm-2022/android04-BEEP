@@ -4,6 +4,7 @@ object Extras {
 
     const val KEY_SELECTED_GALLERY_ITEM = "Extra.SELECTED_GALLERY_ITEM"
     const val KEY_ORIGIN_IMAGE = "Extra.OriginImage"
+    const val KEY_BARCODE = "Extra.Barcode"
 
     const val KEY_ENABLE_ASPECT_RATIO = "Extra.EnableAspectRatio"
     const val KEY_ASPECT_RATIO = "Extra.AspectRatio"

@@ -8,6 +8,7 @@ sealed class GifticonDetailEvent {
     object ShareButtonClicked : GifticonDetailEvent()
     object ShowAllUsedInfoButtonClicked : GifticonDetailEvent()
     data class ShowOriginalImage(val origin: String) : GifticonDetailEvent()
+    data class ShowLargeBarcode(val barcode: String) : GifticonDetailEvent()
     object EditButtonClicked : GifticonDetailEvent()
     object ExistEmptyInfo : GifticonDetailEvent()
     data class OnGifticonInfoChanged(val before: Gifticon, val after: Gifticon) : GifticonDetailEvent()

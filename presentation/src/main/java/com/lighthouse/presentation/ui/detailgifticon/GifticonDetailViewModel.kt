@@ -13,7 +13,6 @@ import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.domain.usecase.detail.GetGifticonCropUseCase
-import com.lighthouse.domain.usecase.detail.UpdateGifticonCropUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
@@ -46,8 +45,7 @@ class GifticonDetailViewModel @Inject constructor(
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
     private val unUseGifticonUseCase: UnUseGifticonUseCase,
     private val updateGifticonInfoUseCase: UpdateGifticonInfoUseCase,
-    getGifticonCropUseCase: GetGifticonCropUseCase,
-    private val updateGifticonCropUseCase: UpdateGifticonCropUseCase
+    getGifticonCropUseCase: GetGifticonCropUseCase
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
@@ -245,6 +243,13 @@ class GifticonDetailViewModel @Inject constructor(
     fun showOriginalImage() {
         val origin = gifticon.value?.originPath ?: return
         event(GifticonDetailEvent.ShowOriginalImage(origin))
+    }
+
+    fun showLargeBarcode() {
+        viewModelScope.launch {
+            val barcode = gifticon.value?.barcode ?: return@launch
+            event(GifticonDetailEvent.ShowLargeBarcode(barcode))
+        }
     }
 
     fun startEdit() {
