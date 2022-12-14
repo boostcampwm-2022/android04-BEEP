@@ -26,10 +26,9 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="${naver_map_api_id}" />
 
-        <!-- disable default initializer -->
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
+            android:authorities="com.lighthouse.beep.androidx-startup"
             android:exported="false"
             tools:node="merge">
             <meta-data
