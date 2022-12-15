@@ -75,8 +75,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var currentFragment: Fragment = homeFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -86,10 +84,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         onBackPressedDispatcher.addCallback(this, callback)
-
-        supportFragmentManager.commit {
-            add(R.id.fl_container, homeFragment, homeFragment.javaClass.name)
-        }
 
         checkUserPreferenceOption()
         collectEvent()
@@ -131,55 +125,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getFragment(page: MainPage): Fragment? {
+        return when (page) {
+            MainPage.LIST -> gifticonListFragment
+            MainPage.HOME -> homeFragment
+            MainPage.SETTING -> settingFragment
+            else -> null
+        }
+    }
+
     private fun collectPage() {
         repeatOnStarted {
+            var prevPage = viewModel.pageFlow.value
             viewModel.pageFlow.collect { page ->
-                when (page) {
-                    MainPage.List -> {
-                        supportFragmentManager.commit {
+                val preFragment = getFragment(prevPage)
+                val fragment = getFragment(page)
+                if (fragment != null) {
+                    supportFragmentManager.commit {
+                        if (page.ordinal < prevPage.ordinal) {
                             setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right)
-                            hide(currentFragment)
-                            if (gifticonListFragment.isAdded) {
-                                show(gifticonListFragment)
-                            } else {
-                                add(R.id.fl_container, gifticonListFragment, gifticonListFragment.javaClass.name)
-                            }
-                            currentFragment = gifticonListFragment
-                        }
-                    }
-                    MainPage.Setting -> {
-                        supportFragmentManager.commit {
+                        } else if (page.ordinal > prevPage.ordinal) {
                             setCustomAnimations(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
-                            hide(currentFragment)
-                            if (settingFragment.isAdded) {
-                                show(settingFragment)
-                            } else {
-                                add(R.id.fl_container, settingFragment, settingFragment.javaClass.name)
-                            }
-                            currentFragment = settingFragment
+                        }
+                        if (preFragment != null && preFragment != fragment) {
+                            hide(preFragment)
+                        }
+                        if (fragment.isAdded) {
+                            show(fragment)
+                        } else {
+                            add(R.id.fl_container, fragment, fragment.javaClass.name)
                         }
                     }
-                    MainPage.Home -> {
-                        supportFragmentManager.commit {
-                            when (currentFragment) {
-                                is GifticonListFragment -> {
-                                    setCustomAnimations(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
-                                }
-                                is SettingFragment -> {
-                                    setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right)
-                                }
-                            }
-                            hide(currentFragment)
-                            if (homeFragment.isAdded) {
-                                show(homeFragment)
-                            } else {
-                                add(R.id.fl_container, homeFragment, homeFragment.javaClass.name)
-                            }
-                            currentFragment = homeFragment
-                        }
-                    }
-                    else -> {}
                 }
+                prevPage = page
             }
         }
     }

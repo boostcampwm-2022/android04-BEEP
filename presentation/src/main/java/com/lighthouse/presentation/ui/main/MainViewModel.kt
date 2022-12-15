@@ -37,13 +37,13 @@ class MainViewModel @Inject constructor(
 
     val selectedMenuItem = MutableStateFlow(R.id.menu_home)
 
-    private val _pageFlow = MutableStateFlow<MainPage>(MainPage.Home)
+    private val _pageFlow = MutableStateFlow(MainPage.HOME)
     val pageFlow = _pageFlow
         .onEach { page ->
             pageToMenuId(page)?.let { menuId ->
                 gotoMenuItem(menuId)
             }
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, MainPage.Home)
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, MainPage.HOME)
 
     val hasVariableGifticon = hasVariableGifticonUseCase()
 
@@ -62,19 +62,19 @@ class MainViewModel @Inject constructor(
 
     val fabFlow = _pageFlow.combine(hasVariableGifticon) { page, hasVariableGifticon ->
         when (page) {
-            MainPage.Home -> hasVariableGifticon
-            MainPage.List -> true
-            MainPage.Setting -> false
-            MainPage.Other -> false
+            MainPage.HOME -> hasVariableGifticon
+            MainPage.LIST -> true
+            MainPage.SETTING,
+            MainPage.OTHER -> false
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val bnvFlow = _pageFlow.map { page ->
         when (page) {
-            MainPage.Home -> true
-            MainPage.List -> true
-            MainPage.Setting -> true
-            MainPage.Other -> false
+            MainPage.HOME,
+            MainPage.LIST,
+            MainPage.SETTING -> true
+            MainPage.OTHER -> false
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
@@ -89,15 +89,15 @@ class MainViewModel @Inject constructor(
 
     fun gotoList() {
         viewModelScope.launch {
-            _pageFlow.emit(MainPage.List)
+            _pageFlow.emit(MainPage.LIST)
         }
     }
 
     private fun pageToMenuId(page: MainPage): Int? {
         return when (page) {
-            MainPage.List -> R.id.menu_list
-            MainPage.Home -> R.id.menu_home
-            MainPage.Setting -> R.id.menu_setting
+            MainPage.LIST -> R.id.menu_list
+            MainPage.HOME -> R.id.menu_home
+            MainPage.SETTING -> R.id.menu_setting
             else -> null
         }
     }
@@ -109,10 +109,10 @@ class MainViewModel @Inject constructor(
         selectedMenuItem.value = itemId
         viewModelScope.launch {
             val pages = when (itemId) {
-                R.id.menu_list -> MainPage.List
-                R.id.menu_home -> MainPage.Home
-                R.id.menu_setting -> MainPage.Setting
-                else -> MainPage.Other
+                R.id.menu_list -> MainPage.LIST
+                R.id.menu_home -> MainPage.HOME
+                R.id.menu_setting -> MainPage.SETTING
+                else -> MainPage.OTHER
             }
             _pageFlow.emit(pages)
         }
@@ -133,7 +133,7 @@ class MainViewModel @Inject constructor(
 
     fun gotoHome() {
         viewModelScope.launch {
-            _pageFlow.emit(MainPage.Home)
+            _pageFlow.emit(MainPage.HOME)
         }
     }
 }
