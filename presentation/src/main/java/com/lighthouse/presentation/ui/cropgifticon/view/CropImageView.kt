@@ -293,7 +293,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
          * CropWindow 은 (a > 1.5) 을 곱한다면 scale 이 1 이하가 되게 된다.
          * 2 를 곱하 면서 천천히 Zoom을 감소 시킨다
          */
-        if (zoom > MIN_ZOOM && cropWidth > width * 0.66f || cropHeight > height * 0.66f) {
+        else if (zoom > MIN_ZOOM && cropWidth > width * 0.66f || cropHeight > height * 0.66f) {
             val scaleW = width / cropWidth * 0.5f * zoom
             val scaleH = height / cropHeight * 0.5f * zoom
             newZoom = max(min(scaleW, scaleH), MIN_ZOOM)
@@ -317,15 +317,15 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         // 1. 역 행렬을 이용 하여 처음 보였던 이미지를 기준으로 변경한다
+        curImageRect.set(realImageRect)
         mainMatrix.invert(mainInverseMatrix)
-        mainInverseMatrix.mapRect(curImageRect)
         mainInverseMatrix.mapRect(curCropRect)
         mainMatrix.reset()
 
         // 2. 이미지를 화면에 맞게 키운다
         val wScale = width / bitmap.width.toFloat()
         val hScale = height / bitmap.height.toFloat()
-        val scale = min(wScale, hScale)
+        val scale = min(wScale, hScale) * zoom
         mainMatrix.postScale(scale, scale)
         mapCurrentImageRectByMatrix()
 
@@ -333,18 +333,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val offsetX = (width - curImageRect.width()) / 2
         val offsetY = (height - curImageRect.height()) / 2
         mainMatrix.postTranslate(offsetX, offsetY)
-
-        // 4. 행렬에 Zoom 연산 추가
-        mainMatrix.postScale(zoom, zoom, width / 2f, height / 2f)
         mainMatrix.mapRect(curCropRect)
         mapCurrentImageRectByMatrix()
 
-        // 6. ZoomOffset 구하기
-        // 1) 지금 까지 계산 된 이미지의 크기가 화면 크기 보다 작다면 offset 이 존재할 필요가 없다
-        // 2) width / 2 - curCropRect.centerX() > 0, 이미지의 중앙이 왼쪽
-        //    width / 2 - curCropRect.centerX() < 0, 이미지의 중앙이 오른쪽
-        //    width / 2 - curCropRect.centerX() = 0, 이미지와 화면의 중앙이 일치
-        //
+        // 4. ZoomOffset 구하기
         val zoomOffsetX = when {
             width > curImageRect.width() -> 0f
             else -> max(
@@ -601,28 +593,28 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private fun containLeft(x: Float, y: Float): Boolean {
         val innerRange =
-            min(max(curCropRect.width().toInt() - EDGE_TOUCH_RANGE * 2, EDGE_TOUCH_RANGE / 2), EDGE_TOUCH_RANGE)
+            min(max(curCropRect.width().toInt() - EDGE_TOUCH_RANGE * 2, 0), EDGE_TOUCH_RANGE)
         return x in curCropRect.left - EDGE_TOUCH_RANGE..curCropRect.left + innerRange &&
             y in curCropRect.top - EDGE_TOUCH_RANGE..curCropRect.bottom + EDGE_TOUCH_RANGE
     }
 
     private fun containRight(x: Float, y: Float): Boolean {
         val innerRange =
-            min(max((curCropRect.width().toInt() - EDGE_TOUCH_RANGE * 2), EDGE_TOUCH_RANGE / 2), EDGE_TOUCH_RANGE)
+            min(max((curCropRect.width().toInt() - EDGE_TOUCH_RANGE * 2), 0), EDGE_TOUCH_RANGE)
         return x in curCropRect.right - innerRange..curCropRect.right + EDGE_TOUCH_RANGE &&
             y in curCropRect.top - EDGE_TOUCH_RANGE..curCropRect.bottom + EDGE_TOUCH_RANGE
     }
 
     private fun containTop(x: Float, y: Float): Boolean {
         val innerRange =
-            min(max((curCropRect.height().toInt() - EDGE_TOUCH_RANGE * 2), EDGE_TOUCH_RANGE / 2), EDGE_TOUCH_RANGE)
+            min(max((curCropRect.height().toInt() - EDGE_TOUCH_RANGE * 2), 0), EDGE_TOUCH_RANGE)
         return x in curCropRect.left - EDGE_TOUCH_RANGE..curCropRect.right + EDGE_TOUCH_RANGE &&
             y in curCropRect.top - EDGE_TOUCH_RANGE..curCropRect.top + innerRange
     }
 
     private fun containBottom(x: Float, y: Float): Boolean {
         val innerRange =
-            min(max((curCropRect.height().toInt() - EDGE_TOUCH_RANGE * 2), EDGE_TOUCH_RANGE / 2), EDGE_TOUCH_RANGE)
+            min(max((curCropRect.height().toInt() - EDGE_TOUCH_RANGE * 2), 0), EDGE_TOUCH_RANGE)
         return x in curCropRect.left - EDGE_TOUCH_RANGE..curCropRect.right + EDGE_TOUCH_RANGE &&
             y in curCropRect.bottom - innerRange..curCropRect.bottom + EDGE_TOUCH_RANGE
     }

@@ -15,7 +15,10 @@ fun ContentResolver.getBitmap(uri: Uri): Bitmap? {
     }
     return try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ImageDecoder.decodeBitmap(ImageDecoder.createSource(this, uri))
+            val source = ImageDecoder.createSource(this, uri)
+            ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                decoder.isMutableRequired = true
+            }
         } else {
             MediaStore.Images.Media.getBitmap(this, uri)
         }

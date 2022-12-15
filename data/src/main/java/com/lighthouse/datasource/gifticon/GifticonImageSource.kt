@@ -90,7 +90,10 @@ class GifticonImageSource @Inject constructor(
         return withContext(Dispatchers.IO) {
             when (uri.scheme) {
                 SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+                    val source = ImageDecoder.createSource(context.contentResolver, uri)
+                    ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                        decoder.isMutableRequired = true
+                    }
                 } else {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
                 }
