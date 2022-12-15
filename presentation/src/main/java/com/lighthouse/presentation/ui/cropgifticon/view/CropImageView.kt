@@ -293,7 +293,7 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
          * CropWindow 은 (a > 1.5) 을 곱한다면 scale 이 1 이하가 되게 된다.
          * 2 를 곱하 면서 천천히 Zoom을 감소 시킨다
          */
-        if (zoom > MIN_ZOOM && cropWidth > width * 0.66f || cropHeight > height * 0.66f) {
+        else if (zoom > MIN_ZOOM && cropWidth > width * 0.66f || cropHeight > height * 0.66f) {
             val scaleW = width / cropWidth * 0.5f * zoom
             val scaleH = height / cropHeight * 0.5f * zoom
             newZoom = max(min(scaleW, scaleH), MIN_ZOOM)
