@@ -317,15 +317,15 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         // 1. 역 행렬을 이용 하여 처음 보였던 이미지를 기준으로 변경한다
+        curImageRect.set(realImageRect)
         mainMatrix.invert(mainInverseMatrix)
-        mainInverseMatrix.mapRect(curImageRect)
         mainInverseMatrix.mapRect(curCropRect)
         mainMatrix.reset()
 
         // 2. 이미지를 화면에 맞게 키운다
         val wScale = width / bitmap.width.toFloat()
         val hScale = height / bitmap.height.toFloat()
-        val scale = min(wScale, hScale)
+        val scale = min(wScale, hScale) * zoom
         mainMatrix.postScale(scale, scale)
         mapCurrentImageRectByMatrix()
 
@@ -333,18 +333,10 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         val offsetX = (width - curImageRect.width()) / 2
         val offsetY = (height - curImageRect.height()) / 2
         mainMatrix.postTranslate(offsetX, offsetY)
-
-        // 4. 행렬에 Zoom 연산 추가
-        mainMatrix.postScale(zoom, zoom, width / 2f, height / 2f)
         mainMatrix.mapRect(curCropRect)
         mapCurrentImageRectByMatrix()
 
-        // 6. ZoomOffset 구하기
-        // 1) 지금 까지 계산 된 이미지의 크기가 화면 크기 보다 작다면 offset 이 존재할 필요가 없다
-        // 2) width / 2 - curCropRect.centerX() > 0, 이미지의 중앙이 왼쪽
-        //    width / 2 - curCropRect.centerX() < 0, 이미지의 중앙이 오른쪽
-        //    width / 2 - curCropRect.centerX() = 0, 이미지와 화면의 중앙이 일치
-        //
+        // 4. ZoomOffset 구하기
         val zoomOffsetX = when {
             width > curImageRect.width() -> 0f
             else -> max(
