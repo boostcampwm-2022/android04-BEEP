@@ -17,14 +17,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
-import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
 class SharedLocationManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    var receivingLocationUpdates = MutableStateFlow(hasLocationPermission())
+    var receivingLocationUpdates = MutableStateFlow(checkPermission())
         private set
 
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
@@ -40,7 +39,6 @@ class SharedLocationManager @Inject constructor(
     private val locationUpdates = callbackFlow {
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                Timber.tag("TAG").d("${javaClass.simpleName} result -> $result")
                 val locationResult = result.lastLocation ?: return
                 trySend(VertexLocation(locationResult.longitude, locationResult.latitude))
             }
@@ -52,30 +50,27 @@ class SharedLocationManager @Inject constructor(
             Looper.getMainLooper()
         ).addOnFailureListener { e ->
             receivingLocationUpdates.value = false
-            Timber.tag("TAG").d("${javaClass.simpleName} provider request Failure")
         }.addOnSuccessListener {
-            Timber.tag("TAG").d("${javaClass.simpleName} provider request Success")
             receivingLocationUpdates.value = true
         }
 
         awaitClose {
-            Timber.tag("TAG").d("${javaClass.simpleName} awaitClose")
             locationCallback.let { fusedLocationProviderClient.removeLocationUpdates(it) }
         }
     }
 
-    private fun hasLocationPermission() =
-        context.hasLocationPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
-            context.hasLocationPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    private fun checkPermission() =
+        checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, context) ||
+            checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, context)
 
-    private fun Context.hasLocationPermission(permission: String): Boolean {
+    private fun checkPermission(permission: String, context: Context): Boolean {
         if (permission == Manifest.permission.ACCESS_BACKGROUND_LOCATION &&
             Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
         ) {
             return true
         }
 
-        return ActivityCompat.checkSelfPermission(this, permission) ==
+        return ActivityCompat.checkSelfPermission(context, permission) ==
             PackageManager.PERMISSION_GRANTED
     }
 
