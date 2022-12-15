@@ -21,7 +21,8 @@ import java.util.Date
 data class UsageHistoryEntity(
     @ColumnInfo(name = "gifticon_id") val gifticonId: String,
     @ColumnInfo(name = "date") val date: Date,
-    @ColumnInfo(name = "address") val address: String,
+    @ColumnInfo(name = "longitude") val longitude: Double,
+    @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "amount") val amount: Int
 ) {
     companion object {

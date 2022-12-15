@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentStandardGifticonInfoBinding
 import com.lighthouse.presentation.ui.common.viewBindings
+import com.lighthouse.presentation.util.Geography
 
 class StandardGifticonInfoFragment : Fragment(R.layout.fragment_standard_gifticon_info) {
     private val binding: FragmentStandardGifticonInfoBinding by viewBindings()
@@ -15,6 +16,7 @@ class StandardGifticonInfoFragment : Fragment(R.layout.fragment_standard_giftico
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+        binding.geo = Geography(requireContext())
         binding.lifecycleOwner = viewLifecycleOwner
     }
 }

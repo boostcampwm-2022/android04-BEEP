@@ -3,14 +3,17 @@ package com.lighthouse.domain.usecase
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.domain.util.currentTime
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class UseCashCardGifticonUseCase @Inject constructor(
-    private val gifticonRepository: GifticonRepository
+    private val gifticonRepository: GifticonRepository,
+    private val getUserLocationUseCase: GetUserLocationUseCase
 ) {
 
     suspend operator fun invoke(gifticonId: String, amount: Int) {
-        val usageHistory = UsageHistory(currentTime, "광주 광산구 일곡동", amount) // TODO 위치 얻어오기
+        val userLocation = getUserLocationUseCase().first()
+        val usageHistory = UsageHistory(currentTime, userLocation, amount)
         gifticonRepository.useCashCardGifticon(gifticonId, amount, usageHistory)
     }
 }
