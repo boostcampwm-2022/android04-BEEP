@@ -53,7 +53,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
-
+    implementation(platform(Libraries.FIREBASE_BOM))
     kapt(Kapt.APP_LIBRARIES)
     implementation(Libraries.APP_LIBRARIES)
     annotationProcessor(AnnotationProcessors.APP_LIBRARIES)
