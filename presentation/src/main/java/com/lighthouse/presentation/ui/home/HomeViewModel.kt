@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -145,7 +144,6 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
-                    Timber.tag("TAG").d("${javaClass.simpleName} homeViewModel Error -> $throwable")
                     _uiState.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure
