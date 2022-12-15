@@ -169,7 +169,6 @@ class CropImageView(context: Context, attrs: AttributeSet?) : View(context, attr
         }
 
         fun setStartState(cropRect: RectF, imageRect: RectF, imageMatrix: Matrix) {
-            reset()
             startCropRect.set(cropRect)
             startImageRect.set(imageRect)
             imageMatrix.getValues(startMatrixPoints)
