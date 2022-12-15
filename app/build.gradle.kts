@@ -34,12 +34,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = AppConfig.jvmTarget
     }
     buildFeatures {
         dataBinding = true
@@ -54,7 +54,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
-
+    implementation(platform(Libraries.FIREBASE_BOM))
     kapt(Kapt.APP_LIBRARIES)
     implementation(Libraries.APP_LIBRARIES)
     annotationProcessor(AnnotationProcessors.APP_LIBRARIES)

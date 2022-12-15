@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 private var count = 0
 
@@ -69,9 +68,7 @@ class BeepWidgetWorker @AssistedInject constructor(
             true -> {
                 startWidget()
                 delay(2000L)
-                Timber.tag("TAG").d("${javaClass.simpleName} $isSearchStart, $count")
                 if (isSearchStart == WorkerState.WAITED && count < MAX_COUNT) {
-                    Timber.tag("TAG").d("${javaClass.simpleName} count $count")
                     count++
                     Result.retry()
                 } else if (count == MAX_COUNT) {
@@ -120,7 +117,6 @@ class BeepWidgetWorker @AssistedInject constructor(
                 }
             }
             .onFailure { throwable ->
-                Timber.tag("TAG").d("${javaClass.simpleName} widget worker throw -> $throwable")
                 setWidgetState(WidgetState.Unavailable(throwable.message.orEmpty()))
             }
         isSearchStart = WorkerState.ENDED
