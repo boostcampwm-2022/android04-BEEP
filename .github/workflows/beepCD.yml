@@ -10,14 +10,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: set up JDK 1.8
+
+      - name: set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Grant execute permission for gradlew
+          run: chmod +x gradlew
+
+      - name: Create google-service
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./presentation/google-services.json
+
+      - name: Create Local Properties
+        run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
+
       - name: build release
         run: ./gradlew assembleRelease
+
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
+
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
