@@ -2,7 +2,6 @@ package com.lighthouse.presentation.ui.home
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -10,7 +9,6 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -32,6 +30,8 @@ import com.lighthouse.presentation.ui.home.adapter.NearGifticonAdapter
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
+import com.lighthouse.presentation.util.permission.LocationPermissionManager
+import com.lighthouse.presentation.util.permission.core.permissions
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -42,11 +42,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBindings()
     private val homeViewModel: HomeViewModel by viewModels({ requireParentFragment() })
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val locationPermission: LocationPermissionManager by permissions()
 
     private var getResultImage: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (isPermissionGranted()) {
-                homeViewModel.changeLocationPermission(true)
+            if (locationPermission.isGrant) {
+                homeViewModel.observeLocationFlow()
             }
         }
 
@@ -71,7 +72,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val locationPermissionLauncher =
         registerForActivityResult(contract) { results ->
             if (results.all { it.value }) {
-                homeViewModel.changeLocationPermission(true)
+                homeViewModel.observeLocationFlow()
             }
         }
 
@@ -103,8 +104,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainVm = mainViewModel
         binding.homeVm = homeViewModel
+        checkLocationPermission()
         setBindingAdapter()
         setObserveViewModel()
+    }
+
+    private fun checkLocationPermission() {
+        if (locationPermission.isGrant) {
+            homeViewModel.observeLocationFlow()
+        }
     }
 
     private fun setBindingAdapter() {
@@ -143,7 +151,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         gifticons: List<Gifticon> = emptyList(),
         nearBrandsInfo: List<BrandPlaceInfoUiModel> = emptyList()
     ) {
-        when (isPermissionGranted()) {
+        when (locationPermission.isGrant) {
             true -> startMapActivity(nearBrandsInfo, gifticons)
             false -> launchPermission()
         }
@@ -167,23 +175,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
     }
 
-    private fun isPermissionGranted(): Boolean {
-        for (permission in PERMISSIONS) {
-            val result: Int = ContextCompat.checkSelfPermission(requireContext(), permission)
-            if (PackageManager.PERMISSION_GRANTED != result) {
-                return false
-            }
-        }
-        return true
-    }
-
     private fun showSnackBar(@StringRes message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun onStart() {
-        homeViewModel.startLocationCollectJob()
-        super.onStart()
     }
 
     override fun onStop() {
