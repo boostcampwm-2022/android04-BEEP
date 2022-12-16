@@ -17,7 +17,7 @@ jobs:
           java-version: 11
 
       - name: Grant execute permission for gradlew
-          run: chmod +x gradlew
+        run: chmod +x gradlew
 
       - name: Create google-service
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./presentation/google-services.json
