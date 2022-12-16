@@ -1,13 +1,15 @@
 package com.lighthouse.presentation.util.permission.core
 
-import android.content.Context
+import android.app.Activity
 import android.content.pm.PackageManager
 import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class PermissionManager(
-    private val context: Context
+    private val activity: Activity
 ) {
     abstract val permissions: Array<String>
+
+    open val backGroundPermission = emptyArray<String>()
 
     val permission
         get() = permissions.firstOrNull() ?: ""
@@ -18,6 +20,14 @@ abstract class PermissionManager(
 
     val isGrant
         get() = permissions.all { permission ->
-            context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+            checkPermission(permission)
         }
+
+    val isAllGrant
+        get() = (permissions + backGroundPermission).all { permission ->
+            checkPermission(permission)
+        }
+
+    private fun checkPermission(permission: String) =
+        activity.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
 }
