@@ -2,9 +2,7 @@ package com.lighthouse.presentation.ui.widget
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
-import androidx.core.app.ActivityCompat
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
@@ -16,6 +14,7 @@ import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
+import com.lighthouse.presentation.util.permission.core.checkPermission
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -135,19 +134,11 @@ class BeepWidgetWorker @AssistedInject constructor(
         BeepWidget().updateAll(context)
     }
 
-    private fun hasLocationPermission() =
-        context.hasLocationPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
-            context.hasLocationPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-
-    private fun Context.hasLocationPermission(permission: String): Boolean {
-        if (permission == Manifest.permission.ACCESS_BACKGROUND_LOCATION &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
-        ) {
-            return true
-        }
-
-        return ActivityCompat.checkSelfPermission(this, permission) ==
-            PackageManager.PERMISSION_GRANTED
+    private fun hasLocationPermission() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        context.checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    } else {
+        context.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
+            context.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 
     companion object {
