@@ -26,9 +26,15 @@ abstract class PermissionManager(
 
     val permissionState
         get() = when {
-            (permissions + additionalPermission).all { activity.checkPermission(it) } -> BeepPermissionState.AllAllowedPermission
-            permissions.all { activity.checkPermission(it) } -> BeepPermissionState.PartiallyAllowedPermission
-            else -> BeepPermissionState.NotAllowedPermission
+            (permissions + additionalPermission).all { activity.checkPermission(it) } -> {
+                BeepPermissionState.AllAllowedPermission
+            }
+            permissions.all { activity.checkPermission(it) } -> {
+                BeepPermissionState.PartiallyAllowedPermission
+            }
+            else -> {
+                BeepPermissionState.NotAllowedPermission
+            }
         }
 }
 
