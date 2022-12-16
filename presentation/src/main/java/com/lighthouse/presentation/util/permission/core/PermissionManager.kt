@@ -9,9 +9,9 @@ abstract class PermissionManager(
 ) {
     abstract val permissions: Array<String>
 
-    open val backGroundPermission = emptyArray<String>()
+    open val additionalPermission = emptyArray<String>()
 
-    val permission
+    val basicPermission
         get() = permissions.firstOrNull() ?: ""
 
     val permissionFlow by lazy {
@@ -23,9 +23,11 @@ abstract class PermissionManager(
             checkPermission(permission)
         }
 
-    val isAllGrant
-        get() = (permissions + backGroundPermission).all { permission ->
-            checkPermission(permission)
+    val permissionState
+        get() = when {
+            (permissions + additionalPermission).all { checkPermission(it) } -> BeepPermissionState.AllAllowedPermission
+            permissions.all { checkPermission(it) } -> BeepPermissionState.PartiallyAllowedPermission
+            else -> BeepPermissionState.NotAllowedPermission
         }
 
     private fun checkPermission(permission: String) =
