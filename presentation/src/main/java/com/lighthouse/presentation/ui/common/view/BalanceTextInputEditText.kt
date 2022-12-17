@@ -1,7 +1,6 @@
 package com.lighthouse.presentation.ui.common.view
 
 import android.content.Context
-import android.text.InputFilter
 import android.util.AttributeSet
 import com.lighthouse.presentation.extension.toDigit
 import java.text.DecimalFormat
@@ -11,23 +10,7 @@ class BalanceTextInputEditText(context: Context, attrs: AttributeSet) : Formatte
     private val balanceFormat = DecimalFormat("###,###,###")
 
     init {
-        filters = arrayOf(
-            InputFilter.LengthFilter(10),
-            InputFilter { source, _, _, _, dstStart, _ ->
-                return@InputFilter if (dstStart == 0) {
-                    var zeroIndex = 0
-                    for (char in source) {
-                        if (char != '0') {
-                            break
-                        }
-                        zeroIndex += 1
-                    }
-                    source.subSequence(zeroIndex, source.length)
-                } else {
-                    source
-                }
-            }
-        )
+        filters = arrayOf(RealValueLengthFilter(7))
     }
 
     override fun onTransformedNewValue(
@@ -56,7 +39,7 @@ class BalanceTextInputEditText(context: Context, attrs: AttributeSet) : Formatte
         before: Int,
         count: Int
     ): Int {
-        return if (oldDisplayValue.length == start + before || oldDisplayValue == "0") {
+        return if (oldDisplayValue.length == start + before) {
             newDisplayValue.length
         } else {
             val endStringCount = Integer.max(oldDisplayValue.length - start - before, 0)

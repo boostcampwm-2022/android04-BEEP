@@ -5,6 +5,10 @@ import android.util.AttributeSet
 
 class BarcodeTextInputEditText(context: Context, attrs: AttributeSet) : FormattedTextInputEditText(context, attrs) {
 
+    init {
+        filters = arrayOf(RealValueLengthFilter(24))
+    }
+
     override fun onTransformedNewValue(
         newString: String,
         oldDisplayValue: String,
