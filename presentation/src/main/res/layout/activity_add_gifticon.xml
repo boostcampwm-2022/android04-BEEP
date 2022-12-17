@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.lighthouse.presentation.ui.addgifticon.AddGifticonViewModel" />
+            type="com.lighthouse.presentation.ui.edit.addgifticon.AddGifticonViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

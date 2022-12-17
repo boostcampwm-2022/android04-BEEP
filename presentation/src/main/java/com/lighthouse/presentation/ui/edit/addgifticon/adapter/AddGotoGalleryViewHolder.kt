@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.addgifticon.adapter
+package com.lighthouse.presentation.ui.edit.addgifticon.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

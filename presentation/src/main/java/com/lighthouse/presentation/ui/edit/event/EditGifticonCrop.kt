@@ -1,6 +1,6 @@
-package com.lighthouse.presentation.ui.addgifticon.event
+package com.lighthouse.presentation.ui.edit.event
 
-enum class AddGifticonCrop {
+enum class EditGifticonCrop {
     GIFTICON_IMAGE,
     GIFTICON_NAME,
     BRAND_NAME,

@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.addgifticon
+package com.lighthouse.presentation.ui.edit.addgifticon
 
 import android.app.Activity
 import android.content.Context
@@ -26,16 +26,16 @@ import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
-import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
-import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
-import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonCrop
-import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonEvent
-import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
 import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
+import com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddGifticonAdapter
+import com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddGifticonItemUIModel
+import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonEvent
+import com.lighthouse.presentation.ui.edit.event.EditGifticonCrop
+import com.lighthouse.presentation.ui.edit.event.EditGifticonTag
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
 import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.lighthouse.presentation.util.resource.UIText
@@ -200,19 +200,19 @@ class AddGifticonActivity : AppCompatActivity() {
         gallery.launch(intent)
     }
 
-    private fun gotoCrop(crop: AddGifticonCrop, uri: Uri, croppedRect: RectF) {
+    private fun gotoCrop(crop: EditGifticonCrop, uri: Uri, croppedRect: RectF) {
         val gotoCropLauncher = when (crop) {
-            AddGifticonCrop.GIFTICON_IMAGE -> cropGifticon
-            AddGifticonCrop.GIFTICON_NAME -> cropGifticonName
-            AddGifticonCrop.BRAND_NAME -> cropBrandName
-            AddGifticonCrop.BARCODE -> cropBarcode
-            AddGifticonCrop.BALANCE -> cropBalance
-            AddGifticonCrop.EXPIRED -> cropExpired
+            EditGifticonCrop.GIFTICON_IMAGE -> cropGifticon
+            EditGifticonCrop.GIFTICON_NAME -> cropGifticonName
+            EditGifticonCrop.BRAND_NAME -> cropBrandName
+            EditGifticonCrop.BARCODE -> cropBarcode
+            EditGifticonCrop.BALANCE -> cropBalance
+            EditGifticonCrop.EXPIRED -> cropExpired
         }
         val intent = Intent(this, CropGifticonActivity::class.java).apply {
             putExtra(Extras.KEY_ORIGIN_IMAGE, uri)
             putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
-            if (crop != AddGifticonCrop.GIFTICON_IMAGE) {
+            if (crop != EditGifticonCrop.GIFTICON_IMAGE) {
                 putExtra(Extras.KEY_ENABLE_ASPECT_RATIO, false)
             }
         }
@@ -297,12 +297,12 @@ class AddGifticonActivity : AppCompatActivity() {
         progressDialog?.show(supportFragmentManager)
     }
 
-    private fun requestFocus(tag: AddGifticonTag) {
+    private fun requestFocus(tag: EditGifticonTag) {
         val focusView = when (tag) {
-            AddGifticonTag.GIFTICON_NAME -> binding.tietName
-            AddGifticonTag.BRAND_NAME -> binding.tietBrand
-            AddGifticonTag.BARCODE -> binding.tietBarcode
-            AddGifticonTag.BALANCE -> binding.tietBalance
+            EditGifticonTag.GIFTICON_NAME -> binding.tietName
+            EditGifticonTag.BRAND_NAME -> binding.tietBrand
+            EditGifticonTag.BARCODE -> binding.tietBarcode
+            EditGifticonTag.BALANCE -> binding.tietBalance
             else -> binding.clContainer
         }
         focusView.requestFocus()
@@ -314,14 +314,14 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestScroll(tag: AddGifticonTag) {
+    private fun requestScroll(tag: EditGifticonTag) {
         val focusView = when (tag) {
-            AddGifticonTag.GIFTICON_NAME -> binding.tvName
-            AddGifticonTag.BRAND_NAME -> binding.tvBrand
-            AddGifticonTag.APPROVE_BRAND_NAME -> binding.tvApproveBrandNameDescription
-            AddGifticonTag.BARCODE -> binding.tvBarcode
-            AddGifticonTag.BALANCE -> binding.tvBalance
-            AddGifticonTag.APPROVE_GIFTICON_IMAGE -> binding.ivGifticonImage
+            EditGifticonTag.GIFTICON_NAME -> binding.tvName
+            EditGifticonTag.BRAND_NAME -> binding.tvBrand
+            EditGifticonTag.APPROVE_BRAND_NAME -> binding.tvApproveBrandNameDescription
+            EditGifticonTag.BARCODE -> binding.tvBarcode
+            EditGifticonTag.BALANCE -> binding.tvBalance
+            EditGifticonTag.APPROVE_GIFTICON_IMAGE -> binding.ivGifticonImage
             else -> null
         } ?: return
 

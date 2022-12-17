@@ -85,15 +85,15 @@
     <string name="add_gifticon_approve_brand_name">입력한 브랜드가 맞다면 클릭해주세요</string>
     <string name="add_gifticon_approve_expired_at">입력한 유효기간이 맞다면 클릭해주세요</string>
 
-    <string name="add_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
-    <string name="add_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
-    <string name="add_gifticon_invalid_barcode">바코드를 입력해주세요</string>
-    <string name="add_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
-    <string name="add_gifticon_invalid_approve_brand_name">브랜드 정보를 확인해주세요</string>
-    <string name="add_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
-    <string name="add_gifticon_invalid_approve_expired_at">유효기간 정보를 확인해주세요</string>
-    <string name="add_gifticon_invalid_balance">잔액을 입력해주세요</string>
-    <string name="add_gifticon_invalid_approve_gifticon_image">기프티콘 이미지를 확인해주세요</string>
+    <string name="edit_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
+    <string name="edit_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_barcode">바코드를 입력해주세요</string>
+    <string name="edit_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_approve_brand_name">브랜드 정보를 확인해주세요</string>
+    <string name="edit_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_approve_expired_at">유효기간 정보를 확인해주세요</string>
+    <string name="edit_gifticon_invalid_balance">잔액을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_approve_gifticon_image">기프티콘 이미지를 확인해주세요</string>
 
     <string name="add_gifticon_failed_recognize_name">기프티콘 이름 인식에 실패했습니다.</string>
     <string name="add_gifticon_failed_recognize_brand">브랜드 인식에 실패했습니다.</string>
