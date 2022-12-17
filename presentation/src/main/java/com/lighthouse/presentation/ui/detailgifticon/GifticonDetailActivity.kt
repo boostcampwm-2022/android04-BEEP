@@ -37,7 +37,7 @@ import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.CroppedImage
-import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
+import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter

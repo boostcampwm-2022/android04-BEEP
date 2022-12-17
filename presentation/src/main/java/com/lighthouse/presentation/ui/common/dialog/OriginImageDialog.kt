@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.ui.addgifticon.dialog
+package com.lighthouse.presentation.ui.common.dialog
 
 import android.app.Dialog
 import android.graphics.Color

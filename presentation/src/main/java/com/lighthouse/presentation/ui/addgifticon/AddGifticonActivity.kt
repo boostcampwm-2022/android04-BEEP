@@ -28,11 +28,11 @@ import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
-import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonEvent
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.common.dialog.ConfirmationDialog
+import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
