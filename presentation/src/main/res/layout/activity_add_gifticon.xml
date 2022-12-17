@@ -450,7 +450,7 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_barcode">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.lighthouse.presentation.ui.common.view.BarcodeTextInputEditText
                         android:id="@+id/tiet_barcode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -458,13 +458,12 @@
                         android:imeOptions="actionNext"
                         android:inputType="number"
                         android:lines="1"
-                        android:maxLength="29"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBarcodeFocusChangeListener(hasFocus)}"
-                        app:setEditTextInfo="@{vm.displayBarcode}" />
+                        app:onChangeValueListener="@{(value) -> vm.changeBarcode(value)}"
+                        app:value="@{vm.barcode}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -530,21 +529,20 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_balance">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.lighthouse.presentation.ui.common.view.BalanceTextInputEditText
                         android:id="@+id/tiet_balance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:filters="@{vm.balanceFilters}"
                         android:hint="@string/add_gifticon_balance_hint"
                         android:imeOptions="actionNext"
                         android:inputType="number"
                         android:lines="1"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBalanceFocusChangeListener(hasFocus)}"
-                        app:setEditTextInfo="@{vm.displayBalance}" />
+                        app:onChangeValueListener="@{(value) -> vm.changeBalance(value)}"
+                        app:value="@{vm.balance}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

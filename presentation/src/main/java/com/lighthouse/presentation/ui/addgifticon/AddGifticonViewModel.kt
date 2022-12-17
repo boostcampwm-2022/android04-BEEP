@@ -1,7 +1,6 @@
 package com.lighthouse.presentation.ui.addgifticon
 
 import android.graphics.RectF
-import android.text.InputFilter
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
@@ -21,7 +20,6 @@ import com.lighthouse.presentation.mapper.toGalleryUIModel
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
-import com.lighthouse.presentation.model.EditTextInfo
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.ui.addgifticon.event.AddGifticonCrop
@@ -44,9 +42,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.lang.Integer.max
-import java.lang.Integer.min
-import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
@@ -416,64 +411,14 @@ class AddGifticonViewModel @Inject constructor(
         it?.barcode ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val displayBarcodeSelection = MutableStateFlow(0)
-
-    val displayBarcode = barcode.combine(displayBarcodeSelection) { barcode, selection ->
-        val displayText = barcodeToTransformed(barcode)
-        EditTextInfo(displayText, min(selection, displayText.length))
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditTextInfo())
-
-    private fun updateBarcode(barcode: String, selection: Int = barcode.length) {
-        updateSelectedGifticon(true) { it.copy(barcode = barcode) }
-        viewModelScope.launch {
-            displayBarcodeSelection.emit(selection)
+    private fun updateBarcode(barcode: String) {
+        updateSelectedGifticon(true) {
+            it.copy(barcode = barcode)
         }
     }
 
-    private fun barcodeToTransformed(text: String): String {
-        return text.chunked(4).joinToString(" ")
-    }
-
-    private fun transformedToBarcode(text: String): String {
-        return text.filter { it.isDigit() }
-    }
-
-    fun changeBarcode(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-        val newString = charSequence.toString()
-        val oldBarcode = displayBarcode.value.text
-        if (oldBarcode == newString) {
-            return
-        }
-
-        val newValue = if (before == 1 && count == 0 && start < oldBarcode.length && oldBarcode[start] == ' ') {
-            transformedToBarcode(
-                newString.substring(0, max(start - 1, 0)) + newString.substring(
-                    max(start, 0),
-                    newString.length
-                )
-            )
-        } else {
-            transformedToBarcode(newString)
-        }
-
-        val newBarcode = barcodeToTransformed(newValue)
-        val newSelection = if (oldBarcode.length == start + before) {
-            newBarcode.length
-        } else {
-            val endStringCount = max(oldBarcode.length - start - before, 0)
-            val oldDividerCount = oldBarcode.substring(start + before, oldBarcode.length).filter { it == ' ' }.length
-            val endNumCount = max(endStringCount - oldDividerCount, 0)
-            var index = 0
-            var numCount = 0
-            while (newBarcode.lastIndex - index >= 0 && (numCount < endNumCount || newBarcode[newBarcode.lastIndex - index] == ' ')) {
-                if (newBarcode[newBarcode.lastIndex - index] != ' ') {
-                    numCount += 1
-                }
-                index += 1
-            }
-            newBarcode.lastIndex - index + 1
-        }
-        updateBarcode(newValue, newSelection)
+    fun changeBarcode(value: String) {
+        updateBarcode(value)
     }
 
     private val barcodeFocus = MutableStateFlow(false)
@@ -493,91 +438,18 @@ class AddGifticonViewModel @Inject constructor(
         updateBarcode("")
     }
 
-    private val balanceFormat = DecimalFormat("###,###,###")
-
     val balance = selectedGifticon.map {
         it?.balance ?: ""
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val displayBalanceSelection = MutableStateFlow(0)
-
-    val displayBalance = balance.combine(displayBalanceSelection) { balance, selection ->
-        val displayText = balanceToTransformed(balance)
-        EditTextInfo(displayText, min(selection, displayText.length))
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, EditTextInfo())
-
-    private fun updateBalance(balance: String, selection: Int = balance.length) {
-        updateSelectedGifticon(true) { it.copy(balance = balance) }
-        viewModelScope.launch {
-            displayBalanceSelection.emit(selection)
+    private fun updateBalance(balance: String) {
+        updateSelectedGifticon(true) {
+            it.copy(balance = balance)
         }
     }
 
-    val balanceFilters = arrayOf(
-        InputFilter.LengthFilter(10),
-        InputFilter { source, _, _, _, dstStart, _ ->
-            return@InputFilter if (dstStart == 0) {
-                var zeroIndex = 0
-                for (char in source) {
-                    if (char != '0') {
-                        break
-                    }
-                    zeroIndex += 1
-                }
-                source.subSequence(zeroIndex, source.length)
-            } else {
-                source
-            }
-        }
-    )
-
-    private fun balanceToTransformed(text: String): String {
-        return balanceFormat.format(text.toDigit())
-    }
-
-    private fun transformedToBalance(text: String): String {
-        return text.filter { it.isDigit() }.toDigit().toString()
-    }
-
-    fun changeBalance(charSequence: CharSequence, start: Int, before: Int, count: Int) {
-        val newString = charSequence.toString()
-        val oldBalance = displayBalance.value.text
-        if (oldBalance == newString) {
-            return
-        }
-
-        val newValue = if (before == 1 && count == 0 && start < oldBalance.length && oldBalance[start] == ',') {
-            transformedToBalance(
-                newString.substring(0, max(start - 1, 0)) + newString.substring(
-                    max(start, 0),
-                    newString.length
-                )
-            )
-        } else {
-            transformedToBalance(newString)
-        }
-
-        val newBalance = balanceToTransformed(newValue)
-        val newSelection = if (oldBalance.length == start + before || oldBalance == "0") {
-            newBalance.length
-        } else {
-            val endStringCount = max(oldBalance.length - start - before, 0)
-            val oldDividerCount = oldBalance.substring(start + before, oldBalance.length).filter { it == ',' }.length
-            val endNumCount = max(endStringCount - oldDividerCount, 0)
-            var index = 0
-            var numCount = 0
-            while (newBalance.lastIndex - index >= 0 && (numCount < endNumCount || newBalance[newBalance.lastIndex - index] == ',')) {
-                if (newBalance.lastIndex - index < 0) {
-                    break
-                }
-                if (newBalance[newBalance.lastIndex - index] != ',') {
-                    numCount += 1
-                }
-                index += 1
-            }
-            newBalance.lastIndex - index + 1
-        }
-        updateBalance(newValue, newSelection)
+    fun changeBalance(value: String) {
+        updateBalance(value)
     }
 
     private val balanceFocus = MutableStateFlow(false)
