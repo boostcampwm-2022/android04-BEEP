@@ -4,65 +4,64 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
-import java.util.Date
 
-val sampleGifticonItems = listOf(
-    Gifticon(
-        id = "sample1",
-        createdAt = Date(),
-        userId = "mangbaam",
-        hasImage = false,
-        name = "별다방 아메리카노",
-        brand = "스타벅스",
-        expireAt = Date(),
-        barcode = "808346588450",
-        isCashCard = false,
-        balance = 0,
-        memo = "",
-        isUsed = false
-    ),
-    Gifticon(
-        id = "sample2",
-        createdAt = Date(),
-        userId = "mangbaam",
-        name = "5만원권",
-        hasImage = false,
-        brand = "GS25",
-        expireAt = Date(),
-        barcode = "808346588450",
-        isCashCard = true,
-        balance = 50000,
-        memo = "",
-        isUsed = false
-    ),
-    Gifticon(
-        id = "sample3",
-        createdAt = Date(),
-        userId = "mangbaam",
-        name = "어머니는 외계인",
-        brand = "베스킨라빈스",
-        expireAt = Date(),
-        hasImage = false,
-        barcode = "808346588450",
-        isCashCard = false,
-        balance = 0,
-        memo = "",
-        isUsed = true
-    ),
-    Gifticon(
-        id = "sample4",
-        createdAt = Date(),
-        userId = "mangbaam",
-        name = "3만원권",
-        brand = "e마트",
-        expireAt = Date(),
-        barcode = "808346588450",
-        isCashCard = true,
-        balance = 0,
-        hasImage = false,
-        memo = "",
-        isUsed = true
-    )
+val sampleGifticonItems = listOf<Gifticon>(
+//    Gifticon(
+//        id = "sample1",
+//        createdAt = Date(),
+//        userId = "mangbaam",
+//        hasImage = false,
+//        name = "별다방 아메리카노",
+//        brand = "스타벅스",
+//        expireAt = Date(),
+//        barcode = "808346588450",
+//        isCashCard = false,
+//        balance = 0,
+//        memo = "",
+//        isUsed = false
+//    ),
+//    Gifticon(
+//        id = "sample2",
+//        createdAt = Date(),
+//        userId = "mangbaam",
+//        name = "5만원권",
+//        hasImage = false,
+//        brand = "GS25",
+//        expireAt = Date(),
+//        barcode = "808346588450",
+//        isCashCard = true,
+//        balance = 50000,
+//        memo = "",
+//        isUsed = false
+//    ),
+//    Gifticon(
+//        id = "sample3",
+//        createdAt = Date(),
+//        userId = "mangbaam",
+//        name = "어머니는 외계인",
+//        brand = "베스킨라빈스",
+//        expireAt = Date(),
+//        hasImage = false,
+//        barcode = "808346588450",
+//        isCashCard = false,
+//        balance = 0,
+//        memo = "",
+//        isUsed = true
+//    ),
+//    Gifticon(
+//        id = "sample4",
+//        createdAt = Date(),
+//        userId = "mangbaam",
+//        name = "3만원권",
+//        brand = "e마트",
+//        expireAt = Date(),
+//        barcode = "808346588450",
+//        isCashCard = true,
+//        balance = 0,
+//        hasImage = false,
+//        memo = "",
+//        isUsed = true
+//    )
 )
 
 @Preview
