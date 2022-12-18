@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
@@ -44,13 +43,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val locationPermission: LocationPermissionManager by permissions()
 
-    private var getResultImage: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (locationPermission.isGrant) {
-                homeViewModel.observeLocationFlow()
-            }
-        }
-
     private val locationPermissionDialog by lazy {
         val title = getString(R.string.confirmation_title)
         val message = getString(R.string.confirmation_location_message)
@@ -62,7 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     data = Uri.fromParts("package", requireActivity().packageName, null)
                 }
-                getResultImage.launch(intent)
+                startActivity(intent)
             }
         }
     }
@@ -71,8 +63,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val locationPermissionLauncher =
         registerForActivityResult(contract) { results ->
-            if (results.all { it.value }) {
-                homeViewModel.observeLocationFlow()
+            if (results.all { it.value }.not()) {
+                locationPermissionDialog.show(parentFragmentManager, ConfirmationDialog::class.java.name)
             }
         }
 
@@ -104,14 +96,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainVm = mainViewModel
         binding.homeVm = homeViewModel
-        checkLocationPermission()
+        observeLocationPermission()
         setBindingAdapter()
         setObserveViewModel()
     }
 
-    private fun checkLocationPermission() {
-        if (locationPermission.isGrant) {
-            homeViewModel.observeLocationFlow()
+    private fun observeLocationPermission() {
+        viewLifecycleOwner.repeatOnStarted {
+            locationPermission.permissionFlow.collectLatest {
+                homeViewModel.updateLocationPermission(it)
+            }
         }
     }
 

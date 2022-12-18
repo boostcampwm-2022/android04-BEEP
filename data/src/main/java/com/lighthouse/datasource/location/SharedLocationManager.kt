@@ -24,7 +24,6 @@ class SharedLocationManager @Inject constructor(
         interval = LOCATION_INTERVAL
         fastestInterval = LOCATION_INTERVAL / 2
         priority = Priority.PRIORITY_HIGH_ACCURACY
-        smallestDisplacement = SMALLEST_DISPLACEMENT_DIFF
         maxWaitTime = WAITE_TIME
     }
 
@@ -54,6 +53,5 @@ class SharedLocationManager @Inject constructor(
     companion object {
         private const val LOCATION_INTERVAL = 30000L
         private const val WAITE_TIME = 2000L
-        private const val SMALLEST_DISPLACEMENT_DIFF = 250F
     }
 }

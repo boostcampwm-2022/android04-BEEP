@@ -88,10 +88,17 @@ class HomeViewModel @Inject constructor(
     var hasLocationPermission = MutableStateFlow(false)
         private set
 
-    fun observeLocationFlow() {
+    init {
+        viewModelScope.launch {
+            hasLocationPermission.collectLatest {
+                if (it) observeLocationFlow()
+            }
+        }
+    }
+
+    private fun observeLocationFlow() {
         if (locationFlow?.isActive == true) return
         isShimmer.value = true
-        hasLocationPermission.value = true
 
         viewModelScope.launch {
             combineLocationGifticon()
@@ -160,6 +167,10 @@ class HomeViewModel @Inject constructor(
 
     fun cancelLocationCollectJob() {
         locationFlow?.cancel()
+    }
+
+    fun updateLocationPermission(isLocationPermission: Boolean) {
+        hasLocationPermission.value = isLocationPermission
     }
 
     companion object {
