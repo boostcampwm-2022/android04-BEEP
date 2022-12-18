@@ -146,6 +146,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@{@string/all_balance_label(vm.gifticon.balance)}"
+                app:setUIText="@{vm.balanceUIText}"
                 app:layout_constraintEnd_toEndOf="@id/guid_end"
                 app:layout_constraintStart_toStartOf="@id/guid_start"
                 app:layout_constraintTop_toBottomOf="@id/ctf_amount_to_be_used"

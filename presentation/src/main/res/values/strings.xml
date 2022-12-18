@@ -6,7 +6,7 @@
     <string name="all_cash_origin_unit">원</string>
     <string name="all_d_day">D-%1$d</string>
     <string name="all_concurrency_format">#,###</string>
-    <string name="all_balance_label">남은 금액:%s</string>
+    <string name="all_balance_label">남은 금액:%s원</string>
     <string name="all_cancel">취소</string>
     <string name="all_do_cancel">취소하기</string>
     <string name="all_d_day_more_than_year">D-365+</string>

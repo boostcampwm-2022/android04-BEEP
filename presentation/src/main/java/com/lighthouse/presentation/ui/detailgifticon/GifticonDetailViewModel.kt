@@ -14,6 +14,7 @@ import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.domain.usecase.detail.GetGifticonCropUseCase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toConcurrency
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
@@ -86,6 +87,11 @@ class GifticonDetailViewModel @Inject constructor(
             )
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
+
+    val balanceUIText: StateFlow<UIText> = gifticon.transform {
+        if (it == null) return@transform
+        emit(UIText.StringResource(R.string.all_balance_label, it.balance.toConcurrency()))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
     val failure = gifticonDbResult.transform {
         if (it is DbResult.Failure) {
