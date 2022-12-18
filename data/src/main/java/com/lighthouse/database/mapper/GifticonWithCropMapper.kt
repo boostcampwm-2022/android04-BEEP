@@ -15,6 +15,7 @@ fun GifticonWithCrop.toDomain(): GifticonForUpdate {
         expiredAt = expireAt,
         isCashCard = isCashCard,
         balance = balance,
+        oldCroppedUri = croppedUri.toString(),
         croppedUri = croppedUri.toString(),
         croppedRect = croppedRect.toDomain(),
         memo = memo

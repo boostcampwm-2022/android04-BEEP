@@ -18,6 +18,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.util.Date
 import javax.inject.Inject
 
 class GifticonImageSource @Inject constructor(
@@ -40,7 +41,8 @@ class GifticonImageSource @Inject constructor(
         val sampledOriginBitmap = samplingBitmap(originBitmap, sampleSize)
         saveBitmap(sampledOriginBitmap, CompressFormat.JPEG, 100, outputOriginFile)
 
-        val outputCroppedFile = context.getFileStreamPath("$CROPPED_PREFIX$id")
+        val updated = Date()
+        val outputCroppedFile = context.getFileStreamPath("$CROPPED_PREFIX$id${updated.time}.jpg")
         val cropped = if (exists(croppedUri)) {
             decodeBitmap(croppedUri).also { deleteIfFile(croppedUri) } ?: return
         } else {
@@ -49,11 +51,15 @@ class GifticonImageSource @Inject constructor(
         saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCroppedFile)
     }
 
-    suspend fun updateImage(id: String, croppedUri: Uri?) {
-        croppedUri ?: return
-        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id")
+    suspend fun updateImage(id: String, oldCroppedUri: Uri?, newCroppedUri: Uri?) {
+        oldCroppedUri ?: return
+        newCroppedUri ?: return
+        deleteIfFile(oldCroppedUri)
+
+        val updated = Date()
+        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id${updated.time}.jpg")
         withContext(Dispatchers.IO) {
-            openInputStream(croppedUri)?.use { input ->
+            openInputStream(newCroppedUri)?.use { input ->
                 FileOutputStream(outputCropped).use { output ->
                     input.copyTo(output)
                 }

@@ -83,6 +83,11 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate) {
         gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity())
+        gifticonImageSource.updateImage(
+            gifticonForUpdate.id,
+            Uri.parse(gifticonForUpdate.oldCroppedUri),
+            Uri.parse(gifticonForUpdate.croppedUri)
+        )
     }
 
     override suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>) {

@@ -8,6 +8,7 @@ data class ModifyGifticonUIModel(
     val id: String,
     val userId: String,
     val hasImage: Boolean,
+    val oldCroppedUri: Uri,
     val croppedUri: Uri,
     val croppedRect: RectF,
     val name: String,

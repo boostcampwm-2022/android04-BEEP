@@ -12,6 +12,7 @@ data class GifticonForUpdate(
     val expiredAt: Date,
     val isCashCard: Boolean,
     val balance: Int,
+    val oldCroppedUri: String,
     val croppedUri: String,
     val croppedRect: Rectangle,
     val memo: String

@@ -10,6 +10,7 @@ fun ModifyGifticonUIModel.toDomain(): GifticonForUpdate {
         id = id,
         userId = userId,
         hasImage = hasImage,
+        oldCroppedUri = oldCroppedUri.toString(),
         croppedUri = croppedUri.toString(),
         croppedRect = croppedRect.toRect().toDomain(),
         name = name,

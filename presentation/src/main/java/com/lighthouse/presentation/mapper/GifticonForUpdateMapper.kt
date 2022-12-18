@@ -11,6 +11,7 @@ fun GifticonForUpdate.toPresentation(): ModifyGifticonUIModel {
         id = id,
         userId = userId,
         hasImage = hasImage,
+        oldCroppedUri = Uri.parse(oldCroppedUri),
         croppedUri = Uri.parse(croppedUri),
         croppedRect = croppedRect.toPresentation().toRectF(),
         name = name,
