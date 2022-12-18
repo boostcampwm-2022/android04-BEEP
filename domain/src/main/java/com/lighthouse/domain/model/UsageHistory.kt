@@ -5,6 +5,6 @@ import java.util.Date
 
 data class UsageHistory(
     val date: Date,
-    val location: VertexLocation,
+    val location: VertexLocation?,
     val amount: Int
 )

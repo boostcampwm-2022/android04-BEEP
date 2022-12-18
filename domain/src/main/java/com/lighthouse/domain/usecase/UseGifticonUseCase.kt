@@ -10,8 +10,8 @@ class UseGifticonUseCase @Inject constructor(
     private val gifticonRepository: GifticonRepository,
     private val getUserLocationUseCase: GetUserLocationUseCase
 ) {
-    suspend operator fun invoke(gifticonId: String) {
-        val userLocation = getUserLocationUseCase().first() // TODO 위치 권한 없는 경우 사용도 안 됨
+    suspend operator fun invoke(gifticonId: String, hasLocationPermission: Boolean) {
+        val userLocation = if (hasLocationPermission) getUserLocationUseCase().first() else null
         val usageHistory = UsageHistory(currentTime, userLocation, 0)
 
         gifticonRepository.useGifticon(gifticonId, usageHistory)

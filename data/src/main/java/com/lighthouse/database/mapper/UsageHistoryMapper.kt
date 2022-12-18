@@ -16,8 +16,8 @@ fun UsageHistory.toUsageHistoryEntity(gifticonId: String): UsageHistoryEntity {
     return UsageHistoryEntity(
         gifticonId = gifticonId,
         date = date,
-        longitude = location.longitude,
-        latitude = location.latitude,
+        longitude = location?.longitude ?: 0f.toDouble(),
+        latitude = location?.latitude ?: 0f.toDouble(),
         amount = amount
     )
 }

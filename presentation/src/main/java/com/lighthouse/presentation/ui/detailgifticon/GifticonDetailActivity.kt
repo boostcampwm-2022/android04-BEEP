@@ -32,9 +32,12 @@ import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.edit.modifygifticon.ModifyGifticonActivity
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
+import com.lighthouse.presentation.util.permission.LocationPermissionManager
+import com.lighthouse.presentation.util.permission.core.permissions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,6 +65,8 @@ class GifticonDetailActivity : AppCompatActivity() {
     private val btnMaster by lazy { binding.btnMaster }
     private val chip by lazy { binding.chipScrollDownForUseButton }
     private val spinnerDatePicker = SpinnerDatePicker()
+
+    private val locationPermission: LocationPermissionManager by permissions()
 
     @Inject
     lateinit var authManager: AuthManager
@@ -102,6 +107,11 @@ class GifticonDetailActivity : AppCompatActivity() {
         binding.btnMaster.viewTreeObserver.addOnDrawListener {
             chip.post {
                 chip.isVisible = btnMaster.isOnScreen().not()
+            }
+        }
+        repeatOnStarted {
+            locationPermission.permissionFlow.collectLatest {
+                viewModel.updateLocationPermission(it)
             }
         }
         repeatOnStarted {

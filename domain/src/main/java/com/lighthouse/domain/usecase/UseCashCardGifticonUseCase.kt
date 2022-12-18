@@ -11,9 +11,10 @@ class UseCashCardGifticonUseCase @Inject constructor(
     private val getUserLocationUseCase: GetUserLocationUseCase
 ) {
 
-    suspend operator fun invoke(gifticonId: String, amount: Int) {
-        val userLocation = getUserLocationUseCase().first()
+    suspend operator fun invoke(gifticonId: String, amount: Int, hasLocationPermission: Boolean) {
+        val userLocation = if (hasLocationPermission) getUserLocationUseCase().first() else null
         val usageHistory = UsageHistory(currentTime, userLocation, amount)
+
         gifticonRepository.useCashCardGifticon(gifticonId, amount, usageHistory)
     }
 }
