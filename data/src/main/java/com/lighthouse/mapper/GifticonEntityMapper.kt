@@ -9,6 +9,7 @@ fun GifticonEntity.toDomain(): Gifticon {
         createdAt = createdAt,
         userId = userId,
         hasImage = hasImage,
+        croppedUri = croppedUri.toString(),
         name = name,
         brand = brand,
         expireAt = expireAt,

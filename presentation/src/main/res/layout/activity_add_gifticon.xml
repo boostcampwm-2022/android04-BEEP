@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="vm"
-            type="com.lighthouse.presentation.ui.addgifticon.AddGifticonViewModel" />
+            type="com.lighthouse.presentation.ui.edit.addgifticon.AddGifticonViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -23,9 +22,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:minHeight="?attr/actionBarSize"
-                app:layout_collapseMode="pin">
+                android:layout_height="?attr/actionBarSize">
 
                 <ImageView
                     android:id="@+id/iv_back"
@@ -128,11 +125,11 @@
 
                 <ImageView
                     android:id="@+id/iv_gifticon_image"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/bg_on_surface_12"
-                    android:contentDescription="@string/add_gifticon_image_description"
+                    android:contentDescription="@string/edit_gifticon_image_description"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -161,7 +158,7 @@
                     android:layout_marginEnd="6dp"
                     android:background="@drawable/bg_origin_gifticon"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_origin_gifticon"
+                    android:contentDescription="@string/edit_gifticon_origin_gifticon"
                     android:enabled="@{vm.isSelected}"
                     android:focusable="true"
                     android:onClick="@{() -> vm.showOriginGifticon()}"
@@ -178,7 +175,7 @@
                     android:background="@drawable/bg_black_50"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:text="@string/add_gifticon_edit_image"
+                    android:text="@string/edit_gifticon_edit_image"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:textColor="@color/white"
                     android:textStyle="bold"
@@ -191,7 +188,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
-                    android:text="@string/add_gifticon_cash_card"
+                    android:text="@string/edit_gifticon_cash_card"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintBottom_toBottomOf="@id/switch_cash_card"
                     app:layout_constraintEnd_toStartOf="@id/switch_cash_card"
@@ -236,7 +233,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/add_gifticon_name_label"
+                    android:text="@string/edit_gifticon_name_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/switch_cash_card" />
@@ -258,7 +255,7 @@
                         android:id="@+id/tiet_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/add_gifticon_name_hint"
+                        android:hint="@string/edit_gifticon_name_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textNoSuggestions"
                         android:lines="1"
@@ -279,7 +276,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_name_remove_description"
+                    android:contentDescription="@string/edit_gifticon_name_remove_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.removeName()}"
                     android:padding="6dp"
@@ -296,7 +293,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_name_crop_description"
+                    android:contentDescription="@string/edit_gifticon_name_crop_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.gotoCropGifticonName()}"
                     android:padding="6dp"
@@ -310,7 +307,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/add_gifticon_brand_label"
+                    android:text="@string/edit_gifticon_brand_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_name" />
@@ -332,7 +329,7 @@
                         android:id="@+id/tiet_brand"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/add_gifticon_brand_hint"
+                        android:hint="@string/edit_gifticon_brand_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textNoSuggestions"
                         android:lines="1"
@@ -353,7 +350,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_brand_remove_description"
+                    android:contentDescription="@string/edit_gifticon_brand_remove_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.removeBrand()}"
                     android:padding="6dp"
@@ -384,7 +381,7 @@
                     android:onClick="@{() -> vm.approveBrandName()}"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    android:text="@string/add_gifticon_approve_brand_name"
+                    android:text="@string/edit_gifticon_approve_brand_name"
                     android:textAppearance="@style/BEEP.TextStyle.Caption2"
                     android:textColor="@color/white"
                     app:goneAnimation="@{@anim/anim_fade_out}"
@@ -400,7 +397,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_approve_brand_name_description"
+                    android:contentDescription="@string/edit_gifticon_approve_brand_name_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.approveBrandName()}"
                     android:padding="6dp"
@@ -418,7 +415,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_brand_crop_description"
+                    android:contentDescription="@string/edit_gifticon_brand_crop_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.gotoCropBrandName()}"
                     android:padding="6dp"
@@ -432,7 +429,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/add_gifticon_barcode_label"
+                    android:text="@string/edit_gifticon_barcode_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_brand" />
@@ -450,21 +447,20 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_barcode">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.lighthouse.presentation.ui.common.view.BarcodeTextInputEditText
                         android:id="@+id/tiet_barcode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/add_gifticon_barcode_hint"
+                        android:hint="@string/edit_gifticon_barcode_hint"
                         android:imeOptions="actionNext"
                         android:inputType="number"
                         android:lines="1"
-                        android:maxLength="29"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBarcode(text, start, end, count)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBarcodeFocusChangeListener(hasFocus)}"
-                        app:setEditTextInfo="@{vm.displayBarcode}" />
+                        app:onChangeValueListener="@{(value) -> vm.changeBarcode(value)}"
+                        app:value="@{vm.barcode}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -475,7 +471,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_barcode_remove_description"
+                    android:contentDescription="@string/edit_gifticon_barcode_remove_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.removeBarcode()}"
                     android:padding="6dp"
@@ -492,7 +488,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_barcode_crop_description"
+                    android:contentDescription="@string/edit_gifticon_barcode_crop_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.gotoCropBarcode()}"
                     android:padding="6dp"
@@ -512,7 +508,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/add_gifticon_balance_label"
+                    android:text="@string/edit_gifticon_balance_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_barcode" />
@@ -530,21 +526,20 @@
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_balance">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.lighthouse.presentation.ui.common.view.BalanceTextInputEditText
                         android:id="@+id/tiet_balance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:filters="@{vm.balanceFilters}"
-                        android:hint="@string/add_gifticon_balance_hint"
+                        android:hint="@string/edit_gifticon_balance_hint"
                         android:imeOptions="actionNext"
                         android:inputType="number"
                         android:lines="1"
-                        android:onTextChanged="@{(text, start, end, count) -> vm.changeBalance(text, start, end, count)}"
                         android:paddingStart="0dp"
                         android:paddingEnd="78dp"
                         app:onEditorActionListener="@{(view, actionId, event) -> vm.onActionNextListener(actionId)}"
                         app:onFocusChangeListener="@{(v, hasFocus) -> vm.onBalanceFocusChangeListener(hasFocus)}"
-                        app:setEditTextInfo="@{vm.displayBalance}" />
+                        app:onChangeValueListener="@{(value) -> vm.changeBalance(value)}"
+                        app:value="@{vm.balance}"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -555,7 +550,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_balance_remove_description"
+                    android:contentDescription="@string/edit_gifticon_balance_remove_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.removeBalance()}"
                     android:padding="6dp"
@@ -572,7 +567,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_balance_crop_description"
+                    android:contentDescription="@string/edit_gifticon_balance_crop_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.gotoCropBalance()}"
                     android:padding="6dp"
@@ -587,7 +582,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/add_gifticon_expire_date_label"
+                    android:text="@string/edit_gifticon_expire_date_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_balance" />
@@ -599,7 +594,7 @@
                     android:layout_height="wrap_content"
                     android:enabled="@{vm.isSelected}"
                     app:boxBackgroundColor="@null"
-                    app:endIconDrawable="@drawable/ic_add_gifticon_calendar"
+                    app:endIconDrawable="@drawable/ic_edit_gifticon_calendar"
                     app:endIconMode="none"
                     app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -612,7 +607,7 @@
                         android:layout_height="wrap_content"
                         android:cursorVisible="false"
                         android:focusable="false"
-                        android:hint="@string/add_gifticon_expire_date_hint"
+                        android:hint="@string/edit_gifticon_expire_date_hint"
                         android:inputType="none"
                         android:lines="1"
                         android:onClick="@{() -> vm.showExpiredAtDatePicker()}"
@@ -634,7 +629,7 @@
                     android:onClick="@{() -> vm.approveExpiredAt()}"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    android:text="@string/add_gifticon_approve_expired_at"
+                    android:text="@string/edit_gifticon_approve_expired_at"
                     android:textAppearance="@style/BEEP.TextStyle.Caption2"
                     android:textColor="@color/white"
                     app:goneAnimation="@{@anim/anim_fade_out}"
@@ -650,7 +645,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_approve_expire_description"
+                    android:contentDescription="@string/edit_gifticon_approve_expire_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.approveExpiredAt()}"
                     android:padding="6dp"
@@ -667,9 +662,9 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginBottom="6dp"
-                    android:contentDescription="@string/add_gifticon_expire_calendar_description"
+                    android:contentDescription="@string/edit_gifticon_expire_calendar_description"
                     android:padding="6dp"
-                    android:src="@drawable/ic_add_gifticon_calendar"
+                    android:src="@drawable/ic_edit_gifticon_calendar"
                     app:layout_constraintBottom_toBottomOf="@id/til_expire_date"
                     app:layout_constraintEnd_toStartOf="@id/iv_expire_crop"
                     app:tint="?attr/colorOnSurface" />
@@ -681,7 +676,7 @@
                     android:layout_marginBottom="6dp"
                     android:background="@drawable/ripple_circle_on_surface_12"
                     android:clickable="true"
-                    android:contentDescription="@string/add_gifticon_expire_crop_description"
+                    android:contentDescription="@string/edit_gifticon_expire_crop_description"
                     android:focusable="true"
                     android:onClick="@{() -> vm.gotoCropExpired()}"
                     android:padding="6dp"
@@ -695,7 +690,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="@string/add_gifticon_memo_label"
+                    android:text="@string/edit_gifticon_memo_label"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/til_expire_date" />
@@ -719,7 +714,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
-                        android:hint="@string/add_gifticon_memo_hint"
+                        android:hint="@string/edit_gifticon_memo_hint"
                         android:inputType="textNoSuggestions|textMultiLine"
                         android:minHeight="80dp"
                         android:onTextChanged="@{(text, start, end, count) -> vm.updateMemo(text)}"

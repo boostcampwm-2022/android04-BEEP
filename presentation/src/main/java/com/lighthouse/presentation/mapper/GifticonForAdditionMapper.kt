@@ -7,7 +7,11 @@ import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 
-fun GifticonForAddition.toPresentation(id: Long, createdDate: String, approveBrandName: String = ""): AddGifticonUIModel {
+fun GifticonForAddition.toPresentation(
+    id: Long,
+    createdDate: String,
+    approveBrandName: String = ""
+): AddGifticonUIModel {
     return AddGifticonUIModel(
         id = id,
         hasImage = hasImage,
@@ -27,7 +31,7 @@ fun GifticonForAddition.toPresentation(id: Long, createdDate: String, approveBra
         memo = memo,
         origin = Uri.parse(originUri),
         gifticonImage = CroppedImage(
-            uri = if (croppedUri != "") Uri.parse(croppedUri) else null,
+            uri = if (tempCroppedUri.isNotEmpty()) Uri.parse(tempCroppedUri) else null,
             croppedRect = croppedRect.toPresentation().toRectF()
         ),
         approveGifticonImage = false,

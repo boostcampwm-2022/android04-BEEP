@@ -3,9 +3,8 @@ package com.lighthouse.domain.repository
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonCrop
-import com.lighthouse.domain.model.GifticonCropForUpdate
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.domain.model.GifticonForUpdate
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import kotlinx.coroutines.flow.Flow
@@ -22,8 +21,9 @@ interface GifticonRepository {
     ): Flow<DbResult<List<Gifticon>>>
 
     fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>>
-    suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
-    suspend fun updateGifticon(gifticon: Gifticon)
+    suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>)
+    suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate?
+    suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate)
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>
     suspend fun saveUsageHistory(gifticonId: String, usageHistory: UsageHistory)
     suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory)
@@ -35,7 +35,5 @@ interface GifticonRepository {
     fun getUsableGifticons(userId: String): Flow<DbResult<List<Gifticon>>>
     suspend fun hasGifticonBrand(brand: String): Boolean
 
-    fun getGifticonCrop(gifticonId: String): Flow<GifticonCrop>
-    suspend fun updateGifticonCrop(gifticonCropForUpdate: GifticonCropForUpdate)
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
 }

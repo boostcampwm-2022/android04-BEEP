@@ -2,57 +2,40 @@ package com.lighthouse.presentation.ui.detailgifticon
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.RectF
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.activity.addCallback
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.toRect
-import androidx.core.graphics.toRectF
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.binding.loadUriWithoutCache
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
-import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.mapper.toDomain
-import com.lighthouse.presentation.model.CroppedImage
-import com.lighthouse.presentation.ui.addgifticon.dialog.OriginImageDialog
+import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
-import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
+import com.lighthouse.presentation.ui.detailgifticon.dialog.LargeBarcodeDialog
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
+import com.lighthouse.presentation.ui.edit.modifygifticon.ModifyGifticonActivity
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -70,15 +53,15 @@ class GifticonDetailActivity : AppCompatActivity() {
             ?: CashCardGifticonInfoFragment()
     }
 
-    private lateinit var checkEditDialog: AlertDialog
     private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
-    private lateinit var gifticonInfoNotChangedToast: Toast
-
     private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
 
-    private val btnUseGifticon by lazy { binding.btnUseGifticon }
+    private var largeBarcodeDialog: LargeBarcodeDialog? = null
+
+    private val btnMaster by lazy { binding.btnMaster }
     private val chip by lazy { binding.chipScrollDownForUseButton }
+    private val spinnerDatePicker = SpinnerDatePicker()
 
     @Inject
     lateinit var authManager: AuthManager
@@ -107,29 +90,6 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val gifticon = viewModel.gifticon.value ?: return@registerForActivityResult
-        val output = getFileStreamPath(gifticon.croppedPath)
-
-        lifecycleScope.launch {
-            val croppedImage = withContext(Dispatchers.IO) {
-                getCropResult(result, output)
-            } ?: return@launch
-            viewModel.updateGifticonCrop(GifticonCrop(gifticon.id, croppedImage.croppedRect.toRect().toDomain()))
-            binding.ivProductImage.loadUriWithoutCache(croppedImage.uri)
-        }
-    }
-
-    private val backKeyCallback by lazy {
-        onBackPressedDispatcher.addCallback {
-            if (viewModel.mode.value == GifticonDetailMode.EDIT) {
-                showNotSavedEditInfoDialog()
-            } else {
-                finish()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -139,9 +99,9 @@ class GifticonDetailActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.tbGifticonDetail)
 
-        binding.btnUseGifticon.viewTreeObserver.addOnDrawListener {
+        binding.btnMaster.viewTreeObserver.addOnDrawListener {
             chip.post {
-                chip.isVisible = btnUseGifticon.isOnScreen().not()
+                chip.isVisible = btnMaster.isOnScreen().not()
             }
         }
         repeatOnStarted {
@@ -161,28 +121,6 @@ class GifticonDetailActivity : AppCompatActivity() {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
-                val output = getFileStreamPath(gifticon?.croppedPath ?: return@collect)
-                binding.ivProductImage.loadUriWithoutCache(output.toUri())
-            }
-        }
-        repeatOnStarted {
-            viewModel.tempGifticon.collect { gifticon ->
-                spinnerDatePicker.setDate(gifticon?.expireAt ?: return@collect)
-            }
-        }
-        repeatOnStarted {
-            viewModel.mode.collect { mode ->
-                when (mode) {
-                    GifticonDetailMode.UNUSED -> {
-                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_unused_mode_button_text)
-                    }
-                    GifticonDetailMode.USED -> {
-                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_used_mode_button_text)
-                    }
-                    GifticonDetailMode.EDIT -> {
-                        binding.btnUseGifticon.text = getString(R.string.gifticon_detail_edit_mode_button_text)
-                    }
-                }
             }
         }
         repeatOnStarted {
@@ -199,7 +137,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 binding.svGifticonDetail.scrollToBottom()
             }
             is GifticonDetailEvent.EditButtonClicked -> {
-                showCheckEditDialog()
+                gotoModifyGifticon(viewModel.gifticon.value?.id)
             }
             is GifticonDetailEvent.ExistEmptyInfo -> {
                 Toast.makeText(
@@ -207,13 +145,6 @@ class GifticonDetailActivity : AppCompatActivity() {
                     getString(R.string.gifticon_detail_exist_empty_info_toast),
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-            is GifticonDetailEvent.OnGifticonInfoChanged -> {
-                if (event.before == event.after) {
-                    showGifticonInfoNotChangedToast()
-                } else {
-                    showGifticonInfoChangedSnackBar(event.before)
-                }
             }
             is GifticonDetailEvent.ExpireDateClicked -> {
                 showDatePickerDialog()
@@ -232,48 +163,20 @@ class GifticonDetailActivity : AppCompatActivity() {
             is GifticonDetailEvent.ShowOriginalImage -> {
                 showOriginGifticonDialog(event.origin)
             }
-            is GifticonDetailEvent.NavigateToCropGifticon -> {
-                gotoCropGifticon(
-                    getFileStreamPath(event.originPath).toUri(),
-                    event.croppedRect.toRectF()
-                )
+            is GifticonDetailEvent.ShowLargeBarcode -> {
+                showLargeBarcodeDialog(event.barcode)
             }
             else -> { // TODO(이벤트 처리)
             }
         }
     }
 
-    private fun showCheckEditDialog() {
-        if (::checkEditDialog.isInitialized.not()) {
-            checkEditDialog = AlertDialog.Builder(this)
-                .setTitle(getString(R.string.gifticon_detail_check_edit_dialog_title))
-                .setPositiveButton(getString(R.string.gifticon_detail_check_edit_dialog_positive_button)) { _, _ ->
-                    viewModel.switchMode(GifticonDetailMode.EDIT)
-                    viewModel.startEdit()
-                }
-                .setNegativeButton(getString(R.string.gifticon_detail_check_edit_dialog_negative_button)) { dialog, _ ->
-                    dialog.cancel()
-                }
-                .create()
+    private fun gotoModifyGifticon(gifticonId: String?) {
+        gifticonId ?: return
+        val intent = Intent(this, ModifyGifticonActivity::class.java).apply {
+            putExtra(Extras.KEY_MODIFY_GIFTICON_ID, gifticonId)
         }
-        checkEditDialog.show()
-    }
-
-    private val spinnerDatePicker = SpinnerDatePicker().apply {
-        setOnDatePickListener { year, month, dayOfMonth ->
-            viewModel.editExpireDate(year, month, dayOfMonth)
-        }
-    }
-
-    private fun showNotSavedEditInfoDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.gifticon_detail_back_in_edit_dialog_title))
-            .setMessage(getString(R.string.gifticon_detail_back_in_edit_dialog_message))
-            .setPositiveButton(getString(R.string.all_do_cancel)) { dialog, _ ->
-                viewModel.cancelEdit()
-                dialog.dismiss()
-            }
-            .show()
+        startActivity(intent)
     }
 
     private fun showDatePickerDialog() {
@@ -336,70 +239,22 @@ class GifticonDetailActivity : AppCompatActivity() {
             arguments = Bundle().apply {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
-        }.show(supportFragmentManager, OriginImageDialog::class.java.name)
+        }.show(supportFragmentManager)
     }
 
-    private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
-        return if (result.resultCode == Activity.RESULT_OK) {
-            val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
-            val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
-
-            withContext(Dispatchers.IO) {
-                FileInputStream(croppedUri.path).copyTo(
-                    FileOutputStream(output)
-                )
+    private fun showLargeBarcodeDialog(barcode: String) {
+        if (largeBarcodeDialog?.isAdded == true) {
+            largeBarcodeDialog?.dismiss()
+        }
+        largeBarcodeDialog = LargeBarcodeDialog().apply {
+            arguments = Bundle().apply {
+                putString(Extras.KEY_BARCODE, barcode)
             }
-            CroppedImage(output.toUri(), croppedRect)
-        } else {
-            null
         }
-    }
-
-    private fun gotoCropGifticon(uri: Uri, croppedRect: RectF) {
-        val intent = Intent(this, CropGifticonActivity::class.java).apply {
-            putExtra(Extras.KEY_ORIGIN_IMAGE, uri)
-            putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
-        }
-        cropGifticon.launch(intent)
-    }
-
-    private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
-        Snackbar.make(
-            binding.clGifticonDetail,
-            getString(R.string.gifticon_detail_info_changed_snackbar_text),
-            INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND
-        ).apply {
-            animationMode = Snackbar.ANIMATION_MODE_SLIDE
-            setAction(getString(R.string.gifticon_detail_info_changed_snackbar_action_text)) {
-                viewModel.rollbackChangedGifticonInfo(before)
-            }
-        }.show()
-    }
-
-    private fun showGifticonInfoNotChangedToast() {
-        if (::gifticonInfoNotChangedToast.isInitialized.not()) {
-            gifticonInfoNotChangedToast = Toast.makeText(this, getString(R.string.gifticon_detail_nothing_changed_toast), Toast.LENGTH_SHORT)
-        }
-        gifticonInfoNotChangedToast.show()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        backKeyCallback.isEnabled = true
-    }
-
-    override fun onStop() {
-        backKeyCallback.isEnabled = false
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        backKeyCallback.remove()
-        super.onDestroy()
+        largeBarcodeDialog?.show(supportFragmentManager)
     }
 
     companion object {
         const val INVALID_DIALOG_DEADLINE_SECOND = 5
-        const val INFO_CHANGED_SNACKBAR_DURATION_MILLI_SECOND = 5000
     }
 }

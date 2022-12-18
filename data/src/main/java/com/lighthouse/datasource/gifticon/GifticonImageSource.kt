@@ -11,6 +11,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.net.toFile
+import androidx.core.net.toUri
+import com.lighthouse.model.GifticonImageResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +20,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.util.Date
 import javax.inject.Inject
 
 class GifticonImageSource @Inject constructor(
@@ -27,38 +30,45 @@ class GifticonImageSource @Inject constructor(
     private val screenWidth = context.resources.displayMetrics.widthPixels
     private val screenHeight = context.resources.displayMetrics.heightPixels
 
-    suspend fun saveImage(id: String, originUri: Uri?, croppedUri: Uri?) {
-        originUri ?: return
-        croppedUri ?: return
+    suspend fun saveImage(id: String, originUri: Uri?, oldCroppedUri: Uri?): GifticonImageResult? {
+        originUri ?: return null
+        oldCroppedUri ?: return null
 
         val outputOriginFile = context.getFileStreamPath("$ORIGIN_PREFIX$id")
 
-        val inputOriginStream = openInputStream(originUri) ?: return
+        val inputOriginStream = openInputStream(originUri) ?: return null
         val sampleSize = calculateSampleSize(inputOriginStream)
 
-        val originBitmap = decodeBitmap(originUri) ?: return
+        val originBitmap = decodeBitmap(originUri) ?: return null
         val sampledOriginBitmap = samplingBitmap(originBitmap, sampleSize)
         saveBitmap(sampledOriginBitmap, CompressFormat.JPEG, 100, outputOriginFile)
 
-        val outputCroppedFile = context.getFileStreamPath("$CROPPED_PREFIX$id")
-        val cropped = if (exists(croppedUri)) {
-            decodeBitmap(croppedUri).also { deleteIfFile(croppedUri) } ?: return
+        val updated = Date()
+        val outputCroppedFile = context.getFileStreamPath("${CROPPED_PREFIX}$id${updated.time}")
+        val cropped = if (exists(oldCroppedUri)) {
+            decodeBitmap(oldCroppedUri).also { deleteIfFile(oldCroppedUri) } ?: return null
         } else {
             centerCropBitmap(sampledOriginBitmap, 1f)
         }
         saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCroppedFile)
+        return GifticonImageResult(sampleSize, outputCroppedFile.toUri())
     }
 
-    suspend fun updateImage(id: String, croppedUri: Uri?) {
-        croppedUri ?: return
-        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id")
+    suspend fun updateImage(id: String, oldCroppedUri: Uri?, newCroppedUri: Uri?): Uri? {
+        oldCroppedUri ?: return null
+        newCroppedUri ?: return null
+        deleteIfFile(oldCroppedUri)
+
+        val updated = Date()
+        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id${updated.time}")
         withContext(Dispatchers.IO) {
-            openInputStream(croppedUri)?.use { input ->
+            openInputStream(newCroppedUri)?.use { input ->
                 FileOutputStream(outputCropped).use { output ->
                     input.copyTo(output)
                 }
-            } ?: return@withContext
+            }
         }
+        return outputCropped.toUri()
     }
 
     private fun calculateSampleSize(inputStream: InputStream): Int {
@@ -90,7 +100,10 @@ class GifticonImageSource @Inject constructor(
         return withContext(Dispatchers.IO) {
             when (uri.scheme) {
                 SCHEME_CONTENT -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+                    val source = ImageDecoder.createSource(context.contentResolver, uri)
+                    ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                        decoder.isMutableRequired = true
+                    }
                 } else {
                     MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
                 }

@@ -34,6 +34,10 @@ fun Int.toConcurrency(context: Context, useUnit: Boolean = true): String {
     }
 }
 
+fun Int.toConcurrency(): String {
+    return DecimalFormat("#,###").format(this)
+}
+
 val screenWidth: Int
     get() = Resources.getSystem().displayMetrics?.widthPixels ?: 0
 
