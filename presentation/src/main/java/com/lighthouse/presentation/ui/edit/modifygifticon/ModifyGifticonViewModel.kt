@@ -170,8 +170,8 @@ class ModifyGifticonViewModel @Inject constructor(
         brandFocus.value = hasFocus
     }
 
-    val brandRemoveVisible = brand.map {
-        it != ""
+    val brandRemoveVisible = brand.combine(brandFocus) { brand, focus ->
+        brand.isNotEmpty() && focus
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun removeBrand() {
