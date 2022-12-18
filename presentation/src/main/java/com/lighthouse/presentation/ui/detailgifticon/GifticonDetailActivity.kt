@@ -75,8 +75,9 @@ class GifticonDetailActivity : AppCompatActivity() {
     private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
     private lateinit var gifticonInfoNotChangedToast: Toast
-
     private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
+
+    private var largeBarcodeDialog: LargeBarcodeDialog? = null
 
     private val btnUseGifticon by lazy { binding.btnUseGifticon }
     private val chip by lazy { binding.chipScrollDownForUseButton }
@@ -344,11 +345,15 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showLargeBarcodeDialog(barcode: String) {
-        LargeBarcodeDialog().apply {
+        if (largeBarcodeDialog?.isAdded == true) {
+            largeBarcodeDialog?.dismiss()
+        }
+        largeBarcodeDialog = LargeBarcodeDialog().apply {
             arguments = Bundle().apply {
                 putString(Extras.KEY_BARCODE, barcode)
             }
-        }.show(supportFragmentManager)
+        }
+        largeBarcodeDialog?.show(supportFragmentManager)
     }
 
     private suspend fun getCropResult(result: ActivityResult, output: File): CroppedImage? {
