@@ -10,8 +10,6 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
-import com.lighthouse.domain.usecase.HasLocationPermissionsUseCase
-import com.lighthouse.domain.usecase.UpdateLocationPermissionUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
@@ -33,10 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getGifticonUseCase: GetGifticonsUseCase,
-    hasLocationPermissionsUseCase: HasLocationPermissionsUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase,
-    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
-    private val updateLocationPermissionUseCase: UpdateLocationPermissionUseCase
+    private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase
 ) : ViewModel() {
 
     private var locationFlow: Job? = null
@@ -76,8 +72,7 @@ class HomeViewModel @Inject constructor(
 
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
-    val hasLocationPermission = hasLocationPermissionsUseCase()
-    val isShimmer = MutableStateFlow(true)
+    val isShimmer = MutableStateFlow(false)
 
     private val _nearGifticons: MutableStateFlow<List<GifticonWithDistanceUIModel>?> = MutableStateFlow(null)
     val nearGifticons = _nearGifticons.asStateFlow()
@@ -92,24 +87,24 @@ class HomeViewModel @Inject constructor(
 
     private var prevVertex = MutableStateFlow<VertexLocation?>(null)
 
-    init {
-        setLocationFlowJob()
-    }
+    var hasLocationPermission = MutableStateFlow(false)
+        private set
 
-    private fun setLocationFlowJob() {
+    init {
         viewModelScope.launch {
-            hasLocationPermission.collectLatest { result ->
-                when (result) {
-                    true -> observeLocationFlow()
-                    false -> isShimmer.value = false
-                }
-                combineLocationGifticon()
+            hasLocationPermission.collectLatest {
+                if (it) observeLocationFlow()
             }
         }
     }
 
     private fun observeLocationFlow() {
         if (locationFlow?.isActive == true) return
+        isShimmer.value = true
+
+        viewModelScope.launch {
+            combineLocationGifticon()
+        }
 
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
@@ -135,11 +130,14 @@ class HomeViewModel @Inject constructor(
             getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
                 .mapCatching { brand -> brand.toPresentation() }
                 .onSuccess { brands ->
-                    nearBrandsInfo = brands.sortedBy { diffLocation(it.x, it.y, x, y) }
-                    _nearGifticons.value = nearBrandsInfo.distinctBy { it.brandLowerName }.mapNotNull { placeInfo ->
-                        gifticonsMap.value[placeInfo.brandLowerName]?.first()
-                            ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
-                    }
+                    nearBrandsInfo = brands
+                    _nearGifticons.value = nearBrandsInfo
+                        .distinctBy { it.brandLowerName }
+                        .mapNotNull { placeInfo ->
+                            gifticonsMap.value[placeInfo.brandLowerName]
+                                ?.first()
+                                ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
+                        }
                     when (_nearGifticons.value.isNullOrEmpty()) {
                         true -> _uiState.emit(UiState.NotFoundResults)
                         false -> _uiState.emit(UiState.Success(Unit))
@@ -163,10 +161,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun changeLocationPermission(hasLocationPermission: Boolean) {
-        updateLocationPermissionUseCase(hasLocationPermission)
-    }
-
     fun requestLocationPermission() {
         viewModelScope.launch {
             _eventFlow.emit(HomeEvent.RequestLocationPermissionCheck)
@@ -177,8 +171,8 @@ class HomeViewModel @Inject constructor(
         locationFlow?.cancel()
     }
 
-    fun startLocationCollectJob() {
-        setLocationFlowJob()
+    fun updateLocationPermission(isLocationPermission: Boolean) {
+        hasLocationPermission.value = isLocationPermission
     }
 
     companion object {

@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddGifticonActivity::class.java)
             addGifticon.launch(intent)
         } else {
-            storagePermissionLauncher.launch(storagePermission.permission)
+            storagePermissionLauncher.launch(storagePermission.basicPermission)
         }
     }
 
