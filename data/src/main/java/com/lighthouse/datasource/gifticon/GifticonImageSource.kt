@@ -12,6 +12,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.lighthouse.model.GifticonImageResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,7 +30,7 @@ class GifticonImageSource @Inject constructor(
     private val screenWidth = context.resources.displayMetrics.widthPixels
     private val screenHeight = context.resources.displayMetrics.heightPixels
 
-    suspend fun saveImage(id: String, originUri: Uri?, oldCroppedUri: Uri?): Uri? {
+    suspend fun saveImage(id: String, originUri: Uri?, oldCroppedUri: Uri?): GifticonImageResult? {
         originUri ?: return null
         oldCroppedUri ?: return null
 
@@ -50,7 +51,7 @@ class GifticonImageSource @Inject constructor(
             centerCropBitmap(sampledOriginBitmap, 1f)
         }
         saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCroppedFile)
-        return outputCroppedFile.toUri()
+        return GifticonImageResult(sampleSize, outputCroppedFile.toUri())
     }
 
     suspend fun updateImage(id: String, oldCroppedUri: Uri?, newCroppedUri: Uri?): Uri? {

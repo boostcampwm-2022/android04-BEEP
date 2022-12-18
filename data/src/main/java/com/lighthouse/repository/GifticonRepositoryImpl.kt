@@ -14,6 +14,7 @@ import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.mapper.toDomain
+import com.lighthouse.model.GifticonImageResult
 import com.lighthouse.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -93,15 +94,15 @@ class GifticonRepositoryImpl @Inject constructor(
     override suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>) {
         val newGifticons = gifticonForAdditions.map { gifticonForAddition ->
             val id = UUID.generate()
-            var croppedUri: Uri? = null
+            var result: GifticonImageResult? = null
             if (gifticonForAddition.hasImage) {
-                croppedUri = gifticonImageSource.saveImage(
+                result = gifticonImageSource.saveImage(
                     id,
                     Uri.parse(gifticonForAddition.originUri),
                     Uri.parse(gifticonForAddition.tempCroppedUri)
                 )
             }
-            gifticonForAddition.toEntity(id, userId, croppedUri)
+            gifticonForAddition.toEntity(id, userId, result)
         }
         gifticonLocalDataSource.insertGifticons(newGifticons)
     }

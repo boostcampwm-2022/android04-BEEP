@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
+import com.lighthouse.presentation.mapper.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,9 @@ class UsedGifticonViewModel @Inject constructor(
 
     val usedGifticons = getGifticonsUseCase.getUsedGifticons().map { dbResult ->
         if (dbResult is DbResult.Success) {
-            dbResult.data
+            dbResult.data.map {
+                it.toPresentation()
+            }
         } else {
             emptyList()
         }
