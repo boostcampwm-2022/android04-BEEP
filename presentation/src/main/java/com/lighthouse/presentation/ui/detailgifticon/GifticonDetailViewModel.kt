@@ -112,7 +112,6 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun expireDateClicked() {
-        Timber.tag("gifticon_detail").d("expireDateClicked() 호출")
         event(GifticonDetailEvent.ExpireDateClicked)
     }
 
@@ -213,6 +212,7 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun rollbackChangedGifticonInfo() {
         Timber.tag("edit").d("기프티콘 정보 되돌리기")
+
         viewModelScope.launch {
         }
     }

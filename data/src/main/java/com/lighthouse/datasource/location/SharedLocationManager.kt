@@ -14,20 +14,16 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.lighthouse.domain.VertexLocation
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
 class SharedLocationManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    var receivingLocationUpdates = MutableStateFlow(hasLocationPermission())
+    var receivingLocationUpdates = MutableStateFlow(checkPermission())
         private set
 
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
@@ -36,64 +32,57 @@ class SharedLocationManager @Inject constructor(
         interval = LOCATION_INTERVAL
         fastestInterval = LOCATION_INTERVAL / 2
         priority = Priority.PRIORITY_HIGH_ACCURACY
-        maxWaitTime = LOCATION_INTERVAL
+        smallestDisplacement = SMALLEST_DISPLACEMENT_DIFF
+        maxWaitTime = WAITE_TIME
     }
-    private var locationCallback: LocationCallback? = null
 
     private val locationUpdates = callbackFlow {
-        locationCallback = object : LocationCallback() {
+        val locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 val locationResult = result.lastLocation ?: return
                 trySend(VertexLocation(locationResult.longitude, locationResult.latitude))
             }
         }
 
-        if (hasLocationPermission().not()) close()
-
-        setProviderRequest()
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        ).addOnFailureListener { e ->
+            receivingLocationUpdates.value = false
+        }.addOnSuccessListener {
+            receivingLocationUpdates.value = true
+        }
 
         awaitClose {
-            locationCallback?.let { fusedLocationProviderClient.removeLocationUpdates(it) }
+            locationCallback.let { fusedLocationProviderClient.removeLocationUpdates(it) }
         }
-    }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed())
+    }
 
-    private fun hasLocationPermission() =
-        context.hasLocationPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
-            context.hasLocationPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    private fun checkPermission() =
+        checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, context) ||
+            checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, context)
 
-    private fun Context.hasLocationPermission(permission: String): Boolean {
+    private fun checkPermission(permission: String, context: Context): Boolean {
         if (permission == Manifest.permission.ACCESS_BACKGROUND_LOCATION &&
             Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
         ) {
             return true
         }
 
-        return ActivityCompat.checkSelfPermission(this, permission) ==
+        return ActivityCompat.checkSelfPermission(context, permission) ==
             PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun setProviderRequest() {
-        locationCallback?.let {
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                it,
-                Looper.getMainLooper()
-            ).addOnFailureListener { e ->
-                receivingLocationUpdates.value = false
-            }.addOnSuccessListener {
-                receivingLocationUpdates.value = true
-            }
-        }
     }
 
     fun locationFlow() = locationUpdates
 
     fun changePermission(hasPermission: Boolean) {
         receivingLocationUpdates.value = hasPermission
-        if (hasPermission) setProviderRequest()
     }
 
     companion object {
         private const val LOCATION_INTERVAL = 30000L
+        private const val WAITE_TIME = 2000L
+        private const val SMALLEST_DISPLACEMENT_DIFF = 250F
     }
 }

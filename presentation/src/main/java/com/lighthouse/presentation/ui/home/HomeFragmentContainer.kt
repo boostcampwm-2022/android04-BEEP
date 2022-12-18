@@ -21,7 +21,7 @@ class HomeFragmentContainer : Fragment(R.layout.fragment_home_container) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.lifecycleOwner = viewLifecycleOwner
-        repeatOnStarted {
+        viewLifecycleOwner.repeatOnStarted {
             mainViewModel.hasVariableGifticon.collectLatest { hasGifticon ->
                 when (hasGifticon) {
                     true -> childFragmentManager.commit { replace(R.id.fcv_home, HomeFragment()) }

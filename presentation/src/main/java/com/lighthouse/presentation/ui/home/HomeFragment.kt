@@ -145,7 +145,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ) {
         when (isPermissionGranted()) {
             true -> startMapActivity(nearBrandsInfo, gifticons)
-            else -> launchPermission()
+            false -> launchPermission()
         }
     }
 

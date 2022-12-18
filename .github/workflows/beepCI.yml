@@ -1,0 +1,38 @@
+name: Android CI
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build:
+    name: Beep CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: 11
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create google-service
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./presentation/google-services.json
+
+      - name: Create Local Properties
+        run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest

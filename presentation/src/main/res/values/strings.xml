@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">BEEP</string>
+    <string name="com.crashlytics.android.build_id">1</string>
 
     <string name="all_cash_unit">%s원</string>
     <string name="all_cash_origin_unit">원</string>

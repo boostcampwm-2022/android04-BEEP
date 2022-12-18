@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     kotlin("kapt")
     kotlin("plugin.serialization") version "1.5.0"
 }
@@ -30,12 +31,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = AppConfig.jvmTarget
     }
 
     buildFeatures {
@@ -58,9 +59,8 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    val composeBom = platform("androidx.compose:compose-bom:${Versions.COMPOSE_BOM}")
-    implementation(composeBom)
-
+    implementation(platform(Libraries.FIREBASE_BOM))
+    implementation(platform(Libraries.COMPOSE_BOM))
     implementation(Libraries.VIEW_LIBRARIES)
     testImplementation(TestImpl.TEST_LIBRARIES)
     kapt(Kapt.VIEW_LIBRARIES)
