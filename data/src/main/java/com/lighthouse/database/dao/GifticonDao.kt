@@ -42,7 +42,7 @@ interface GifticonDao {
     fun getFilteredGifticonsSortByDeadline(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE INNER JOIN $GIFTICON_CROP_TABLE ON $GIFTICON_TABLE.id = $GIFTICON_CROP_TABLE.gifticon_id WHERE id = :id AND user_id = :userId LIMIT 1")
-    fun getGifticonWithCrop(userId: String, id: String): GifticonWithCrop?
+    suspend fun getGifticonWithCrop(userId: String, id: String): GifticonWithCrop?
 
     @Query(
         "SELECT brand AS name, COUNT(*) AS count " +
