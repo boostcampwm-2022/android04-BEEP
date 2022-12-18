@@ -11,7 +11,6 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.util.BarcodeUtil
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,7 +36,6 @@ class LargeBarcodeDialog : DialogFragment(R.layout.dialog_large_barcode) {
         binding.barcode = barcode
         binding.tvBarcodeNumber.text = divideBarcodeNumber(barcode)
         binding.ivBarcode.viewTreeObserver.addOnDrawListener {
-            Timber.tag("barcode").d("width: ${binding.ivBarcode.width}, height: ${binding.ivBarcode.height}")
             val rotatedBarcode = barcodeUtil.createBarcodeBitmap(
                 barcode,
                 binding.ivBarcode.height,
