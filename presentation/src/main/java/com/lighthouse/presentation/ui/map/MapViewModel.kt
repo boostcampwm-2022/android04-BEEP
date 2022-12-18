@@ -59,6 +59,8 @@ class MapViewModel @Inject constructor(
     private val allGifticons = resultGifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             emit(gifticons.data.sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) })
+        } else if (gifticons is DbResult.Empty) {
+            emit(emptyList())
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
