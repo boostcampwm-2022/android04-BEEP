@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -81,6 +82,11 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
             locationPermissionCheck()
         }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        OssLicensesMenuActivity.setActivityTitle(getString(R.string.setting_open_source_license))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -99,6 +105,11 @@ class SettingMainFragment : Fragment(R.layout.fragment_setting_main), AuthCallba
                 true -> workManager.notificationEnqueue()
                 false -> workManager.notificationCancel()
             }
+        }
+        binding.tvOpenSourceLicense.setOnClickListener {
+            startActivity(
+                Intent(requireContext(), OssLicensesMenuActivity::class.java)
+            )
         }
 
         if (viewModel.userPreferenceState.value.guest) {

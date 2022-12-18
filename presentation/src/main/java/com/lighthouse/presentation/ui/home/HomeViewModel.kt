@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,8 +71,8 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _uiState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _uiState: MutableEventFlow<UiState<Unit>> = MutableEventFlow()
+    val uiState = _uiState.asEventFlow()
 
     private var nearBrandsInfo = listOf<BrandPlaceInfoUiModel>()
 
@@ -114,7 +113,7 @@ class HomeViewModel @Inject constructor(
 
         locationFlow = viewModelScope.launch {
             getUserLocationUseCase().collectLatest { location ->
-                _uiState.value = UiState.Loading
+                _uiState.emit(UiState.Loading)
                 val currentDms = setDmsLocation(location)
                 val prevDms = prevVertex.value?.let { setDmsLocation(it) }
                 if (prevDms != currentDms) {
@@ -147,7 +146,6 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
-                    Timber.tag("TAG").d("${javaClass.simpleName} homeViewModel Error -> $throwable")
                     _uiState.emit(
                         when (throwable) {
                             BeepError.NetworkFailure -> UiState.NetworkFailure

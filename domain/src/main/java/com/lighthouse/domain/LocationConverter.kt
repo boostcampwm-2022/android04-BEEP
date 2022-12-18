@@ -191,7 +191,7 @@ object LocationConverter {
      * @param lon2 비교 y
      * @return 미터 단위로 반환
      */
-    fun locationDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    private fun locationDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val theta = lon1 - lon2
         var dist =
             sin(decimalToRadian(lat1)) * sin(decimalToRadian(lat2)) + cos(decimalToRadian(lat1)) *

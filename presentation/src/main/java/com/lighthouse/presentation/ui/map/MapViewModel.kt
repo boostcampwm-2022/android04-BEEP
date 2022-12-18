@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -142,7 +141,7 @@ class MapViewModel @Inject constructor(
 
     private fun combineLocationGifticon() {
         viewModelScope.launch {
-            prevVertex.combine(allBrands) { location, _ ->
+            prevVertex.combine(allGifticons) { location, _ ->
                 location
             }.collectLatest { location ->
                 location ?: run {
@@ -168,7 +167,6 @@ class MapViewModel @Inject constructor(
                         }
                     }
                     .onFailure { throwable ->
-                        Timber.tag("TAG").d("${javaClass.simpleName} throwable -> $throwable")
                         _state.emit(
                             when (throwable) {
                                 BeepError.NetworkFailure -> UiState.NetworkFailure

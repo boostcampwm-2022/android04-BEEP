@@ -20,9 +20,6 @@ object Versions {
     const val ZXING = "3.5.1"
 
     const val FIREBASE_BOM = "31.0.2"
-    const val FIREBASE_AUTH = "21.1.0"
-    const val FIREBASE_FIRESTORE_KTX = "24.4.0"
-    const val FIREBASE_STORAGE_KTX = "20.1.0"
     const val TEXT_RECOGNITION_KOREAN = "16.0.0-beta6"
     const val PLAY_SERVICES_AUTH = "20.3.0"
 
@@ -65,6 +62,8 @@ object Versions {
     const val LOTTIE = "5.2.0"
 
     const val GLANCE = "1.0.0-alpha05"
+
+    const val OSS = "17.0.0"
 }
 
 object Libraries {
@@ -96,14 +95,16 @@ object Libraries {
     private const val PAGING_RUNTIME_KTX = "androidx.paging:paging-runtime:${Versions.PAGING_KTX}"
 
     const val FIREBASE_BOM = "com.google.firebase:firebase-bom:${Versions.FIREBASE_BOM}"
+    const val COMPOSE_BOM = "androidx.compose:compose-bom:${Versions.COMPOSE_BOM}"
 
-    private const val FIREBASE_AUTH_KTX = "com.google.firebase:firebase-auth-ktx:${Versions.FIREBASE_AUTH}"
     private const val PLAY_SERVICES_AUTH = "com.google.android.gms:play-services-auth:${Versions.PLAY_SERVICES_AUTH}"
-    private const val FIREBASE_FIRESTORE_KTX =
-        "com.google.firebase:firebase-firestore-ktx:${Versions.FIREBASE_FIRESTORE_KTX}"
-    private const val FIREBASE_STORAGE_KTX = "com.google.firebase:firebase-storage-ktx:${Versions.FIREBASE_STORAGE_KTX}"
-    private const val TEXT_RECOGNITION_KOREAN =
-        "com.google.mlkit:text-recognition-korean:${Versions.TEXT_RECOGNITION_KOREAN}"
+    private const val FIREBASE_AUTH_KTX = "com.google.firebase:firebase-auth-ktx"
+    private const val FIREBASE_FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"
+    private const val FIREBASE_STORAGE_KTX = "com.google.firebase:firebase-storage-ktx"
+    private const val FIREBASE_CRASHLYTICS_NDK = "com.google.firebase:firebase-crashlytics-ndk"
+    private const val FIREBASE_CRASHLYTICS_KTX = "com.google.firebase:firebase-crashlytics-ktx"
+    private const val FIREBASE_ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
+    private const val TEXT_RECOGNITION_KOREAN = "com.google.mlkit:text-recognition-korean:${Versions.TEXT_RECOGNITION_KOREAN}"
 
     private const val BIOMETRIC = "androidx.biometric:biometric:${Versions.BIOMETRIC}"
 
@@ -145,6 +146,8 @@ object Libraries {
 
     private const val GLANCE = "androidx.glance:glance-appwidget:${Versions.GLANCE}"
 
+    private const val OSS_LICENSES = "com.google.android.gms:play-services-oss-licenses:${Versions.OSS}"
+
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
         CORE_SPLASH,
@@ -159,6 +162,9 @@ object Libraries {
         FRAGMENT_KTX,
         PAGING_RUNTIME_KTX,
         FIREBASE_AUTH_KTX,
+        FIREBASE_CRASHLYTICS_NDK,
+        FIREBASE_CRASHLYTICS_KTX,
+        FIREBASE_ANALYTICS_KTX,
         PLAY_SERVICES_AUTH,
         BIOMETRIC,
         NAVER_MAP,
@@ -182,7 +188,8 @@ object Libraries {
         LOTTIE,
         WORK_MANAGER,
         GLANCE,
-        JSON
+        JSON,
+        OSS_LICENSES
     )
     val DATA_LIBRARIES = arrayListOf(
         ROOM_RUNTIME,
@@ -223,7 +230,8 @@ object Libraries {
         TIMBER,
         DATASTORE,
         DATASTORE_CORE,
-        FIREBASE_AUTH_KTX
+        FIREBASE_AUTH_KTX,
+        OSS_LICENSES
     )
 }
 

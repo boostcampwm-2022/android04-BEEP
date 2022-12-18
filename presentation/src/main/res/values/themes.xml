@@ -59,5 +59,13 @@
         <item name="android:textAppearance">@style/BEEP.TextStyle.Caption</item>
     </style>
 
-
+    <style name="Theme.BEEP.OSS" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/beep_pink</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:statusBarColor">@color/beep_pink</item>
+        <item name="toolbarStyle">@style/BEEP.Component.Toolbar</item>
+        <item name="navigationIconTint">@color/white</item>
+        <item name="toolbarNavigationButtonStyle">@style/AppTheme.Actionbar</item>
+    </style>
 </resources>

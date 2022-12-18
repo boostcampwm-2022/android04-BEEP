@@ -24,7 +24,6 @@ object WorkManagerInitializer : Initializer<WorkManager> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        // No dependencies on other libraries.
         return emptyList()
     }
 }
