@@ -182,8 +182,8 @@ class ModifyGifticonActivity : AppCompatActivity() {
         if (confirmationCancelDialog?.isAdded == true) {
             confirmationCancelDialog?.dismiss()
         }
-        val title = getString(R.string.add_gifticon_confirmation_cancel_title)
-        val message = getString(R.string.add_gifticon_confirmation_cancel_message)
+        val title = getString(R.string.modify_gifticon_confirmation_cancel_title)
+        val message = getString(R.string.modify_gifticon_confirmation_cancel_message)
         confirmationCancelDialog = ConfirmationDialog().apply {
             setTitle(title)
             setMessage(message)
