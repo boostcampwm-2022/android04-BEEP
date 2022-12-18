@@ -106,6 +106,9 @@ class GifticonDetailViewModel @Inject constructor(
     private val _masterButtonLabel = MutableStateFlow<UIText>(UIText.Empty)
     val masterButtonLabel = _masterButtonLabel.asStateFlow()
 
+    var hasLocationPermission = MutableStateFlow(false)
+        private set
+
     fun scrollDownForUseButtonClicked() {
         event(GifticonDetailEvent.ScrollDownForUseButtonClicked)
     }
@@ -150,11 +153,11 @@ class GifticonDetailViewModel @Inject constructor(
         viewModelScope.launch {
             if (gifticon.value?.isCashCard == true) {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
-                useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value)
+                useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
                 amountToBeUsed.value = 0
                 event(GifticonDetailEvent.UseGifticonComplete)
             } else {
-                useGifticonUseCase(gifticonId)
+                useGifticonUseCase(gifticonId, hasLocationPermission.value)
                 event(GifticonDetailEvent.UseGifticonComplete)
             }
         }
@@ -190,6 +193,10 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateLocationPermission(isLocationPermission: Boolean) {
+        hasLocationPermission.value = isLocationPermission
+    }
+
     private fun switchMode(mode: GifticonDetailMode) {
         _mode.value = mode
         _scrollDownChipLabel.value = when (_mode.value) {
@@ -199,8 +206,8 @@ class GifticonDetailViewModel @Inject constructor(
         }
         _masterButtonLabel.value = when (_mode.value) {
             GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_unused_mode_button_text)
-            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_used_mode_button_text)
-            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_edit_mode_button_text)
+            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_edit_mode_button_text)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_used_mode_button_text)
         }
     }
 

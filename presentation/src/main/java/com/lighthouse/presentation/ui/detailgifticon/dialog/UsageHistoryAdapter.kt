@@ -9,12 +9,14 @@ import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.databinding.ItemUsageHistoryBinding
+import com.lighthouse.presentation.util.Geography
 
 class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapter.UsageHistoryViewHolder>(diffUtil) {
 
     class UsageHistoryViewHolder(private val binding: ItemUsageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(usageHistory: UsageHistory) {
+            binding.geo = Geography(binding.root.context)
             binding.usage = usageHistory
         }
     }

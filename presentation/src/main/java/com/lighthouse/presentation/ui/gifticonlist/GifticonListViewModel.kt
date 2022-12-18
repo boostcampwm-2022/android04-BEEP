@@ -143,7 +143,7 @@ class GifticonListViewModel @Inject constructor(
 
     fun completeUsage(gifticon: GifticonUIModel) {
         viewModelScope.launch {
-            useGifticonUseCase(gifticon.id)
+            useGifticonUseCase(gifticon.id, false)
         }
     }
 

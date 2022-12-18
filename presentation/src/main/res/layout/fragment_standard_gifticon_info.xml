@@ -9,6 +9,10 @@
             name="vm"
             type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel" />
 
+        <variable
+            name="geo"
+            type="com.lighthouse.presentation.util.Geography" />
+
         <import
             alias="mode"
             type="com.lighthouse.presentation.ui.detailgifticon.GifticonDetailMode" />
@@ -41,8 +45,8 @@
             android:inputType="textAutoComplete"
             android:maxLines="1"
             android:minWidth="100dp"
-            android:paddingEnd="16dp"
             android:paddingStart="0dp"
+            android:paddingEnd="16dp"
             android:text="@{vm.tempGifticon.name ?? vm.gifticon.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
@@ -72,8 +76,8 @@
             android:inputType="textAutoComplete"
             android:maxLines="1"
             android:minWidth="100dp"
-            android:paddingEnd="16dp"
             android:paddingStart="0dp"
+            android:paddingEnd="16dp"
             android:text="@{vm.tempGifticon.brand ?? vm.gifticon.brand}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
@@ -105,8 +109,8 @@
             android:enabled="@{vm.mode==mode.EDIT}"
             android:minWidth="100dp"
             android:onClick="@{() -> vm.expireDateClicked()}"
-            android:paddingEnd="16dp"
             android:paddingStart="0dp"
+            android:paddingEnd="16dp"
             app:dateFormat="@{vm.tempGifticon.expireAt ?? vm.gifticon.expireAt}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expire_at_label"
@@ -138,7 +142,7 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{vm.latestUsageHistory.address}"
+            android:text="@{geo.getAddress(vm.latestUsageHistory.location)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"

@@ -7,6 +7,10 @@
         <variable
             name="usage"
             type="com.lighthouse.domain.model.UsageHistory" />
+
+        <variable
+            name="geo"
+            type="com.lighthouse.presentation.util.Geography" />
     </data>
 
     <LinearLayout
@@ -35,7 +39,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:paddingHorizontal="2dp"
-            android:text="@{usage.address}"
+            android:text="@{geo.getAddress(usage.location)}"
             tools:text="서울시 용산구" />
 
         <TextView
