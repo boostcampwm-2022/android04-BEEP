@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_on_surface_12">
+
+        <ImageView
+            android:id="@+id/iv_goto_gallery"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/add_gifticon_goto_gallery_description"
+            android:padding="12dp"
+            android:src="@drawable/ic_add_goto_gallery"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnSurface" />
+
+        <View
+            android:id="@+id/view_goto_gallery_ripple_effect"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="@id/iv_goto_gallery"
+            app:layout_constraintEnd_toEndOf="@id/iv_goto_gallery"
+            app:layout_constraintStart_toStartOf="@id/iv_goto_gallery"
+            app:layout_constraintTop_toTopOf="@id/iv_goto_gallery" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

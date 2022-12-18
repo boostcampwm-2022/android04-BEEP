@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.setting.SettingViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.setting.SettingSecurityFragment">
+
+        <TextView
+            android:id="@+id/tv_change_security_option"
+            style="@style/Theme.BEEP.SettingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingVertical="16dp"
+            android:text="@string/security_setting_option_change"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_arrow_forward_change_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/setting_security"
+            android:src="@drawable/ic_arrow_forward"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_change_security_option"
+            app:layout_constraintEnd_toEndOf="@+id/tv_change_security_option"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="@+id/tv_change_security_option"
+            app:layout_constraintTop_toTopOf="@+id/tv_change_security_option" />
+
+        <TextView
+            android:id="@+id/tv_change_pin"
+            style="@style/Theme.BEEP.SettingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingVertical="16dp"
+            android:text="@string/security_setting_change_pin"
+            app:layout_constraintTop_toBottomOf="@+id/tv_change_security_option" />
+
+        <ImageView
+            android:id="@+id/iv_arrow_forward_change_pin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/security_setting_change_pin"
+            android:src="@drawable/ic_arrow_forward"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_change_pin"
+            app:layout_constraintEnd_toEndOf="@+id/tv_change_pin"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="@+id/tv_change_pin"
+            app:layout_constraintTop_toTopOf="@+id/tv_change_pin" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="?attr/colorSurface"
+            android:onClick="@{null}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_change_pin" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

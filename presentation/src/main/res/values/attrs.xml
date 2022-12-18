@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ConcurrencyTextField">
+        <attr name="suffixText" format="reference|string" />
+        <attr name="editable" format="boolean" />
+        <attr name="value" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="VerticalTextView">
+        <attr name="topDown" format="reference|boolean" />
+    </declare-styleable>
+</resources>

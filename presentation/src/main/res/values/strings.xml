@@ -1,3 +1,290 @@
 <resources>
     <string name="app_name">BEEP</string>
+    <string name="com.crashlytics.android.build_id">1</string>
+
+    <string name="all_cash_unit">%s원</string>
+    <string name="all_cash_origin_unit">원</string>
+    <string name="all_d_day">D-%1$d</string>
+    <string name="all_concurrency_format">#,###</string>
+    <string name="all_balance_label">남은 금액:%s원</string>
+    <string name="all_cancel">취소</string>
+    <string name="all_do_cancel">취소하기</string>
+    <string name="all_d_day_more_than_year">D-365+</string>
+    <string name="all_d_day_expired">만료</string>
+    <string name="all_d_very_day">D-Day</string>
+    <string name="all_expired_date">~ %4d.%02d.%02d</string>
+    <string name="all_date">%4d.%02d.%02d</string>
+    <string name="all_yes">네</string>
+    <string name="all_ok">확인</string>
+    <string name="all_year">년</string>
+    <string name="all_month">월</string>
+    <string name="all_day">일</string>
+    <string name="all_next">다음</string>
+    <string name="all_prev">이전</string>
+    <string name="all_close_button">닫기</string>
+    <string name="all_not_use">사용 안 함</string>
+    <string name="all_remove">제거</string>
+
+    <string name="confirmation_ok">확인</string>
+    <string name="confirmation_title">권한 필요</string>
+    <string name="confirmation_cancel">취소</string>
+    <string name="confirmation_location_message">위치 정보 권한을 허용해주시면 근처 기프티콘을 추천해드려요. \n[설정]->[권한]에서 "위치" 항목을 사용으로 설정해 주세요.</string>
+
+    <string name="main_menu_list">목록</string>
+    <string name="main_menu_home">홈</string>
+    <string name="main_menu_setting">설정</string>
+
+    <string name="main_order_recent">최신순</string>
+    <string name="main_order_d_day">디데이순</string>
+    <string name="main_filter_all">전체</string>
+    <string name="main_add_gifticon_description">기프티콘 추가하기 버튼</string>
+    <string name="main_registration_completed">기프티콘 등록이 완료 되었습니다.</string>
+
+    <string name="add_gifticon_back_description">기프티콘 추가에서 뒤로가기 버튼</string>
+    <string name="add_gifticon_title">기프티콘 추가</string>
+    <string name="add_gifticon_registered">%d개 등록됨</string>
+    <string name="add_gifticon_goto_gallery_description">갤러리 이동하기 버튼</string>
+    <string name="add_gifticon_delete_description">등록된 이미지 삭제 버튼</string>
+    <string name="add_gifticon_invalid_description">등록된 이미지가 유효하지 않음</string>
+    <string name="add_gifticon_candidate_description">기프티콘 후보 버튼</string>
+    <string name="add_gifticon_delete_mode">삭제하기</string>
+    <string name="add_gifticon_edit_mode">편집하기</string>
+    <string name="add_gifticon_register">등록하기</string>
+    <string name="edit_gifticon_image_description">선택된 기프티콘 이미지</string>
+    <string name="edit_gifticon_edit_image">편집하기</string>
+    <string name="edit_gifticon_cash_card">금액권</string>
+    <string name="edit_gifticon_name_label">이름</string>
+    <string name="edit_gifticon_name_hint">쿠폰 이름을 입력하세요.</string>
+    <string name="edit_gifticon_brand_label">브랜드</string>
+    <string name="edit_gifticon_brand_hint">브랜드명을 입력하세요.</string>
+    <string name="edit_gifticon_barcode_label">바코드</string>
+    <string name="edit_gifticon_barcode_hint">바코드 번호을 입력하세요.</string>
+    <string name="edit_gifticon_expire_date_label">유효기간</string>
+    <string name="edit_gifticon_expire_date_hint">유효기간을 선택하세요.</string>
+    <string name="edit_gifticon_balance_label">잔액</string>
+    <string name="edit_gifticon_balance_hint">잔액을 입력하세요.</string>
+    <string name="edit_gifticon_memo_label">메모</string>
+    <string name="edit_gifticon_memo_hint">메모를 남겨주세요.</string>
+    <string name="modify_gifticon_register">편집하기</string>
+
+    <string name="edit_gifticon_origin_gifticon">원본 이미지 보기 아이콘</string>
+    <string name="edit_gifticon_name_remove_description">이름 지우기 아이콘</string>
+    <string name="edit_gifticon_name_crop_description">이름 크롭 아이콘</string>
+    <string name="edit_gifticon_brand_remove_description">브랜드 지우기 아이콘</string>
+    <string name="edit_gifticon_brand_crop_description">브랜드 크롭 아이콘</string>
+    <string name="edit_gifticon_approve_brand_name_description">유효한 브랜드 확인 아이콘</string>
+    <string name="edit_gifticon_barcode_remove_description">바코드 지우기 아이콘</string>
+    <string name="edit_gifticon_barcode_crop_description">바코드 크롭 아이콘</string>
+    <string name="edit_gifticon_balance_remove_description">잔액 지우기 아이콘</string>
+    <string name="edit_gifticon_balance_crop_description">잔액 크롭 아이콘</string>
+    <string name="edit_gifticon_expire_calendar_description">유효기간 달력 아이콘</string>
+    <string name="edit_gifticon_expire_crop_description">유효기간 크롭 아이콘</string>
+    <string name="edit_gifticon_approve_expire_description">유효한 유효기간 확인 아이콘</string>
+
+    <string name="add_gifticon_approve_gifticon_image">지금 이미지가 맞다면 클릭해주세요</string>
+    <string name="edit_gifticon_approve_brand_name">입력한 브랜드가 맞다면 클릭해주세요</string>
+    <string name="edit_gifticon_approve_expired_at">입력한 유효기간이 맞다면 클릭해주세요</string>
+
+    <string name="modify_gifticon_invalid_nothing_changed">변경된 내용이 없습니다.</string>
+    <string name="edit_gifticon_invalid_empty">기프티콘을 등록해주세요</string>
+    <string name="edit_gifticon_invalid_gifticon_name">기프티콘 이름을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_barcode">바코드를 입력해주세요</string>
+    <string name="edit_gifticon_invalid_brand_name">브랜드 이름을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_approve_brand_name">브랜드 정보를 확인해주세요</string>
+    <string name="edit_gifticon_invalid_expired_at">유효기간을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_approve_expired_at">유효기간 정보를 확인해주세요</string>
+    <string name="edit_gifticon_invalid_balance">잔액을 입력해주세요</string>
+    <string name="edit_gifticon_invalid_approve_gifticon_image">기프티콘 이미지를 확인해주세요</string>
+
+    <string name="edit_gifticon_failed_recognize_name">기프티콘 이름 인식에 실패했습니다.</string>
+    <string name="edit_gifticon_failed_recognize_brand">브랜드 인식에 실패했습니다.</string>
+    <string name="edit_gifticon_failed_recognize_barcode">바코드 인식에 실패했습니다.</string>
+    <string name="edit_gifticon_failed_recognize_balance">잔액 인식에 실패했습니다.</string>
+    <string name="edit_gifticon_failed_recognize_expired_at">유효기간 인식에 실패했습니다.</string>
+
+    <string name="add_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
+    <string name="add_gifticon_confirmation_cancel_message">등록중인 기프티콘이 존재합니다.</string>
+    <string name="add_gifticon_confirmation_delete_title">정말 삭제하시겠습니까?</string>
+
+    <string name="modify_gifticon_confirmation_cancel_title">정말 나가시겠습니까?</string>
+    <string name="modify_gifticon_confirmation_cancel_message">편집중인 기프티콘이 존재합니다.</string>
+
+    <string name="origin_image_description">기프티콘 원본 이미지</string>
+
+    <string name="modify_gifticon_back_description">기프티콘 편집에서 뒤로가기 버튼</string>
+    <string name="modify_gifticon_title">기프티콘 편집</string>
+
+    <string name="gallery_back_description">뒤로가기 버튼</string>
+    <string name="gallery_image_description">갤러리 이미지</string>
+    <string name="gallery_selected_image_description">선택된 갤러리 이미지</string>
+    <string name="gallery_selected_image_delete_description">선택된 갤러리 이미지 삭제</string>
+    <string name="gallery_title">이미지 선택</string>
+    <string name="gallery_selected">%d개 선택됨</string>
+    <string name="gallery_confirm">완료</string>
+
+    <string name="crop_gifticon_complete">완료</string>
+    <string name="crop_gifticon_failed">이미지 자르기에 실패 했습니다.</string>
+
+    <string name="signin_google_fail">구글 로그인 실패</string>
+    <string name="signin_google_connect_fail">구글 연결 실패</string>
+    <string name="signin_success">로그인 성공</string>
+    <string name="signin_fail">로그인 실패</string>
+    <string name="signin_guest">게스트로 시작하기</string>
+
+    <string name="fingerprint_info_obtain_fail">기기의 지문 정보를 가져올 수 없습니다.</string>
+    <string name="fingerprint_error_no_hardware">생체 인증을 사용할 수 없는 기기입니다.</string>
+    <string name="fingerprint_unavailable">생체 인증을 사용할 수 없습니다.</string>
+    <string name="fingerprint_authentication">생체 인증</string>
+    <string name="fingerprint_description">기기에 저장된 기프티콘을 보호합니다.</string>
+    <string name="fingerprint_authentication_success">생체 인증 성공</string>
+    <string name="fingerprint_authentication_fail">생체 인증 실패</string>
+    <string name="fingerprint_not_enrolled">등록된 지문이 없습니다.</string>
+    <string name="fingerprint_error_lockout">5회 인증에 실패했습니다. 잠시 후 다시 시도해주세요</string>
+    <string name="fingerprint_error_lockout_permanent">잦은 실패로 지문 센서가 비활성화 되었습니다</string>
+    <string name="fingerprint_unknown_error">알 수 없는 오류가 발생했습니다.</string>
+    <string name="fingerprint_sensor_description">Touch the fingerprint sensor</string>
+
+    <string name="gifticon_detail_product_image_description">상품 사진</string>
+    <string name="gifticon_detail_gifticon_detail_title">상세 정보</string>
+    <string name="gifticon_detail_product_name_label">상품명</string>
+    <string name="gifticon_detail_share_gifticon_button_description">기프티콘 공유하기</string>
+    <string name="gifticon_detail_edit_gifticon_button_description">기프티콘 정보 수정하기 버튼</string>
+    <string name="gifticon_detail_product_brand_label">브랜드</string>
+    <string name="gifticon_detail_product_expire_date_label">유효기간</string>
+    <string name="gifticon_detail_memo_description">메모</string>
+    <string name="gifticon_detail_use_gifticon_button_text">기프티콘 사용</string>
+    <string name="gifticon_detail_shared_alert">ⓘ %4d년 %d월 %d일에 공유된 기프티콘 입니다.</string>
+    <string name="gifticon_detail_used_address_label">사용위치</string>
+    <string name="gifticon_detail_show_all_used_info_button_description">전체 사용 정보 확인 버튼</string>
+    <string name="gifticon_detail_used_date_label">사용일자</string>
+    <string name="gifticon_detail_balance_label">남은 금액</string>
+    <string name="gifticon_detail_cash_type_balance_label">남은 금액</string>
+    <string name="gifticon_detail_scroll_down_for_use_button_text">사용하기</string>
+    <string name="gifticon_detail_edit_mode_button_text">수정 완료</string>
+    <string name="gifticon_detail_unused_mode_button_text">기프티콘 사용</string>
+    <string name="gifticon_detail_used_mode_button_text">사용 취소</string>
+    <string name="gifticon_detail_used_image_label">사용완료\n%4d.%02d.%02d</string>
+    <string name="gifticon_detail_used_image_label_not_date">사용완료</string>
+    <string name="gifticon_detail_check_edit_dialog_title">기프티콘 정보를 수정 하시겠습니까?</string>
+    <string name="gifticon_detail_check_edit_dialog_positive_button">수정</string>
+    <string name="gifticon_detail_check_edit_dialog_negative_button">취소</string>
+    <string name="gifticon_detail_invalid_dialog_title">유효하지 않은 기프티콘입니다</string>
+    <string name="gifticon_detail_invalid_dialog_message">%d 초 뒤에 창이 닫힙니다</string>
+    <string name="gifticon_detail_info_changed_snackbar_text">기프티콘 정보가 변경되었습니다</string>
+    <string name="gifticon_detail_info_changed_snackbar_action_text">되돌리기</string>
+    <string name="gifticon_detail_exist_empty_info_toast">빈 값이 존재합니다</string>
+    <string name="gifticon_detail_back_in_edit_dialog_title">수정이 완료되지 않았습니다</string>
+    <string name="gifticon_detail_back_in_edit_dialog_message">수정된 내용이 반영되지 않습니다. 그래도 취소하시겠습니까?</string>
+    <string name="gifticon_detail_nothing_changed_toast">변경된 내용이 없습니다</string>
+
+    <string name="use_gifticon_dialog_barcode_description">기프티콘 바코드</string>
+    <string name="use_gifticon_dialog_complete_button_text">사용 완료</string>
+    <string name="use_gifticon_dialog_chip_total_amount">전액</string>
+    <string name="use_gifticon_dialog_amount_to_use_hint">사용할 금액</string>
+    <string name="use_gifticon_dialog_balance">남은 금액:%s원</string>
+    <string name="use_gifticon_dialog_use_origin_image_label">ⓘ 바코드 인식이 되지 않나요? 원본 이미지로 결제하기</string>
+    <string name="use_gifticon_dialog_use_origin_image_underline_target_label">원본 이미지로 결제하기</string>
+
+    <string name="secure_later">나중에 설정</string>
+    <string name="secure_suggest_fingerprint_description">PIN 보다 간편한\n지문 인증을 사용하시겠어요?</string>
+
+    <string name="error_network_failure">알 수 없는 오류가 생겼습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="error_not_found_results">검색 결과가 존재하지 않습니다.</string>
+    <string name="error_network_error">네트워크 연결을 확인해주세요.</string>
+    <string name="error_location_not_permit">위치 권한이 설정되어 있지 않습니다.</string>
+
+    <string name="pin_one">1</string>
+    <string name="pin_two">2</string>
+    <string name="pin_three">3</string>
+    <string name="pin_four">4</string>
+    <string name="pin_five">5</string>
+    <string name="pin_six">6</string>
+    <string name="pin_seven">7</string>
+    <string name="pin_eight">8</string>
+    <string name="pin_nine">9</string>
+    <string name="pin_zero">0</string>
+    <string name="pin_initial_description">PIN 번호를 생성하세요</string>
+    <string name="pin_confirm_description">입력한 PIN 번호를 확인합니다</string>
+    <string name="pin_wrong_description">PIN 번호가 일치하지 않습니다!</string>
+    <string name="pin">PIN</string>
+    <string name="pin_backspace">Backspace</string>
+    <string name="pin_secure_not_use"><u>보안 설정 사용 안 함</u></string>
+    <string name="pin_complete">PIN 설정을 완료했습니다</string>
+    <string name="pin_internal_error">PIN 설정 중 오류가 발생했습니다. 잠시후 다시 시도해주세요.</string>
+    <string name="pin_input_description">PIN 번호를 입력하세요</string>
+
+    <string name="dialog_usage_history_date_label">일자</string>
+    <string name="dialog_usage_history_address_label">위치</string>
+    <string name="dialog_usage_history_amount_label">금액</string>
+
+    <string name="setting_used_gifticon">사용한 기프티콘 확인</string>
+    <string name="setting_imminent_notification">사용 임박 알림</string>
+    <string name="setting_security">보안 인증</string>
+    <string name="setting_location">위치 정보 권한</string>
+    <string name="setting_all">사용자</string>
+    <string name="setting_sign_out">로그아웃</string>
+    <string name="setting_sign_in">구글 계정 연동</string>
+    <string name="setting_withdrawal">회원 탈퇴</string>
+    <string name="setting_etc">기타</string>
+    <string name="setting_coffee">개발자에게 커피 사주기</string>
+    <string name="setting_terms_of_use">이용약관</string>
+    <string name="setting_personal_info_policy">개인정보처리방침</string>
+    <string name="setting_open_source_license">오픈소스 라이선스</string>
+    <string name="setting_already_exist_email">이미 등록된 계정입니다.\n다른 이메일로 재시도해주세요.</string>
+
+    <string name="gifticon_list_sort_by_deadline">디데이순</string>
+    <string name="gifticon_list_sort_by_recent">최신순</string>
+    <string name="gifticon_list_toolbar_dropdown_icon_description">드롭다운 아이콘</string>
+    <string name="gifticon_list_show_all_brand_chips_button">브랜드 전체 보기 버튼</string>
+    <string name="gifticon_list_brands_dialog_show_expired_gifticon_option">만료된 기프티콘 표시</string>
+    <string name="gifticon_list_use_complete">사용\n처리</string>
+    <string name="gifticon_list_remove_gifticon_dialog_title">기프티콘을 삭제합니다</string>
+    <string name="gifticon_list_remove_gifticon_dialog_message">삭제하면 복구할 수 없습니다. 정말 삭제하시겠습니까?</string>
+    <string name="gifticon_list_remove_gifticon_dialog_remove_button">삭제하기</string>
+    <string name="gifticon_product_image">기프티콘 상품 이미지</string>
+
+    <string name="home_near_title">근처에서 사용할 수 있어요!</string>
+    <string name="home_near_more_label">지도보기</string>
+    <string name="home_expire_title">사용 기한이 임박했어요!</string>
+    <string name="home_expire_more_label">더보기</string>
+    <string name="home_appbar_name">홈</string>
+    <string name="home_near_gifticon_distance">%dm</string>
+    <string name="home_near_gifticon_announce">100m 이내</string>
+    <string name="home_empty_gifticon_description">현재 사용 가능한 쿠폰이 존재하지 않습니다.</string>
+    <string name="home_empty_near_brands">주위에 사용 가능한 브랜드가 존재하지 않습니다.</string>
+    <string name="home_location_has_not_permission_description">위치 권한을 허용해주시면\n근처에서 사용할 수 있는 기프티콘을 볼 수 있어요!</string>
+    <string name="home_location_permission_button">위치권한 허용</string>
+
+    <string name="security_setting_option_change">보안 인증 수단 변경</string>
+    <string name="security_setting_change_pin">PIN 번호 변경</string>
+    <string name="security_setting_change_success">보안 설정을 변경했습니다.</string>
+    <string name="security_setting_change_failure">보안 설정 변경에 실패했습니다.</string>
+    <string name="security_setting_change_cancel">보안 설정 변경을 취소했습니다.</string>
+
+    <string name="security_not_set">보안 수단 미설정</string>
+    <string name="security_not_set_description">소중한 기프티콘을 지킬 수 있는 보안을 설정하시겠어요?</string>
+
+    <string name="notification_title">만료 임박 기프티콘 알림</string>
+    <string name="notification_description">%s의 만료일이 %d일 남았습니다</string>
+    <string name="notification_channel_description">만료일에 가까워진 기프티콘을 알려드립니다.</string>
+
+    <string name="location_setting">위치권한설정</string>
+    <string name="location_suggest">위치 권한을 허용하면\n가까운 기프티콘 사용처를\n알려 드릴게요!</string>
+    <string name="location_not_allowed">허용 안 함</string>
+    <string name="location_allowed">허용됨</string>
+
+    <string name="widget_loading">로딩중입니다.</string>
+    <string name="widget_common_error">데이터를 불러오던 중 문제가 생겼습니다. 새로고침을 눌러주세요.</string>
+    <string name="widget_refresh_button">새로고침</string>
+    <string name="widget_empty_data">근처에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
+    <string name="widget_has_not_permission">권한을 항상 허용으로 변경 하신 후 다시 새로고침 해주세요.</string>
+    <string name="widget_header_description">근처에서 사용 가능해요!</string>
+    <string name="widget_gifticon_image_description">헤더 새로고침 버튼</string>
+    <string name="widget_gifticon_count">%d개</string>
+
+    <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
+    <string name="map_back_button">맵에서 뒤로가기 버튼</string>
+    <string name="gifticon_detail_scroll_down_chip_unused">사용하기</string>
+    <string name="gifticon_detail_scroll_down_chip_used">사용취소</string>
+    <string name="gifticon_detail_scroll_down_chip_edit">수정완료</string>
 </resources>

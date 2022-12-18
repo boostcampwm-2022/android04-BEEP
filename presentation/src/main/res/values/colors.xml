@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#8C8C8C</color>
+    <color name="light_gray">#DDDDDD</color>
+    <color name="dark_gray">#2D2D2D</color>
+
+    <color name="error">#E93B14</color>
+    <color name="surface_1">#F5F5F5</color>
+
+    <color name="beep_pink">#EF2C67</color>
+    <color name="beep_pink_dark">#EF386F</color>
+
+    <color name="gray_200">#EAEAEA</color>
+    <color name="gray_400">#B8B8B8</color>
+    <color name="gray_500">#8C8C8C</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/beep_pink</color>
+
+    <color name="yellow">#FEDD16</color>
+    <color name="point_green">#06DA79</color>
+    <color name="point_green_dark">#0EBA75</color>
+    <color name="widget_background">#FFFFFFFF</color>
 </resources>

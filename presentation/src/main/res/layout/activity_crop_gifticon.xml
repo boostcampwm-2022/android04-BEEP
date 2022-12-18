@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.cropgifticon.CropGifticonViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/ripple_circle_on_primary_12"
+                    android:clickable="true"
+                    android:contentDescription="@string/add_gifticon_back_description"
+                    android:focusable="true"
+                    android:onClick="@{() -> vm.cancelCropImage()}"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?attr/colorOnPrimarySurface" />
+
+                <TextView
+                    android:id="@+id/tv_complete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/ripple_rect_corner_8_on_primary_12"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{() -> vm.requestCropImage()}"
+                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="@string/crop_gifticon_complete"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.lighthouse.presentation.ui.cropgifticon.view.CropImageView
+            android:id="@+id/crop_image_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:aspectRatio="@{vm.aspectRatio}"
+            app:cropInfo="@{vm.cropInfo}"
+            app:enableAspectRatio="@{vm.enableAspectRatio}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+            app:onChangeCropRectListener="@{(rect) -> vm.onChangeCropRect(rect)}"
+            app:onCropImageListener="@{(bitmap, rect) -> vm.onCropImage(bitmap, rect)}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

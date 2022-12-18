@@ -1,7 +1,29 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.BEEP" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<resources>
+
+    <style name="Theme.BEEP" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/beep_pink_dark</item>
+        <item name="colorPrimaryDark">@color/beep_pink_dark</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+        <item name="colorSecondary">@color/beep_pink_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialButtonStyle">@style/BEEP.Component.Button</item>
+        <item name="android:statusBarColor">@color/on_surface_9</item>
+    </style>
+
+    <style name="Theme.BEEP.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@drawable/tc_on_primary_disabled_night</item>
+    </style>
+
+    <style name="Theme.BEEP.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@drawable/tc_on_primary_disabled_night</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Body1</item>
+    </style>
+
+    <style name="Theme.BEEP.OSS" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/beep_pink_dark</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+        <item name="android:statusBarColor">@color/on_surface_9</item>
     </style>
 </resources>

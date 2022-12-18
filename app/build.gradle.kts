@@ -1,6 +1,11 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
@@ -16,6 +21,9 @@ android {
         versionName = AppConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "kakaoSearchId", getApiKey("kakao_search_id"))
+        manifestPlaceholders["naver_map_api_id"] = getApiKey("naver_map_api_id")
     }
 
     buildTypes {
@@ -26,12 +34,19 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = AppConfig.jvmTarget
+    }
+    buildFeatures {
+        dataBinding = true
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/LICENSE*")
     }
 }
 
@@ -39,4 +54,12 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":presentation"))
     implementation(project(":data"))
+    implementation(platform(Libraries.FIREBASE_BOM))
+    kapt(Kapt.APP_LIBRARIES)
+    implementation(Libraries.APP_LIBRARIES)
+    annotationProcessor(AnnotationProcessors.APP_LIBRARIES)
+}
+
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }

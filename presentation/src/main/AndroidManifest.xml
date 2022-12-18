@@ -1,20 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <application android:theme="@style/Theme.BEEP">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.security.SecurityActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.BEEP">
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.signin.SignInActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.BEEP.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.edit.addgifticon.AddGifticonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.edit.modifygifticon.ModifyGifticonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.cropgifticon.CropGifticonActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.gallery.GalleryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.detailgifticon.GifticonDetailActivity"
+            android:parentActivityName=".ui.main.MainActivity"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.map.MapActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/Theme.BEEP.OSS" />
+        <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/Theme.BEEP.OSS" />
+
+        <receiver
+            android:name=".ui.widget.BeepWidgetReceiver"
+            android:exported="false"
+            android:label="Beep">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/gifticon_widget_provider" />
+        </receiver>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove">
+            <meta-data
+                android:name="com.lighthouse.di.WorkManagerInitializer"
+                android:value="androidx.startup" />
+        </provider>
     </application>
 </manifest>

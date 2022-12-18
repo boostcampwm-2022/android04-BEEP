@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePickerViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center_horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tv_year"
+                    style="@style/BEEP.TextStyle.H5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_year"
+                    app:layout_constraintEnd_toEndOf="@id/np_year"
+                    app:layout_constraintStart_toStartOf="@id/np_year"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/all_year" />
+
+                <NumberPicker
+                    android:id="@+id/np_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_year"
+                    app:maxValue="@{vm.maxYear}"
+                    app:minValue="@{vm.minYear}"
+                    app:onValueChangedListener="@{(picker, oldValue, newValue) -> vm.changeYearValue(newValue)}"
+                    app:wrapSelectorWheel="@{false}" />
+
+                <TextView
+                    android:id="@+id/tv_month"
+                    style="@style/BEEP.TextStyle.H5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_month"
+                    app:layout_constraintEnd_toEndOf="@id/np_month"
+                    app:layout_constraintStart_toStartOf="@id/np_month"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/all_month" />
+
+                <NumberPicker
+                    android:id="@+id/np_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintEnd_toStartOf="@id/np_day_of_month"
+                    app:layout_constraintStart_toEndOf="@id/np_year"
+                    app:layout_constraintTop_toTopOf="@id/np_year"
+                    app:maxValue="@{vm.maxMonth}"
+                    app:minValue="@{vm.minMonth}"
+                    app:onValueChangedListener="@{(picker, oldValue, newValue) -> vm.changeMonthValue(newValue)}"
+                    app:wrapSelectorWheel="@{false}" />
+
+                <TextView
+                    android:id="@+id/tv_day_of_month"
+                    style="@style/BEEP.TextStyle.H5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all_day"
+                    app:layout_constraintEnd_toEndOf="@id/np_day_of_month"
+                    app:layout_constraintStart_toStartOf="@id/np_day_of_month"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/all_day" />
+
+                <NumberPicker
+                    android:id="@+id/np_day_of_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/np_month"
+                    app:layout_constraintTop_toTopOf="@id/np_year"
+                    app:maxValue="@{vm.maxDayOfMonth}"
+                    app:minValue="@{vm.minDayOfMonth}"
+                    app:onValueChangedListener="@{(picker, oldValue, newValue) -> vm.changeDayOfMonthValue(newValue)}"
+                    app:wrapSelectorWheel="@{false}" />
+
+                <TextView
+                    android:id="@+id/btn_ok"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/ripple_primary_corner_4"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:text="@string/all_ok"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/np_year" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</layout>

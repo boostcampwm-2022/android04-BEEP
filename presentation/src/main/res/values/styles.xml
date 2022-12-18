@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TextAppearance -->
+    <style name="BEEP.TextStyle.H4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="BEEP.TextStyle.H5" parent="TextAppearance.MaterialComponents.Headline5" />
+
+    <style name="BEEP.TextStyle.H6" parent="TextAppearance.MaterialComponents.Headline6" /> <!-- 툴바 -->
+
+    <style name="BEEP.TextStyle.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Subtitle1.OnPrimary">
+        <item name="color">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Body1" parent="TextAppearance.MaterialComponents.Body1" />
+
+    <style name="BEEP.TextStyle.Body2" parent="TextAppearance.MaterialComponents.Body2" />
+
+    <style name="BEEP.TextStyle.Body2.Gray">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Body2.Primary">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Button" parent="TextAppearance.MaterialComponents.Button" />
+
+    <style name="BEEP.TextStyle.Caption" parent="TextAppearance.MaterialComponents.Caption" />
+
+    <style name="BEEP.TextStyle.Caption2" parent="TextAppearance.MaterialComponents.Caption" >
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Caption.White">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="BEEP.TextStyle.Caption.Gray">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <!-- Component -->
+    <style name="BEEP.Component.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextAppearance">@style/BEEP.TextStyle.H6</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="BEEP.Component.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="behavior_draggable">false</item>
+    </style>
+
+    <style name="BEEP.Component.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:padding">12dp</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
+    </style>
+
+    <style name="BEEP.Component.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:padding">8dp</item>
+        <item name="android:textAppearance">@style/BEEP.TextStyle.Button</item>
+    </style>
+
+    <style name="BEEP.Component.SpinnerDatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+
+    <style name="AppTheme.Actionbar" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="tint">@color/white</item>
+    </style>
+</resources>
