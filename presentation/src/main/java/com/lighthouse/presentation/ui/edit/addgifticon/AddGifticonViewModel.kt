@@ -243,7 +243,7 @@ class AddGifticonViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val displayGifticonImage = selectedGifticon.map {
-        it?.gifticonImage?.uri ?: it?.origin
+        it?.uri
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
