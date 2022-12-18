@@ -154,7 +154,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun launchPermission() {
         when {
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-                locationPermissionDialog.show(parentFragmentManager, ConfirmationDialog::class.java.name)
+                locationPermissionDialog
+                    .show(parentFragmentManager, ConfirmationDialog::class.java.name)
             }
             else -> locationPermissionLauncher.launch(PERMISSIONS)
         }
