@@ -10,8 +10,6 @@ import com.lighthouse.datasource.gallery.GalleryImageLocalSource
 import com.lighthouse.datasource.gallery.GalleryImageLocalSourceImpl
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSourceImpl
-import com.lighthouse.datasource.gifticoncrop.GifticonCropLocalDataSource
-import com.lighthouse.datasource.gifticoncrop.GifticonCropLocalDataSourceImpl
 import com.lighthouse.domain.repository.AuthRepository
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.domain.repository.GalleryImageRepository
@@ -91,12 +89,6 @@ abstract class DataModule {
     abstract fun bindGifticonLocalDataSource(
         source: GifticonLocalDataSourceImpl
     ): GifticonLocalDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindGifticonCropLocalDataSource(
-        source: GifticonCropLocalDataSourceImpl
-    ): GifticonCropLocalDataSource
 
     @Binds
     @Singleton

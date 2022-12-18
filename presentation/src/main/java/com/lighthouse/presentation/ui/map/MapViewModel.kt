@@ -7,13 +7,13 @@ import com.lighthouse.domain.LocationConverter
 import com.lighthouse.domain.VertexLocation
 import com.lighthouse.domain.model.BeepError
 import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
+import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.flow.MutableEventFlow
@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -60,14 +59,16 @@ class MapViewModel @Inject constructor(
     private val allGifticons = resultGifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
             emit(gifticons.data.sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) })
+        } else if (gifticons is DbResult.Empty) {
+            emit(emptyList())
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val allBrands = allGifticons.transform { gifticons ->
-        emit(gifticons.map { it.brandLowerName }.distinct())
+        emit(gifticons.map { it.brand.lowercase() }.distinct())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val _gifticonData = MutableStateFlow<List<Gifticon>>(emptyList())
+    private val _gifticonData = MutableStateFlow<List<GifticonUIModel>>(emptyList())
     val gifticonData = _gifticonData.asStateFlow()
 
     private val _event = MutableEventFlow<MapEvent>()
@@ -96,7 +97,7 @@ class MapViewModel @Inject constructor(
     private fun checkHomeData(savedStateHandle: SavedStateHandle): Boolean {
         var isFirstLoadData = true
         val nearBrands = savedStateHandle.get<List<BrandPlaceInfoUiModel>>(Extras.KEY_NEAR_BRANDS)
-        val nearGifticons = savedStateHandle.get<List<Gifticon>>(Extras.KEY_NEAR_GIFTICONS)
+        val nearGifticons = savedStateHandle.get<List<GifticonUIModel>>(Extras.KEY_NEAR_GIFTICONS)
         viewModelScope.launch {
             if (nearBrands.isNullOrEmpty() || nearGifticons.isNullOrEmpty()) {
                 isFirstLoadData = false
@@ -168,7 +169,6 @@ class MapViewModel @Inject constructor(
                         }
                     }
                     .onFailure { throwable ->
-                        Timber.tag("TAG").d("${javaClass.simpleName} throwable -> $throwable")
                         _state.emit(
                             when (throwable) {
                                 BeepError.NetworkFailure -> UiState.NetworkFailure
@@ -192,13 +192,14 @@ class MapViewModel @Inject constructor(
 
     fun updateGifticons() {
         val brandName = focusMarker.captionText.lowercase()
-        _gifticonData.value = when (brandName.isEmpty()) {
-            true -> {
-                allGifticons.value.filter { gifticon ->
-                    brandInfos.map { it.brandLowerName }.contains(gifticon.brandLowerName)
-                }
+        _gifticonData.value = allGifticons.value.filter { gifticon ->
+            if (brandName.isNotEmpty()) {
+                gifticon.brand.lowercase() == brandName
+            } else {
+                brandInfos.find { it.brandLowerName == gifticon.brand.lowercase() } != null
             }
-            false -> allGifticons.value.filter { it.brandLowerName == brandName }
+        }.map {
+            it.toPresentation()
         }
     }
 

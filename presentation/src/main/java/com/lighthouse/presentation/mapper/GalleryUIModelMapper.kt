@@ -6,7 +6,7 @@ import com.lighthouse.presentation.extension.toDate
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
-import com.lighthouse.presentation.ui.addgifticon.adapter.AddGifticonItemUIModel
+import com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddGifticonItemUIModel
 import java.util.Date
 
 fun GalleryUIModel.Gallery.toAddGifticonItemUIModel(): AddGifticonItemUIModel.Gifticon {

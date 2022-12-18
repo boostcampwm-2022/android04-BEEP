@@ -7,7 +7,7 @@
 
         <variable
             name="gifticon"
-            type="com.lighthouse.domain.model.Gifticon" />
+            type="com.lighthouse.presentation.model.GifticonUIModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -29,7 +29,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:loadUri="@{gifticon.croppedUri}"/>
 
             <ImageView
                 android:layout_width="0dp"

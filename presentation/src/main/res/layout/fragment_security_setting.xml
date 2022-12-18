@@ -15,32 +15,15 @@
         android:layout_height="match_parent"
         tools:context=".ui.setting.SettingSecurityFragment">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/ab_security_setting"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/tb_security_setting"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-                app:title="@string/main_menu_setting"
-                app:titleCentered="true" />
-        </com.google.android.material.appbar.AppBarLayout>
-
         <TextView
             android:id="@+id/tv_change_security_option"
             style="@style/Theme.BEEP.SettingTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="16dp"
             android:foreground="?attr/selectableItemBackground"
+            android:paddingVertical="16dp"
             android:text="@string/security_setting_option_change"
-            app:layout_constraintTop_toBottomOf="@+id/ab_security_setting"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_arrow_forward_change_option"
@@ -60,9 +43,9 @@
             style="@style/Theme.BEEP.SettingTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
             android:paddingVertical="16dp"
             android:text="@string/security_setting_change_pin"
-            android:foreground="?attr/selectableItemBackground"
             app:layout_constraintTop_toBottomOf="@+id/tv_change_security_option" />
 
         <ImageView

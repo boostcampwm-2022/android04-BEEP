@@ -20,4 +20,10 @@
         <item name="android:textColor">@drawable/tc_on_primary_disabled_night</item>
         <item name="android:textAppearance">@style/BEEP.TextStyle.Body1</item>
     </style>
+
+    <style name="Theme.BEEP.OSS" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/beep_pink_dark</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+        <item name="android:statusBarColor">@color/on_surface_9</item>
+    </style>
 </resources>

@@ -4,18 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
-import com.lighthouse.presentation.binding.loadWithFileStreamPath
 import com.lighthouse.presentation.databinding.ItemGifticonHorizontalBinding
 import com.lighthouse.presentation.databinding.ItemGifticonVerticalBinding
+import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 
 class GifticonAdapter(
     private val gifticonViewHolderType: GifticonViewHolderType,
-    private val onClick: (Gifticon) -> Unit
-) : BindableListAdapter<Gifticon, RecyclerView.ViewHolder>(diff) {
+    private val onClick: (GifticonUIModel) -> Unit
+) : BindableListAdapter<GifticonUIModel, RecyclerView.ViewHolder>(diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (gifticonViewHolderType) {
@@ -44,10 +43,8 @@ class GifticonAdapter(
             }
         }
 
-        fun bind(gifticon: Gifticon) {
-            binding.ivProduct.loadWithFileStreamPath("cropped${gifticon.id}")
+        fun bind(gifticon: GifticonUIModel) {
             binding.gifticon = gifticon
-            binding.executePendingBindings()
         }
     }
 
@@ -64,20 +61,18 @@ class GifticonAdapter(
             }
         }
 
-        fun bind(gifticon: Gifticon) {
-            binding.ivProduct.loadWithFileStreamPath("cropped${gifticon.id}")
+        fun bind(gifticon: GifticonUIModel) {
             binding.gifticon = gifticon
-            binding.executePendingBindings()
         }
     }
 
     companion object {
-        private val diff = object : DiffUtil.ItemCallback<Gifticon>() {
-            override fun areItemsTheSame(oldItem: Gifticon, newItem: Gifticon): Boolean {
+        private val diff = object : DiffUtil.ItemCallback<GifticonUIModel>() {
+            override fun areItemsTheSame(oldItem: GifticonUIModel, newItem: GifticonUIModel): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: Gifticon, newItem: Gifticon): Boolean {
+            override fun areContentsTheSame(oldItem: GifticonUIModel, newItem: GifticonUIModel): Boolean {
                 return oldItem == newItem
             }
         }

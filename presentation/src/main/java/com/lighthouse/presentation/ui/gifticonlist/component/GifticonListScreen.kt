@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -36,7 +36,7 @@ fun GifticonListScreen(
     viewModel: GifticonListViewModel = viewModel()
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
-    var removeGifticonDialogState by remember { mutableStateOf<Gifticon?>(null) }
+    var removeGifticonDialogState by remember { mutableStateOf<GifticonUIModel?>(null) }
 
     Surface(
         modifier = modifier
