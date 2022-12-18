@@ -278,4 +278,7 @@
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
     <string name="map_back_button">맵에서 뒤로가기 버튼</string>
+    <string name="gifticon_detail_scroll_down_chip_unused">사용하기</string>
+    <string name="gifticon_detail_scroll_down_chip_used">사용취소</string>
+    <string name="gifticon_detail_scroll_down_chip_edit">수정완료</string>
 </resources>

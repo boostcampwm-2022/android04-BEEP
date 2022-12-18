@@ -80,13 +80,13 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:src="@drawable/img_stamp"
-                    app:isAnimatedVisible="@{vm.gifticon.used}"
-                    app:visibleAnimation="@{@anim/anim_stamp}"
                     app:goneAnimation="@{@anim/anim_fade_out}"
+                    app:isAnimatedVisible="@{vm.gifticon.used}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_product_image"
                     app:layout_constraintStart_toStartOf="@id/iv_product_image"
-                    app:layout_constraintTop_toTopOf="@id/iv_product_image" />
+                    app:layout_constraintTop_toTopOf="@id/iv_product_image"
+                    app:visibleAnimation="@{@anim/anim_stamp}" />
 
                 <TextView
                     android:id="@+id/tv_edit_gifticon_image"
@@ -114,14 +114,14 @@
                     android:rotation="-20"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    app:isAnimatedVisible="@{vm.gifticon.used}"
-                    app:visibleAnimation="@{@anim/anim_stamp}"
                     app:goneAnimation="@{@anim/anim_fade_out}"
+                    app:isAnimatedVisible="@{vm.gifticon.used}"
                     app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
                     app:layout_constraintEnd_toEndOf="@id/iv_product_image"
                     app:layout_constraintStart_toStartOf="@id/iv_product_image"
                     app:layout_constraintTop_toTopOf="@id/iv_product_image"
                     app:setUIText="@{vm.latestUsageHistoryUIText}"
+                    app:visibleAnimation="@{@anim/anim_stamp}"
                     tools:text="사용 완료\n2022.12.28" />
 
                 <ImageView
@@ -199,7 +199,8 @@
             android:alpha="0.78"
             android:elevation="1dp"
             android:onClick="@{() -> vm.scrollDownForUseButtonClicked()}"
-            android:text="@string/gifticon_detail_scroll_down_for_use_button_text"
-            app:chipIcon="@drawable/ic_double_arrow_down" />
+            app:chipIcon="@drawable/ic_double_arrow_down"
+            app:setUIText="@{vm.scrollDownChipLabel}"
+            tools:text="사용하기" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

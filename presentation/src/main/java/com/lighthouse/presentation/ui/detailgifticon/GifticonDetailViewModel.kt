@@ -104,8 +104,16 @@ class GifticonDetailViewModel @Inject constructor(
     private val gifticonCrop = getGifticonCropUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, null)
     private var tempGifticonCrop = MutableStateFlow<GifticonCrop?>(null)
 
+    private val _scrollDownChipLabel = MutableStateFlow<UIText>(UIText.Empty)
+    val scrollDownChipLabel = _scrollDownChipLabel.asStateFlow()
+
     fun switchMode(mode: GifticonDetailMode) {
         _mode.value = mode
+        _scrollDownChipLabel.value = when (_mode.value) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
+            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_edit)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_used)
+        }
     }
 
     fun scrollDownForUseButtonClicked() {
@@ -174,12 +182,6 @@ class GifticonDetailViewModel @Inject constructor(
                     temp.rect.toPresentation()
                 )
             )
-        }
-    }
-
-    fun updateGifticonCrop(gifticonCrop: GifticonCrop) {
-        viewModelScope.launch {
-            // TODO 크롭 수정
         }
     }
 
