@@ -18,4 +18,7 @@ data class GifticonForUpdate(
     val memo: String,
     val isUsed: Boolean,
     val createdAt: Date
-)
+) {
+    val isUpdatedImage
+        get() = oldCroppedUri != croppedUri
+}

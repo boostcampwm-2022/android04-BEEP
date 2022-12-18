@@ -8,7 +8,6 @@ import com.lighthouse.database.converter.DmsConverter
 import com.lighthouse.database.converter.RectConverter
 import com.lighthouse.database.converter.UriConverter
 import com.lighthouse.database.dao.BrandWithSectionDao
-import com.lighthouse.database.dao.GifticonCropDao
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.database.entity.GifticonCropEntity
@@ -35,7 +34,6 @@ import com.lighthouse.database.entity.UsageHistoryEntity
 abstract class BeepDatabase : RoomDatabase() {
 
     abstract fun gifticonDao(): GifticonDao
-    abstract fun gifticonCropDao(): GifticonCropDao
     abstract fun brandWithSectionDao(): BrandWithSectionDao
 
     companion object {

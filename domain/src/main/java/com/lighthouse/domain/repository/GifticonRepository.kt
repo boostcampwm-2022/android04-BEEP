@@ -21,7 +21,7 @@ interface GifticonRepository {
     ): Flow<DbResult<List<Gifticon>>>
 
     fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>>
-    suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>)
+    suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>)
     suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate?
     suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate)
     fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>>

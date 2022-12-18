@@ -79,23 +79,29 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate) {
-        gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity())
-        gifticonImageSource.updateImage(
-            gifticonForUpdate.id,
-            Uri.parse(gifticonForUpdate.oldCroppedUri),
-            Uri.parse(gifticonForUpdate.croppedUri)
-        )
+        var croppedUri: Uri? = null
+        if (gifticonForUpdate.isUpdatedImage) {
+            croppedUri = gifticonImageSource.updateImage(
+                gifticonForUpdate.id,
+                Uri.parse(gifticonForUpdate.oldCroppedUri),
+                Uri.parse(gifticonForUpdate.croppedUri)
+            )
+        }
+        gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity(croppedUri))
     }
 
-    override suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>) {
-        val newGifticons = gifticons.map { gifticon ->
+    override suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>) {
+        val newGifticons = gifticonForAdditions.map { gifticonForAddition ->
             val id = UUID.generate()
             var croppedUri: Uri? = null
-            if (gifticon.hasImage) {
-                croppedUri =
-                    gifticonImageSource.saveImage(id, Uri.parse(gifticon.originUri), Uri.parse(gifticon.tempCroppedUri))
+            if (gifticonForAddition.hasImage) {
+                croppedUri = gifticonImageSource.saveImage(
+                    id,
+                    Uri.parse(gifticonForAddition.originUri),
+                    Uri.parse(gifticonForAddition.tempCroppedUri)
+                )
             }
-            gifticon.toEntity(id, userId, croppedUri)
+            gifticonForAddition.toEntity(id, userId, croppedUri)
         }
         gifticonLocalDataSource.insertGifticons(newGifticons)
     }
@@ -145,7 +151,7 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override fun hasUsableGifticon(userId: String) = flow {
-        gifticonLocalDataSource.hasUsableGifticon(userId).collect() { hasUsableGifticon ->
+        gifticonLocalDataSource.hasUsableGifticon(userId).collect { hasUsableGifticon ->
             emit(hasUsableGifticon)
         }
     }

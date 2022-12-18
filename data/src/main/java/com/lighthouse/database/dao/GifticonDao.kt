@@ -1,6 +1,7 @@
 package com.lighthouse.database.dao
 
 import android.graphics.Rect
+import android.net.Uri
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -108,9 +109,10 @@ interface GifticonDao {
     /**
      * 기프티콘의 정보를 업데이트한다
      * */
-    @Query("UPDATE $GIFTICON_TABLE SET name = :name, brand = :brand, expire_at = :expire_at, barcode = :barcode, is_cash_card = :isCashCard, balance = :balance, memo = :memo WHERE id = :id")
+    @Query("UPDATE $GIFTICON_TABLE SET cropped_uri = :croppedUri, name = :name, brand = :brand, expire_at = :expire_at, barcode = :barcode, is_cash_card = :isCashCard, balance = :balance, memo = :memo WHERE id = :id")
     suspend fun updateGifticon(
         id: String,
+        croppedUri: Uri?,
         name: String,
         brand: String,
         expire_at: Date,
@@ -126,7 +128,7 @@ interface GifticonDao {
     @Transaction
     suspend fun updateGifticonWithCropTransaction(gifticonWithCrop: GifticonWithCrop) {
         with(gifticonWithCrop) {
-            updateGifticon(id, name, brand, expireAt, barcode, isCashCard, balance, memo)
+            updateGifticon(id, croppedUri, name, brand, expireAt, barcode, isCashCard, balance, memo)
             updateGifticonCrop(id, croppedRect)
         }
     }
