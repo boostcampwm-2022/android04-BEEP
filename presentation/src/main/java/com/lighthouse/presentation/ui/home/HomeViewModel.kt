@@ -14,7 +14,7 @@ import com.lighthouse.domain.usecase.HasLocationPermissionsUseCase
 import com.lighthouse.domain.usecase.UpdateLocationPermissionUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
-import com.lighthouse.presentation.model.GifticonUiModel
+import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
@@ -50,20 +50,22 @@ class HomeViewModel @Inject constructor(
 
     private val allBrands = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            emit(gifticons.data.map { it.brandLowerName }.distinct())
+            emit(gifticons.data.map { it.brand.lowercase() }.distinct())
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            val gifticonGroup = gifticons.data.groupBy { it.brandLowerName }
+            val gifticonGroup = gifticons.data.groupBy { it.brand.lowercase() }
             emit(gifticonGroup)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     val expiredGifticon = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
-            val data = gifticons.data
+            val data = gifticons.data.map {
+                it.toPresentation()
+            }
             val gifticonSize =
                 if (data.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) data.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
             emit(data.slice(0 until gifticonSize))
@@ -78,7 +80,7 @@ class HomeViewModel @Inject constructor(
     val hasLocationPermission = hasLocationPermissionsUseCase()
     val isShimmer = MutableStateFlow(true)
 
-    private val _nearGifticons: MutableStateFlow<List<GifticonUiModel>?> = MutableStateFlow(null)
+    private val _nearGifticons: MutableStateFlow<List<GifticonWithDistanceUIModel>?> = MutableStateFlow(null)
     val nearGifticons = _nearGifticons.asStateFlow()
 
     val isEmptyNearBrands = nearGifticons.transform {

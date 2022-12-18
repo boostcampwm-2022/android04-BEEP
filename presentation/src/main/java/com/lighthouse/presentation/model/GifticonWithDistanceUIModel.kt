@@ -3,7 +3,7 @@ package com.lighthouse.presentation.model
 import android.net.Uri
 import java.util.Date
 
-data class GifticonUiModel(
+data class GifticonWithDistanceUIModel(
     val id: String,
     val userId: String,
     val hasImage: Boolean,

@@ -1,13 +1,13 @@
-package com.lighthouse.domain.model
+package com.lighthouse.presentation.model
 
+import android.net.Uri
+import java.io.Serializable
 import java.util.Date
 
-data class Gifticon(
+data class GifticonUIModel(
     val id: String,
-    val createdAt: Date,
-    val userId: String,
     val hasImage: Boolean,
-    val croppedUri: String,
+    val croppedUri: Uri?,
     val name: String,
     val brand: String,
     val expireAt: Date,
@@ -16,4 +16,8 @@ data class Gifticon(
     val balance: Int,
     val memo: String,
     val isUsed: Boolean
-)
+) : Serializable {
+
+    val originPath = "origin$id"
+    val brandLowerName = brand.lowercase()
+}

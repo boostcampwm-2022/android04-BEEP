@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.databinding.ItemNearGifticonVerticalBinding
-import com.lighthouse.presentation.model.GifticonUiModel
+import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
 
 class NearGifticonAdapter(
-    private val onClick: (GifticonUiModel) -> Unit
-) : BindableListAdapter<GifticonUiModel, NearGifticonAdapter.GifticonVerticalItemViewHolder>(diff) {
+    private val onClick: (GifticonWithDistanceUIModel) -> Unit
+) : BindableListAdapter<GifticonWithDistanceUIModel, NearGifticonAdapter.GifticonVerticalItemViewHolder>(diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifticonVerticalItemViewHolder {
         return GifticonVerticalItemViewHolder(parent)
@@ -34,18 +34,18 @@ class NearGifticonAdapter(
             }
         }
 
-        fun bind(gifticon: GifticonUiModel) {
+        fun bind(gifticon: GifticonWithDistanceUIModel) {
             binding.gifticon = NearGifticonDisplayModel(gifticon)
         }
     }
 
     companion object {
-        private val diff = object : DiffUtil.ItemCallback<GifticonUiModel>() {
-            override fun areItemsTheSame(oldItem: GifticonUiModel, newItem: GifticonUiModel): Boolean {
+        private val diff = object : DiffUtil.ItemCallback<GifticonWithDistanceUIModel>() {
+            override fun areItemsTheSame(oldItem: GifticonWithDistanceUIModel, newItem: GifticonWithDistanceUIModel): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: GifticonUiModel, newItem: GifticonUiModel): Boolean {
+            override fun areContentsTheSame(oldItem: GifticonWithDistanceUIModel, newItem: GifticonWithDistanceUIModel): Boolean {
                 return oldItem == newItem
             }
         }

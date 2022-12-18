@@ -11,7 +11,9 @@ import com.lighthouse.domain.usecase.RemoveGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.mapper.toDomain
+import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.GifticonSortBy
+import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.util.flow.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -85,9 +87,9 @@ class GifticonListViewModel @Inject constructor(
                 GifticonListViewState(
                     sortBy = sortBy,
                     gifticons = if (showExpired) {
-                        gifticonResult.data
+                        gifticonResult.data.map { it.toPresentation() }
                     } else {
-                        gifticonResult.data.filterNot { it.expireAt.isExpired() }
+                        gifticonResult.data.filterNot { it.expireAt.isExpired() }.map { it.toPresentation() }
                     },
                     showExpiredGifticon = showExpired,
                     brands = brands,
@@ -97,8 +99,8 @@ class GifticonListViewModel @Inject constructor(
                 )
             }
             is DbResult.Loading -> {
-                val gifticons = gifticons.value.let {
-                    if (it is DbResult.Success) it.data else emptyList()
+                val gifticons = gifticons.value.let { result ->
+                    if (result is DbResult.Success) result.data.map { it.toPresentation() } else emptyList()
                 }
                 GifticonListViewState(
                     sortBy = sortBy,
@@ -139,13 +141,13 @@ class GifticonListViewModel @Inject constructor(
         filter.value = emptySet()
     }
 
-    fun completeUsage(gifticon: Gifticon) {
+    fun completeUsage(gifticon: GifticonUIModel) {
         viewModelScope.launch {
             useGifticonUseCase(gifticon.id)
         }
     }
 
-    fun removeGifticon(gifticon: Gifticon) {
+    fun removeGifticon(gifticon: GifticonUIModel) {
         viewModelScope.launch {
             removeGifticonUseCase(gifticon.id)
         }

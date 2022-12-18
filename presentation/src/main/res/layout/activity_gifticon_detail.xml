@@ -74,7 +74,8 @@
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@mipmap/ic_launcher" />
+                    tools:src="@mipmap/ic_launcher"
+                    app:loadUri="@{vm.gifticon.croppedUri}"/>
 
                 <ImageView
                     android:layout_width="0dp"

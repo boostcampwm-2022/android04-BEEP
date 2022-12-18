@@ -15,7 +15,6 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.toRect
 import androidx.core.graphics.toRectF
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -23,10 +22,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.binding.loadUriWithoutCache
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
 import com.lighthouse.presentation.extension.getParcelable
@@ -35,7 +31,6 @@ import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
@@ -109,16 +104,16 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val gifticon = viewModel.gifticon.value ?: return@registerForActivityResult
-        val output = getFileStreamPath("")
-
-        lifecycleScope.launch {
-            val croppedImage = withContext(Dispatchers.IO) {
-                getCropResult(result, output)
-            } ?: return@launch
-            viewModel.updateGifticonCrop(GifticonCrop(gifticon.id, croppedImage.croppedRect.toRect().toDomain()))
-            binding.ivProductImage.loadUriWithoutCache(croppedImage.uri)
-        }
+//        val gifticon = viewModel.gifticon.value ?: return@registerForActivityResult
+//        val output = getFileStreamPath("")
+//
+//        lifecycleScope.launch {
+//            val croppedImage = withContext(Dispatchers.IO) {
+//                getCropResult(result, output)
+//            } ?: return@launch
+//            viewModel.updateGifticonCrop(GifticonCrop(gifticon.id, croppedImage.croppedRect.toRect().toDomain()))
+//            binding.ivProductImage.loadUriWithoutCache(croppedImage.uri)
+//        }
     }
 
     private val backKeyCallback by lazy {
@@ -162,8 +157,6 @@ class GifticonDetailActivity : AppCompatActivity() {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
-                val output = getFileStreamPath("")
-                binding.ivProductImage.loadUriWithoutCache(output.toUri())
             }
         }
         repeatOnStarted {
@@ -213,7 +206,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 if (event.before == event.after) {
                     showGifticonInfoNotChangedToast()
                 } else {
-                    showGifticonInfoChangedSnackBar(event.before)
+                    showGifticonInfoChangedSnackBar()
                 }
             }
             is GifticonDetailEvent.ExpireDateClicked -> {
@@ -372,7 +365,7 @@ class GifticonDetailActivity : AppCompatActivity() {
         cropGifticon.launch(intent)
     }
 
-    private fun showGifticonInfoChangedSnackBar(before: Gifticon) {
+    private fun showGifticonInfoChangedSnackBar() {
         Snackbar.make(
             binding.clGifticonDetail,
             getString(R.string.gifticon_detail_info_changed_snackbar_text),
@@ -380,7 +373,7 @@ class GifticonDetailActivity : AppCompatActivity() {
         ).apply {
             animationMode = Snackbar.ANIMATION_MODE_SLIDE
             setAction(getString(R.string.gifticon_detail_info_changed_snackbar_action_text)) {
-                viewModel.rollbackChangedGifticonInfo(before)
+                viewModel.rollbackChangedGifticonInfo()
             }
         }.show()
     }

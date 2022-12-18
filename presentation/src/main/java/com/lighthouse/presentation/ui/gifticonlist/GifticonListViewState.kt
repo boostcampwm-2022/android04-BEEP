@@ -1,12 +1,12 @@
 package com.lighthouse.presentation.ui.gifticonlist
 
 import com.lighthouse.domain.model.Brand
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.model.GifticonSortBy
+import com.lighthouse.presentation.model.GifticonUIModel
 
 data class GifticonListViewState(
     val sortBy: GifticonSortBy = GifticonSortBy.DEADLINE,
-    val gifticons: List<Gifticon> = emptyList(),
+    val gifticons: List<GifticonUIModel> = emptyList(),
     val showExpiredGifticon: Boolean = false,
     val loading: Boolean = false,
     val brands: List<Brand> = emptyList(),

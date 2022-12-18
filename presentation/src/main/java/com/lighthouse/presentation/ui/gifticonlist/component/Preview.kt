@@ -84,21 +84,22 @@ fun BrandChipsPreview() {
     )
 }
 
-@Preview(widthDp = 320)
-@Composable
-fun GifticonItemPreview() {
-    GifticonItem(
-        sampleGifticonItems[0]
-    )
-}
-
-@Preview
-@Composable
-fun GifticonListPreview() {
-    GifticonList(
-        sampleGifticonItems
-    )
-}
+// @Preview(widthDp = 320)
+// @Composable
+// fun GifticonItemPreview() {
+//    GifticonItem(
+//
+// //        sampleGifticonItems[0]
+//    )
+// }
+//
+// @Preview
+// @Composable
+// fun GifticonListPreview() {
+//    GifticonList(
+//        sampleGifticonItems
+//    )
+// }
 
 @Preview
 @Composable

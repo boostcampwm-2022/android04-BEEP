@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dpToPx
@@ -58,6 +57,7 @@ import com.lighthouse.presentation.extension.toConcurrency
 import com.lighthouse.presentation.extension.toDday
 import com.lighthouse.presentation.extension.toExpireDate
 import com.lighthouse.presentation.extra.Extras
+import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
@@ -66,10 +66,10 @@ import kotlin.math.roundToInt
 
 @Composable
 fun GifticonList(
-    gifticons: List<Gifticon>,
+    gifticons: List<GifticonUIModel>,
     modifier: Modifier = Modifier,
-    onUse: (Gifticon) -> Unit = {},
-    onRemove: (Gifticon) -> Unit = {}
+    onUse: (GifticonUIModel) -> Unit = {},
+    onRemove: (GifticonUIModel) -> Unit = {}
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -88,7 +88,7 @@ fun GifticonList(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GifticonItem(gifticon: Gifticon, onUse: (Gifticon) -> Unit = {}, onRemove: (Gifticon) -> Unit = {}) {
+fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {}, onRemove: (GifticonUIModel) -> Unit = {}) {
     val context = LocalContext.current
     val cornerSize = 8.dp
 
@@ -165,7 +165,7 @@ fun GifticonItem(gifticon: Gifticon, onUse: (Gifticon) -> Unit = {}, onRemove: (
         ) {
             Row {
                 GlideImage(
-                    imageModel = { context.getFileStreamPath("") },
+                    imageModel = { gifticon.croppedUri },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.gifticon_product_image),
