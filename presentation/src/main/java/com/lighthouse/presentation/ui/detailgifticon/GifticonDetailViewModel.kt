@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -164,21 +163,21 @@ class GifticonDetailViewModel @Inject constructor(
 //        tempGifticon.value?.let {
 //            _tempGifticon.value = it.copy(name = newName)
 //        }
-        Timber.tag("edit").d("editProductName: ${tempGifticon.value}")
+//        Timber.tag("edit").d("editProductName: ${tempGifticon.value}")
     }
 
     fun editBrand(newBrand: String) {
 //        tempGifticon.value?.let {
 //            _tempGifticon.value = it.copy(brand = newBrand)
 //        }
-        Timber.tag("edit").d("editBrand: ${tempGifticon.value}")
+//        Timber.tag("edit").d("editBrand: ${tempGifticon.value}")
     }
 
     fun editBalance(newBalance: Int) {
 //        tempGifticon.value?.let {
 //            _tempGifticon.value = it.copy(balance = newBalance)
 //        }
-        Timber.tag("edit").d("editBalance: ${tempGifticon.value}")
+//        Timber.tag("edit").d("editBalance: ${tempGifticon.value}")
     }
 
     fun editExpireDate(year: Int, month: Int, dayOfMonth: Int) {
@@ -188,14 +187,14 @@ class GifticonDetailViewModel @Inject constructor(
 //            }
 //            _tempGifticon.value = it.copy(expireAt = cal.time)
 //        }
-        Timber.tag("edit").d("editExpireDate: ${tempGifticon.value}")
+//        Timber.tag("edit").d("editExpireDate: ${tempGifticon.value}")
     }
 
     fun editMemo(newMemo: String) {
 //        tempGifticon.value?.let {
 //            _tempGifticon.value = it.copy(memo = newMemo)
 //        }
-        Timber.tag("edit").d("editMemo: ${tempGifticon.value}")
+//        Timber.tag("edit").d("editMemo: ${tempGifticon.value}")
     }
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
@@ -211,7 +210,7 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun rollbackChangedGifticonInfo() {
-        Timber.tag("edit").d("기프티콘 정보 되돌리기")
+//        Timber.tag("edit").d("기프티콘 정보 되돌리기")
 
         viewModelScope.launch {
         }
