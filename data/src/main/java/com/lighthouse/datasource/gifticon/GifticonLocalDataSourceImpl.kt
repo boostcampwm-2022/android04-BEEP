@@ -74,11 +74,11 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop) {
-        gifticonDao.updateGifticonWithCrop(gifticonWithCrop)
+        gifticonDao.updateGifticonWithCropTransaction(gifticonWithCrop)
     }
 
-    override suspend fun insertGifticons(gifticons: List<GifticonEntity>) {
-        gifticonDao.insertGifticon(*gifticons.toTypedArray())
+    override suspend fun insertGifticons(gifticons: List<GifticonWithCrop>) {
+        gifticonDao.insertGifticonWithCropTransaction(gifticons)
     }
 
     override suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory) {

@@ -24,7 +24,9 @@ data class ModifyGifticonUIModel(
     val isCashCard: Boolean,
     val balance: String,
     val balanceRectF: RectF,
-    val memo: String
+    val memo: String,
+    val isUsed: Boolean,
+    val createdAt: Date
 ) {
     val originFileName = "origin$id"
 }

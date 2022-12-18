@@ -19,6 +19,8 @@ fun ModifyGifticonUIModel.toDomain(): GifticonForUpdate {
         expiredAt = expiredAt,
         isCashCard = isCashCard,
         balance = balance.toDigit(),
-        memo = memo
+        memo = memo,
+        isUsed = isUsed,
+        createdAt = createdAt
     )
 }

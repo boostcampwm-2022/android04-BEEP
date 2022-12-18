@@ -15,5 +15,7 @@ data class GifticonForUpdate(
     val oldCroppedUri: String,
     val croppedUri: String,
     val croppedRect: Rectangle,
-    val memo: String
+    val memo: String,
+    val isUsed: Boolean,
+    val createdAt: Date
 )

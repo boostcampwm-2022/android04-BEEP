@@ -21,7 +21,7 @@ interface GifticonLocalDataSource {
 
     fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>>
     suspend fun getGifticonCrop(userId: String, gifticonId: String): GifticonWithCrop?
-    suspend fun insertGifticons(gifticons: List<GifticonEntity>)
+    suspend fun insertGifticons(gifticons: List<GifticonWithCrop>)
     suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop)
     suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory)
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory)

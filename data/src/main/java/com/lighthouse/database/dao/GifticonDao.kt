@@ -6,12 +6,15 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.lighthouse.database.entity.GifticonCropEntity
 import com.lighthouse.database.entity.GifticonCropEntity.Companion.GIFTICON_CROP_TABLE
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
 import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
+import com.lighthouse.database.mapper.toGifticonCropEntity
+import com.lighthouse.database.mapper.toGifticonEntity
 import com.lighthouse.domain.model.Brand
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -53,7 +56,18 @@ interface GifticonDao {
     fun getAllBrands(userId: String): Flow<List<Brand>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGifticon(vararg gifticon: GifticonEntity)
+    suspend fun insertGifticon(gifticon: GifticonEntity)
+
+    @Insert
+    suspend fun insertGifticonCrop(cropEntity: GifticonCropEntity)
+
+    @Transaction
+    suspend fun insertGifticonWithCropTransaction(gifticonWithCropList: List<GifticonWithCrop>) {
+        gifticonWithCropList.forEach {
+            insertGifticon(it.toGifticonEntity())
+            insertGifticonCrop(it.toGifticonCropEntity())
+        }
+    }
 
     /**
      * 기프티콘을 사용 상태로 변경한다
@@ -110,7 +124,7 @@ interface GifticonDao {
     suspend fun updateGifticonCrop(id: String, croppedRect: Rect)
 
     @Transaction
-    suspend fun updateGifticonWithCrop(gifticonWithCrop: GifticonWithCrop) {
+    suspend fun updateGifticonWithCropTransaction(gifticonWithCrop: GifticonWithCrop) {
         with(gifticonWithCrop) {
             updateGifticon(id, name, brand, expireAt, barcode, isCashCard, balance, memo)
             updateGifticonCrop(id, croppedRect)

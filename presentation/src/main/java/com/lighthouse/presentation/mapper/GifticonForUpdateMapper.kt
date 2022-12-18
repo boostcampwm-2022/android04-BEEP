@@ -27,6 +27,8 @@ fun GifticonForUpdate.toPresentation(): ModifyGifticonUIModel {
         isCashCard = isCashCard,
         balance = balance.toString(),
         balanceRectF = RectF(),
-        memo = memo
+        memo = memo,
+        isUsed = isUsed,
+        createdAt = createdAt
     )
 }

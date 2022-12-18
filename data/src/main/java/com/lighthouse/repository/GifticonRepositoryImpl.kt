@@ -5,18 +5,16 @@ import com.lighthouse.database.mapper.toDomain
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
-import com.lighthouse.datasource.gifticoncrop.GifticonCropLocalDataSource
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.model.GifticonForUpdate
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.mapper.toDomain
-import com.lighthouse.mapper.toEntity
+import com.lighthouse.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -24,7 +22,6 @@ import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
     private val gifticonLocalDataSource: GifticonLocalDataSource,
-    private val gifticonLocalCropDataSource: GifticonCropLocalDataSource,
     private val gifticonImageSource: GifticonImageSource
 ) : GifticonRepository {
 
@@ -91,20 +88,16 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>) {
-        val newGifticons = gifticons.map {
-            it.toEntity(userId)
-        }
-
-        gifticonLocalDataSource.insertGifticons(newGifticons)
-
-        for ((newGifticon, addition) in newGifticons.zip(gifticons)) {
-            val gifticonCrop = GifticonCrop(newGifticon.id, addition.croppedRect)
-            gifticonLocalCropDataSource.insertGifticonCrop(gifticonCrop.toEntity())
-            if (!addition.hasImage) {
-                continue
+        val newGifticons = gifticons.map { gifticon ->
+            val id = UUID.generate()
+            var croppedUri: Uri? = null
+            if (gifticon.hasImage) {
+                croppedUri =
+                    gifticonImageSource.saveImage(id, Uri.parse(gifticon.originUri), Uri.parse(gifticon.tempCroppedUri))
             }
-            gifticonImageSource.saveImage(newGifticon.id, Uri.parse(addition.originUri), Uri.parse(addition.croppedUri))
+            gifticon.toEntity(id, userId, croppedUri)
         }
+        gifticonLocalDataSource.insertGifticons(newGifticons)
     }
 
     override fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>> = flow {

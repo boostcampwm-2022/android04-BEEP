@@ -18,6 +18,8 @@ fun GifticonForUpdate.toEntity(): GifticonWithCrop {
         isCashCard = isCashCard,
         balance = balance,
         memo = memo,
-        croppedRect = croppedRect.toEntity()
+        croppedRect = croppedRect.toEntity(),
+        isUsed = isUsed,
+        createdAt = createdAt
     )
 }

@@ -11,7 +11,7 @@ data class GifticonForAddition(
     val isCashCard: Boolean,
     val balance: Int,
     val originUri: String,
-    val croppedUri: String,
+    val tempCroppedUri: String,
     val croppedRect: Rectangle,
     val memo: String
 )

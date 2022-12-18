@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
-import com.lighthouse.presentation.binding.loadWithFileStreamPath
 import com.lighthouse.presentation.databinding.ItemNearGifticonVerticalBinding
 import com.lighthouse.presentation.model.GifticonUiModel
 
@@ -36,9 +35,7 @@ class NearGifticonAdapter(
         }
 
         fun bind(gifticon: GifticonUiModel) {
-            binding.ivProduct.loadWithFileStreamPath("cropped${gifticon.id}")
             binding.gifticon = NearGifticonDisplayModel(gifticon)
-            binding.executePendingBindings()
         }
     }
 

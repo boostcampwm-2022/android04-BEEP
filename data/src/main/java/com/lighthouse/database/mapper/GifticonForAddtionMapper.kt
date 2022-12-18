@@ -1,18 +1,17 @@
 package com.lighthouse.database.mapper
 
 import android.net.Uri
-import com.lighthouse.database.entity.GifticonEntity
+import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.domain.model.GifticonForAddition
-import com.lighthouse.domain.util.currentTime
-import com.lighthouse.util.UUID
+import com.lighthouse.mapper.toEntity
+import java.util.Date
 
-fun GifticonForAddition.toEntity(userId: String): GifticonEntity {
-    return GifticonEntity(
-        id = UUID.generate(),
-        createdAt = currentTime,
+fun GifticonForAddition.toEntity(id: String, userId: String, croppedUri: Uri?): GifticonWithCrop {
+    return GifticonWithCrop(
+        id = id,
         userId = userId,
         hasImage = hasImage,
-        croppedUri = Uri.parse(croppedUri),
+        croppedUri = croppedUri,
         name = name,
         brand = brandName,
         expireAt = expiredAt,
@@ -20,6 +19,8 @@ fun GifticonForAddition.toEntity(userId: String): GifticonEntity {
         isCashCard = isCashCard,
         balance = balance,
         memo = memo,
-        false
+        croppedRect = croppedRect.toEntity(),
+        isUsed = false,
+        createdAt = Date()
     )
 }

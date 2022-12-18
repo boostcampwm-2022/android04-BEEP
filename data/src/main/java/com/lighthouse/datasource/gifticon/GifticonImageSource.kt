@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,43 +29,45 @@ class GifticonImageSource @Inject constructor(
     private val screenWidth = context.resources.displayMetrics.widthPixels
     private val screenHeight = context.resources.displayMetrics.heightPixels
 
-    suspend fun saveImage(id: String, originUri: Uri?, croppedUri: Uri?) {
-        originUri ?: return
-        croppedUri ?: return
+    suspend fun saveImage(id: String, originUri: Uri?, oldCroppedUri: Uri?): Uri? {
+        originUri ?: return null
+        oldCroppedUri ?: return null
 
         val outputOriginFile = context.getFileStreamPath("$ORIGIN_PREFIX$id")
 
-        val inputOriginStream = openInputStream(originUri) ?: return
+        val inputOriginStream = openInputStream(originUri) ?: return null
         val sampleSize = calculateSampleSize(inputOriginStream)
 
-        val originBitmap = decodeBitmap(originUri) ?: return
+        val originBitmap = decodeBitmap(originUri) ?: return null
         val sampledOriginBitmap = samplingBitmap(originBitmap, sampleSize)
         saveBitmap(sampledOriginBitmap, CompressFormat.JPEG, 100, outputOriginFile)
 
         val updated = Date()
-        val outputCroppedFile = context.getFileStreamPath("$CROPPED_PREFIX$id${updated.time}.jpg")
-        val cropped = if (exists(croppedUri)) {
-            decodeBitmap(croppedUri).also { deleteIfFile(croppedUri) } ?: return
+        val outputCroppedFile = context.getFileStreamPath("${CROPPED_PREFIX}$id${updated.time}")
+        val cropped = if (exists(oldCroppedUri)) {
+            decodeBitmap(oldCroppedUri).also { deleteIfFile(oldCroppedUri) } ?: return null
         } else {
             centerCropBitmap(sampledOriginBitmap, 1f)
         }
         saveBitmap(cropped, CompressFormat.JPEG, QUALITY, outputCroppedFile)
+        return outputCroppedFile.toUri()
     }
 
-    suspend fun updateImage(id: String, oldCroppedUri: Uri?, newCroppedUri: Uri?) {
-        oldCroppedUri ?: return
-        newCroppedUri ?: return
+    suspend fun updateImage(id: String, oldCroppedUri: Uri?, newCroppedUri: Uri?): Uri? {
+        oldCroppedUri ?: return null
+        newCroppedUri ?: return null
         deleteIfFile(oldCroppedUri)
 
         val updated = Date()
-        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id${updated.time}.jpg")
+        val outputCropped = context.getFileStreamPath("$CROPPED_PREFIX$id${updated.time}")
         withContext(Dispatchers.IO) {
             openInputStream(newCroppedUri)?.use { input ->
                 FileOutputStream(outputCropped).use { output ->
                     input.copyTo(output)
                 }
-            } ?: return@withContext
+            }
         }
+        return outputCropped.toUri()
     }
 
     private fun calculateSampleSize(inputStream: InputStream): Int {
