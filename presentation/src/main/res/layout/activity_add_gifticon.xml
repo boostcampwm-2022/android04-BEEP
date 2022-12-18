@@ -125,8 +125,8 @@
 
                 <ImageView
                     android:id="@+id/iv_gifticon_image"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/bg_on_surface_12"
                     android:contentDescription="@string/edit_gifticon_image_description"
