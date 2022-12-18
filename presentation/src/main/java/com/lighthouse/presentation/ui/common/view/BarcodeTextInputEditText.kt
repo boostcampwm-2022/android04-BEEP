@@ -3,7 +3,10 @@ package com.lighthouse.presentation.ui.common.view
 import android.content.Context
 import android.util.AttributeSet
 
-class BarcodeTextInputEditText(context: Context, attrs: AttributeSet) : FormattedTextInputEditText(context, attrs) {
+class BarcodeTextInputEditText(
+    context: Context,
+    attrs: AttributeSet
+) : FormattedTextInputEditText(context, attrs) {
 
     init {
         filters = arrayOf(RealValueLengthFilter(24))
@@ -44,7 +47,10 @@ class BarcodeTextInputEditText(context: Context, attrs: AttributeSet) : Formatte
             val endNumCount = Integer.max(endStringCount - oldDividerCount, 0)
             var index = 0
             var numCount = 0
-            while (newDisplayValue.lastIndex - index >= 0 && (numCount < endNumCount || newDisplayValue[newDisplayValue.lastIndex - index] == ' ')) {
+            while (
+                newDisplayValue.lastIndex - index >= 0 &&
+                (numCount < endNumCount || newDisplayValue[newDisplayValue.lastIndex - index] == ' ')
+            ) {
                 if (newDisplayValue[newDisplayValue.lastIndex - index] != ' ') {
                     numCount += 1
                 }

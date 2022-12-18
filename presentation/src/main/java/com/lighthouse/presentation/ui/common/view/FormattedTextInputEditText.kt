@@ -7,7 +7,11 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputEditText
 
-abstract class FormattedTextInputEditText(context: Context, attrs: AttributeSet) : TextInputEditText(context, attrs) {
+abstract class FormattedTextInputEditText(
+    context: Context,
+    attrs: AttributeSet
+) : TextInputEditText(context, attrs) {
+
     protected var realValue = ""
     protected var displayValue = ""
 

@@ -45,7 +45,13 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY expire_at")
     fun getFilteredGifticonsSortByDeadline(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE INNER JOIN $GIFTICON_CROP_TABLE ON $GIFTICON_TABLE.id = $GIFTICON_CROP_TABLE.gifticon_id WHERE id = :id AND user_id = :userId LIMIT 1")
+    @Query(
+        "SELECT * FROM $GIFTICON_TABLE " +
+            "INNER JOIN $GIFTICON_CROP_TABLE " +
+            "ON $GIFTICON_TABLE.id = $GIFTICON_CROP_TABLE.gifticon_id " +
+            "WHERE id = :id AND user_id = :userId " +
+            "LIMIT 1"
+    )
     suspend fun getGifticonWithCrop(userId: String, id: String): GifticonWithCrop?
 
     @Query(
@@ -109,7 +115,18 @@ interface GifticonDao {
     /**
      * 기프티콘의 정보를 업데이트한다
      * */
-    @Query("UPDATE $GIFTICON_TABLE SET cropped_uri = :croppedUri, name = :name, brand = :brand, expire_at = :expire_at, barcode = :barcode, is_cash_card = :isCashCard, balance = :balance, memo = :memo WHERE id = :id")
+    @Query(
+        "UPDATE $GIFTICON_TABLE " +
+            "SET cropped_uri = :croppedUri, " +
+            "name = :name, " +
+            "brand = :brand, " +
+            "expire_at = :expire_at, " +
+            "barcode = :barcode, " +
+            "is_cash_card = :isCashCard, " +
+            "balance = :balance, " +
+            "memo = :memo " +
+            "WHERE id = :id"
+    )
     suspend fun updateGifticon(
         id: String,
         croppedUri: Uri?,
