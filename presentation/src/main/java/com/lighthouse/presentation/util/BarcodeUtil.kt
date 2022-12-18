@@ -18,20 +18,20 @@ class BarcodeUtil @Inject constructor(@ApplicationContext val context: Context) 
         imageView.setImageBitmap(
             createBarcodeBitmap(
                 barcodeValue = value,
-                barcodeColor = context.getColor(R.color.black),
-                backgroundColor = context.getColor(android.R.color.white),
                 widthPixels = widthPixels,
-                heightPixels = heightPixels
+                heightPixels = heightPixels,
+                barcodeColor = context.getColor(R.color.black),
+                backgroundColor = context.getColor(android.R.color.white)
             )
         )
     }
 
     fun createBarcodeBitmap(
         barcodeValue: String,
-        @ColorInt barcodeColor: Int,
-        @ColorInt backgroundColor: Int,
         widthPixels: Int,
-        heightPixels: Int
+        heightPixels: Int,
+        @ColorInt barcodeColor: Int = context.getColor(R.color.black),
+        @ColorInt backgroundColor: Int = context.getColor(android.R.color.white)
     ): Bitmap {
         val bitMatrix = Code128Writer().encode(
             barcodeValue,

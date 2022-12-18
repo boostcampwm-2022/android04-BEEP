@@ -6,7 +6,7 @@
     <string name="all_cash_origin_unit">원</string>
     <string name="all_d_day">D-%1$d</string>
     <string name="all_concurrency_format">#,###</string>
-    <string name="all_balance_label">남은 금액:%s</string>
+    <string name="all_balance_label">남은 금액:%s원</string>
     <string name="all_cancel">취소</string>
     <string name="all_do_cancel">취소하기</string>
     <string name="all_d_day_more_than_year">D-365+</string>
@@ -284,4 +284,7 @@
 
     <string name="map_back_description">네이버 맵에서 뒤로가기 버튼</string>
     <string name="map_back_button">맵에서 뒤로가기 버튼</string>
+    <string name="gifticon_detail_scroll_down_chip_unused">사용하기</string>
+    <string name="gifticon_detail_scroll_down_chip_used">사용취소</string>
+    <string name="gifticon_detail_scroll_down_chip_edit">수정완료</string>
 </resources>

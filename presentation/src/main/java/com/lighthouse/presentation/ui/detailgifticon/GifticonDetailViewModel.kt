@@ -10,6 +10,7 @@ import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.toConcurrency
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
@@ -80,6 +81,11 @@ class GifticonDetailViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
 
+    val balanceUIText: StateFlow<UIText> = gifticon.transform {
+        if (it == null) return@transform
+        emit(UIText.StringResource(R.string.all_balance_label, it.balance.toConcurrency()))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
+
     val failure = gifticonDbResult.transform {
         if (it is DbResult.Failure) {
             emit(it.throwable)
@@ -94,9 +100,11 @@ class GifticonDetailViewModel @Inject constructor(
     private val _tempGifticon = MutableStateFlow<GifticonUIModel?>(null)
     val tempGifticon = _tempGifticon.asStateFlow()
 
-    fun switchMode(mode: GifticonDetailMode) {
-        _mode.value = mode
-    }
+    private val _scrollDownChipLabel = MutableStateFlow<UIText>(UIText.Empty)
+    val scrollDownChipLabel = _scrollDownChipLabel.asStateFlow()
+
+    private val _masterButtonLabel = MutableStateFlow<UIText>(UIText.Empty)
+    val masterButtonLabel = _masterButtonLabel.asStateFlow()
 
     fun scrollDownForUseButtonClicked() {
         event(GifticonDetailEvent.ScrollDownForUseButtonClicked)
@@ -133,7 +141,6 @@ class GifticonDetailViewModel @Inject constructor(
                     event(GifticonDetailEvent.ExistEmptyInfo)
                 } else {
                     _mode.value = GifticonDetailMode.UNUSED
-                    endEdit()
                 }
             }
         }
@@ -153,50 +160,6 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    fun updateGifticonCrop() {
-        viewModelScope.launch {
-            // TODO 크롭 수정
-        }
-    }
-
-    fun editProductName(newName: String) {
-//        tempGifticon.value?.let {
-//            _tempGifticon.value = it.copy(name = newName)
-//        }
-//        Timber.tag("edit").d("editProductName: ${tempGifticon.value}")
-    }
-
-    fun editBrand(newBrand: String) {
-//        tempGifticon.value?.let {
-//            _tempGifticon.value = it.copy(brand = newBrand)
-//        }
-//        Timber.tag("edit").d("editBrand: ${tempGifticon.value}")
-    }
-
-    fun editBalance(newBalance: Int) {
-//        tempGifticon.value?.let {
-//            _tempGifticon.value = it.copy(balance = newBalance)
-//        }
-//        Timber.tag("edit").d("editBalance: ${tempGifticon.value}")
-    }
-
-    fun editExpireDate(year: Int, month: Int, dayOfMonth: Int) {
-//        tempGifticon.value?.let {
-//            val cal = Calendar.getInstance().apply {
-//                set(year, month - 1, dayOfMonth)
-//            }
-//            _tempGifticon.value = it.copy(expireAt = cal.time)
-//        }
-//        Timber.tag("edit").d("editExpireDate: ${tempGifticon.value}")
-    }
-
-    fun editMemo(newMemo: String) {
-//        tempGifticon.value?.let {
-//            _tempGifticon.value = it.copy(memo = newMemo)
-//        }
-//        Timber.tag("edit").d("editMemo: ${tempGifticon.value}")
-    }
-
     fun amountChipClicked(amountPreset: CashAmountPreset) {
         amountPreset.amount?.let { amount ->
             amountToBeUsed.update {
@@ -209,36 +172,36 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    fun rollbackChangedGifticonInfo() {
-//        Timber.tag("edit").d("기프티콘 정보 되돌리기")
-
-        viewModelScope.launch {
-        }
-    }
-
     fun showOriginalImage() {
         val origin = gifticon.value?.originPath ?: return
         event(GifticonDetailEvent.ShowOriginalImage(origin))
     }
 
-    fun startEdit() {
-        _tempGifticon.value = gifticon.value ?: return
+    fun showLargeBarcode() {
+        viewModelScope.launch {
+            val barcode = gifticon.value?.barcode ?: return@launch
+            event(GifticonDetailEvent.ShowLargeBarcode(barcode))
+        }
     }
 
-    fun cancelEdit() {
-        val origin = gifticon.value ?: return
-        switchMode(if (origin.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
-        _tempGifticon.value = null
+    fun editBalance(newBalance: Int) {
+        tempGifticon.value?.let {
+            _tempGifticon.value = it.copy(balance = newBalance)
+        }
     }
 
-    private fun endEdit() {
-//        val before = gifticon.value ?: return
-//        val after = tempGifticon.value ?: return
-//
-//        if (before != after) {
-//        }
-//        event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
-//        _tempGifticon.value = null
+    private fun switchMode(mode: GifticonDetailMode) {
+        _mode.value = mode
+        _scrollDownChipLabel.value = when (_mode.value) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
+            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_edit)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_used)
+        }
+        _masterButtonLabel.value = when (_mode.value) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_unused_mode_button_text)
+            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_used_mode_button_text)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_edit_mode_button_text)
+        }
     }
 
     private fun checkEditValidation(): Boolean {
