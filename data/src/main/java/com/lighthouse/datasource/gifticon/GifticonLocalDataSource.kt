@@ -1,6 +1,7 @@
 package com.lighthouse.datasource.gifticon
 
 import com.lighthouse.database.entity.GifticonEntity
+import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.SortBy
@@ -19,8 +20,9 @@ interface GifticonLocalDataSource {
     ): Flow<List<Gifticon>>
 
     fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>>
+    suspend fun getGifticonCrop(userId: String, gifticonId: String): GifticonWithCrop?
     suspend fun insertGifticons(gifticons: List<GifticonEntity>)
-    suspend fun updateGifticon(gifticon: Gifticon)
+    suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop)
     suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory)
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory)
     suspend fun unUseGifticon(gifticonId: String)

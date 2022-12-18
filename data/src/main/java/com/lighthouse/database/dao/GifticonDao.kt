@@ -1,13 +1,15 @@
 package com.lighthouse.database.dao
 
+import android.graphics.Rect
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
+import com.lighthouse.database.entity.GifticonCropEntity.Companion.GIFTICON_CROP_TABLE
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
+import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
 import com.lighthouse.domain.model.Brand
@@ -38,6 +40,9 @@ interface GifticonDao {
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY expire_at")
     fun getFilteredGifticonsSortByDeadline(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
+
+    @Query("SELECT * FROM $GIFTICON_TABLE INNER JOIN $GIFTICON_CROP_TABLE ON $GIFTICON_TABLE.id = $GIFTICON_CROP_TABLE.gifticon_id WHERE id = :id AND user_id = :userId LIMIT 1")
+    fun getGifticonWithCrop(userId: String, id: String): GifticonWithCrop?
 
     @Query(
         "SELECT brand AS name, COUNT(*) AS count " +
@@ -89,8 +94,28 @@ interface GifticonDao {
     /**
      * 기프티콘의 정보를 업데이트한다
      * */
-    @Update
-    suspend fun updateGifticon(newGifticon: GifticonEntity)
+    @Query("UPDATE $GIFTICON_TABLE SET name = :name, brand = :brand, expire_at = :expire_at, barcode = :barcode, is_cash_card = :isCashCard, balance = :balance, memo = :memo WHERE id = :id")
+    suspend fun updateGifticon(
+        id: String,
+        name: String,
+        brand: String,
+        expire_at: Date,
+        barcode: String,
+        isCashCard: Boolean,
+        balance: Int,
+        memo: String
+    )
+
+    @Query("UPDATE $GIFTICON_CROP_TABLE SET cropped_rect = :croppedRect WHERE gifticon_id = :id")
+    suspend fun updateGifticonCrop(id: String, croppedRect: Rect)
+
+    @Transaction
+    suspend fun updateGifticonWithCrop(gifticonWithCrop: GifticonWithCrop) {
+        with(gifticonWithCrop) {
+            updateGifticon(id, name, brand, expireAt, barcode, isCashCard, balance, memo)
+            updateGifticonCrop(id, croppedRect)
+        }
+    }
 
     /**
      * 기프티콘을 사용 상태로 변경하고, 사용 기록에 추가한다

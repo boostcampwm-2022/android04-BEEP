@@ -1,5 +1,6 @@
 package com.lighthouse.database.mapper
 
+import android.net.Uri
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.util.currentTime
@@ -11,6 +12,7 @@ fun GifticonForAddition.toEntity(userId: String): GifticonEntity {
         createdAt = currentTime,
         userId = userId,
         hasImage = hasImage,
+        croppedUri = Uri.parse(croppedUri),
         name = name,
         brand = brandName,
         expireAt = expiredAt,

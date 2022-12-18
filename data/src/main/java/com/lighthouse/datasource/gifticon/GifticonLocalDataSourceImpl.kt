@@ -2,7 +2,7 @@ package com.lighthouse.datasource.gifticon
 
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
-import com.lighthouse.database.mapper.toEntity
+import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.database.mapper.toUsageHistory
 import com.lighthouse.database.mapper.toUsageHistoryEntity
 import com.lighthouse.domain.model.Brand
@@ -69,8 +69,12 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateGifticon(gifticon: Gifticon) {
-        gifticonDao.updateGifticon(gifticon.toEntity())
+    override suspend fun getGifticonCrop(userId: String, gifticonId: String): GifticonWithCrop? {
+        return gifticonDao.getGifticonWithCrop(userId, gifticonId)
+    }
+
+    override suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop) {
+        gifticonDao.updateGifticonWithCrop(gifticonWithCrop)
     }
 
     override suspend fun insertGifticons(gifticons: List<GifticonEntity>) {

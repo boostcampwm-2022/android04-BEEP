@@ -1,4 +1,4 @@
-package com.lighthouse.domain.usecase.addgifticon
+package com.lighthouse.domain.usecase.edit
 
 import com.lighthouse.domain.repository.GifticonRepository
 import javax.inject.Inject

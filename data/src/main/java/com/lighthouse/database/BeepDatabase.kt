@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import com.lighthouse.database.converter.DateConverter
 import com.lighthouse.database.converter.DmsConverter
 import com.lighthouse.database.converter.RectConverter
+import com.lighthouse.database.converter.UriConverter
 import com.lighthouse.database.dao.BrandWithSectionDao
 import com.lighthouse.database.dao.GifticonCropDao
 import com.lighthouse.database.dao.GifticonDao
@@ -28,7 +29,8 @@ import com.lighthouse.database.entity.UsageHistoryEntity
 @TypeConverters(
     DateConverter::class,
     DmsConverter::class,
-    RectConverter::class
+    RectConverter::class,
+    UriConverter::class
 )
 abstract class BeepDatabase : RoomDatabase() {
 

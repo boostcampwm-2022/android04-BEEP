@@ -8,6 +8,7 @@ data class Gifticon(
     val createdAt: Date,
     val userId: String,
     val hasImage: Boolean,
+    val croppedUri: String,
     val name: String,
     val brand: String,
     val expireAt: Date,
@@ -18,7 +19,6 @@ data class Gifticon(
     val isUsed: Boolean
 ) : Serializable {
 
-    val croppedPath = "cropped$id"
     val originPath = "origin$id"
     val brandLowerName = brand.lowercase()
 }
