@@ -1,21 +1,20 @@
 package com.lighthouse.repository
 
 import android.net.Uri
+import com.lighthouse.database.mapper.toDomain
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
-import com.lighthouse.datasource.gifticoncrop.GifticonCropLocalDataSource
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonCrop
-import com.lighthouse.domain.model.GifticonCropForUpdate
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.domain.model.GifticonForUpdate
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.mapper.toDomain
-import com.lighthouse.mapper.toEntity
+import com.lighthouse.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -23,7 +22,6 @@ import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
     private val gifticonLocalDataSource: GifticonLocalDataSource,
-    private val gifticonLocalCropDataSource: GifticonCropLocalDataSource,
     private val gifticonImageSource: GifticonImageSource
 ) : GifticonRepository {
 
@@ -76,25 +74,36 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override suspend fun updateGifticon(gifticon: Gifticon) {
-        gifticonLocalDataSource.updateGifticon(gifticon)
+    override suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate? {
+        return gifticonLocalDataSource.getGifticonCrop(userId, id)?.toDomain()
     }
 
-    override suspend fun saveGifticons(userId: String, gifticons: List<GifticonForAddition>) {
-        val newGifticons = gifticons.map {
-            it.toEntity(userId)
+    override suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate) {
+        var croppedUri: Uri? = null
+        if (gifticonForUpdate.isUpdatedImage) {
+            croppedUri = gifticonImageSource.updateImage(
+                gifticonForUpdate.id,
+                Uri.parse(gifticonForUpdate.oldCroppedUri),
+                Uri.parse(gifticonForUpdate.croppedUri)
+            )
         }
+        gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity(croppedUri))
+    }
 
-        gifticonLocalDataSource.insertGifticons(newGifticons)
-
-        for ((newGifticon, addition) in newGifticons.zip(gifticons)) {
-            val gifticonCrop = GifticonCrop(newGifticon.id, addition.croppedRect)
-            gifticonLocalCropDataSource.insertGifticonCrop(gifticonCrop.toEntity())
-            if (!addition.hasImage) {
-                continue
+    override suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>) {
+        val newGifticons = gifticonForAdditions.map { gifticonForAddition ->
+            val id = UUID.generate()
+            var croppedUri: Uri? = null
+            if (gifticonForAddition.hasImage) {
+                croppedUri = gifticonImageSource.saveImage(
+                    id,
+                    Uri.parse(gifticonForAddition.originUri),
+                    Uri.parse(gifticonForAddition.tempCroppedUri)
+                )
             }
-            gifticonImageSource.saveImage(newGifticon.id, Uri.parse(addition.originUri), Uri.parse(addition.croppedUri))
+            gifticonForAddition.toEntity(id, userId, croppedUri)
         }
+        gifticonLocalDataSource.insertGifticons(newGifticons)
     }
 
     override fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>> = flow {
@@ -142,7 +151,7 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override fun hasUsableGifticon(userId: String) = flow {
-        gifticonLocalDataSource.hasUsableGifticon(userId).collect() { hasUsableGifticon ->
+        gifticonLocalDataSource.hasUsableGifticon(userId).collect { hasUsableGifticon ->
             emit(hasUsableGifticon)
         }
     }
@@ -156,13 +165,6 @@ class GifticonRepositoryImpl @Inject constructor(
                 emit(DbResult.Success(gifticons.map { it.toDomain() }))
             }
         }
-    }
-
-    override fun getGifticonCrop(gifticonId: String) = gifticonLocalCropDataSource.getGifticonCrop(gifticonId)
-
-    override suspend fun updateGifticonCrop(gifticonCropForUpdate: GifticonCropForUpdate) {
-        gifticonLocalCropDataSource.updateGifticonCrop(gifticonCropForUpdate.toEntity())
-        gifticonImageSource.updateImage(gifticonCropForUpdate.gifticonId, Uri.parse(gifticonCropForUpdate.croppedUri))
     }
 
     override suspend fun hasGifticonBrand(brand: String) = gifticonLocalDataSource.hasGifticonBrand(brand)

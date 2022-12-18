@@ -6,7 +6,7 @@
 
         <variable
             name="dm"
-            type="com.lighthouse.presentation.ui.addgifticon.adapter.AddCandidateGifticonDisplayModel" />
+            type="com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddCandidateGifticonDisplayModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

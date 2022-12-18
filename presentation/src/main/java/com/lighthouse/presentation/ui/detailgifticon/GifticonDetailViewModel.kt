@@ -4,16 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonCrop
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
-import com.lighthouse.domain.usecase.UpdateGifticonInfoUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
-import com.lighthouse.domain.usecase.detail.GetGifticonCropUseCase
-import com.lighthouse.domain.usecase.detail.UpdateGifticonCropUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
@@ -21,6 +16,7 @@ import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.CashAmountPreset
+import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +29,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,10 +38,7 @@ class GifticonDetailViewModel @Inject constructor(
     getUsageHistoryUseCase: GetUsageHistoriesUseCase,
     private val useGifticonUseCase: UseGifticonUseCase,
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
-    private val unUseGifticonUseCase: UnUseGifticonUseCase,
-    private val updateGifticonInfoUseCase: UpdateGifticonInfoUseCase,
-    getGifticonCropUseCase: GetGifticonCropUseCase,
-    private val updateGifticonCropUseCase: UpdateGifticonCropUseCase
+    private val unUseGifticonUseCase: UnUseGifticonUseCase
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
@@ -56,9 +48,9 @@ class GifticonDetailViewModel @Inject constructor(
     private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
     val mode = _mode.asStateFlow()
 
-    val gifticon: StateFlow<Gifticon?> = gifticonDbResult.transform {
+    val gifticon: StateFlow<GifticonUIModel?> = gifticonDbResult.transform {
         if (it is DbResult.Success) {
-            emit(it.data)
+            emit(it.data.toPresentation())
             switchMode(if (it.data.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -99,11 +91,8 @@ class GifticonDetailViewModel @Inject constructor(
     private val _event = MutableSharedFlow<GifticonDetailEvent>()
     val event = _event.asSharedFlow()
 
-    private val _tempGifticon = MutableStateFlow<Gifticon?>(null)
+    private val _tempGifticon = MutableStateFlow<GifticonUIModel?>(null)
     val tempGifticon = _tempGifticon.asStateFlow()
-
-    private val gifticonCrop = getGifticonCropUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    private var tempGifticonCrop = MutableStateFlow<GifticonCrop?>(null)
 
     fun switchMode(mode: GifticonDetailMode) {
         _mode.value = mode
@@ -164,56 +153,48 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    fun cropGifticonImage() {
-        tempGifticonCrop.value = gifticonCrop.value?.copy()
-        viewModelScope.launch {
-            val temp = tempGifticonCrop.value ?: return@launch
-            event(
-                GifticonDetailEvent.NavigateToCropGifticon(
-                    temp.originPath,
-                    temp.rect.toPresentation()
-                )
-            )
-        }
-    }
-
-    fun updateGifticonCrop(gifticonCrop: GifticonCrop) {
+    fun updateGifticonCrop() {
         viewModelScope.launch {
             // TODO 크롭 수정
         }
     }
 
     fun editProductName(newName: String) {
-        tempGifticon.value?.let {
-            _tempGifticon.value = it.copy(name = newName)
-        }
+//        tempGifticon.value?.let {
+//            _tempGifticon.value = it.copy(name = newName)
+//        }
+//        Timber.tag("edit").d("editProductName: ${tempGifticon.value}")
     }
 
     fun editBrand(newBrand: String) {
-        tempGifticon.value?.let {
-            _tempGifticon.value = it.copy(brand = newBrand)
-        }
+//        tempGifticon.value?.let {
+//            _tempGifticon.value = it.copy(brand = newBrand)
+//        }
+//        Timber.tag("edit").d("editBrand: ${tempGifticon.value}")
     }
 
     fun editBalance(newBalance: Int) {
-        tempGifticon.value?.let {
-            _tempGifticon.value = it.copy(balance = newBalance)
-        }
+//        tempGifticon.value?.let {
+//            _tempGifticon.value = it.copy(balance = newBalance)
+//        }
+//        Timber.tag("edit").d("editBalance: ${tempGifticon.value}")
     }
 
     fun editExpireDate(year: Int, month: Int, dayOfMonth: Int) {
-        tempGifticon.value?.let {
-            val cal = Calendar.getInstance().apply {
-                set(year, month - 1, dayOfMonth)
-            }
-            _tempGifticon.value = it.copy(expireAt = cal.time)
-        }
+//        tempGifticon.value?.let {
+//            val cal = Calendar.getInstance().apply {
+//                set(year, month - 1, dayOfMonth)
+//            }
+//            _tempGifticon.value = it.copy(expireAt = cal.time)
+//        }
+//        Timber.tag("edit").d("editExpireDate: ${tempGifticon.value}")
     }
 
     fun editMemo(newMemo: String) {
-        tempGifticon.value?.let {
-            _tempGifticon.value = it.copy(memo = newMemo)
-        }
+//        tempGifticon.value?.let {
+//            _tempGifticon.value = it.copy(memo = newMemo)
+//        }
+//        Timber.tag("edit").d("editMemo: ${tempGifticon.value}")
     }
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
@@ -228,9 +209,10 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    fun rollbackChangedGifticonInfo(before: Gifticon) {
+    fun rollbackChangedGifticonInfo() {
+//        Timber.tag("edit").d("기프티콘 정보 되돌리기")
+
         viewModelScope.launch {
-            updateGifticonInfoUseCase(before)
         }
     }
 
@@ -250,17 +232,13 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     private fun endEdit() {
-        val before = gifticon.value ?: return
-        val after = tempGifticon.value ?: return
-
-        if (before != after) {
-            viewModelScope.launch {
-                updateGifticonInfoUseCase(after)
-            }
-        }
-        event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
-        tempGifticonCrop.value = null
-        _tempGifticon.value = null
+//        val before = gifticon.value ?: return
+//        val after = tempGifticon.value ?: return
+//
+//        if (before != after) {
+//        }
+//        event(GifticonDetailEvent.OnGifticonInfoChanged(before, after))
+//        _tempGifticon.value = null
     }
 
     private fun checkEditValidation(): Boolean {

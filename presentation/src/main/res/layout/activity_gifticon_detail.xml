@@ -74,7 +74,8 @@
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@mipmap/ic_launcher" />
+                    tools:src="@mipmap/ic_launcher"
+                    app:loadUri="@{vm.gifticon.croppedUri}"/>
 
                 <ImageView
                     android:layout_width="0dp"
@@ -87,23 +88,6 @@
                     app:layout_constraintEnd_toEndOf="@id/iv_product_image"
                     app:layout_constraintStart_toStartOf="@id/iv_product_image"
                     app:layout_constraintTop_toTopOf="@id/iv_product_image" />
-
-                <TextView
-                    android:id="@+id/tv_edit_gifticon_image"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_on_surface_50"
-                    android:gravity="center"
-                    android:onClick="@{() -> vm.cropGifticonImage()}"
-                    android:padding="8dp"
-                    android:text="@string/add_gifticon_edit_image"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="?attr/colorSurface"
-                    android:textStyle="bold"
-                    app:isVisible="@{vm.mode == mode.EDIT}"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
-                    app:layout_constraintEnd_toEndOf="@id/iv_product_image"
-                    app:layout_constraintStart_toStartOf="@id/iv_product_image" />
 
                 <TextView
                     style="@style/BEEP.TextStyle.H5"
@@ -139,7 +123,6 @@
 
                 <ImageView
                     android:id="@+id/iv_edit_button"
-                    isVisible="@{vm.mode == mode.UNUSED}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"

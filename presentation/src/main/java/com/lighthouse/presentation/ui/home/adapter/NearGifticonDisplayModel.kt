@@ -1,11 +1,11 @@
 package com.lighthouse.presentation.ui.home.adapter
 
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.model.GifticonUiModel
+import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
 import com.lighthouse.presentation.util.resource.UIText
 
 class NearGifticonDisplayModel(
-    val item: GifticonUiModel
+    val item: GifticonWithDistanceUIModel
 ) {
     fun distance(): UIText {
         val meter = calculate(item.distance)

@@ -25,7 +25,10 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.addgifticon.AddGifticonActivity"
+            android:name=".ui.edit.addgifticon.AddGifticonActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.edit.modifygifticon.ModifyGifticonActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.cropgifticon.CropGifticonActivity"

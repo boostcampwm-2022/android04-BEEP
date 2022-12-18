@@ -17,7 +17,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.addgifticon.AddGifticonActivity
+import com.lighthouse.presentation.ui.edit.addgifticon.AddGifticonActivity
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListFragment
 import com.lighthouse.presentation.ui.home.HomeFragmentContainer
 import com.lighthouse.presentation.ui.map.MapActivity
