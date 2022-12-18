@@ -1,44 +1,40 @@
-package com.lighthouse.presentation.ui.edit.event
+package com.lighthouse.presentation.ui.edit.modifygifticon.event
 
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.resource.UIText
 
-enum class EditGifticonValid(val tag: EditGifticonTag, val text: UIText) {
-    INVALID_EMPTY(
-        EditGifticonTag.NONE,
-        UIText.StringResource(R.string.edit_gifticon_invalid_empty)
+enum class ModifyGifticonValid(val tag: ModifyGifticonTag, val text: UIText) {
+    INVALID_NOTHING_CHANGED(
+        ModifyGifticonTag.NONE,
+        UIText.StringResource(R.string.modify_gifticon_invalid_nothing_changed)
     ),
     INVALID_GIFTICON_NAME(
-        EditGifticonTag.GIFTICON_NAME,
+        ModifyGifticonTag.GIFTICON_NAME,
         UIText.StringResource(R.string.edit_gifticon_invalid_gifticon_name)
     ),
     INVALID_BRAND_NAME(
-        EditGifticonTag.BRAND_NAME,
+        ModifyGifticonTag.BRAND_NAME,
         UIText.StringResource(R.string.edit_gifticon_invalid_brand_name)
     ),
     INVALID_APPROVE_BRAND_NAME(
-        EditGifticonTag.APPROVE_BRAND_NAME,
+        ModifyGifticonTag.APPROVE_BRAND_NAME,
         UIText.StringResource(R.string.edit_gifticon_invalid_approve_brand_name)
     ),
     INVALID_BARCODE(
-        EditGifticonTag.BARCODE,
+        ModifyGifticonTag.BARCODE,
         UIText.StringResource(R.string.edit_gifticon_invalid_barcode)
     ),
     INVALID_EXPIRED_AT(
-        EditGifticonTag.NONE,
+        ModifyGifticonTag.NONE,
         UIText.StringResource(R.string.edit_gifticon_invalid_expired_at)
     ),
     INVALID_APPROVE_EXPIRED_AT(
-        EditGifticonTag.NONE,
+        ModifyGifticonTag.NONE,
         UIText.StringResource(R.string.edit_gifticon_invalid_approve_expired_at)
     ),
     INVALID_BALANCE(
-        EditGifticonTag.BALANCE,
+        ModifyGifticonTag.BALANCE,
         UIText.StringResource(R.string.edit_gifticon_invalid_balance)
     ),
-    INVALID_APPROVE_GIFTICON_IMAGE(
-        EditGifticonTag.APPROVE_GIFTICON_IMAGE,
-        UIText.StringResource(R.string.edit_gifticon_invalid_approve_gifticon_image)
-    ),
-    VALID(EditGifticonTag.NONE, UIText.Empty)
+    VALID(ModifyGifticonTag.NONE, UIText.Empty)
 }

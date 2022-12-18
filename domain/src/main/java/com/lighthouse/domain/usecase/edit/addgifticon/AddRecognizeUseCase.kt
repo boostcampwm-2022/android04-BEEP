@@ -1,11 +1,17 @@
-package com.lighthouse.domain.usecase.addgifticon
+package com.lighthouse.domain.usecase.edit.addgifticon
 
 import com.lighthouse.domain.model.GalleryImage
 import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.domain.usecase.edit.RecognizeBalanceUseCase
+import com.lighthouse.domain.usecase.edit.RecognizeBarcodeUseCase
+import com.lighthouse.domain.usecase.edit.RecognizeBrandNameUseCase
+import com.lighthouse.domain.usecase.edit.RecognizeExpiredUseCase
+import com.lighthouse.domain.usecase.edit.RecognizeGifticonImageUseCase
+import com.lighthouse.domain.usecase.edit.RecognizeGifticonNameUseCase
 import java.util.Date
 import javax.inject.Inject
 
-class RecognizeUseCase @Inject constructor(
+class AddRecognizeUseCase @Inject constructor(
     private val recognizeGifticonImageUseCase: RecognizeGifticonImageUseCase,
     private val recognizeGifticonNameUseCase: RecognizeGifticonNameUseCase,
     private val recognizeBrandNameUseCase: RecognizeBrandNameUseCase,

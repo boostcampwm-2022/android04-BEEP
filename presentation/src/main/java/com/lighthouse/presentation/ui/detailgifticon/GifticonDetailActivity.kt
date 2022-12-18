@@ -109,7 +109,7 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val gifticon = viewModel.gifticon.value ?: return@registerForActivityResult
-        val output = getFileStreamPath(gifticon.croppedPath)
+        val output = getFileStreamPath("")
 
         lifecycleScope.launch {
             val croppedImage = withContext(Dispatchers.IO) {
@@ -161,7 +161,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                         replace(binding.fcvGifticonInfo.id, fragment, fragment::class.java.name)
                     }
                 }
-                val output = getFileStreamPath(gifticon?.croppedPath ?: return@collect)
+                val output = getFileStreamPath("")
                 binding.ivProductImage.loadUriWithoutCache(output.toUri())
             }
         }

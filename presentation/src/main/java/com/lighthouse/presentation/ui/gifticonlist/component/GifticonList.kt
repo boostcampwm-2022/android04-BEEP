@@ -165,7 +165,7 @@ fun GifticonItem(gifticon: Gifticon, onUse: (Gifticon) -> Unit = {}, onRemove: (
         ) {
             Row {
                 GlideImage(
-                    imageModel = { context.getFileStreamPath(gifticon.croppedPath) },
+                    imageModel = { context.getFileStreamPath("") },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.gifticon_product_image),

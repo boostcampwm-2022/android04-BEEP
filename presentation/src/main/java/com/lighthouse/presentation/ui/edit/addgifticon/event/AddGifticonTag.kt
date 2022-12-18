@@ -1,6 +1,6 @@
-package com.lighthouse.presentation.ui.edit.event
+package com.lighthouse.presentation.ui.edit.addgifticon.event
 
-enum class EditGifticonTag(val needKeyboard: Boolean) {
+enum class AddGifticonTag(val needKeyboard: Boolean) {
     GIFTICON_NAME(true),
     BRAND_NAME(true),
     APPROVE_BRAND_NAME(false),

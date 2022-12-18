@@ -5,9 +5,9 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.usecase.addgifticon.HasGifticonBrandUseCase
-import com.lighthouse.domain.usecase.addgifticon.RecognizeUseCase
-import com.lighthouse.domain.usecase.addgifticon.SaveGifticonsUseCase
+import com.lighthouse.domain.usecase.edit.HasGifticonBrandUseCase
+import com.lighthouse.domain.usecase.edit.addgifticon.AddRecognizeUseCase
+import com.lighthouse.domain.usecase.edit.addgifticon.SaveGifticonsUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toDigit
@@ -22,10 +22,10 @@ import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddGifticonItemUIModel
+import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonEvent
-import com.lighthouse.presentation.ui.edit.event.EditGifticonCrop
-import com.lighthouse.presentation.ui.edit.event.EditGifticonTag
-import com.lighthouse.presentation.ui.edit.event.EditGifticonValid
+import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonTag
+import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonValid
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.AnimInfo
@@ -50,7 +50,7 @@ import javax.inject.Inject
 class AddGifticonViewModel @Inject constructor(
     private val saveGifticonsUseCase: SaveGifticonsUseCase,
     private val hasGifticonBrandUseCase: HasGifticonBrandUseCase,
-    private val recognizeUseCase: RecognizeUseCase
+    private val addRecognizeUseCase: AddRecognizeUseCase
 ) : ViewModel() {
 
     private val today = Calendar.getInstance().let {
@@ -130,7 +130,7 @@ class AddGifticonViewModel @Inject constructor(
         gifticonList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
 
         if (checkValid) {
-            updateDisplayGifticon(gifticonId) { it.copy(isValid = checkGifticonValid(newItem) == EditGifticonValid.VALID) }
+            updateDisplayGifticon(gifticonId) { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
         }
         return newItem
     }
@@ -249,7 +249,7 @@ class AddGifticonViewModel @Inject constructor(
     fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
         val updated = updateSelectedGifticon { it.copy(gifticonImage = croppedImage) } ?: return
         updateSelectedDisplayGifticon {
-            it.copy(thumbnailImage = croppedImage, isValid = checkGifticonValid(updated) == EditGifticonValid.VALID)
+            it.copy(thumbnailImage = croppedImage, isValid = checkGifticonValid(updated) == AddGifticonValid.VALID)
         }
     }
 
@@ -287,7 +287,7 @@ class AddGifticonViewModel @Inject constructor(
 
     fun onNameFocusChangeListener(hasFocus: Boolean) {
         if (hasFocus) {
-            requestScroll(EditGifticonTag.GIFTICON_NAME)
+            requestScroll(AddGifticonTag.GIFTICON_NAME)
         }
         nameFocus.value = hasFocus
     }
@@ -344,13 +344,13 @@ class AddGifticonViewModel @Inject constructor(
 
     private val isApproveBrandName = brand.combine(approveBrandName) { brand, approveBrand ->
         brand == approveBrand
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    }
 
     private val brandFocus = MutableStateFlow(false)
 
     fun onBrandFocusChangeListener(hasFocus: Boolean) {
         if (hasFocus) {
-            requestScroll(EditGifticonTag.BRAND_NAME)
+            requestScroll(AddGifticonTag.BRAND_NAME)
         }
         brandFocus.value = hasFocus
     }
@@ -375,7 +375,7 @@ class AddGifticonViewModel @Inject constructor(
 
     val isApproveBrandNameDescriptionVisible =
         isApproveBrandName.combine(isApproveBrandNameVisible) { isApprove, isVisible ->
-            isVisible && !isApprove
+            isApprove.not() && isVisible
         }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val isApproveBrandNameResId = isApproveBrandName.map { isApprove ->
@@ -425,7 +425,7 @@ class AddGifticonViewModel @Inject constructor(
 
     fun onBarcodeFocusChangeListener(hasFocus: Boolean) {
         if (hasFocus) {
-            requestScroll(EditGifticonTag.BARCODE)
+            requestScroll(AddGifticonTag.BARCODE)
         }
         barcodeFocus.value = hasFocus
     }
@@ -456,7 +456,7 @@ class AddGifticonViewModel @Inject constructor(
 
     fun onBalanceFocusChangeListener(hasFocus: Boolean) {
         if (hasFocus) {
-            requestScroll(EditGifticonTag.BALANCE)
+            requestScroll(AddGifticonTag.BALANCE)
         }
         balanceFocus.value = hasFocus
     }
@@ -483,7 +483,7 @@ class AddGifticonViewModel @Inject constructor(
 
     private val approveExpiredAt = selectedGifticon.map {
         it?.approveExpiredAt ?: false
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    }
 
     fun updateExpiredAt(expiredAt: Date) {
         updateSelectedGifticon(true) { it.copy(expiredAt = expiredAt) }
@@ -491,7 +491,7 @@ class AddGifticonViewModel @Inject constructor(
 
     private val isApproveExpired = expiredAt.combine(approveExpiredAt) { expiredAt, approve ->
         expiredAt >= today || approve
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    }
 
     val isApproveExpiredAtDescriptionVisible = expiredAt.combine(approveExpiredAt) { expiredAt, approve ->
         expiredAt != EMPTY_DATE && (expiredAt < today && approve.not())
@@ -535,11 +535,11 @@ class AddGifticonViewModel @Inject constructor(
         val gifticon = selectedGifticon.value ?: return false
         if (actionId == EditorInfo.IME_ACTION_NEXT) {
             val event = when (checkGifticonValid(gifticon)) {
-                EditGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(EditGifticonTag.GIFTICON_NAME)
-                EditGifticonValid.INVALID_BRAND_NAME -> AddGifticonEvent.RequestFocus(EditGifticonTag.BRAND_NAME)
-                EditGifticonValid.INVALID_BARCODE -> AddGifticonEvent.RequestFocus(EditGifticonTag.BARCODE)
-                EditGifticonValid.INVALID_BALANCE -> AddGifticonEvent.RequestFocus(EditGifticonTag.BALANCE)
-                EditGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(expiredAtDate ?: today)
+                AddGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.GIFTICON_NAME)
+                AddGifticonValid.INVALID_BRAND_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.BRAND_NAME)
+                AddGifticonValid.INVALID_BARCODE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BARCODE)
+                AddGifticonValid.INVALID_BALANCE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BALANCE)
+                AddGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(expiredAtDate ?: today)
                 else -> {
                     requestAddGifticon()
                     return true
@@ -595,7 +595,7 @@ class AddGifticonViewModel @Inject constructor(
     }
 
     private suspend fun recognizeGifticonItem(gallery: GalleryUIModel.Gallery) {
-        val result = recognizeUseCase.gifticon(gallery.toDomain()) ?: return
+        val result = addRecognizeUseCase.gifticon(gallery.toDomain()) ?: return
         var approveBrandName = ""
         if (result.brandName != "" && hasGifticonBrandUseCase(result.brandName)) {
             approveBrandName = result.brandName
@@ -610,7 +610,7 @@ class AddGifticonViewModel @Inject constructor(
         updateDisplayGifticon(gallery.id) {
             it.copy(
                 thumbnailImage = updated.gifticonImage,
-                isValid = checkGifticonValid(updated) == EditGifticonValid.VALID
+                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
             )
         }
         if (updated.id == selectedGifticon.value?.id) {
@@ -622,12 +622,12 @@ class AddGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = recognizeUseCase.gifticonName(uri.toString())
+            val result = addRecognizeUseCase.gifticonName(uri.toString())
             if (result != "") {
                 updateGifticon(true) { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
             } else {
                 updateGifticon { it.copy(nameRectF = croppedImage.croppedRect) }
-                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_name)))
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_name)))
             }
             selectGifticonId(selectedGifticon.value?.id)
         }
@@ -637,12 +637,12 @@ class AddGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = recognizeUseCase.brandName(uri.toString())
+            val result = addRecognizeUseCase.brandName(uri.toString())
             if (result != "") {
                 updateGifticon(true) { it.copy(brandName = result, brandNameRectF = croppedImage.croppedRect) }
             } else {
                 updateGifticon { it.copy(brandNameRectF = croppedImage.croppedRect) }
-                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_brand)))
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_brand)))
             }
             selectGifticonId(selectedGifticon.value?.id)
         }
@@ -652,12 +652,12 @@ class AddGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = recognizeUseCase.barcode(uri.toString())
+            val result = addRecognizeUseCase.barcode(uri.toString())
             if (result != "") {
                 updateGifticon(true) { it.copy(barcode = result, barcodeRectF = croppedImage.croppedRect) }
             } else {
                 updateGifticon { it.copy(barcodeRectF = croppedImage.croppedRect) }
-                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_barcode)))
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_barcode)))
             }
             selectGifticonId(selectedGifticon.value?.id)
         }
@@ -667,14 +667,14 @@ class AddGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = recognizeUseCase.balance(uri.toString())
+            val result = addRecognizeUseCase.balance(uri.toString())
             if (result > 0) {
                 updateGifticon(true) {
                     it.copy(isCashCard = true, balance = result.toString(), balanceRectF = croppedImage.croppedRect)
                 }
             } else {
                 updateGifticon { it.copy(balanceRectF = croppedImage.croppedRect) }
-                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_balance)))
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_balance)))
             }
             selectGifticonId(selectedGifticon.value?.id)
         }
@@ -684,35 +684,35 @@ class AddGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = recognizeUseCase.expired(uri.toString())
+            val result = addRecognizeUseCase.expired(uri.toString())
             if (result != EMPTY_DATE) {
                 updateGifticon(true) { it.copy(expiredAt = result, expiredAtRectF = croppedImage.croppedRect) }
             } else {
                 updateGifticon { it.copy(expiredAtRectF = croppedImage.croppedRect) }
-                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.add_gifticon_failed_recognize_expired_at)))
+                _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_expired_at)))
             }
             selectGifticonId(selectedGifticon.value?.id)
         }
     }
 
-    private fun checkGifticonValid(gifticon: AddGifticonUIModel): EditGifticonValid {
+    private fun checkGifticonValid(gifticon: AddGifticonUIModel): AddGifticonValid {
         return when {
-            gifticon.name.isEmpty() -> EditGifticonValid.INVALID_GIFTICON_NAME
-            gifticon.brandName.isEmpty() -> EditGifticonValid.INVALID_BRAND_NAME
-            gifticon.brandName != gifticon.approveBrandName -> EditGifticonValid.INVALID_APPROVE_BRAND_NAME
-            gifticon.barcode.length !in VALID_BARCODE_COUNT -> EditGifticonValid.INVALID_BARCODE
-            gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> EditGifticonValid.INVALID_BALANCE
-            gifticon.expiredAt == EMPTY_DATE -> EditGifticonValid.INVALID_EXPIRED_AT
-            gifticon.expiredAt < today && gifticon.approveExpiredAt.not() -> EditGifticonValid.INVALID_APPROVE_EXPIRED_AT
-            gifticon.gifticonImage.uri == null && gifticon.approveGifticonImage.not() -> EditGifticonValid.INVALID_APPROVE_GIFTICON_IMAGE
-            else -> EditGifticonValid.VALID
+            gifticon.name.isEmpty() -> AddGifticonValid.INVALID_GIFTICON_NAME
+            gifticon.brandName.isEmpty() -> AddGifticonValid.INVALID_BRAND_NAME
+            gifticon.brandName != gifticon.approveBrandName -> AddGifticonValid.INVALID_APPROVE_BRAND_NAME
+            gifticon.barcode.length !in VALID_BARCODE_COUNT -> AddGifticonValid.INVALID_BARCODE
+            gifticon.isCashCard && gifticon.balance.toDigit() == 0 -> AddGifticonValid.INVALID_BALANCE
+            gifticon.expiredAt == EMPTY_DATE -> AddGifticonValid.INVALID_EXPIRED_AT
+            gifticon.expiredAt < today && gifticon.approveExpiredAt.not() -> AddGifticonValid.INVALID_APPROVE_EXPIRED_AT
+            gifticon.gifticonImage.uri == null && gifticon.approveGifticonImage.not() -> AddGifticonValid.INVALID_APPROVE_GIFTICON_IMAGE
+            else -> AddGifticonValid.VALID
         }
     }
 
-    private fun handleGifticonInvalid(valid: EditGifticonValid) {
+    private fun handleGifticonInvalid(valid: AddGifticonValid) {
         viewModelScope.launch {
             when (valid) {
-                EditGifticonValid.VALID -> {}
+                AddGifticonValid.VALID -> {}
                 else -> {
                     _eventFlow.emit(AddGifticonEvent.ShowSnackBar(valid.text))
                     _eventFlow.emit(AddGifticonEvent.RequestFocus(valid.tag))
@@ -726,9 +726,9 @@ class AddGifticonViewModel @Inject constructor(
         val gifticon = selectedGifticon.value ?: return
         viewModelScope.launch {
             val event = if (gifticon.isCashCard) {
-                AddGifticonEvent.RequestFocus(EditGifticonTag.BALANCE)
+                AddGifticonEvent.RequestFocus(AddGifticonTag.BALANCE)
             } else {
-                AddGifticonEvent.RequestFocus(EditGifticonTag.NONE)
+                AddGifticonEvent.RequestFocus(AddGifticonTag.NONE)
             }
             _eventFlow.emit(event)
         }
@@ -736,20 +736,20 @@ class AddGifticonViewModel @Inject constructor(
 
     fun requestAddGifticon() {
         viewModelScope.launch {
-            var valid: EditGifticonValid = EditGifticonValid.VALID
+            var valid: AddGifticonValid = AddGifticonValid.VALID
             if (gifticonList.value.isEmpty()) {
-                valid = EditGifticonValid.INVALID_EMPTY
+                valid = AddGifticonValid.INVALID_EMPTY
             } else {
                 for (gifticon in gifticonList.value) {
                     valid = checkGifticonValid(gifticon)
-                    if (valid != EditGifticonValid.VALID) {
+                    if (valid != AddGifticonValid.VALID) {
                         selectGifticonId(gifticon.id)
                         break
                     }
                 }
             }
             when (valid) {
-                EditGifticonValid.VALID -> {
+                AddGifticonValid.VALID -> {
                     val gifticons = gifticonList.value.map {
                         it.toDomain()
                     }
@@ -773,21 +773,21 @@ class AddGifticonViewModel @Inject constructor(
 
     private fun popBackstack() {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(AddGifticonEvent.PopupBackStack)
         }
     }
 
     private fun showCancelConfirmation() {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(AddGifticonEvent.ShowCancelConfirmation)
         }
     }
 
     fun showDeleteConfirmation(gifticon: AddGifticonItemUIModel.Gifticon) {
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(AddGifticonEvent.ShowDeleteConfirmation(gifticon))
         }
     }
@@ -799,7 +799,7 @@ class AddGifticonViewModel @Inject constructor(
             gifticon.toGalleryUIModel(index + 1)
         }
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(AddGifticonEvent.NavigateToGallery(list))
         }
     }
@@ -807,7 +807,7 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoCropGifticonImage() {
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
-            crop = EditGifticonCrop.GIFTICON_IMAGE,
+            crop = AddGifticonCrop.GIFTICON_IMAGE,
             croppedRect = gifticon.gifticonImage.croppedRect
         )
     }
@@ -815,7 +815,7 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoCropGifticonName() {
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
-            crop = EditGifticonCrop.GIFTICON_NAME,
+            crop = AddGifticonCrop.GIFTICON_NAME,
             croppedRect = gifticon.nameRectF
         )
     }
@@ -823,7 +823,7 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoCropBrandName() {
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
-            crop = EditGifticonCrop.BRAND_NAME,
+            crop = AddGifticonCrop.BRAND_NAME,
             croppedRect = gifticon.brandNameRectF
         )
     }
@@ -831,7 +831,7 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoCropBarcode() {
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
-            crop = EditGifticonCrop.BARCODE,
+            crop = AddGifticonCrop.BARCODE,
             croppedRect = gifticon.barcodeRectF
         )
     }
@@ -839,7 +839,7 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoCropBalance() {
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
-            crop = EditGifticonCrop.BALANCE,
+            crop = AddGifticonCrop.BALANCE,
             croppedRect = gifticon.balanceRectF
         )
     }
@@ -847,20 +847,20 @@ class AddGifticonViewModel @Inject constructor(
     fun gotoCropExpired() {
         val gifticon = selectedGifticon.value ?: return
         gotoCropGifticon(
-            crop = EditGifticonCrop.EXPIRED,
+            crop = AddGifticonCrop.EXPIRED,
             croppedRect = gifticon.expiredAtRectF
         )
     }
 
     private fun gotoCropGifticon(
-        crop: EditGifticonCrop,
+        crop: AddGifticonCrop,
         croppedRect: RectF = RectF()
     ) {
         val originUri = selectedGifticon.value?.origin ?: return
         changeDeleteMode(false)
 
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(
                 AddGifticonEvent.NavigateToCrop(crop, originUri, croppedRect)
             )
@@ -870,7 +870,7 @@ class AddGifticonViewModel @Inject constructor(
     fun showOriginGifticon() {
         val originUri = selectedGifticon.value?.origin ?: return
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(AddGifticonEvent.ShowOriginGifticon(originUri))
         }
     }
@@ -878,7 +878,7 @@ class AddGifticonViewModel @Inject constructor(
     fun showExpiredAtDatePicker() {
         val expiredAt = expiredAtDate ?: return
         viewModelScope.launch {
-            _eventFlow.emit(AddGifticonEvent.RequestFocus(EditGifticonTag.NONE))
+            _eventFlow.emit(AddGifticonEvent.RequestFocus(AddGifticonTag.NONE))
             _eventFlow.emit(AddGifticonEvent.ShowExpiredAtDatePicker(expiredAt))
         }
     }
@@ -889,7 +889,7 @@ class AddGifticonViewModel @Inject constructor(
         }
     }
 
-    private fun requestScroll(tag: EditGifticonTag) {
+    private fun requestScroll(tag: AddGifticonTag) {
         viewModelScope.launch {
             _eventFlow.emit(AddGifticonEvent.RequestScroll(tag))
         }
