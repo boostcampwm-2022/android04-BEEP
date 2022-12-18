@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityModifyGifticonBinding
@@ -31,6 +32,11 @@ import com.lighthouse.presentation.ui.edit.modifygifticon.event.ModifyGifticonEv
 import com.lighthouse.presentation.ui.edit.modifygifticon.event.ModifyGifticonTag
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -48,9 +54,28 @@ class ModifyGifticonActivity : AppCompatActivity() {
         return CroppedImage(croppedUri, croppedRect)
     }
 
+    private suspend fun getCropImageResult(result: ActivityResult): CroppedImage? {
+        return withContext(Dispatchers.IO) {
+            val outputFile = getFileStreamPath(GIFTICON_IMAGE_CROPPED)
+            val imageResult = getCropResult(result)
+            if (imageResult?.uri != null) {
+                FileInputStream(imageResult.uri.path).use { input ->
+                    FileOutputStream(outputFile).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                CroppedImage(outputFile.toUri(), imageResult.croppedRect)
+            } else {
+                null
+            }
+        }
+    }
+
     private val cropGifticonImage =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            viewModel.updateCroppedGifticonImage(getCropResult(result))
+            lifecycleScope.launch {
+                viewModel.updateCroppedGifticonImage(getCropImageResult(result))
+            }
         }
 
     private val cropGifticonName =
@@ -234,5 +259,7 @@ class ModifyGifticonActivity : AppCompatActivity() {
     companion object {
         private const val SCROLL_DIR_UP = 1
         private const val SCROLL_DIR_DOWN = -1
+
+        private const val GIFTICON_IMAGE_CROPPED = "gifticon_image_cropped.jpg"
     }
 }

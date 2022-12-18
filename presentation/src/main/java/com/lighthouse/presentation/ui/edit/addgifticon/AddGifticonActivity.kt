@@ -86,16 +86,15 @@ class AddGifticonActivity : AppCompatActivity() {
 
     private suspend fun getCropResult(result: ActivityResult, id: Long): CroppedImage? {
         return withContext(Dispatchers.IO) {
-            val output = getFileStreamPath("$TEMP_GIFTICON_PREFIX$id")
-
-            if (result.resultCode == Activity.RESULT_OK) {
-                val croppedUri =
-                    result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return@withContext null
-                val croppedRect =
-                    result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return@withContext null
-
-                FileInputStream(croppedUri.path).copyTo(FileOutputStream(output))
-                CroppedImage(output.toUri(), croppedRect)
+            val outputFile = getFileStreamPath("$TEMP_GIFTICON_PREFIX$id")
+            val imageResult = getCropResult(result)
+            if (imageResult?.uri != null) {
+                FileInputStream(imageResult.uri.path).use { input ->
+                    FileOutputStream(outputFile).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                CroppedImage(outputFile.toUri(), imageResult.croppedRect)
             } else {
                 null
             }
