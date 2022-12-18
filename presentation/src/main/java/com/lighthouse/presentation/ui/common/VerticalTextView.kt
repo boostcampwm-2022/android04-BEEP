@@ -38,7 +38,6 @@ class VerticalTextView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.save()
         if (topDown) {
             canvas.translate(width.toFloat(), 0f)
             canvas.rotate(90f)
@@ -51,7 +50,6 @@ class VerticalTextView @JvmOverloads constructor(
             extendedPaddingTop.toFloat()
         )
         layout.draw(canvas)
-        canvas.restore()
     }
 
     companion object {
