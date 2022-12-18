@@ -74,8 +74,8 @@
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@mipmap/ic_launcher"
-                    app:loadUri="@{vm.gifticon.croppedUri}"/>
+                    app:loadUri="@{vm.gifticon.croppedUri}"
+                    tools:src="@mipmap/ic_launcher" />
 
                 <ImageView
                     android:layout_width="0dp"
@@ -149,7 +149,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@id/btn_use_gifticon"
+                    app:isVisible="@{false}"
+                    app:layout_constraintBottom_toTopOf="@id/btn_master"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/fcv_gifticon_info"
@@ -157,19 +158,20 @@
                     tools:text="ⓘ 2022년 11월 8일에 공유된 기프티콘 입니다." />
 
                 <Button
-                    android:id="@+id/btn_use_gifticon"
+                    android:id="@+id/btn_master"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
                     android:backgroundTint="@{vm.gifticon.used ? @color/gray : @color/beep_pink}"
                     android:onClick="@{() -> vm.useGifticonButtonClicked()}"
-                    android:text="@string/gifticon_detail_use_gifticon_button_text"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@id/gl_start"
                     app:layout_constraintTop_toBottomOf="@id/tv_shared_info"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintVertical_bias="1.0"
+                    app:setUIText="@{vm.masterButtonLabel}"
+                    tools:text="@string/gifticon_detail_use_gifticon_button_text" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 

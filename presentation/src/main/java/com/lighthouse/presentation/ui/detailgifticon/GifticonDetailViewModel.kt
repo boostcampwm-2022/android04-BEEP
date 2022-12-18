@@ -103,14 +103,8 @@ class GifticonDetailViewModel @Inject constructor(
     private val _scrollDownChipLabel = MutableStateFlow<UIText>(UIText.Empty)
     val scrollDownChipLabel = _scrollDownChipLabel.asStateFlow()
 
-    fun switchMode(mode: GifticonDetailMode) {
-        _mode.value = mode
-        _scrollDownChipLabel.value = when (_mode.value) {
-            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
-            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_edit)
-            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_used)
-        }
-    }
+    private val _masterButtonLabel = MutableStateFlow<UIText>(UIText.Empty)
+    val masterButtonLabel = _masterButtonLabel.asStateFlow()
 
     fun scrollDownForUseButtonClicked() {
         event(GifticonDetailEvent.ScrollDownForUseButtonClicked)
@@ -147,7 +141,6 @@ class GifticonDetailViewModel @Inject constructor(
                     event(GifticonDetailEvent.ExistEmptyInfo)
                 } else {
                     _mode.value = GifticonDetailMode.UNUSED
-                    endEdit()
                 }
             }
         }
@@ -179,9 +172,6 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    fun rollbackChangedGifticonInfo() {
-    }
-
     fun showOriginalImage() {
         val origin = gifticon.value?.originPath ?: return
         event(GifticonDetailEvent.ShowOriginalImage(origin))
@@ -194,17 +184,24 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    fun startEdit() {
-        _tempGifticon.value = gifticon.value ?: return
+    fun editBalance(newBalance: Int) {
+        tempGifticon.value?.let {
+            _tempGifticon.value = it.copy(balance = newBalance)
+        }
     }
 
-    fun cancelEdit() {
-        val origin = gifticon.value ?: return
-        switchMode(if (origin.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
-        _tempGifticon.value = null
-    }
-
-    private fun endEdit() {
+    private fun switchMode(mode: GifticonDetailMode) {
+        _mode.value = mode
+        _scrollDownChipLabel.value = when (_mode.value) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
+            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_edit)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_used)
+        }
+        _masterButtonLabel.value = when (_mode.value) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_unused_mode_button_text)
+            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_used_mode_button_text)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_edit_mode_button_text)
+        }
     }
 
     private fun checkEditValidation(): Boolean {
