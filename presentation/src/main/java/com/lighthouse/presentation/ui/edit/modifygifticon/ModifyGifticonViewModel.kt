@@ -80,6 +80,11 @@ class ModifyGifticonViewModel @Inject constructor(
         it?.croppedUri
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    fun updateCroppedGifticonImage(croppedImage: CroppedImage?) {
+        croppedImage?.uri ?: return
+        updateGifticon { it.copy(croppedUri = croppedImage.uri, croppedRect = croppedImage.croppedRect) }
+    }
+
     val isCashCard = gifticon.map {
         it?.isCashCard ?: false
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
@@ -579,12 +584,6 @@ class ModifyGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(ModifyGifticonEvent.RequestFocus(ModifyGifticonTag.NONE))
             _eventFlow.emit(ModifyGifticonEvent.ShowExpiredAtDatePicker(expiredAt))
-        }
-    }
-
-    private fun requestLoading(loading: Boolean) {
-        viewModelScope.launch {
-            _eventFlow.emit(ModifyGifticonEvent.RequestLoading(loading))
         }
     }
 
