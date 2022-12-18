@@ -6,7 +6,11 @@ import com.lighthouse.mapper.toEntity
 import com.lighthouse.model.GifticonImageResult
 import java.util.Date
 
-fun GifticonForAddition.toEntity(id: String, userId: String, result: GifticonImageResult?): GifticonWithCrop {
+fun GifticonForAddition.toEntity(
+    id: String,
+    userId: String,
+    result: GifticonImageResult?
+): GifticonWithCrop {
     return GifticonWithCrop(
         id = id,
         userId = userId,
