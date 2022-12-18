@@ -42,6 +42,7 @@ import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
+import com.lighthouse.presentation.ui.edit.modifygifticon.ModifyGifticonActivity
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -199,7 +200,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 binding.svGifticonDetail.scrollToBottom()
             }
             is GifticonDetailEvent.EditButtonClicked -> {
-                showCheckEditDialog()
+                gotoModifyGifticon(viewModel.gifticon.value?.id)
             }
             is GifticonDetailEvent.ExistEmptyInfo -> {
                 Toast.makeText(
@@ -241,6 +242,14 @@ class GifticonDetailActivity : AppCompatActivity() {
             else -> { // TODO(이벤트 처리)
             }
         }
+    }
+
+    private fun gotoModifyGifticon(gifticonId: String?) {
+        gifticonId ?: return
+        val intent = Intent(this, ModifyGifticonActivity::class.java).apply {
+            putExtra(Extras.KEY_MODIFY_GIFTICON_ID, gifticonId)
+        }
+        startActivity(intent)
     }
 
     private fun showCheckEditDialog() {
@@ -378,7 +387,8 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private fun showGifticonInfoNotChangedToast() {
         if (::gifticonInfoNotChangedToast.isInitialized.not()) {
-            gifticonInfoNotChangedToast = Toast.makeText(this, getString(R.string.gifticon_detail_nothing_changed_toast), Toast.LENGTH_SHORT)
+            gifticonInfoNotChangedToast =
+                Toast.makeText(this, getString(R.string.gifticon_detail_nothing_changed_toast), Toast.LENGTH_SHORT)
         }
         gifticonInfoNotChangedToast.show()
     }

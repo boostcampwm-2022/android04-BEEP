@@ -89,22 +89,6 @@
                     app:layout_constraintTop_toTopOf="@id/iv_product_image" />
 
                 <TextView
-                    android:id="@+id/tv_edit_gifticon_image"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_on_surface_50"
-                    android:gravity="center"
-                    android:padding="8dp"
-                    android:text="@string/edit_gifticon_edit_image"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="?attr/colorSurface"
-                    android:textStyle="bold"
-                    app:isVisible="@{vm.mode == mode.EDIT}"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
-                    app:layout_constraintEnd_toEndOf="@id/iv_product_image"
-                    app:layout_constraintStart_toStartOf="@id/iv_product_image" />
-
-                <TextView
                     style="@style/BEEP.TextStyle.H5"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -138,7 +122,6 @@
 
                 <ImageView
                     android:id="@+id/iv_edit_button"
-                    isVisible="@{vm.mode == mode.UNUSED}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
