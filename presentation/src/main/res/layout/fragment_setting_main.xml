@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -155,6 +155,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/setting_sign_out"
             android:src="@drawable/ic_arrow_forward"
+            app:isVisible="@{!vm.userPreferenceState.guest}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sign_out"
             app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
             app:layout_constraintTop_toTopOf="@+id/tv_sign_out" />
@@ -229,6 +230,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/setting_coffee"
             android:src="@drawable/ic_arrow_forward"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tv_coffee"
             app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
             app:layout_constraintTop_toTopOf="@+id/tv_coffee" />
@@ -249,8 +251,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/setting_terms_of_use"
-            android:visibility="gone"
             android:src="@drawable/ic_arrow_forward"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tv_terms_of_use"
             app:layout_constraintEnd_toEndOf="@+id/gl_arrow"
             app:layout_constraintTop_toTopOf="@+id/tv_terms_of_use" />
