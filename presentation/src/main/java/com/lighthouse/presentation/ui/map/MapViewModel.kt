@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,8 +58,11 @@ class MapViewModel @Inject constructor(
         getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allGifticons = resultGifticons.transform { gifticons ->
+        Timber.tag("TAG").d("${javaClass.simpleName} gifticons -> $gifticons")
         if (gifticons is DbResult.Success) {
             emit(gifticons.data.sortedBy { TimeCalculator.formatDdayToInt(it.expireAt.time) })
+        } else if (gifticons is DbResult.Empty) {
+            emit(emptyList())
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
