@@ -157,7 +157,7 @@ class HomeViewModel @Inject constructor(
 
     fun gotoMap() {
         viewModelScope.launch {
-            _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten(), nearBrandsInfo))
+            _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten().map { it.toPresentation() }, nearBrandsInfo))
         }
     }
 

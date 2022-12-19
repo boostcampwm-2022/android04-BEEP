@@ -97,9 +97,8 @@ class MapViewModel @Inject constructor(
     private fun checkHomeData(savedStateHandle: SavedStateHandle): Boolean {
         var isFirstLoadData = true
         val nearBrands = savedStateHandle.get<List<BrandPlaceInfoUiModel>>(Extras.KEY_NEAR_BRANDS)
-        val nearGifticons = savedStateHandle.get<List<GifticonUIModel>>(Extras.KEY_NEAR_GIFTICONS)
         viewModelScope.launch {
-            if (nearBrands.isNullOrEmpty() || nearGifticons.isNullOrEmpty()) {
+            if (nearBrands.isNullOrEmpty()) {
                 isFirstLoadData = false
             } else {
                 // homeActivity에서 받은 데이터가 있는 경우에만 실행

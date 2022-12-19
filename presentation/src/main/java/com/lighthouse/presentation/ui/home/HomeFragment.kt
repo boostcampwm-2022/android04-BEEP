@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentHomeBinding
 import com.lighthouse.presentation.extension.dp
@@ -135,7 +134,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewLifecycleOwner.repeatOnStarted {
             homeViewModel.eventFlow.collectLatest { directions ->
                 when (directions) {
-                    is HomeEvent.NavigateMap -> gotoMap(directions.gifticons, directions.nearBrandsInfo)
+                    is HomeEvent.NavigateMap -> gotoMap(directions.nearBrandsInfo)
                     is HomeEvent.RequestLocationPermissionCheck -> launchPermission()
                 }
             }
@@ -143,11 +142,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun gotoMap(
-        gifticons: List<Gifticon> = emptyList(),
         nearBrandsInfo: List<BrandPlaceInfoUiModel> = emptyList()
     ) {
         when (locationPermission.isGrant) {
-            true -> startMapActivity(nearBrandsInfo, gifticons)
+            true -> startMapActivity(nearBrandsInfo)
             false -> launchPermission()
         }
     }
@@ -162,11 +160,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun startMapActivity(nearBrandsInfo: List<BrandPlaceInfoUiModel>, gifticons: List<Gifticon>) {
+    private fun startMapActivity(nearBrandsInfo: List<BrandPlaceInfoUiModel>) {
         startActivity(
             Intent(requireContext(), MapActivity::class.java).apply {
                 putExtra(Extras.KEY_NEAR_BRANDS, ArrayList(nearBrandsInfo))
-                putExtra(Extras.KEY_NEAR_GIFTICONS, ArrayList(gifticons))
             }
         )
     }
