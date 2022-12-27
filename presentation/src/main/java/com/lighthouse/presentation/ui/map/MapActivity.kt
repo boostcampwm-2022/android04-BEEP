@@ -7,16 +7,15 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.LocationConverter.diffLocation
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
-import com.lighthouse.presentation.extension.screenWidth
+import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.extra.Extras.CATEGORY_ACCOMMODATION
 import com.lighthouse.presentation.extra.Extras.CATEGORY_CAFE
@@ -67,31 +66,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         client = LocationServices.getFusedLocationProviderClient(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map)
         binding.vm = viewModel
+        binding.layoutDialog.vm = viewModel
         binding.lifecycleOwner = this
         mapView = binding.mapView.apply {
             onCreate(savedInstanceState)
             getMapAsync(this@MapActivity)
         }
-        setGifticonAdapterItem()
-        setGifticonAdapterChangeCallback()
+        setBottomGifticonSheet()
         setObserveEvent()
     }
 
-    private fun setGifticonAdapterItem() {
-        val pageMargin = screenWidth * 0.1
-        val pagerWidth = screenWidth - 2 * pageMargin
-        val offsetPx = screenWidth - pageMargin.toInt() - pagerWidth.toInt()
-        with(binding.vpGifticon) {
+    private fun setBottomGifticonSheet() {
+        binding.layoutDialog.layoutContainer.maxHeight = (screenHeight * 0.48).toInt()
+        with(binding.layoutDialog.rvGifticons) {
             adapter = gifticonAdapter
-            offscreenPageLimit = 3
-            setPageTransformer { page, position ->
-                page.translationX = position * -offsetPx
-            }
             addItemDecoration(
                 ListSpaceItemDecoration(
-                    space = 48.dp,
-                    start = 20.dp,
-                    end = 24.dp
+                    space = 12.dp,
+                    top = 12.dp,
+                    bottom = 24.dp,
+                    start = 12.dp,
+                    end = 12.dp
                 )
             )
         }
@@ -134,48 +129,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         moveMapCamera(location.longitude, location.latitude)
     }
 
-    private fun setGifticonAdapterChangeCallback() {
-        binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                if (viewModel.viewPagerFocus.not()) {
-                    viewModel.updatePagerFocus(true)
-                    return
-                }
-                if (isRecentSelected(gifticonAdapter.currentList[position].brandLowerName)) return
-                val currentItem = gifticonAdapter.currentList[position].brandLowerName
-                findBrandPlaceInfo(currentItem)
-            }
-        })
-    }
-
-    /**
-     * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
-     * @param brandName 찾고자하는 브랜드명
-     */
-    private fun findBrandPlaceInfo(brandName: String, isLoadGifticonList: Boolean = false) {
-        client.lastLocation.addOnSuccessListener { currentLocation ->
-            val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
-                brandPlaceInfo.brandLowerName == brandName
-            }.minByOrNull { location ->
-                diffLocation(location.x, location.y, currentLocation.longitude, currentLocation.latitude)
-            } ?: return@addOnSuccessListener
-
-            resetFocusMarker(viewModel.focusMarker)
-
-            val currentFocusMarker = viewModel.markerHolder.find {
-                currentLocation(it, brandPlaceInfo)
-            } ?: return@addOnSuccessListener
-            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
-            setFocusMarker(currentFocusMarker)
-            if (isLoadGifticonList) viewModel.updateGifticons()
-        }
-    }
-
-    private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
-        it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
-
-    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText.lowercase() == brand
-
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             .animate(CameraAnimation.Easing)
@@ -216,10 +169,37 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         repeatOnStarted {
             viewModel.widgetBrand.collect { brand ->
-                findBrandPlaceInfo(brand, true)
+                findBrandPlaceInfo(brand)
             }
         }
     }
+
+    private fun findBrandPlaceInfo(brandName: String) {
+        client.lastLocation.addOnSuccessListener { currentLocation ->
+            val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
+                brandPlaceInfo.brandLowerName == brandName
+            }.minByOrNull { location ->
+                LocationConverter.diffLocation(
+                    location.x,
+                    location.y,
+                    currentLocation.longitude,
+                    currentLocation.latitude
+                )
+            } ?: return@addOnSuccessListener
+
+            resetFocusMarker(viewModel.focusMarker)
+
+            val currentFocusMarker = viewModel.markerHolder.find {
+                currentLocation(it, brandPlaceInfo)
+            } ?: return@addOnSuccessListener
+            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
+            setFocusMarker(currentFocusMarker)
+            viewModel.updateGifticons()
+        }
+    }
+
+    private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
+        it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
 
     private fun setMarker(
         marker: Marker,
@@ -290,7 +270,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showSnackBar(@StringRes message: Int) {
-        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
