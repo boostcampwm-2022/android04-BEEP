@@ -81,7 +81,13 @@ class MapViewModel @Inject constructor(
                 )
             )
         } else {
-            emit(UIText.StringResource(R.string.map_bottom_sheet_title, gifticons.first().brand, gifticons.size))
+            emit(
+                UIText.StringResource(
+                    R.string.map_bottom_sheet_title,
+                    gifticons.first().brand,
+                    gifticons.size
+                )
+            )
         }
     }.stateIn(
         viewModelScope,

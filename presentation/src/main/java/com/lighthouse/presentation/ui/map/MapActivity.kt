@@ -203,7 +203,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
-        it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
+        it.position.longitude == brandPlaceInfo.x.toDouble() &&
+            it.position.latitude == brandPlaceInfo.y.toDouble()
 
     private fun setMarker(
         marker: Marker,
