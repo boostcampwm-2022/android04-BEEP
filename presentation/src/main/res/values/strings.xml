@@ -287,6 +287,7 @@
     <string name="map_bottom_sheet_title">%s에서 사용할 수 있는 쿠폰이 %d개 있어요!</string>
     <string name="map_bottom_sheet_title_not">주위에 사용 가능한 기프티콘이 존재하지 않습니다.</string>
     <string name="map_bottom_sheet_title_all_brands">주위에 사용 가능한 브랜드가 %d개 있어요!</string>
+    <string name="map_goto_homepage">바로가기</string>
 
     <string name="gifticon_detail_scroll_down_chip_unused">사용하기</string>
     <string name="gifticon_detail_scroll_down_chip_used">사용취소</string>

@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -35,6 +36,7 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
@@ -60,6 +62,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
+    private val infoWindow: InfoWindow by lazy { InfoWindow() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +77,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         setBottomGifticonSheet()
         setObserveEvent()
+        setInfoWindow()
     }
 
     private fun setBottomGifticonSheet() {
@@ -223,6 +227,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             setFocusMarker(marker)
             viewModel.updateFocusMarker(marker)
             viewModel.updateGifticons()
+            infoWindow.open(marker)
             true
         }
     }
@@ -248,6 +253,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.iconTintColor = getColor(R.color.point_green)
         marker.captionColor = getColor(R.color.black)
         viewModel.resetMarker()
+        infoWindow.close()
+    }
+
+    private fun setInfoWindow() {
+        infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
+            override fun getText(infoWindow: InfoWindow): CharSequence {
+                return getString(R.string.map_goto_homepage)
+            }
+        }
+        infoWindow.setOnClickListener {
+            infoWindow.marker?.let { marker ->
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(marker.tag.toString()))
+                startActivity(browserIntent)
+            }
+            true
+        }
     }
 
     private fun setObserveEvent() {
