@@ -1,6 +1,4 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-import java.io.FileInputStream
-import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -11,7 +9,7 @@ plugins {
 }
 
 android {
-    val keystorePropertiesFile = rootProject.file("app/keystore/keystore.properties")
+    /*val keystorePropertiesFile = rootProject.file("app/keystore/keystore.properties")
 
     signingConfigs {
         create("release") {
@@ -23,7 +21,7 @@ android {
             storeFile = file(keystoreProperties["storeFile"]!!)
             storePassword = keystoreProperties["storePassword"] as String
         }
-    }
+    }*/
 
     namespace = "com.lighthouse.beep"
     compileSdk = AppConfig.compileSdk
