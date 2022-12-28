@@ -10,3 +10,5 @@ local.properties
 /.idea/
 /buildSrc/build/
 /app/release/
+/app/keystore/keystore.properties
+/app/keystore/keystore_base64.txt
