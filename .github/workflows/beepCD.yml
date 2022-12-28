@@ -1,41 +1,27 @@
-name: Android CD
+name: Build & upload to Firebase App Distribution
+
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
-    name: Beep CD
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-          
-          
-      - name: Generate Keystore file from Github Secrets
-        run: |
-          echo "$KEYSTORE" > ./app/keystore/keystore.b64
-          base64 -d -i ./app/keystore/keystore.b64 > ./app/keystore/tester_release.jks
-        env:
-          KEYSTORE: ${{ secrets.APP_KEYSTORE_BASE64 }}
-          
-      - name: Create KeyStore Properties
-        run: |
-          echo '${{ secrets.KEY_STORE_PROPERTIES }}' > ./app/keystore/keystore.properties
-
-      - name: Setup Firebase CLI
-        uses: pocket-apps/action-setup-firebase@v2
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1 # This is optional on linux and macOS
+      - uses: pocket-apps/action-setup-firebase@v2
         with:
           firebase-token: ${{secrets.FIREBASE_TOKEN}}
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Create google-service
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./presentation/google-services.json
@@ -43,14 +29,20 @@ jobs:
       - name: Create Local Properties
         run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
 
+      - name: build debug
+        run: ./gradlew bundleDebug
+
+      - name: upload debug artifact to Firebase App Distribution
+        run: firebase appdistribution:distribute app/build/outputs/bundle/debug/app-debug.aab --token ${{secrets.FIREBASE_TOKEN}} --app ${{secrets.FIREBASE_APP_ID}} --groups "Developer" --release-notes "Test server"
+
+      - name: build stage
+        run: ./gradlew bundleStage
+
+      - name: upload stage artifact to Firebase App Distribution
+        run: firebase appdistribution:distribute app/build/outputs/bundle/stage/app-stage.aab --token ${{secrets.FIREBASE_TOKEN}} --app ${{secrets.FIREBASE_APP_ID}} --groups "Developer" --release-notes "Stage server"
+
       - name: build release
-        run: ./gradlew assembleRelease
+        run: ./gradlew bundleRelease
 
-      - name: upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: Developer
-          file: app/build/outputs/apk/release/app-release-unsigned.apk
+      - name: upload release artifact to Firebase App Distribution
+        run: firebase appdistribution:distribute app/build/outputs/bundle/release/app-release.aab --token ${{secrets.FIREBASE_TOKEN}} --app ${{secrets.FIREBASE_APP_ID}} --groups "Developer" --release-notes "Release server"
