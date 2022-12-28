@@ -6,9 +6,11 @@ import android.text.SpannableStringBuilder
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDayOfMonth
@@ -86,6 +88,32 @@ fun TextView.applyClickable(targetText: String, onClickListener: View.OnClickLis
     }
     movementMethod = LinkMovementMethod()
     setText(spannableString, TextView.BufferType.SPANNABLE)
+}
+
+@BindingAdapter("setMapBottomText")
+fun setMapBottomText(view: TextView, uiText: UIText?) {
+    val text = uiText?.asString(view.context) ?: ""
+    val spannableString = SpannableString(text)
+    val indexList = mutableListOf<Int>()
+
+    for ((index, c) in text.withIndex()) {
+        if (c.isDigit()) indexList.add(index)
+    }
+
+    if (indexList.isEmpty().not()) {
+        val start = indexList.first()
+        val end = indexList.last()
+
+        spannableString.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.beep_pink)),
+            start,
+            end + 1,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        view.setText(spannableString, TextView.BufferType.NORMAL)
+    } else {
+        view.text = text
+    }
 }
 
 @BindingAdapter("setDday")

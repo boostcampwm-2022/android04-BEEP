@@ -12,7 +12,9 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="140dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,7 +30,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:loadUri="@{gifticon.croppedUri}"/>
+                app:loadUri="@{gifticon.croppedUri}" />
 
             <TextView
                 android:layout_width="52dp"
@@ -79,9 +81,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                app:dateFormat="@{gifticon.expireAt}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:dateFormat="@{gifticon.expireAt}"
                 tools:text="~ 2022-11-08" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
