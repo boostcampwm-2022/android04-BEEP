@@ -1,23 +1,30 @@
-name: Android CD
+name: Build & upload to Firebase App Distribution
+
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
-    name: Beep CD
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
-
-      - name: set up JDK 11
-        uses: actions/setup-java@v1
+      - uses: actions/setup-node@v1 # This is optional on linux and macOS
+      - uses: pocket-apps/action-setup-firebase@v2
         with:
+          firebase-token: ${{secrets.FIREBASE_TOKEN}}
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
           java-version: 11
+          cache: gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Create google-service
         run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > ./presentation/google-services.json
@@ -26,13 +33,12 @@ jobs:
         run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties
 
       - name: build release
-        run: ./gradlew assembleRelease
+        run: ./gradlew bundleRelease
 
-      - name: upload artifact to Firebase App Distribution
+      - name: upload release artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
-
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: Developer
-          file: app/build/outputs/apk/release/app-release-unsigned.apk
+          file: app/build/outputs/bundle/release/app-release.aab

@@ -64,6 +64,8 @@ object Versions {
     const val GLANCE = "1.0.0-alpha05"
 
     const val OSS = "17.0.0"
+
+    const val googleServicesVersion = "4.3.14"
 }
 
 object Libraries {
@@ -104,7 +106,8 @@ object Libraries {
     private const val FIREBASE_CRASHLYTICS_NDK = "com.google.firebase:firebase-crashlytics-ndk"
     private const val FIREBASE_CRASHLYTICS_KTX = "com.google.firebase:firebase-crashlytics-ktx"
     private const val FIREBASE_ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
-    private const val TEXT_RECOGNITION_KOREAN = "com.google.mlkit:text-recognition-korean:${Versions.TEXT_RECOGNITION_KOREAN}"
+    private const val TEXT_RECOGNITION_KOREAN =
+        "com.google.mlkit:text-recognition-korean:${Versions.TEXT_RECOGNITION_KOREAN}"
 
     private const val BIOMETRIC = "androidx.biometric:biometric:${Versions.BIOMETRIC}"
 
@@ -147,6 +150,8 @@ object Libraries {
     private const val GLANCE = "androidx.glance:glance-appwidget:${Versions.GLANCE}"
 
     private const val OSS_LICENSES = "com.google.android.gms:play-services-oss-licenses:${Versions.OSS}"
+
+    const val google_services = "com.google.gms:google-services:${Versions.googleServicesVersion}"
 
     val VIEW_LIBRARIES = arrayListOf(
         CORE,
