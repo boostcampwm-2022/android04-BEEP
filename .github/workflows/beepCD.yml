@@ -16,7 +16,13 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
-      
+          
+      - name: Create KeyStore File and Properties
+        run: |
+          mkdir ./app/keystore
+          echo '${{ secrets.KEY_STORE }}' | base64 -d > ./app/keystore/keystore/tester_release.jks
+          echo '${{ secrets.KEY_STORE_PROPERTIES }}' > ./app/keystore/keystore.properties
+
       - name: Setup Firebase CLI
         uses: pocket-apps/action-setup-firebase@v2
         with:
