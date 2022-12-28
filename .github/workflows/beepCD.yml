@@ -19,7 +19,6 @@ jobs:
           
       - name: Create KeyStore File and Properties
         run: |
-          mkdir ./app/keystore
           echo '${{ secrets.KEY_STORE }}' | base64 -d > ./app/keystore/keystore/tester_release.jks
           echo '${{ secrets.KEY_STORE_PROPERTIES }}' > ./app/keystore/keystore.properties
 
