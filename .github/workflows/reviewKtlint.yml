@@ -3,7 +3,6 @@ name: ktlint
 on:
     pull_request:
         branches:
-            - main
             - develop
 jobs:
     ktlint:
