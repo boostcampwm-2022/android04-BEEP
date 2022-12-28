@@ -36,4 +36,9 @@ jobs:
         run: ./gradlew bundleRelease
 
       - name: upload release artifact to Firebase App Distribution
-        run: firebase appdistribution:distribute app/build/outputs/bundle/release/app-release.aab --token ${{secrets.FIREBASE_TOKEN}} --app ${{secrets.FIREBASE_APP_ID}} --groups "Developer" --release-notes "Release server"
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: Developer
+          file: app/build/outputs/bundle/release/app-release.aab
