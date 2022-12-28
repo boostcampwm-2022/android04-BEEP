@@ -9,5 +9,4 @@
 local.properties
 /.idea/
 /buildSrc/build/
-/app/keystore/
 /app/release/
