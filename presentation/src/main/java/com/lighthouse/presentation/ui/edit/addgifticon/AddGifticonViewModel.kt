@@ -590,8 +590,8 @@ class AddGifticonViewModel @Inject constructor(
             }
         }
 
-        job.invokeOnCompletion {
-            if (it == null) {
+        job.invokeOnCompletion { throwable ->
+            if (throwable == null) {
                 requestLoading(false)
             }
         }
