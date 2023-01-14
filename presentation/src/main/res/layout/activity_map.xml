@@ -57,7 +57,8 @@
 
         <include
             android:id="@+id/layout_dialog"
-            layout="@layout/dialog_map_gifticons" />
+            layout="@layout/dialog_map_gifticons"
+            app:vm="@{vm}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -69,7 +69,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         client = LocationServices.getFusedLocationProviderClient(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map)
         binding.vm = viewModel
-        binding.layoutDialog.vm = viewModel
         binding.lifecycleOwner = this
         mapView = binding.mapView.apply {
             onCreate(savedInstanceState)
@@ -165,7 +164,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {
         val brandMarkers = brandPlaceSearchResults.map { brandPlaceSearchResult ->
             Marker().apply {
-                val latLng = LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
+                val latLng =
+                    LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
                 setMarker(this, latLng, brandPlaceSearchResult)
             }
         }
