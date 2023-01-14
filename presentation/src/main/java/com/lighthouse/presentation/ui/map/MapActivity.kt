@@ -80,7 +80,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setBottomGifticonSheet() {
-        binding.layoutDialog.layoutContainer.maxHeight = (screenHeight * 0.48).toInt()
+        binding.layoutDialog.cardContainer.apply {
+            layoutParams = layoutParams.apply {
+                height = (screenHeight * 0.48).toInt()
+            }
+        }
         with(binding.layoutDialog.rvGifticons) {
             adapter = gifticonAdapter
             addItemDecoration(
