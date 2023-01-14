@@ -6,9 +6,10 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
-import com.lighthouse.presentation.util.resource.UIText.Empty.asString
 
-sealed class UIText {
+sealed class UIText(
+    val clickable: Boolean = false
+) {
 
     abstract fun asString(context: Context): Spannable
 
@@ -31,7 +32,9 @@ sealed class UIText {
     class SpannableResource(
         private val text: UIText,
         private vararg val spans: UISpan
-    ) : UIText() {
+    ) : UIText(
+        spans.any { it is UISpan.UIClickableSpan }
+    ) {
         override fun asString(context: Context): Spannable {
             val spannable = text.asString(context)
             spans.forEach {
@@ -48,7 +51,9 @@ sealed class UIText {
 
     class UITextSet(
         private vararg val texts: UIText
-    ) : UIText() {
+    ) : UIText(
+        texts.any { it.clickable }
+    ) {
         override fun asString(context: Context): Spannable {
             val builder = SpannableStringBuilder()
             texts.forEach {
@@ -60,37 +65,53 @@ sealed class UIText {
 
     class Builder {
         private val texts = arrayListOf<UIText>()
-        private val uiSpans = arrayListOf<UISpan>()
-        private fun applySpan(uiSpan: UISpan) = apply { uiSpans.add(uiSpan) }
+        private val spans = arrayListOf<UISpan>()
 
-        fun appendText(uiText: UIText) = apply { texts.add(uiText) }
-        fun appendDynamicString(any: Any) = apply { appendText(DynamicString(any)) }
+        private fun spanOn(uiSpan: UISpan) = apply { spans.add(uiSpan) }
+        private fun appendText(uiText: UIText) = apply {
+            applySpan()
+            texts.add(uiText)
+        }
+
+        private fun applySpan() {
+            val lastIndex = texts.lastIndex
+            if (lastIndex != -1 && spans.isNotEmpty()) {
+                val lastText = texts[lastIndex]
+                texts[lastIndex] =
+                    SpannableResource(lastText, *spans.toTypedArray())
+                spans.clear()
+            }
+        }
+
+        fun appendDynamicString(any: Any) =
+            apply { appendText(DynamicString(any)) }
+
         fun appendStringResource(
             @StringRes resId: Int,
             vararg args: Any
         ) = apply { appendText(StringResource(resId, args)) }
 
-        fun applyUnderlineSpan() = apply { applySpan(UISpan.UIUnderlineSpan) }
-        fun applyBoldSpan() = apply { applySpan(UISpan.UIBoldSpan) }
-        fun applyTextColorSpan(@ColorRes colorRes: Int) =
-            apply { applySpan(UISpan.UITextColorSpan(colorRes)) }
+        fun spanOnUnderline() =
+            apply { spanOn(UISpan.UIUnderlineSpan) }
 
-        fun applyBackgroundColorSpan(@ColorRes colorRes: Int) =
-            apply { applySpan(UISpan.UIBackgroundColorSpan(colorRes)) }
+        fun spanOnBold() =
+            apply { spanOn(UISpan.UIBoldSpan) }
 
-        fun applyRelativeSizeSpan(factor: Float) =
-            apply { applySpan(UISpan.UIRelativeSizeSpan(factor)) }
+        fun spanOnTextColor(@ColorRes colorRes: Int) =
+            apply { spanOn(UISpan.UITextColorSpan(colorRes)) }
 
-        fun applyClickableSpan(onClick: () -> Unit) =
-            apply { applySpan(UISpan.UIClickableSpan(onClick)) }
+        fun spanOnBackgroundColor(@ColorRes colorRes: Int) =
+            apply { spanOn(UISpan.UIBackgroundColorSpan(colorRes)) }
+
+        fun spanOnRelativeSize(factor: Float) =
+            apply { spanOn(UISpan.UIRelativeSizeSpan(factor)) }
+
+        fun spanOnClickable(onClick: () -> Unit) =
+            apply { spanOn(UISpan.UIClickableSpan(onClick)) }
 
         fun build(): UIText {
-            val uiTextSet = UITextSet(*texts.toTypedArray())
-            return if (uiSpans.isEmpty()) {
-                uiTextSet
-            } else {
-                SpannableResource(uiTextSet, *uiSpans.toTypedArray())
-            }
+            applySpan()
+            return UITextSet(*texts.toTypedArray())
         }
     }
 }

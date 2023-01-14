@@ -81,33 +81,23 @@ class MapViewModel @Inject constructor(
             emit(
                 UIText.Builder()
                     .appendStringResource(R.string.map_bottom_sheet_title_all_brands_prefix)
-                    .appendText(
-                        UIText.Builder()
-                            .appendDynamicString(" $size")
-                            .applyTextColorSpan(R.color.beep_pink)
-                            .applyRelativeSizeSpan(1.2f)
-                            .build()
-                    ).build()
+                    .appendDynamicString(" $size")
+                    .spanOnTextColor(R.color.beep_pink)
+                    .spanOnRelativeSize(1.2f)
+                    .appendStringResource(R.string.map_bottom_sheet_title_all_brands_postfix)
+                    .build()
             )
         } else {
             val brands = gifticons.first().brand
             val size = gifticons.size
             emit(
                 UIText.Builder()
-                    .appendText(
-                        UIText.Builder()
-                            .appendDynamicString(brands)
-                            .applyTextColorSpan(R.color.beep_pink)
-                            .build()
-                    )
+                    .appendDynamicString(brands)
+                    .spanOnTextColor(R.color.beep_pink)
                     .appendStringResource(R.string.map_bottom_sheet_title_brands_name)
-                    .appendText(
-                        UIText.Builder()
-                            .appendDynamicString(" $size")
-                            .applyTextColorSpan(R.color.beep_pink)
-                            .applyRelativeSizeSpan(1.2f)
-                            .build()
-                    )
+                    .appendDynamicString(" $size")
+                    .spanOnTextColor(R.color.beep_pink)
+                    .spanOnRelativeSize(1.2f)
                     .appendStringResource(R.string.map_bottom_sheet_title_brands_size)
                     .build()
             )

@@ -2,6 +2,7 @@ package com.lighthouse.presentation.util.resource
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.TextPaint
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -52,6 +53,8 @@ sealed class UISpan {
                 override fun onClick(widget: View) {
                     onClick()
                 }
+
+                override fun updateDrawState(ds: TextPaint) = Unit
             }
         }
     }
