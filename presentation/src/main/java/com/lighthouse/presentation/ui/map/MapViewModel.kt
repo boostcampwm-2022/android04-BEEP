@@ -19,6 +19,7 @@ import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
+import com.lighthouse.presentation.util.resource.UISpan
 import com.lighthouse.presentation.util.resource.UIText
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,7 +54,8 @@ class MapViewModel @Inject constructor(
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
 
     private val resultGifticons =
-        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+        getGifticonUseCase.getUsableGifticons()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allGifticons = resultGifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
@@ -74,18 +76,34 @@ class MapViewModel @Inject constructor(
         if (gifticons.isEmpty()) {
             emit(UIText.StringResource(R.string.map_bottom_sheet_title_not))
         } else if (focusMarker.captionText == "") {
+            val size = gifticons.distinctBy { it.brandLowerName }.size
             emit(
-                UIText.StringResource(
-                    R.string.map_bottom_sheet_title_all_brands,
-                    gifticons.distinctBy { it.brandLowerName }.size
+                UIText.UITextSet(
+                    UIText.StringResource(R.string.map_bottom_sheet_title_all_brands_prefix),
+                    UIText.SpannableResource(
+                        UIText.DynamicString(" $size"),
+                        UISpan.UITextColorSpan(R.color.beep_pink),
+                        UISpan.UIRelativeSizeSpan(1.2f)
+                    ),
+                    UIText.StringResource(R.string.map_bottom_sheet_title_all_brands_postfix)
                 )
             )
         } else {
+            val brands = gifticons.first().brand
+            val size = gifticons.size
             emit(
-                UIText.StringResource(
-                    R.string.map_bottom_sheet_title,
-                    gifticons.first().brand,
-                    gifticons.size
+                UIText.UITextSet(
+                    UIText.SpannableResource(
+                        UIText.DynamicString(brands),
+                        UISpan.UITextColorSpan(R.color.beep_pink)
+                    ),
+                    UIText.StringResource(R.string.map_bottom_sheet_title_brands_name),
+                    UIText.SpannableResource(
+                        UIText.DynamicString(" $size"),
+                        UISpan.UITextColorSpan(R.color.beep_pink),
+                        UISpan.UIRelativeSizeSpan(1.2f)
+                    ),
+                    UIText.StringResource(R.string.map_bottom_sheet_title_brands_size)
                 )
             )
         }
@@ -107,7 +125,8 @@ class MapViewModel @Inject constructor(
 
     private var removeMarker = allBrands.transform {
         val brands = it ?: return@transform
-        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
+        val removeMarkers =
+            markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
         emit(removeMarkers)
     }
 
@@ -175,7 +194,12 @@ class MapViewModel @Inject constructor(
                 val brands = allBrands.value ?: return@collectLatest
 
                 _state.emit(UiState.Loading)
-                getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE)
+                getBrandPlaceInfosUseCase(
+                    brands,
+                    location.longitude,
+                    location.latitude,
+                    SEARCH_SIZE
+                )
                     .mapCatching { it.toPresentation() }
                     .onSuccess { brandPlaceInfos ->
                         val diffBrandPlaceInfo = brandPlaceInfos.filter {
