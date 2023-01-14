@@ -18,7 +18,6 @@ import com.lighthouse.presentation.ui.gallery.adapter.list.GalleryAdapter
 import com.lighthouse.presentation.ui.gallery.adapter.selected.SelectedGalleryAdapter
 import com.lighthouse.presentation.ui.gallery.event.GalleryEvent
 import com.lighthouse.presentation.util.recycler.GridSectionSpaceItemDecoration
-import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -66,7 +65,6 @@ class GalleryActivity : AppCompatActivity() {
     private fun setUpSelectedGalleryList() {
         binding.rvSelectedList.apply {
             adapter = selectedGalleryAdapter
-            addItemDecoration(ListSpaceItemDecoration(4.dp, 32.dp, 4.dp, 32.dp, 4.dp))
         }
     }
 

@@ -34,7 +34,7 @@ fun applyConcurrencyFormat(view: TextView, amount: Int) {
 
 @BindingAdapter("setUIText")
 fun TextView.setUIText(uiText: UIText?) {
-    text = uiText?.asString(context) ?: ""
+    text = uiText?.asString(context)
 }
 
 /**
