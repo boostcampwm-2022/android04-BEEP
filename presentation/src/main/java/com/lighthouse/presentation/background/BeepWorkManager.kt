@@ -33,6 +33,9 @@ class BeepWorkManager(
         PeriodicWorkRequestBuilder<NotificationWorker>(
             DAY_INTERVAL,
             TimeUnit.HOURS
+        ).setInitialDelay(
+            calculateWorkerInitialDelay(),
+            TimeUnit.HOURS
         ).build()
 
     private val manager = WorkManager.getInstance(context).also {
