@@ -6,6 +6,7 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.lighthouse.presentation.ui.widget.BeepWidgetWorker
+import com.lighthouse.presentation.util.TimeCalculator.calculateWorkerInitialDelay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 
@@ -17,10 +18,22 @@ class BeepWorkManager(
     private val workPolicyReplace = ExistingPeriodicWorkPolicy.REPLACE
 
     private val notificationWorkRequest: PeriodicWorkRequest =
-        PeriodicWorkRequestBuilder<NotificationWorker>(NOTIFICATION_INTERVAL, TimeUnit.HOURS).build()
+        PeriodicWorkRequestBuilder<NotificationWorker>(
+            DAY_INTERVAL,
+            TimeUnit.HOURS
+        ).setInitialDelay(
+            calculateWorkerInitialDelay(),
+            TimeUnit.HOURS
+        ).build()
 
     private val widgetWorkRequest: PeriodicWorkRequest =
         PeriodicWorkRequestBuilder<BeepWidgetWorker>(WIDGET_INTERVAL, TimeUnit.MINUTES).build()
+
+    private val brandRemoveWorker: PeriodicWorkRequest =
+        PeriodicWorkRequestBuilder<NotificationWorker>(
+            DAY_INTERVAL,
+            TimeUnit.HOURS
+        ).build()
 
     private val manager = WorkManager.getInstance(context).also {
         it.enqueueUniquePeriodicWork(
@@ -28,6 +41,16 @@ class BeepWorkManager(
             workPolicyKeep,
             notificationWorkRequest
         )
+    }
+
+    init {
+        WorkManager.getInstance(context).also {
+            it.enqueueUniquePeriodicWork(
+                BRAND_REMOVE_WORK_NAME,
+                workPolicyKeep,
+                brandRemoveWorker
+            )
+        }
     }
 
     /**
@@ -67,7 +90,8 @@ class BeepWorkManager(
 
     companion object {
         private const val NOTIFICATION_WORK_NAME = "notification"
-        private const val NOTIFICATION_INTERVAL = 24L
+        private const val BRAND_REMOVE_WORK_NAME = "brand"
+        private const val DAY_INTERVAL = 24L
         private const val WIDGET_WORK_NAME = "widget"
         private const val WIDGET_INTERVAL = 15L
 
