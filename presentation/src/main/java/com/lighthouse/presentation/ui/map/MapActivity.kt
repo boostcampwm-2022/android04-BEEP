@@ -74,7 +74,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         setGifticonAdapterItem()
         setGifticonAdapterChangeCallback()
-        setObserveEvent()
     }
 
     private fun setGifticonAdapterItem() {
@@ -116,6 +115,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         setInitSearchData()
         setObserveSearchData()
         setNaverMapZoom()
+        setObserveEvent()
     }
 
     // configuration change 일어날때 viewModel이 갖고 있는 marker 데이터 있는지 확인
@@ -149,7 +149,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     /**
-     * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
      * @param brandName 찾고자하는 브랜드명
      */
     private fun findBrandPlaceInfo(brandName: String, isLoadGifticonList: Boolean = false) {
@@ -157,7 +156,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
                 brandPlaceInfo.brandLowerName == brandName
             }.minByOrNull { location ->
-                diffLocation(location.x, location.y, currentLocation.longitude, currentLocation.latitude)
+                diffLocation(
+                    location.x,
+                    location.y,
+                    currentLocation.longitude,
+                    currentLocation.latitude
+                )
             } ?: return@addOnSuccessListener
 
             resetFocusMarker(viewModel.focusMarker)
@@ -174,7 +178,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
         it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
 
-    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText.lowercase() == brand
+    private fun isRecentSelected(brand: String) =
+        viewModel.recentSelectedMarker.captionText.lowercase() == brand
 
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
@@ -208,7 +213,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {
         val brandMarkers = brandPlaceSearchResults.map { brandPlaceSearchResult ->
             Marker().apply {
-                val latLng = LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
+                val latLng =
+                    LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
                 setMarker(this, latLng, brandPlaceSearchResult)
             }
         }
