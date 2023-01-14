@@ -19,7 +19,6 @@ import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
-import com.lighthouse.presentation.util.resource.UISpan
 import com.lighthouse.presentation.util.resource.UIText
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,33 +77,37 @@ class MapViewModel @Inject constructor(
         } else if (focusMarker.captionText == "") {
             val size = gifticons.distinctBy { it.brandLowerName }.size
             emit(
-                UIText.UITextSet(
-                    UIText.StringResource(R.string.map_bottom_sheet_title_all_brands_prefix),
-                    UIText.SpannableResource(
-                        UIText.DynamicString(" $size"),
-                        UISpan.UITextColorSpan(R.color.beep_pink),
-                        UISpan.UIRelativeSizeSpan(1.2f)
-                    ),
-                    UIText.StringResource(R.string.map_bottom_sheet_title_all_brands_postfix)
-                )
+                UIText.Builder()
+                    .appendStringResource(R.string.map_bottom_sheet_title_all_brands_prefix)
+                    .appendText(
+                        UIText.Builder()
+                            .appendDynamicString(" $size")
+                            .applyTextColorSpan(R.color.beep_pink)
+                            .applyRelativeSizeSpan(1.2f)
+                            .build()
+                    ).build()
             )
         } else {
             val brands = gifticons.first().brand
             val size = gifticons.size
             emit(
-                UIText.UITextSet(
-                    UIText.SpannableResource(
-                        UIText.DynamicString(brands),
-                        UISpan.UITextColorSpan(R.color.beep_pink)
-                    ),
-                    UIText.StringResource(R.string.map_bottom_sheet_title_brands_name),
-                    UIText.SpannableResource(
-                        UIText.DynamicString(" $size"),
-                        UISpan.UITextColorSpan(R.color.beep_pink),
-                        UISpan.UIRelativeSizeSpan(1.2f)
-                    ),
-                    UIText.StringResource(R.string.map_bottom_sheet_title_brands_size)
-                )
+                UIText.Builder()
+                    .appendText(
+                        UIText.Builder()
+                            .appendDynamicString(brands)
+                            .applyTextColorSpan(R.color.beep_pink)
+                            .build()
+                    )
+                    .appendStringResource(R.string.map_bottom_sheet_title_brands_name)
+                    .appendText(
+                        UIText.Builder()
+                            .appendDynamicString(" $size")
+                            .applyTextColorSpan(R.color.beep_pink)
+                            .applyRelativeSizeSpan(1.2f)
+                            .build()
+                    )
+                    .appendStringResource(R.string.map_bottom_sheet_title_brands_size)
+                    .build()
             )
         }
     }.stateIn(
