@@ -582,15 +582,18 @@ class AddGifticonViewModel @Inject constructor(
         }
 
         requestLoading(true)
-        viewModelScope.launch {
-            launch {
-                list.forEach { gallery ->
-                    launch {
-                        recognizeGifticonItem(gallery)
-                    }
+        val job = viewModelScope.launch {
+            list.forEach { gallery ->
+                launch {
+                    recognizeGifticonItem(gallery)
                 }
-            }.join()
-            requestLoading(false)
+            }
+        }
+
+        job.invokeOnCompletion { throwable ->
+            if (throwable == null) {
+                requestLoading(false)
+            }
         }
     }
 
