@@ -19,13 +19,26 @@ object TimeCalculator {
         }
     }
 
-    fun calculateWorkerInitialDelay(): Long {
+    /**
+     * 현재 시간에서 다음 날 지정한 시간까지의 차이 구하는 함수
+     * @param date 현재 날짜에서 몇 일 이후에 할지
+     * @param hour date 이후 몇 시로 할지 기준 값
+     * @param minute date 이후 몇 분으로 할지 기준 값
+     * @param second date 이후 몇 초로 할지 기준 값
+     * @return 몇 시간 차이나는지 값
+     */
+    fun calculateAfterDateDiffHour(
+        date: Int = 1,
+        hour: Int = 9,
+        minute: Int = 0,
+        second: Int = 0
+    ): Long {
         val now = Calendar.getInstance().time
         val cal = Calendar.getInstance().apply {
-            add(Calendar.DATE, 1)
-            set(Calendar.HOUR_OF_DAY, 9)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
+            add(Calendar.DATE, date)
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, second)
         }.time
 
         val diff = cal.time - now.time

@@ -6,7 +6,7 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.lighthouse.presentation.ui.widget.BeepWidgetWorker
-import com.lighthouse.presentation.util.TimeCalculator.calculateWorkerInitialDelay
+import com.lighthouse.presentation.util.TimeCalculator.calculateAfterDateDiffHour
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 
@@ -22,7 +22,7 @@ class BeepWorkManager(
             DAY_INTERVAL,
             TimeUnit.HOURS
         ).setInitialDelay(
-            calculateWorkerInitialDelay(),
+            calculateAfterDateDiffHour(),
             TimeUnit.HOURS
         ).build()
 
@@ -34,7 +34,7 @@ class BeepWorkManager(
             DAY_INTERVAL,
             TimeUnit.HOURS
         ).setInitialDelay(
-            calculateWorkerInitialDelay(),
+            calculateAfterDateDiffHour(),
             TimeUnit.HOURS
         ).build()
 
