@@ -6,6 +6,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import com.lighthouse.presentation.util.resource.UIText.Empty.asString
 
 sealed class UIText(
     val clickable: Boolean = false

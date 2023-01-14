@@ -69,7 +69,20 @@
         <item name="android:datePickerMode">spinner</item>
     </style>
 
-    <style name="AppTheme.Actionbar" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+    <style name="BEEP.AppTheme.Actionbar" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="tint">@color/white</item>
     </style>
+
+    <style name="BEEP.CustomCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">30dp</item>
+        <item name="cornerSizeTopLeft">30dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
 </resources>

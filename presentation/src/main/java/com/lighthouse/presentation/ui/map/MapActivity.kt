@@ -2,21 +2,21 @@ package com.lighthouse.presentation.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.LocationConverter.diffLocation
+import com.lighthouse.domain.LocationConverter
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
 import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
-import com.lighthouse.presentation.extension.screenWidth
+import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.extra.Extras.CATEGORY_ACCOMMODATION
 import com.lighthouse.presentation.extra.Extras.CATEGORY_CAFE
@@ -36,6 +36,7 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
@@ -61,6 +62,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
     private val currentLocationButton: LocationButtonView by lazy { binding.btnCurrentLocation }
+    private val infoWindow: InfoWindow by lazy { InfoWindow() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,26 +74,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             onCreate(savedInstanceState)
             getMapAsync(this@MapActivity)
         }
-        setGifticonAdapterItem()
-        setGifticonAdapterChangeCallback()
+        setBottomGifticonSheet()
         setObserveEvent()
+        setInfoWindow()
     }
 
-    private fun setGifticonAdapterItem() {
-        val pageMargin = screenWidth * 0.1
-        val pagerWidth = screenWidth - 2 * pageMargin
-        val offsetPx = screenWidth - pageMargin.toInt() - pagerWidth.toInt()
-        with(binding.vpGifticon) {
-            adapter = gifticonAdapter
-            offscreenPageLimit = 3
-            setPageTransformer { page, position ->
-                page.translationX = position * -offsetPx
+    private fun setBottomGifticonSheet() {
+        binding.layoutDialog.cardContainer.apply {
+            layoutParams = layoutParams.apply {
+                height = (screenHeight * 0.48).toInt()
             }
+        }
+        with(binding.layoutDialog.rvGifticons) {
+            adapter = gifticonAdapter
             addItemDecoration(
                 ListSpaceItemDecoration(
-                    space = 48.dp,
-                    start = 20.dp,
-                    end = 24.dp
+                    space = 12.dp,
+                    top = 12.dp,
+                    bottom = 24.dp,
+                    start = 12.dp,
+                    end = 12.dp
                 )
             )
         }
@@ -134,48 +136,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         moveMapCamera(location.longitude, location.latitude)
     }
 
-    private fun setGifticonAdapterChangeCallback() {
-        binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                if (viewModel.viewPagerFocus.not()) {
-                    viewModel.updatePagerFocus(true)
-                    return
-                }
-                if (isRecentSelected(gifticonAdapter.currentList[position].brandLowerName)) return
-                val currentItem = gifticonAdapter.currentList[position].brandLowerName
-                findBrandPlaceInfo(currentItem)
-            }
-        })
-    }
-
-    /**
-     * 하단 ViewPager2 PageChangeCallback 실행시 현재 위치에서 가장 가까운 데이터를 갖고 오는 로직
-     * @param brandName 찾고자하는 브랜드명
-     */
-    private fun findBrandPlaceInfo(brandName: String, isLoadGifticonList: Boolean = false) {
-        client.lastLocation.addOnSuccessListener { currentLocation ->
-            val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
-                brandPlaceInfo.brandLowerName == brandName
-            }.minByOrNull { location ->
-                diffLocation(location.x, location.y, currentLocation.longitude, currentLocation.latitude)
-            } ?: return@addOnSuccessListener
-
-            resetFocusMarker(viewModel.focusMarker)
-
-            val currentFocusMarker = viewModel.markerHolder.find {
-                currentLocation(it, brandPlaceInfo)
-            } ?: return@addOnSuccessListener
-            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
-            setFocusMarker(currentFocusMarker)
-            if (isLoadGifticonList) viewModel.updateGifticons()
-        }
-    }
-
-    private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
-        it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
-
-    private fun isRecentSelected(brand: String) = viewModel.recentSelectedMarker.captionText.lowercase() == brand
-
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             .animate(CameraAnimation.Easing)
@@ -208,7 +168,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateBrandMarker(brandPlaceSearchResults: List<BrandPlaceInfoUiModel>) {
         val brandMarkers = brandPlaceSearchResults.map { brandPlaceSearchResult ->
             Marker().apply {
-                val latLng = LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
+                val latLng =
+                    LatLng(brandPlaceSearchResult.y.toDouble(), brandPlaceSearchResult.x.toDouble())
                 setMarker(this, latLng, brandPlaceSearchResult)
             }
         }
@@ -216,10 +177,38 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         repeatOnStarted {
             viewModel.widgetBrand.collect { brand ->
-                findBrandPlaceInfo(brand, true)
+                findBrandPlaceInfo(brand)
             }
         }
     }
+
+    private fun findBrandPlaceInfo(brandName: String) {
+        client.lastLocation.addOnSuccessListener { currentLocation ->
+            val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
+                brandPlaceInfo.brandLowerName == brandName
+            }.minByOrNull { location ->
+                LocationConverter.diffLocation(
+                    location.x,
+                    location.y,
+                    currentLocation.longitude,
+                    currentLocation.latitude
+                )
+            } ?: return@addOnSuccessListener
+
+            resetFocusMarker(viewModel.focusMarker)
+
+            val currentFocusMarker = viewModel.markerHolder.find {
+                currentLocation(it, brandPlaceInfo)
+            } ?: return@addOnSuccessListener
+            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
+            setFocusMarker(currentFocusMarker)
+            viewModel.updateGifticons()
+        }
+    }
+
+    private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
+        it.position.longitude == brandPlaceInfo.x.toDouble() &&
+            it.position.latitude == brandPlaceInfo.y.toDouble()
 
     private fun setMarker(
         marker: Marker,
@@ -243,6 +232,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             setFocusMarker(marker)
             viewModel.updateFocusMarker(marker)
             viewModel.updateGifticons()
+            infoWindow.open(marker)
             true
         }
     }
@@ -268,6 +258,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         marker.iconTintColor = getColor(R.color.point_green)
         marker.captionColor = getColor(R.color.black)
         viewModel.resetMarker()
+        infoWindow.close()
+    }
+
+    private fun setInfoWindow() {
+        infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
+            override fun getText(infoWindow: InfoWindow): CharSequence {
+                return getString(R.string.map_goto_homepage)
+            }
+        }
+        infoWindow.setOnClickListener {
+            infoWindow.marker?.let { marker ->
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(marker.tag.toString()))
+                startActivity(browserIntent)
+            }
+            true
+        }
     }
 
     private fun setObserveEvent() {
@@ -290,7 +296,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showSnackBar(@StringRes message: Int) {
-        Snackbar.make(binding.layoutMap, message, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
