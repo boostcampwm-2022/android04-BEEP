@@ -34,10 +34,14 @@ fun applyDateFormat(view: TextView, date: Date?) {
 fun applyConcurrencyFormat(view: TextView, amount: Int) {
     val format = view.context.resources.getString(R.string.all_concurrency_format)
     val formattedNumber = DecimalFormat(format).format(amount)
-    view.text = if (amount > 0) view.context.resources.getString(
-        R.string.all_cash_unit,
-        formattedNumber
-    ) else ""
+    view.text = if (amount > 0) {
+        view.context.resources.getString(
+            R.string.all_cash_unit,
+            formattedNumber
+        )
+    } else {
+        ""
+    }
 }
 
 @BindingAdapter("setUIText")
