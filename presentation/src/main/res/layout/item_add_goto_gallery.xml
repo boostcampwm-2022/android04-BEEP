@@ -5,6 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginHorizontal="2dp"
         android:background="@drawable/bg_on_surface_12">
 
         <ImageView

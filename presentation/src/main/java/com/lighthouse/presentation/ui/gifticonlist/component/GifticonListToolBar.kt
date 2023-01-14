@@ -23,14 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.model.GifticonSortBy
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GifticonAppBar(
     viewModel: GifticonListViewModel = viewModel()

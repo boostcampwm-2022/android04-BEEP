@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.extension
 
 import android.content.Context
+import android.text.Spannable
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.util.TimeCalculator
@@ -36,7 +37,7 @@ fun Date.toDday(context: Context): String {
     }
 }
 
-fun Date.toExpireDate(context: Context): String {
+fun Date.toExpireDate(context: Context): Spannable {
     return UIText.StringResource(
         R.string.all_expired_date,
         toYear(),
