@@ -18,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityAddGifticonBinding
-import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.getParcelable
 import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
@@ -37,7 +36,6 @@ import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonEvent
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
-import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -152,7 +150,6 @@ class AddGifticonActivity : AppCompatActivity() {
     private fun setUpRecyclerView() {
         binding.rvGifticon.apply {
             adapter = gifticonAdapter
-            addItemDecoration(ListSpaceItemDecoration(4.dp, 32.dp, 0f, 32.dp, 0f))
         }
     }
 
