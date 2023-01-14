@@ -197,7 +197,7 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                         style = MaterialTheme.typography.caption
                     )
                     Text(
-                        text = gifticon.expireAt.toExpireDate(context),
+                        text = gifticon.expireAt.toExpireDate(context).toString(),
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(bottom = 16.dp, end = 16.dp),
