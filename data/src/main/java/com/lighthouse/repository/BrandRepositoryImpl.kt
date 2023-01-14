@@ -40,4 +40,8 @@ class BrandRepositoryImpl @Inject constructor(
             result.onSuccess { brandLocalSource.insertBrands(it, x, y, brandName) }
         }
     }
+
+    override suspend fun removeExpirationBrands() {
+        brandLocalSource.removeExpirationBrands()
+    }
 }
