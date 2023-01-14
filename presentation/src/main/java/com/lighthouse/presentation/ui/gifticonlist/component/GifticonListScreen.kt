@@ -22,14 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun GifticonListScreen(
     modifier: Modifier = Modifier,
@@ -115,7 +113,9 @@ fun GifticonListScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.removeGifticon(gifticon = removeGifticonDialogState ?: return@TextButton)
+                        viewModel.removeGifticon(
+                            gifticon = removeGifticonDialogState ?: return@TextButton
+                        )
                         removeGifticonDialogState = null
                     }
                 ) {
