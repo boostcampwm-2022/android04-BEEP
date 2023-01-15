@@ -10,6 +10,7 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
+import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
@@ -18,6 +19,7 @@ import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.flow.MutableEventFlow
 import com.lighthouse.presentation.util.flow.asEventFlow
+import com.lighthouse.presentation.util.resource.UIText
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,16 +35,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MapViewModel @Inject constructor(
     getGifticonUseCase: GetGifticonsUseCase,
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val getBrandPlaceInfosUseCase: GetBrandPlaceInfosUseCase,
     private val getUserLocation: GetUserLocationUseCase
 ) : ViewModel() {
 
     private val _state: MutableEventFlow<UiState<List<BrandPlaceInfoUiModel>>> = MutableEventFlow()
     val state = _state.asEventFlow()
-
-    var recentSelectedMarker = Marker()
-        private set
 
     var focusMarker = Marker()
         private set
@@ -54,7 +53,8 @@ class MapViewModel @Inject constructor(
     val brandInfos: Set<BrandPlaceInfoUiModel> = _brandInfos
 
     private val resultGifticons =
-        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+        getGifticonUseCase.getUsableGifticons()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allGifticons = resultGifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
@@ -71,6 +71,51 @@ class MapViewModel @Inject constructor(
     private val _gifticonData = MutableStateFlow<List<GifticonUIModel>>(emptyList())
     val gifticonData = _gifticonData.asStateFlow()
 
+    val gifticonUIText = gifticonData.transform { gifticons ->
+        if (gifticons.isEmpty()) {
+            emit(UIText.StringResource(R.string.map_bottom_sheet_title_not))
+        } else if (focusMarker.captionText == "") {
+            val size = gifticons.distinctBy { it.brandLowerName }.size
+            emit(
+                UIText.Builder()
+                    .appendStringResource(R.string.map_bottom_sheet_title_all_brands_prefix)
+                    .appendText(
+                        UIText.Builder()
+                            .appendDynamicString(" $size")
+                            .applyTextColorSpan(R.color.beep_pink)
+                            .applyRelativeSizeSpan(1.2f)
+                            .build()
+                    ).build()
+            )
+        } else {
+            val brands = gifticons.first().brand
+            val size = gifticons.size
+            emit(
+                UIText.Builder()
+                    .appendText(
+                        UIText.Builder()
+                            .appendDynamicString(brands)
+                            .applyTextColorSpan(R.color.beep_pink)
+                            .build()
+                    )
+                    .appendStringResource(R.string.map_bottom_sheet_title_brands_name)
+                    .appendText(
+                        UIText.Builder()
+                            .appendDynamicString(" $size")
+                            .applyTextColorSpan(R.color.beep_pink)
+                            .applyRelativeSizeSpan(1.2f)
+                            .build()
+                    )
+                    .appendStringResource(R.string.map_bottom_sheet_title_brands_size)
+                    .build()
+            )
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        null
+    )
+
     private val _event = MutableEventFlow<MapEvent>()
     val event = _event.asEventFlow()
 
@@ -83,7 +128,8 @@ class MapViewModel @Inject constructor(
 
     private var removeMarker = allBrands.transform {
         val brands = it ?: return@transform
-        val removeMarkers = markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
+        val removeMarkers =
+            markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
         emit(removeMarkers)
     }
 
@@ -92,6 +138,7 @@ class MapViewModel @Inject constructor(
         val isFirstLoadData = checkHomeData(savedStateHandle)
         combineLocationGifticon()
         collectLocation(isFirstLoadData)
+        findWidgetData()
     }
 
     private fun checkHomeData(savedStateHandle: SavedStateHandle): Boolean {
@@ -106,8 +153,6 @@ class MapViewModel @Inject constructor(
                 _state.emit(UiState.Success(nearBrands))
                 updateGifticons()
             }
-            val brand = savedStateHandle.get<String>(Extras.KEY_WIDGET_BRAND) ?: return@launch
-            _widgetBrand.emit(brand)
         }
         return isFirstLoadData
     }
@@ -152,7 +197,12 @@ class MapViewModel @Inject constructor(
                 val brands = allBrands.value ?: return@collectLatest
 
                 _state.emit(UiState.Loading)
-                getBrandPlaceInfosUseCase(brands, location.longitude, location.latitude, SEARCH_SIZE)
+                getBrandPlaceInfosUseCase(
+                    brands,
+                    location.longitude,
+                    location.latitude,
+                    SEARCH_SIZE
+                )
                     .mapCatching { it.toPresentation() }
                     .onSuccess { brandPlaceInfos ->
                         val diffBrandPlaceInfo = brandPlaceInfos.filter {
@@ -179,8 +229,14 @@ class MapViewModel @Inject constructor(
         }
     }
 
+    private fun findWidgetData() {
+        viewModelScope.launch {
+            val brand = savedStateHandle.get<String>(Extras.KEY_WIDGET_BRAND) ?: return@launch
+            _widgetBrand.emit(brand)
+        }
+    }
+
     fun updateFocusMarker(marker: Marker) {
-        recentSelectedMarker = marker
         focusMarker = marker
     }
 
@@ -195,7 +251,7 @@ class MapViewModel @Inject constructor(
             if (brandName.isNotEmpty()) {
                 gifticon.brand.lowercase() == brandName
             } else {
-                brandInfos.find { it.brandLowerName == gifticon.brand.lowercase() } != null
+                _brandInfos.find { it.brandLowerName == gifticon.brand.lowercase() } != null
             }
         }.map {
             it.toPresentation()
