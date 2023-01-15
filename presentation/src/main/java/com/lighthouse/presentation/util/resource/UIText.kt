@@ -6,27 +6,39 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
-import com.lighthouse.presentation.util.resource.UIText.Empty.asString
+import java.lang.ref.WeakReference
 
 sealed class UIText(
     val clickable: Boolean = false
 ) {
 
-    abstract fun asString(context: Context): Spannable
+    private lateinit var spannableRef: WeakReference<Spannable>
+
+    fun asString(context: Context): Spannable {
+        val cache = if (this::spannableRef.isInitialized) spannableRef.get() else null
+
+        return cache ?: makeSpannable(context).also {
+            spannableRef = WeakReference(it)
+        }
+    }
+
+    abstract fun makeSpannable(context: Context): Spannable
 
     object Empty : UIText() {
-        override fun asString(context: Context): Spannable = SpannableString("")
+        override fun makeSpannable(context: Context): Spannable {
+            return SpannableString("")
+        }
     }
 
     data class DynamicString(private val any: Any) : UIText() {
-        override fun asString(context: Context): Spannable = SpannableString(any.toString())
+        override fun makeSpannable(context: Context): Spannable = SpannableString(any.toString())
     }
 
     class StringResource(
         @StringRes private val resId: Int,
         private vararg val args: Any
     ) : UIText() {
-        override fun asString(context: Context): Spannable =
+        override fun makeSpannable(context: Context): Spannable =
             SpannableString(context.getString(resId, *args))
     }
 
@@ -36,8 +48,8 @@ sealed class UIText(
     ) : UIText(
         spans.any { it is UISpan.UIClickableSpan }
     ) {
-        override fun asString(context: Context): Spannable {
-            val spannable = text.asString(context)
+        override fun makeSpannable(context: Context): Spannable {
+            val spannable = text.makeSpannable(context)
             spans.forEach {
                 spannable.setSpan(
                     it.asSpan(context),
@@ -55,10 +67,10 @@ sealed class UIText(
     ) : UIText(
         texts.any { it.clickable }
     ) {
-        override fun asString(context: Context): Spannable {
+        override fun makeSpannable(context: Context): Spannable {
             val builder = SpannableStringBuilder()
             texts.forEach {
-                builder.append(it.asString(context))
+                builder.append(it.makeSpannable(context))
             }
             return builder
         }
