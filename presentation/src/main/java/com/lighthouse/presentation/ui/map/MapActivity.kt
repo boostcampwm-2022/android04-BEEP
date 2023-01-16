@@ -118,7 +118,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         setInitSearchData()
         setObserveSearchData()
         setNaverMapZoom()
-        setObserveEvent()
     }
 
     // configuration change 일어날때 viewModel이 갖고 있는 marker 데이터 있는지 확인
@@ -137,53 +136,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         moveMapCamera(location.longitude, location.latitude)
     }
 
-    private fun setGifticonAdapterChangeCallback() {
-        binding.vpGifticon.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                if (viewModel.viewPagerFocus.not()) {
-                    viewModel.updatePagerFocus(true)
-                    return
-                }
-                if (isRecentSelected(gifticonAdapter.currentList[position].brandLowerName)) return
-                val currentItem = gifticonAdapter.currentList[position].brandLowerName
-                findBrandPlaceInfo(currentItem)
-            }
-        })
-    }
-
-    /**
-     * @param brandName 찾고자하는 브랜드명
-     */
-    private fun findBrandPlaceInfo(brandName: String, isLoadGifticonList: Boolean = false) {
-        client.lastLocation.addOnSuccessListener { currentLocation ->
-            val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
-                brandPlaceInfo.brandLowerName == brandName
-            }.minByOrNull { location ->
-                diffLocation(
-                    location.x,
-                    location.y,
-                    currentLocation.longitude,
-                    currentLocation.latitude
-                )
-            } ?: return@addOnSuccessListener
-
-            resetFocusMarker(viewModel.focusMarker)
-
-            val currentFocusMarker = viewModel.markerHolder.find {
-                currentLocation(it, brandPlaceInfo)
-            } ?: return@addOnSuccessListener
-            moveMapCamera(brandPlaceInfo.x.toDouble(), brandPlaceInfo.y.toDouble())
-            setFocusMarker(currentFocusMarker)
-            if (isLoadGifticonList) viewModel.updateGifticons()
-        }
-    }
-
-    private fun currentLocation(it: Marker, brandPlaceInfo: BrandPlaceInfoUiModel) =
-        it.position.longitude == brandPlaceInfo.x.toDouble() && it.position.latitude == brandPlaceInfo.y.toDouble()
-
-    private fun isRecentSelected(brand: String) =
-        viewModel.recentSelectedMarker.captionText.lowercase() == brand
-        
     private fun moveMapCamera(longitude: Double, latitude: Double) {
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             .animate(CameraAnimation.Easing)
