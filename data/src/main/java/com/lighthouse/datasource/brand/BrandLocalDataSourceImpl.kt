@@ -10,6 +10,7 @@ import com.lighthouse.mapper.toEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -25,7 +26,13 @@ class BrandLocalDataSourceImpl @Inject constructor(
         brandName: String
     ): Result<List<BrandLocationEntity>> {
         val sectionResults =
-            brandWithSectionDao.getBrands(combineSectionId(x.dmsToString(), y.dmsToString(), brandName))
+            brandWithSectionDao.getBrands(
+                combineSectionId(
+                    x.dmsToString(),
+                    y.dmsToString(),
+                    brandName
+                )
+            )
         return if (sectionResults == null) {
             Result.failure(Exception())
         } else {
@@ -53,14 +60,32 @@ class BrandLocalDataSourceImpl @Inject constructor(
         brandWithSectionDao.insertBrand(brandPlaceInfos.toEntity())
     }
 
-    override suspend fun isNearBrand(x: Dms, y: Dms, brandName: String): List<BrandLocationEntity>? {
+    override suspend fun isNearBrand(
+        x: Dms,
+        y: Dms,
+        brandName: String
+    ): List<BrandLocationEntity>? {
         val sectionResults =
-            brandWithSectionDao.getBrands(combineSectionId(x.dmsToString(), y.dmsToString(), brandName)) ?: return null
+            brandWithSectionDao.getBrands(
+                combineSectionId(
+                    x.dmsToString(),
+                    y.dmsToString(),
+                    brandName
+                )
+            ) ?: return null
 
         return sectionResults.brands
     }
 
+    override suspend fun removeExpirationBrands() {
+        val date: Date = Calendar.getInstance().apply {
+            add(Calendar.MONTH, -1)
+        }.time
+        brandWithSectionDao.removeExpirationBrands(date.time)
+    }
+
     companion object {
-        fun combineSectionId(x: String, y: String, brandName: String) = "${x}_${y}_${brandName.lowercase()}"
+        fun combineSectionId(x: String, y: String, brandName: String) =
+            "${x}_${y}_${brandName.lowercase()}"
     }
 }

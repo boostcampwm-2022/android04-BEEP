@@ -25,4 +25,7 @@ interface BrandWithSectionDao {
 
     @Query("DELETE FROM section_table WHERE section_id =:sectionId")
     suspend fun deleteSection(sectionId: String)
+
+    @Query("DELETE FROM section_table WHERE search_date <= :time")
+    suspend fun removeExpirationBrands(time: Long)
 }

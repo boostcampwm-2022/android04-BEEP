@@ -113,7 +113,9 @@ fun GifticonListScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.removeGifticon(gifticon = removeGifticonDialogState ?: return@TextButton)
+                        viewModel.removeGifticon(
+                            gifticon = removeGifticonDialogState ?: return@TextButton
+                        )
                         removeGifticonDialogState = null
                     }
                 ) {
