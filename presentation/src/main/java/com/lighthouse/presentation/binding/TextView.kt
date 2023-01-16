@@ -24,19 +24,35 @@ import java.util.Date
 @BindingAdapter("dateFormat")
 fun applyDateFormat(view: TextView, date: Date?) {
     date ?: return
-    view.text = view.context.getString(R.string.all_date, date.toYear(), date.toMonth(), date.toDayOfMonth())
+    view.text = view.context.getString(
+        R.string.all_date,
+        date.toYear(),
+        date.toMonth(),
+        date.toDayOfMonth()
+    )
 }
 
 @BindingAdapter("concurrencyFormat")
 fun applyConcurrencyFormat(view: TextView, amount: Int) {
     val format = view.context.resources.getString(R.string.all_concurrency_format)
     val formattedNumber = DecimalFormat(format).format(amount)
-    view.setText(if (amount > 0) view.context.resources.getString(R.string.all_cash_unit, formattedNumber) else "")
+    view.text = if (amount > 0) {
+        view.context.resources.getString(
+            R.string.all_cash_unit,
+            formattedNumber
+        )
+    } else {
+        ""
+    }
 }
 
 @BindingAdapter("setUIText")
 fun TextView.setUIText(uiText: UIText?) {
-    text = uiText?.asString(context)
+    if (uiText == null) return
+    if (uiText.clickable) {
+        movementMethod = LinkMovementMethod()
+    }
+    text = uiText.asString(context)
 }
 
 /**
@@ -63,7 +79,11 @@ fun applyUnderLine(view: TextView, targetText: String) {
  * @param drawUnderLine 텍스트 강조 여부
  */
 @BindingAdapter("clickableText", "clickableClicked", "drawUnderLine", requireAll = false)
-fun TextView.applyClickable(targetText: String, onClickListener: View.OnClickListener, drawUnderLine: Boolean? = null) {
+fun TextView.applyClickable(
+    targetText: String,
+    onClickListener: View.OnClickListener,
+    drawUnderLine: Boolean? = null
+) {
     val start = text.indexOf(string = targetText, ignoreCase = false)
 
     if (start == -1) return
