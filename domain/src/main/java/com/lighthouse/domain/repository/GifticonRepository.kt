@@ -36,4 +36,5 @@ interface GifticonRepository {
     suspend fun hasGifticonBrand(brand: String): Boolean
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
     fun getGifticonBrands(userId: String): Flow<DbResult<List<String>>>
+    fun getSomeGifticons(userId: String, count: Int): Flow<DbResult<List<Gifticon>>>
 }

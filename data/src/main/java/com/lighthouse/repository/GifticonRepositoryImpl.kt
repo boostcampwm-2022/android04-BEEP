@@ -195,4 +195,17 @@ class GifticonRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun getSomeGifticons(userId: String, count: Int): Flow<DbResult<List<Gifticon>>> =
+        flow {
+            emit(DbResult.Loading)
+
+            gifticonLocalDataSource.getSomeGifticons(userId, count).collect { gifticons ->
+                if (gifticons.isEmpty()) {
+                    emit(DbResult.Empty)
+                } else {
+                    emit(DbResult.Success(gifticons.map { it.toDomain() }))
+                }
+            }
+        }
 }

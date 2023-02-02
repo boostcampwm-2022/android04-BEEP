@@ -143,4 +143,8 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override fun getGifticonBrands(userId: String): Flow<List<String>> {
         return gifticonDao.getGifticonBrands(userId, today)
     }
+
+    override fun getSomeGifticons(userId: String, count: Int): Flow<List<GifticonEntity>> {
+        return gifticonDao.getSomeGifticons(userId, today, count)
+    }
 }
