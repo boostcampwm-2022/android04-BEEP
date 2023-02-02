@@ -47,7 +47,7 @@ class HomeViewModel @Inject constructor(
         if (brands is DbResult.Success) {
             emit(brands.data)
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<String>())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val gifticonsMap = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
