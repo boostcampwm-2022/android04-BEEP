@@ -43,7 +43,10 @@ interface GifticonDao {
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY expire_at")
-    fun getFilteredGifticonsSortByDeadline(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
+    fun getFilteredGifticonsSortByDeadline(
+        userId: String,
+        filters: Set<String>
+    ): Flow<List<GifticonEntity>>
 
     @Query(
         "SELECT * FROM $GIFTICON_TABLE " +
@@ -145,7 +148,17 @@ interface GifticonDao {
     @Transaction
     suspend fun updateGifticonWithCropTransaction(gifticonWithCrop: GifticonWithCrop) {
         with(gifticonWithCrop) {
-            updateGifticon(id, croppedUri, name, brand, expireAt, barcode, isCashCard, balance, memo)
+            updateGifticon(
+                id,
+                croppedUri,
+                name,
+                brand,
+                expireAt,
+                barcode,
+                isCashCard,
+                balance,
+                memo
+            )
             updateGifticonCrop(id, croppedRect)
         }
     }
@@ -190,4 +203,7 @@ interface GifticonDao {
 
     @Query("UPDATE $GIFTICON_TABLE SET user_id = :newUserId WHERE user_id = :oldUserId")
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
+
+    @Query("SELECT DISTINCT brand FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time AND is_used = 0")
+    fun getGifticonBrands(userId: String, time: Date): Flow<List<String>>
 }
