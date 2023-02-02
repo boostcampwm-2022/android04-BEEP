@@ -52,7 +52,7 @@ object Versions {
     const val DATASTORE = "1.1.0-alpha01"
 
     const val APP_COMPAT_THEME = "0.25.1" // 컴포즈에서 AppTheme 을 사용
-    const val KOTLIN_COMPILER_EXTENSION = "1.3.2"
+    const val KOTLIN_COMPILER_EXTENSION = "1.4.0"
     const val COMPOSE_BOM = "2022.10.00"
     const val COMPOSE_ACTIVITIES = "1.5.1"
     const val COMPOSE_VIEWMODEL = "2.5.1"

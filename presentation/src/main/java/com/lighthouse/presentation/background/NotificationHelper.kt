@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.background
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -46,6 +47,7 @@ class NotificationHelper @Inject constructor(
         }
     }
 
+    @SuppressLint("MissingPermission")
     fun applyNotification(gifticon: Gifticon, remainDays: Int) {
         val intent = Intent(context, GifticonDetailActivity::class.java).apply {
             putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
