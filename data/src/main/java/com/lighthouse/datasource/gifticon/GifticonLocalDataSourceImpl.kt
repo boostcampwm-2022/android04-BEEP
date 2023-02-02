@@ -42,7 +42,11 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getFilteredGifticons(userId: String, filter: Set<String>, sortBy: SortBy): Flow<List<Gifticon>> {
+    override fun getFilteredGifticons(
+        userId: String,
+        filter: Set<String>,
+        sortBy: SortBy
+    ): Flow<List<Gifticon>> {
         val upperFilter = filter.map { it.uppercase() }.toSet()
         val gifticons = when (sortBy) {
             SortBy.DEADLINE -> gifticonDao.getFilteredGifticonsSortByDeadline(userId, upperFilter)
@@ -85,8 +89,15 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         gifticonDao.useGifticonTransaction(usageHistory.toUsageHistoryEntity(gifticonId))
     }
 
-    override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory) {
-        gifticonDao.useCashCardGifticonTransaction(amount, usageHistory.toUsageHistoryEntity(gifticonId))
+    override suspend fun useCashCardGifticon(
+        gifticonId: String,
+        amount: Int,
+        usageHistory: UsageHistory
+    ) {
+        gifticonDao.useCashCardGifticonTransaction(
+            amount,
+            usageHistory.toUsageHistoryEntity(gifticonId)
+        )
     }
 
     override suspend fun unUseGifticon(gifticonId: String) {
@@ -127,5 +138,9 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
         gifticonDao.moveUserIdGifticon(oldUserId, newUserId)
+    }
+
+    override fun getGifticonBrands(userId: String): Flow<List<String>> {
+        return gifticonDao.getGifticonBrands(userId, today)
     }
 }

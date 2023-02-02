@@ -24,4 +24,8 @@ class GetGifticonsUseCase @Inject constructor(
     fun getUsedGifticons(): Flow<DbResult<List<Gifticon>>> {
         return gifticonRepository.getAllUsedGifticons(userId)
     }
+
+    fun getGifticonBrands(): Flow<DbResult<List<String>>> {
+        return gifticonRepository.getGifticonBrands(userId)
+    }
 }
