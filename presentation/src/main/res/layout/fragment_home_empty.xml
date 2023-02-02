@@ -51,18 +51,18 @@
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/lottie_not_found" />
 
-        <Button
+        <TextView
             android:id="@+id/tv_register"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:background="?attr/colorPrimary"
+            android:background="@drawable/ripple_primary_corner_4"
             android:gravity="center"
             android:onClickListener="@{() -> vm.gotoAddGifticon()}"
             android:padding="12dp"
             android:text="@string/add_gifticon_register"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
             android:textColor="?attr/colorOnPrimary"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
