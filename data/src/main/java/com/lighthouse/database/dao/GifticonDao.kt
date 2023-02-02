@@ -204,6 +204,15 @@ interface GifticonDao {
     @Query("UPDATE $GIFTICON_TABLE SET user_id = :newUserId WHERE user_id = :oldUserId")
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
 
+    /**
+     * 오늘 날짜를 기준으로 사용 가능한 기프티콘의 브랜드명 갖고 오기
+     */
     @Query("SELECT DISTINCT brand FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time AND is_used = 0")
     fun getGifticonBrands(userId: String, time: Date): Flow<List<String>>
+
+    /**
+     * 사용 가능한 기프티콘 중에서 count 만큼만 갖고 오기
+     */
+    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 LIMIT :count")
+    fun getSomeGifticons(userId: String, time: Date, count: Int): Flow<List<GifticonEntity>>
 }
