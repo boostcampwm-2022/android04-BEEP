@@ -133,12 +133,15 @@ hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-p
 [bundles]
 androidX-compose = [
     "androidX-compose-material",
-    "androidX-compose-ui-tooling-preview",
     "androidX-compose-icons-extended",
+    "androidX-compose-ui-tooling-preview",
 ]
-androidX-compose-lifecyle = [
+androidX-compose-lifecycle = [
     "androidX-compose-lifecycle-viewmodel",
     "androidX-compose-lifecycle-runtime"
+]
+androidX-compose-debug = [
+    "androidX-compose-ui-tooling"
 ]
 
 [plugins]
