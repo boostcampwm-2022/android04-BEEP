@@ -45,13 +45,13 @@ internal fun Project.configureKotlin(
 internal fun Project.`kapt`(
     configure: Action<KaptExtension>
 ) {
-    (this as ExtensionAware).extensions.configure("kotlinOptions", configure)
+    (this as ExtensionAware).extensions.configure("kapt", configure)
 }
 
 internal fun Project.`java`(
     configure: Action<JavaPluginExtension>
 ) {
-    (this as ExtensionAware).extensions.configure("kotlinOptions", configure)
+    (this as ExtensionAware).extensions.configure("java", configure)
 }
 
 internal fun CommonExtension<*, *, *, *>.kotlinOptions(
