@@ -24,6 +24,8 @@ internal fun Project.configureAndroid() {
             vectorDrawables.useSupportLibrary = true
         }
 
+        dataBinding.enable = true
+
         compileOptions {
             sourceCompatibility = ProjectConfigurations.javaVer
             targetCompatibility = ProjectConfigurations.javaVer
