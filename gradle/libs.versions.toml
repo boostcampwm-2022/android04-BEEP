@@ -7,6 +7,7 @@ paging = "3.1.1"
 room = "2.4.3"
 hilt-work = "1.0.0"
 work = "2.7.1"
+compose-compiler = "1.4.0"
 
 # 3rd-party
 ## Accompanist
