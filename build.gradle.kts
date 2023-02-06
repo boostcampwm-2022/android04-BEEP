@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.kotlin.serialization) apply false
 }
+
 //
 // allprojects {
 //    configurations.all {

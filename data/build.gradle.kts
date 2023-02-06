@@ -36,11 +36,7 @@ dependencies {
 
     implementation(libs.timber)
 
-    ksp(libs.mockito.core)
-    ksp(libs.mockito.android)
     ksp(libs.androidX.room.compiler)
-    ksp(libs.androidX.hilt.compiler)
-    ksp(libs.dagger.hilt.android.compiler)
     ksp(libs.squareup.moshi.kotlin.codegen)
 
     testImplementation(libs.junit4)
@@ -54,4 +50,6 @@ dependencies {
     testImplementation(libs.turbine)
 
     androidTestImplementation(libs.test.core)
+    androidTestImplementation(libs.mockito.core)
+    androidTestImplementation(libs.mockito.android)
 }

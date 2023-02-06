@@ -36,6 +36,10 @@ dependencies {
 
     implementation(libs.material)
 
+    implementation(libs.accompanist.appcompat.theme)
+    implementation(libs.accompanist.flowlayout)
+    implementation(libs.accompanist.placeholder.material)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.crashlytics.ndk)
@@ -59,8 +63,7 @@ dependencies {
 
     implementation(libs.airbnb.lottie)
 
-    ksp(libs.androidX.hilt.compiler)
-    ksp(libs.glide.compiler)
+    annotationProcessor(libs.glide.compiler)
 
     testImplementation(libs.junit4)
     testImplementation(libs.junit5.jupiter.params)
