@@ -3,6 +3,10 @@ package com.lighthouse.presentation.ui.detailgifticon
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.core.exts.toConcurrency
+import com.lighthouse.core.exts.toDayOfMonth
+import com.lighthouse.core.exts.toMonth
+import com.lighthouse.core.exts.toYear
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
@@ -10,10 +14,6 @@ import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toConcurrency
-import com.lighthouse.presentation.extension.toDayOfMonth
-import com.lighthouse.presentation.extension.toMonth
-import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.CashAmountPreset

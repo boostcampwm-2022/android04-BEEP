@@ -1,8 +1,8 @@
 package com.lighthouse.presentation.mapper
 
 import androidx.core.graphics.toRect
+import com.lighthouse.core.exts.toDigit
 import com.lighthouse.domain.model.GifticonForUpdate
-import com.lighthouse.presentation.extension.toDigit
 import com.lighthouse.presentation.model.ModifyGifticonUIModel
 
 fun ModifyGifticonUIModel.toDomain(): GifticonForUpdate {

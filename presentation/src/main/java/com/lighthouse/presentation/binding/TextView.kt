@@ -12,11 +12,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.lighthouse.core.exts.toDayOfMonth
+import com.lighthouse.core.exts.toMonth
+import com.lighthouse.core.exts.toYear
+import com.lighthouse.core.utils.time.TimeCalculator
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toDayOfMonth
-import com.lighthouse.presentation.extension.toMonth
-import com.lighthouse.presentation.extension.toYear
-import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.resource.UIText
 import java.text.DecimalFormat
 import java.util.Date
@@ -145,6 +145,7 @@ fun setDday(view: TextView, date: Date) {
             view.context.getString(R.string.all_d_day),
             dDay
         )
+
         dDay < TimeCalculator.MIN_DAY -> view.context.getString(R.string.all_d_day_expired)
         else -> view.context.getString(R.string.all_d_day_more_than_year)
     }

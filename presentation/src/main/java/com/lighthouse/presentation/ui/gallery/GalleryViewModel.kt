@@ -7,14 +7,14 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.lighthouse.core.utils.flow.MutableEventFlow
+import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.usecase.gallery.GetGalleryImagesUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.event.GalleryEvent
-import com.lighthouse.presentation.util.flow.MutableEventFlow
-import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,7 +93,8 @@ class GalleryViewModel @Inject constructor(
             item.id == gallery.id
         }
         if (index != -1) {
-            _selectedList.value = oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
+            _selectedList.value =
+                oldList.subList(0, index) + oldList.subList(index + 1, oldList.size)
         }
     }
 

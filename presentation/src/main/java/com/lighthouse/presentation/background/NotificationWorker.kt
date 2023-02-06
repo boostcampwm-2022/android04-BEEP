@@ -7,7 +7,7 @@ import androidx.work.WorkerParameters
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
-import com.lighthouse.presentation.util.TimeCalculator
+import com.lighthouse.core.utils.time.TimeCalculator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

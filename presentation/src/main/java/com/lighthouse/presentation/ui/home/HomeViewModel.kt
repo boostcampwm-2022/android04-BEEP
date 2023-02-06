@@ -2,6 +2,8 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.core.utils.flow.MutableEventFlow
+import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.LocationConverter.diffLocation
 import com.lighthouse.domain.LocationConverter.setDmsLocation
 import com.lighthouse.domain.VertexLocation
@@ -14,8 +16,6 @@ import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
 import com.lighthouse.presentation.ui.common.UiState
-import com.lighthouse.presentation.util.flow.MutableEventFlow
-import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +41,8 @@ class HomeViewModel @Inject constructor(
     val eventFlow = _eventFlow.asEventFlow()
 
     private val gifticons =
-        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+        getGifticonUseCase.getUsableGifticons()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
     private val allBrands = gifticons.transform { gifticons ->
         if (gifticons is DbResult.Success) {
@@ -74,7 +75,8 @@ class HomeViewModel @Inject constructor(
 
     val isShimmer = MutableStateFlow(false)
 
-    private val _nearGifticons: MutableStateFlow<List<GifticonWithDistanceUIModel>?> = MutableStateFlow(null)
+    private val _nearGifticons: MutableStateFlow<List<GifticonWithDistanceUIModel>?> =
+        MutableStateFlow(null)
     val nearGifticons = _nearGifticons.asStateFlow()
 
     val isEmptyNearBrands = nearGifticons.transform {
@@ -157,7 +159,12 @@ class HomeViewModel @Inject constructor(
 
     fun gotoMap() {
         viewModelScope.launch {
-            _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten().map { it.toPresentation() }, nearBrandsInfo))
+            _eventFlow.emit(
+                HomeEvent.NavigateMap(
+                    gifticonsMap.value.values.flatten().map { it.toPresentation() },
+                    nearBrandsInfo
+                )
+            )
         }
     }
 

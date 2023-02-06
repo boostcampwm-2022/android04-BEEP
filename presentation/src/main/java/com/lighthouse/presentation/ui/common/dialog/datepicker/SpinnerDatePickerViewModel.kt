@@ -1,9 +1,9 @@
 package com.lighthouse.presentation.ui.common.dialog.datepicker
 
 import androidx.lifecycle.ViewModel
-import com.lighthouse.presentation.extension.toDayOfMonth
-import com.lighthouse.presentation.extension.toMonth
-import com.lighthouse.presentation.extension.toYear
+import com.lighthouse.core.exts.toDayOfMonth
+import com.lighthouse.core.exts.toMonth
+import com.lighthouse.core.exts.toYear
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Calendar

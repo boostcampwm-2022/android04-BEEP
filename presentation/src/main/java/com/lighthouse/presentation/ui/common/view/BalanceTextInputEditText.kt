@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.common.view
 
 import android.content.Context
 import android.util.AttributeSet
-import com.lighthouse.presentation.extension.toDigit
+import com.lighthouse.core.exts.toDigit
 import java.text.DecimalFormat
 
 class BalanceTextInputEditText(context: Context, attrs: AttributeSet) : FormattedTextInputEditText(context, attrs) {

@@ -2,6 +2,8 @@ package com.lighthouse.presentation.ui.gifticonlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.core.exts.isExpired
+import com.lighthouse.core.utils.flow.combine
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
@@ -9,12 +11,10 @@ import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
 import com.lighthouse.domain.usecase.RemoveGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
-import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.GifticonSortBy
 import com.lighthouse.presentation.model.GifticonUIModel
-import com.lighthouse.presentation.util.flow.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -82,6 +82,7 @@ class GifticonListViewModel @Inject constructor(
                     is DbResult.Success -> {
                         brandResult.data
                     }
+
                     else -> emptyList()
                 }
                 GifticonListViewState(
@@ -89,7 +90,8 @@ class GifticonListViewModel @Inject constructor(
                     gifticons = if (showExpired) {
                         gifticonResult.data.map { it.toPresentation() }
                     } else {
-                        gifticonResult.data.filterNot { it.expireAt.isExpired() }.map { it.toPresentation() }
+                        gifticonResult.data.filterNot { it.expireAt.isExpired() }
+                            .map { it.toPresentation() }
                     },
                     showExpiredGifticon = showExpired,
                     brands = brands,
@@ -98,6 +100,7 @@ class GifticonListViewModel @Inject constructor(
                     loading = false
                 )
             }
+
             is DbResult.Loading -> {
                 val gifticons = gifticons.value.let { result ->
                     if (result is DbResult.Success) result.data.map { it.toPresentation() } else emptyList()
@@ -111,6 +114,7 @@ class GifticonListViewModel @Inject constructor(
                     loading = true
                 )
             }
+
             else -> {
                 GifticonListViewState()
             }

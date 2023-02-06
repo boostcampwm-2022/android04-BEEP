@@ -13,8 +13,8 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.lighthouse.core.exts.toConcurrency
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toNumberFormat
 import com.lighthouse.presentation.ui.common.compose.ConcurrencyFormatVisualTransformation.Companion.MAX_LENGTH
 
 @Composable
@@ -60,7 +60,7 @@ fun ConcurrencyField(
 
 class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
-        val numberWithComma = text.text.toNumberFormat()
+        val numberWithComma = text.text.toConcurrency()
 
         return TransformedText(
             text = AnnotatedString(numberWithComma + suffixText),

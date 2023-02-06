@@ -3,6 +3,8 @@ package com.lighthouse.presentation.ui.main
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.core.utils.flow.MutableEventFlow
+import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.model.UserPreferenceOption
 import com.lighthouse.domain.usecase.HasVariableGifticonUseCase
 import com.lighthouse.domain.usecase.setting.GetOptionStoredUseCase
@@ -11,8 +13,6 @@ import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.setting.SecurityOption
-import com.lighthouse.presentation.util.flow.MutableEventFlow
-import com.lighthouse.presentation.util.flow.asEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -74,6 +74,7 @@ class MainViewModel @Inject constructor(
             MainPage.HOME,
             MainPage.LIST,
             MainPage.SETTING -> true
+
             MainPage.OTHER -> false
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, true)

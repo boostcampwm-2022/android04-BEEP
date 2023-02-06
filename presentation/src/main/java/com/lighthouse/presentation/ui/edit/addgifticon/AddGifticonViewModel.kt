@@ -5,14 +5,16 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.core.exts.toDayOfMonth
+import com.lighthouse.core.exts.toDigit
+import com.lighthouse.core.exts.toMonth
+import com.lighthouse.core.exts.toYear
+import com.lighthouse.core.utils.flow.MutableEventFlow
+import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.usecase.edit.HasGifticonBrandUseCase
 import com.lighthouse.domain.usecase.edit.addgifticon.AddRecognizeUseCase
 import com.lighthouse.domain.usecase.edit.addgifticon.SaveGifticonsUseCase
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toDayOfMonth
-import com.lighthouse.presentation.extension.toDigit
-import com.lighthouse.presentation.extension.toMonth
-import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.mapper.toAddGifticonItemUIModel
 import com.lighthouse.presentation.mapper.toAddGifticonUIModel
 import com.lighthouse.presentation.mapper.toDomain
@@ -26,8 +28,6 @@ import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonEvent
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonValid
-import com.lighthouse.presentation.util.flow.MutableEventFlow
-import com.lighthouse.presentation.util.flow.asEventFlow
 import com.lighthouse.presentation.util.resource.AnimInfo
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,7 +69,8 @@ class AddGifticonViewModel @Inject constructor(
         }
     }
 
-    private val _displayList = MutableStateFlow<List<AddGifticonItemUIModel>>(listOf(AddGifticonItemUIModel.Gallery))
+    private val _displayList =
+        MutableStateFlow<List<AddGifticonItemUIModel>>(listOf(AddGifticonItemUIModel.Gallery))
     val displayList = _displayList.asStateFlow()
 
     private val gifticonList = MutableStateFlow<List<AddGifticonUIModel>>(emptyList())
@@ -104,7 +105,8 @@ class AddGifticonViewModel @Inject constructor(
         if (oldItem == newItem) {
             return
         }
-        _displayList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
+        _displayList.value =
+            oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
     }
 
     private fun updateSelectedGifticon(
@@ -127,7 +129,8 @@ class AddGifticonViewModel @Inject constructor(
         if (oldItem == newItem) {
             return null
         }
-        gifticonList.value = oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
+        gifticonList.value =
+            oldList.subList(0, index) + listOf(newItem) + oldList.subList(index + 1, oldList.size)
 
         if (checkValid) {
             updateDisplayGifticon(gifticonId) { it.copy(isValid = checkGifticonValid(newItem) == AddGifticonValid.VALID) }
@@ -249,7 +252,10 @@ class AddGifticonViewModel @Inject constructor(
     fun updateCroppedGifticonImage(croppedImage: CroppedImage) {
         val updated = updateSelectedGifticon { it.copy(gifticonImage = croppedImage) } ?: return
         updateSelectedDisplayGifticon {
-            it.copy(thumbnailImage = croppedImage, isValid = checkGifticonValid(updated) == AddGifticonValid.VALID)
+            it.copy(
+                thumbnailImage = croppedImage,
+                isValid = checkGifticonValid(updated) == AddGifticonValid.VALID
+            )
         }
     }
 
@@ -257,9 +263,10 @@ class AddGifticonViewModel @Inject constructor(
         it?.approveGifticonImage ?: false
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    val isApproveGifticonImageDescriptionVisible = gifticonImage.combine(isApproveGifticonImage) { image, isApprove ->
-        if (image == null) false else image.uri == null && isApprove.not()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val isApproveGifticonImageDescriptionVisible =
+        gifticonImage.combine(isApproveGifticonImage) { image, isApprove ->
+            if (image == null) false else image.uri == null && isApprove.not()
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun approveGifticonImage() {
         updateSelectedGifticon(true) {
@@ -365,9 +372,10 @@ class AddGifticonViewModel @Inject constructor(
 
     val isLoadingConfirmBrand = MutableStateFlow(false)
 
-    private val isApproveBrandNameVisible = brand.combine(isLoadingConfirmBrand) { brand, isLoading ->
-        brand != "" && !isLoading
-    }
+    private val isApproveBrandNameVisible =
+        brand.combine(isLoadingConfirmBrand) { brand, isLoading ->
+            brand != "" && !isLoading
+        }
 
     val isApproveBrandNameVisibility = isApproveBrandNameVisible.map { isVisible ->
         if (isVisible) View.VISIBLE else View.INVISIBLE
@@ -386,13 +394,14 @@ class AddGifticonViewModel @Inject constructor(
         if (isApprove) R.color.point_green else R.color.yellow
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val isApproveBrandNameAnimation = isApproveBrandName.combine(isApproveBrandNameVisible) { isApprove, isVisible ->
-        if (isApprove) {
-            AnimInfo.AnimResource(R.anim.anim_fadein_up, isVisible)
-        } else {
-            AnimInfo.AnimResource(R.anim.anim_jump, isVisible)
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AnimInfo.Empty)
+    val isApproveBrandNameAnimation =
+        isApproveBrandName.combine(isApproveBrandNameVisible) { isApprove, isVisible ->
+            if (isApprove) {
+                AnimInfo.AnimResource(R.anim.anim_fadein_up, isVisible)
+            } else {
+                AnimInfo.AnimResource(R.anim.anim_jump, isVisible)
+            }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, AnimInfo.Empty)
 
     fun approveBrandName() {
         val approveBrandName = brand.value
@@ -475,7 +484,12 @@ class AddGifticonViewModel @Inject constructor(
 
     val expiredAtUIText = expiredAt.map { date ->
         if (date != EMPTY_DATE) {
-            UIText.StringResource(R.string.all_date, date.toYear(), date.toMonth(), date.toDayOfMonth())
+            UIText.StringResource(
+                R.string.all_date,
+                date.toYear(),
+                date.toMonth(),
+                date.toDayOfMonth()
+            )
         } else {
             UIText.Empty
         }
@@ -493,9 +507,10 @@ class AddGifticonViewModel @Inject constructor(
         expiredAt >= today || approve
     }
 
-    val isApproveExpiredAtDescriptionVisible = expiredAt.combine(approveExpiredAt) { expiredAt, approve ->
-        expiredAt != EMPTY_DATE && (expiredAt < today && approve.not())
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val isApproveExpiredAtDescriptionVisible =
+        expiredAt.combine(approveExpiredAt) { expiredAt, approve ->
+            expiredAt != EMPTY_DATE && (expiredAt < today && approve.not())
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     val isApproveExpiredAtVisible = expiredAt.map { expiredAt ->
         expiredAt != EMPTY_DATE
@@ -509,13 +524,14 @@ class AddGifticonViewModel @Inject constructor(
         if (isApprove) R.color.point_green else R.color.yellow
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val isApproveExpiredAtAnimation = isApproveExpired.combine(isApproveExpiredAtVisible) { isApprove, isVisible ->
-        if (isApprove) {
-            AnimInfo.AnimResource(R.anim.anim_fadein_up, isVisible)
-        } else {
-            AnimInfo.AnimResource(R.anim.anim_jump, isVisible)
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, AnimInfo.Empty)
+    val isApproveExpiredAtAnimation =
+        isApproveExpired.combine(isApproveExpiredAtVisible) { isApprove, isVisible ->
+            if (isApprove) {
+                AnimInfo.AnimResource(R.anim.anim_fadein_up, isVisible)
+            } else {
+                AnimInfo.AnimResource(R.anim.anim_jump, isVisible)
+            }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, AnimInfo.Empty)
 
     fun approveExpiredAt() {
         updateSelectedGifticon(true) {
@@ -535,11 +551,17 @@ class AddGifticonViewModel @Inject constructor(
         val gifticon = selectedGifticon.value ?: return false
         if (actionId == EditorInfo.IME_ACTION_NEXT) {
             val event = when (checkGifticonValid(gifticon)) {
-                AddGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.GIFTICON_NAME)
+                AddGifticonValid.INVALID_GIFTICON_NAME -> AddGifticonEvent.RequestFocus(
+                    AddGifticonTag.GIFTICON_NAME
+                )
+
                 AddGifticonValid.INVALID_BRAND_NAME -> AddGifticonEvent.RequestFocus(AddGifticonTag.BRAND_NAME)
                 AddGifticonValid.INVALID_BARCODE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BARCODE)
                 AddGifticonValid.INVALID_BALANCE -> AddGifticonEvent.RequestFocus(AddGifticonTag.BALANCE)
-                AddGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(expiredAtDate ?: today)
+                AddGifticonValid.INVALID_EXPIRED_AT -> AddGifticonEvent.ShowExpiredAtDatePicker(
+                    expiredAtDate ?: today
+                )
+
                 else -> {
                     requestAddGifticon()
                     return true
@@ -562,7 +584,8 @@ class AddGifticonViewModel @Inject constructor(
 
         val oldGifticonList = gifticonList.value
         gifticonList.value = list.map { newItem ->
-            oldGifticonList.find { oldItem -> newItem.id == oldItem.id } ?: newItem.toAddGifticonUIModel()
+            oldGifticonList.find { oldItem -> newItem.id == oldItem.id }
+                ?: newItem.toAddGifticonUIModel()
         }
 
         val newList = list.filter { newItem ->
@@ -624,7 +647,12 @@ class AddGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             val result = addRecognizeUseCase.gifticonName(uri.toString())
             if (result != "") {
-                updateGifticon(true) { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
+                updateGifticon(true) {
+                    it.copy(
+                        name = result,
+                        nameRectF = croppedImage.croppedRect
+                    )
+                }
             } else {
                 updateGifticon { it.copy(nameRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_name)))
@@ -639,7 +667,12 @@ class AddGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             val result = addRecognizeUseCase.brandName(uri.toString())
             if (result != "") {
-                updateGifticon(true) { it.copy(brandName = result, brandNameRectF = croppedImage.croppedRect) }
+                updateGifticon(true) {
+                    it.copy(
+                        brandName = result,
+                        brandNameRectF = croppedImage.croppedRect
+                    )
+                }
             } else {
                 updateGifticon { it.copy(brandNameRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_brand)))
@@ -654,7 +687,12 @@ class AddGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             val result = addRecognizeUseCase.barcode(uri.toString())
             if (result != "") {
-                updateGifticon(true) { it.copy(barcode = result, barcodeRectF = croppedImage.croppedRect) }
+                updateGifticon(true) {
+                    it.copy(
+                        barcode = result,
+                        barcodeRectF = croppedImage.croppedRect
+                    )
+                }
             } else {
                 updateGifticon { it.copy(barcodeRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_barcode)))
@@ -670,7 +708,11 @@ class AddGifticonViewModel @Inject constructor(
             val result = addRecognizeUseCase.balance(uri.toString())
             if (result > 0) {
                 updateGifticon(true) {
-                    it.copy(isCashCard = true, balance = result.toString(), balanceRectF = croppedImage.croppedRect)
+                    it.copy(
+                        isCashCard = true,
+                        balance = result.toString(),
+                        balanceRectF = croppedImage.croppedRect
+                    )
                 }
             } else {
                 updateGifticon { it.copy(balanceRectF = croppedImage.croppedRect) }
@@ -686,7 +728,12 @@ class AddGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             val result = addRecognizeUseCase.expired(uri.toString())
             if (result != EMPTY_DATE) {
-                updateGifticon(true) { it.copy(expiredAt = result, expiredAtRectF = croppedImage.croppedRect) }
+                updateGifticon(true) {
+                    it.copy(
+                        expiredAt = result,
+                        expiredAtRectF = croppedImage.croppedRect
+                    )
+                }
             } else {
                 updateGifticon { it.copy(expiredAtRectF = croppedImage.croppedRect) }
                 _eventFlow.emit(AddGifticonEvent.ShowSnackBar(UIText.StringResource(R.string.edit_gifticon_failed_recognize_expired_at)))
@@ -756,6 +803,7 @@ class AddGifticonViewModel @Inject constructor(
                     saveGifticonsUseCase(gifticons)
                     _eventFlow.emit(AddGifticonEvent.RegistrationCompleted)
                 }
+
                 else -> {
                     handleGifticonInvalid(valid)
                 }

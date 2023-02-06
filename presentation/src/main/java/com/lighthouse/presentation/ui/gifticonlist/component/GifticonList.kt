@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
-import com.lighthouse.domain.util.isExpired
+import com.lighthouse.core.exts.isExpired
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dpToPx
 import com.lighthouse.presentation.extension.toConcurrency

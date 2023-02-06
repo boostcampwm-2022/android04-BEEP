@@ -5,8 +5,8 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.lighthouse.core.utils.time.TimeCalculator.calculateAfterDateDiffHour
 import com.lighthouse.presentation.ui.widget.BeepWidgetWorker
-import com.lighthouse.presentation.util.TimeCalculator.calculateAfterDateDiffHour
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 

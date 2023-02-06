@@ -1,5 +1,7 @@
 package com.lighthouse.datasource.gifticon
 
+import com.lighthouse.core.exts.isExpired
+import com.lighthouse.core.exts.today
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
@@ -9,8 +11,6 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
-import com.lighthouse.domain.util.isExpired
-import com.lighthouse.domain.util.today
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
