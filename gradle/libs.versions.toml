@@ -2,7 +2,7 @@
 androidStudioGradlePlugin = "7.4.0"
 
 # AndroidX
-lifecycle = "2.5.1"
+lifecycle = "2.6.0-alpha04"
 paging = "3.1.1"
 room = "2.4.3"
 hilt-work = "1.0.0"
@@ -17,11 +17,17 @@ dagger = "2.44"
 ## Kotlin
 kotlin = "1.8.0"
 kotlin-coroutine = "1.6.4"
+ksp = "1.8.0-1.0.8"
 ## Squareup
 retrofit = "2.9.0"
 moshi = "1.14.0"
 ## Glide
 glide = "4.14.2"
+## gms
+gms-google-services = "4.3.15"
+gms-oss-licenses-plugin = "0.10.6"
+## firebase
+firebase-crashlytics-gradle = "2.9.2"
 
 # test
 junit5 = "5.8.2"
@@ -72,7 +78,8 @@ javax-inject = "javax.inject:javax.inject:1"
 ## kotlin
 kotlin-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutine" }
 kotlin-coroutine-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutine" }
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.4"
+kotlin-coroutine-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3"
 ## Material
 material = "com.google.android.material:material:1.7.0"
 ## GMS (google mobile service)
@@ -153,3 +160,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

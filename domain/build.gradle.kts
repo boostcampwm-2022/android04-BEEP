@@ -1,18 +1,20 @@
 plugins {
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    kotlin("kapt")
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    id("beep.java.library")
 }
 
 dependencies {
-    implementation(Libraries.DOMAIN_LIBRARIES)
-    testImplementation(TestImpl.TEST_LIBRARIES)
-}
-kapt {
-    correctErrorTypes = true
+    implementation(libs.kotlin.coroutine.core)
+    implementation(libs.androidX.paging.common.ktx)
+    implementation(libs.androidX.room.common)
+    implementation(libs.javax.inject)
+
+    testImplementation(libs.junit4)
+    testImplementation(libs.junit5.jupiter.params)
+    testImplementation(libs.junit5.jupiter.engine)
+    testImplementation(libs.junit5.vintage.engine)
+    testImplementation(libs.mockk)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.kotlin.coroutine.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.turbine)
 }
