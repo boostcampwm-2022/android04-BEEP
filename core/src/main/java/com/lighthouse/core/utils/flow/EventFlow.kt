@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.util.flow
+package com.lighthouse.core.utils.flow
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector

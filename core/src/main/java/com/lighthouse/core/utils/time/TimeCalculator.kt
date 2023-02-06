@@ -1,6 +1,6 @@
-package com.lighthouse.presentation.util
+package com.lighthouse.core.utils.time
 
-import com.lighthouse.domain.util.calcDday
+import com.lighthouse.core.exts.calcDday
 import java.util.Calendar
 import java.util.Date
 

@@ -1,4 +1,4 @@
-package com.lighthouse.presentation.util
+package com.lighthouse.core.utils.uuid
 
 import java.util.UUID
 

@@ -1,7 +1,31 @@
-package com.lighthouse.domain.util
+package com.lighthouse.core.exts
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
+
+fun Date.toYear(): Int {
+    return SimpleDateFormat("yyyy", Locale.getDefault()).format(this).toInt()
+}
+
+fun Date.toMonth(): Int {
+    return SimpleDateFormat("M", Locale.getDefault()).format(this).toInt()
+}
+
+fun Date.toDayOfMonth(): Int {
+    return SimpleDateFormat("d", Locale.getDefault()).format(this).toInt()
+}
+
+fun String.toDate(pattern: String): Date {
+    val format = SimpleDateFormat(pattern, Locale.getDefault())
+    return format.parse(this) ?: Date(0)
+}
+
+fun Date.toFormatString(pattern: String): String {
+    val format = SimpleDateFormat(pattern, Locale.getDefault())
+    return format.format(this)
+}
 
 val today: Date
     get() = Date().adjust()

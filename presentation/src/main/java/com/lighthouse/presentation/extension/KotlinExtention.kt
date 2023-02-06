@@ -5,9 +5,6 @@ import android.content.res.Resources
 import android.util.TypedValue
 import com.lighthouse.presentation.R
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 val Int.dp
     get() = Resources.getSystem().displayMetrics?.let { dm ->
@@ -24,6 +21,12 @@ val Float.dpToPx
         this * dm.density
     } ?: 0f
 
+val screenWidth: Int
+    get() = Resources.getSystem().displayMetrics?.widthPixels ?: 0
+
+val screenHeight: Int
+    get() = Resources.getSystem().displayMetrics?.heightPixels ?: 0
+
 fun Int.toConcurrency(context: Context, useUnit: Boolean = true): String {
     val format = context.resources.getString(R.string.all_concurrency_format)
     val formattedNumber = DecimalFormat(format).format(this)
@@ -32,35 +35,4 @@ fun Int.toConcurrency(context: Context, useUnit: Boolean = true): String {
     } else {
         formattedNumber
     }
-}
-
-fun Int.toConcurrency(): String {
-    return DecimalFormat("#,###").format(this)
-}
-
-val screenWidth: Int
-    get() = Resources.getSystem().displayMetrics?.widthPixels ?: 0
-
-val screenHeight: Int
-    get() = Resources.getSystem().displayMetrics?.heightPixels ?: 0
-
-fun String.toDigit(): Int {
-    return filter { it.isDigit() }.toIntOrNull() ?: 0
-}
-
-fun String.toNumber(): String {
-    return (filter { it.isDigit() }.toLongOrNull() ?: 0L).toString()
-}
-
-fun String.toNumberFormat(): String {
-    return toNumber()
-        .reversed()
-        .chunked(3)
-        .joinToString(",")
-        .reversed()
-}
-
-fun String.toDate(pattern: String): Date {
-    val format = SimpleDateFormat(pattern, Locale.getDefault())
-    return format.parse(this) ?: Date(0)
 }
