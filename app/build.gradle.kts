@@ -31,6 +31,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core)
     implementation(projects.domain)
     implementation(projects.presentation)
     implementation(projects.data)

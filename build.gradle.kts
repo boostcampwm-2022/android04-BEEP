@@ -22,14 +22,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
 }
 
-//
-// allprojects {
-//    configurations.all {
-//        resolutionStrategy.force("org.objenesis:objenesis:2.6")
-//    }
-// }
-//
-
 task("clean", Delete::class) {
     delete(rootProject.buildDir)
 }

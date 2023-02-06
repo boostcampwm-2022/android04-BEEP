@@ -29,6 +29,7 @@ fun includeProject(moduleName: String, rootFolderName: String = "") {
 }
 
 includeProject(":app")
+includeProject(":core")
 includeProject(":data")
 includeProject(":presentation")
 includeProject(":domain")
