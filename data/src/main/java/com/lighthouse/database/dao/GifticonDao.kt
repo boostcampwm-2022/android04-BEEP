@@ -43,7 +43,10 @@ interface GifticonDao {
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY expire_at")
-    fun getFilteredGifticonsSortByDeadline(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
+    fun getFilteredGifticonsSortByDeadline(
+        userId: String,
+        filters: Set<String>
+    ): Flow<List<GifticonEntity>>
 
     @Query(
         "SELECT * FROM $GIFTICON_TABLE " +
@@ -145,7 +148,17 @@ interface GifticonDao {
     @Transaction
     suspend fun updateGifticonWithCropTransaction(gifticonWithCrop: GifticonWithCrop) {
         with(gifticonWithCrop) {
-            updateGifticon(id, croppedUri, name, brand, expireAt, barcode, isCashCard, balance, memo)
+            updateGifticon(
+                id,
+                croppedUri,
+                name,
+                brand,
+                expireAt,
+                barcode,
+                isCashCard,
+                balance,
+                memo
+            )
             updateGifticonCrop(id, croppedRect)
         }
     }
@@ -182,7 +195,10 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
 
-    @Query("SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)")
+    @Query(
+        "SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE " +
+            "WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)"
+    )
     fun hasUsableGifticon(userId: String, time: Date): Flow<Boolean>
 
     @Query("SELECT EXISTS(SELECT 1 from $GIFTICON_TABLE WHERE LOWER(brand)=LOWER(:brand) LIMIT 1)")
@@ -190,4 +206,22 @@ interface GifticonDao {
 
     @Query("UPDATE $GIFTICON_TABLE SET user_id = :newUserId WHERE user_id = :oldUserId")
     suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String)
+
+    /**
+     * 오늘 날짜를 기준으로 사용 가능한 기프티콘의 브랜드명 갖고 오기
+     */
+    @Query(
+        "SELECT DISTINCT brand FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0"
+    )
+    fun getGifticonBrands(userId: String, time: Date): Flow<List<String>>
+
+    /**
+     * 사용 가능한 기프티콘 중에서 count 만큼만 갖고 오기
+     */
+    @Query(
+        "SELECT * FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 LIMIT :count"
+    )
+    fun getSomeGifticons(userId: String, time: Date, count: Int): Flow<List<GifticonEntity>>
 }

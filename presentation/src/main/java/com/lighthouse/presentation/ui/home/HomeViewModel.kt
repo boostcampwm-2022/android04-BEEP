@@ -40,12 +40,12 @@ class HomeViewModel @Inject constructor(
     private val _eventFlow = MutableEventFlow<HomeEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    private val gifticons =
-        getGifticonUseCase.getUsableGifticons().stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+    private val gifticons = getGifticonUseCase.getUsableGifticons()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    private val allBrands = gifticons.transform { gifticons ->
-        if (gifticons is DbResult.Success) {
-            emit(gifticons.data.map { it.brand.lowercase() }.distinct())
+    private val allBrands = getGifticonUseCase.getGifticonBrands().transform { brands ->
+        if (brands is DbResult.Success) {
+            emit(brands.data)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -56,16 +56,12 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
-    val expiredGifticon = gifticons.transform { gifticons ->
-        if (gifticons is DbResult.Success) {
-            val data = gifticons.data.map {
-                it.toPresentation()
+    val expiredGifticon =
+        getGifticonUseCase.getSomeGifticons(EXPIRED_GIFTICON_LIST_MAX_SIZE).transform { gifticons ->
+            if (gifticons is DbResult.Success) {
+                emit(gifticons.data.map { it.toPresentation() })
             }
-            val gifticonSize =
-                if (data.size < EXPIRED_GIFTICON_LIST_MAX_SIZE) data.size else EXPIRED_GIFTICON_LIST_MAX_SIZE
-            emit(data.slice(0 until gifticonSize))
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _uiState: MutableEventFlow<UiState<Unit>> = MutableEventFlow()
     val uiState = _uiState.asEventFlow()
@@ -74,7 +70,8 @@ class HomeViewModel @Inject constructor(
 
     val isShimmer = MutableStateFlow(false)
 
-    private val _nearGifticons: MutableStateFlow<List<GifticonWithDistanceUIModel>?> = MutableStateFlow(null)
+    private val _nearGifticons: MutableStateFlow<List<GifticonWithDistanceUIModel>?> =
+        MutableStateFlow(null)
     val nearGifticons = _nearGifticons.asStateFlow()
 
     val isEmptyNearBrands = nearGifticons.transform {
@@ -127,37 +124,42 @@ class HomeViewModel @Inject constructor(
             val x = location.longitude
             val y = location.latitude
 
-            getBrandPlaceInfosUseCase(allBrands.value, x, y, SEARCH_SIZE)
-                .mapCatching { brand -> brand.toPresentation() }
-                .onSuccess { brands ->
-                    nearBrandsInfo = brands
-                    _nearGifticons.value = nearBrandsInfo
-                        .distinctBy { it.brandLowerName }
-                        .mapNotNull { placeInfo ->
-                            gifticonsMap.value[placeInfo.brandLowerName]
-                                ?.first()
-                                ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
-                        }
-                    when (_nearGifticons.value.isNullOrEmpty()) {
-                        true -> _uiState.emit(UiState.NotFoundResults)
-                        false -> _uiState.emit(UiState.Success(Unit))
+            getBrandPlaceInfosUseCase(
+                allBrands.value,
+                x,
+                y,
+                SEARCH_SIZE
+            ).mapCatching { brand -> brand.toPresentation() }.onSuccess { brands ->
+                nearBrandsInfo = brands
+                _nearGifticons.value =
+                    nearBrandsInfo.distinctBy { it.brandLowerName }.mapNotNull { placeInfo ->
+                        gifticonsMap.value[placeInfo.brandLowerName]?.first()
+                            ?.toPresentation(diffLocation(placeInfo.x, placeInfo.y, x, y))
                     }
+                when (_nearGifticons.value.isNullOrEmpty()) {
+                    true -> _uiState.emit(UiState.NotFoundResults)
+                    false -> _uiState.emit(UiState.Success(Unit))
                 }
-                .onFailure { throwable ->
-                    _uiState.emit(
-                        when (throwable) {
-                            BeepError.NetworkFailure -> UiState.NetworkFailure
-                            else -> UiState.Failure
-                        }
-                    )
-                }
+            }.onFailure { throwable ->
+                _uiState.emit(
+                    when (throwable) {
+                        BeepError.NetworkFailure -> UiState.NetworkFailure
+                        else -> UiState.Failure
+                    }
+                )
+            }
             isShimmer.value = false
         }
     }
 
     fun gotoMap() {
         viewModelScope.launch {
-            _eventFlow.emit(HomeEvent.NavigateMap(gifticonsMap.value.values.flatten().map { it.toPresentation() }, nearBrandsInfo))
+            _eventFlow.emit(
+                HomeEvent.NavigateMap(
+                    gifticonsMap.value.values.flatten().map { it.toPresentation() },
+                    nearBrandsInfo
+                )
+            )
         }
     }
 

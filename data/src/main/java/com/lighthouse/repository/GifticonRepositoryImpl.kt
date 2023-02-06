@@ -35,14 +35,15 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllGifticons(userId: String, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> = flow {
-        emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllGifticons(userId, sortBy).collect {
-            emit(DbResult.Success(it))
+    override fun getAllGifticons(userId: String, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> =
+        flow {
+            emit(DbResult.Loading)
+            gifticonLocalDataSource.getAllGifticons(userId, sortBy).collect {
+                emit(DbResult.Success(it))
+            }
+        }.catch { e ->
+            emit(DbResult.Failure(e))
         }
-    }.catch { e ->
-        emit(DbResult.Failure(e))
-    }
 
     override fun getAllUsedGifticons(userId: String): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
@@ -66,14 +67,15 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>> = flow {
-        emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllBrands(userId, filterExpired).collect {
-            emit(DbResult.Success(it))
+    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>> =
+        flow {
+            emit(DbResult.Loading)
+            gifticonLocalDataSource.getAllBrands(userId, filterExpired).collect {
+                emit(DbResult.Success(it))
+            }
+        }.catch { e ->
+            emit(DbResult.Failure(e))
         }
-    }.catch { e ->
-        emit(DbResult.Failure(e))
-    }
 
     override suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate? {
         return gifticonLocalDataSource.getGifticonCrop(userId, id)?.toDomain()
@@ -91,7 +93,10 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity(croppedUri))
     }
 
-    override suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>) {
+    override suspend fun saveGifticons(
+        userId: String,
+        gifticonForAdditions: List<GifticonForAddition>
+    ) {
         val newGifticons = gifticonForAdditions.map { gifticonForAddition ->
             val id = UUID.generate()
             var result: GifticonImageResult? = null
@@ -128,7 +133,11 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.useGifticon(gifticonId, usageHistory)
     }
 
-    override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory) {
+    override suspend fun useCashCardGifticon(
+        gifticonId: String,
+        amount: Int,
+        usageHistory: UsageHistory
+    ) {
         gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, usageHistory)
     }
 
@@ -168,9 +177,35 @@ class GifticonRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun hasGifticonBrand(brand: String) = gifticonLocalDataSource.hasGifticonBrand(brand)
+    override suspend fun hasGifticonBrand(brand: String) =
+        gifticonLocalDataSource.hasGifticonBrand(brand)
 
     override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
         gifticonLocalDataSource.moveUserIdGifticon(oldUserId, newUserId)
     }
+
+    override fun getGifticonBrands(userId: String): Flow<DbResult<List<String>>> = flow {
+        emit(DbResult.Loading)
+
+        gifticonLocalDataSource.getGifticonBrands(userId).collect { brands ->
+            if (brands.isEmpty()) {
+                emit(DbResult.Empty)
+            } else {
+                emit(DbResult.Success(brands))
+            }
+        }
+    }
+
+    override fun getSomeGifticons(userId: String, count: Int): Flow<DbResult<List<Gifticon>>> =
+        flow {
+            emit(DbResult.Loading)
+
+            gifticonLocalDataSource.getSomeGifticons(userId, count).collect { gifticons ->
+                if (gifticons.isEmpty()) {
+                    emit(DbResult.Empty)
+                } else {
+                    emit(DbResult.Success(gifticons.map { it.toDomain() }))
+                }
+            }
+        }
 }
