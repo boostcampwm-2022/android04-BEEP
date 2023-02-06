@@ -1,26 +1,35 @@
-plugins {
-    id("com.android.application") version "7.4.1" apply false
-    id("com.android.library") version "7.4.1" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
-    id("org.jetbrains.kotlin.jvm") version "1.8.0" apply false
-    id("com.google.dagger.hilt.android") version "2.44" apply false
-}
-
 buildscript {
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.1")
-        classpath("com.google.gms:google-services:4.3.15")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.2")
-        classpath("com.google.android.gms:oss-licenses-plugin:0.10.6")
+        val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+        val kotlinVersion = libs.findVersion("kotlin").get()
+        val gmsVersion = libs.findVersion("gms-google-services").get()
+        val gmsOosVersion = libs.findVersion("gms-oss-licenses-plugin").get()
+        val crashlyticsVersion = libs.findVersion("firebase-crashlytics-gradle").get()
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.google.gms:google-services:$gmsVersion")
+        classpath("com.google.android.gms:oss-licenses-plugin:$gmsOosVersion")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:$crashlyticsVersion")
     }
 }
 
-allprojects {
-    configurations.all {
-        resolutionStrategy.force("org.objenesis:objenesis:2.6")
-    }
+@Suppress("DSL_SCOPE_VIOLATION")
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
 }
 
-tasks.register("clean", Delete::class) {
+//
+// allprojects {
+//    configurations.all {
+//        resolutionStrategy.force("org.objenesis:objenesis:2.6")
+//    }
+// }
+//
+
+task("clean", Delete::class) {
     delete(rootProject.buildDir)
 }

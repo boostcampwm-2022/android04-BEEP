@@ -1,86 +1,84 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.library")
+    id("beep.android.library")
+    id("beep.android.library.compose")
+    id("beep.android.hilt")
     id("kotlin-parcelize")
-    id("org.jetbrains.kotlin.android")
-    id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    kotlin("kapt")
-    kotlin("plugin.serialization") version "1.5.0"
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.lighthouse.presentation"
-    compileSdk = AppConfig.compileSdk
-
-    defaultConfig {
-        minSdk = AppConfig.minSdk
-        targetSdk = AppConfig.targetSdk
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = AppConfig.jvmTarget
-    }
-
-    buildFeatures {
-        dataBinding = true
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.KOTLIN_COMPILER_EXTENSION
-    }
-
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-            isIncludeAndroidResources = true
-        }
-    }
 }
 
 dependencies {
-    implementation(project(":domain"))
+    implementation(projects.domain)
 
-    implementation(platform(Libraries.FIREBASE_BOM))
-    implementation(platform(Libraries.COMPOSE_BOM))
-    implementation(Libraries.VIEW_LIBRARIES)
-    testImplementation(TestImpl.TEST_LIBRARIES)
-    kapt(Kapt.VIEW_LIBRARIES)
-    debugImplementation(DebugImpl.VIEW_LIBRARIES)
-    androidTestImplementation(AndroidTestImpl.VIEW_LIBRARIES)
-    annotationProcessor(AnnotationProcessors.VIEW_LIBRARIES)
-}
+    implementation(libs.androidX.core.ktx)
+    implementation(libs.androidX.core.splashscreen)
+    implementation(libs.androidX.appcompat)
+    implementation(libs.androidX.constraintlayout)
+    implementation(libs.androidX.hilt.work)
+    implementation(libs.androidX.lifecycle.viewmodel.ktx)
+    implementation(libs.androidX.fragment.ktx)
+    implementation(libs.androidX.paging.runtime)
+    implementation(libs.androidX.biometric)
+    implementation(libs.androidX.viewpager2)
+    implementation(libs.androidX.work.runtime.ktx)
+    implementation(libs.androidX.glance.appwidget)
 
-kapt {
-    correctErrorTypes = true
-}
+    implementation(libs.kotlin.coroutine.core)
+    implementation(libs.kotlin.coroutine.android)
+    implementation(libs.kotlin.serialization.json)
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
-    }
+    implementation(libs.material)
+
+    implementation(libs.accompanist.appcompat.theme)
+    implementation(libs.accompanist.flowlayout)
+    implementation(libs.accompanist.placeholder.material)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.crashlytics.ndk)
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics.ktx)
+
+    implementation(libs.gms.play.services.auth)
+    implementation(libs.gms.play.services.location)
+    implementation(libs.gms.play.services.oss.licences)
+
+    implementation(libs.glide)
+    implementation(libs.landscapist.glide)
+
+    implementation(libs.naver.map.sdk)
+
+    implementation(libs.zxing.core)
+
+    implementation(libs.timber)
+
+    implementation(libs.facebook.shimmer)
+
+    implementation(libs.airbnb.lottie)
+
+    ksp(libs.glide.ksp)
+
+    testImplementation(libs.junit4)
+    testImplementation(libs.junit5.jupiter.params)
+    testImplementation(libs.junit5.jupiter.engine)
+    testImplementation(libs.junit5.vintage.engine)
+    testImplementation(libs.mockk)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.kotlin.coroutine.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.turbine)
+
+    androidTestImplementation(libs.test.core)
 }
 
 // JUnit5
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+// tasks.withType<Test> {
+//    useJUnitPlatform()
+// }

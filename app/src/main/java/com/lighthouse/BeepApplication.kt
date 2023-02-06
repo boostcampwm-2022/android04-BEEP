@@ -3,8 +3,9 @@ package com.lighthouse
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.lighthouse.beep.BuildConfig
 import com.lighthouse.presentation.background.BeepWorkManager
+import com.lighthouse.utils.log.ComponentLogger
+import com.lighthouse.utils.log.CustomTimberTree
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
@@ -13,14 +14,18 @@ import javax.inject.Inject
 class BeepApplication : Application(), Configuration.Provider {
 
     @Inject
+    lateinit var componentLogger: ComponentLogger
+
+    @Inject
+    lateinit var customTimberTree: CustomTimberTree
+
+    @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(CustomTimberTree())
-        }
+        Timber.plant(customTimberTree)
+        componentLogger.initialize(this)
 
         BeepWorkManager(this)
     }
@@ -29,10 +34,4 @@ class BeepApplication : Application(), Configuration.Provider {
         Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
-}
-
-class CustomTimberTree : Timber.DebugTree() {
-    override fun createStackElementTag(element: StackTraceElement): String {
-        return "${element.className}:${element.lineNumber}#${element.methodName}"
-    }
 }

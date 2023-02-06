@@ -1,8 +1,11 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
@@ -16,4 +19,16 @@ dependencyResolutionManagement {
 }
 rootProject.name = "BEEP"
 
-include("app", "data", "presentation", "domain")
+fun includeProject(moduleName: String, rootFolderName: String = "") {
+    settings.include(moduleName)
+
+    if (rootFolderName.isNotEmpty()) {
+        project(moduleName).projectDir =
+            File(rootDir, "$rootFolderName/${moduleName.substring(startIndex = 1)}")
+    }
+}
+
+includeProject(":app")
+includeProject(":data")
+includeProject(":presentation")
+includeProject(":domain")

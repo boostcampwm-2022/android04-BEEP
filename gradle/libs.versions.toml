@@ -1,0 +1,163 @@
+[versions]
+androidStudioGradlePlugin = "7.4.0"
+
+# AndroidX
+lifecycle = "2.6.0-alpha04"
+paging = "3.1.1"
+room = "2.4.3"
+hilt-work = "1.0.0"
+work = "2.7.1"
+compose-compiler = "1.4.0"
+
+# 3rd-party
+## Accompanist
+accompanist = "0.28.0"
+## Dagger
+dagger = "2.44"
+## Kotlin
+kotlin = "1.8.0"
+kotlin-coroutine = "1.6.4"
+ksp = "1.8.0-1.0.8"
+## Squareup
+retrofit = "2.9.0"
+moshi = "1.14.0"
+## Glide
+glide = "4.14.2"
+## gms
+gms-google-services = "4.3.15"
+gms-oss-licenses-plugin = "0.10.6"
+## firebase
+firebase-crashlytics-gradle = "2.9.2"
+
+# test
+junit5 = "5.8.2"
+coroutines-test = "1.6.0"
+
+# Android Test
+mockito = "2.28.2"
+
+[libraries]
+# AndroidX
+androidX-appcompat = "androidx.appcompat:appcompat:1.5.1"
+androidX-biometric = "androidx.biometric:biometric:1.1.0"
+androidX-core-ktx = "androidx.core:core-ktx:1.9.0"
+androidX-core-splashscreen = "androidx.core:core-splashscreen:1.0.0"
+androidX-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+androidX-compose-bom = "androidx.compose:compose-bom:2022.10.00"
+androidX-compose-material = { module = "androidx.compose.material:material" }
+androidX-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidX-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidX-compose-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+androidX-compose-activity = "androidx.activity:activity-compose:1.5.1"
+androidX-compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidX-compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidX-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.0-alpha01"
+androidX-fragment-ktx = "androidx.fragment:fragment-ktx:1.5.4"
+androidX-glance-appwidget = "androidx.glance:glance-appwidget:1.0.0-alpha05"
+androidX-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
+androidX-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
+androidX-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version = "lifecycle" }
+androidX-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
+androidX-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+androidX-room-common = { module = "androidx.room:room-common", version.ref = "room" }
+androidX-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidX-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidX-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidX-viewpager2 = "androidx.viewpager2:viewpager2:1.0.0"
+androidX-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+androidX-work-testing = { module = "androidx.work:work-testing", version.ref = "work" }
+# 3rd-party
+## Accompanist
+accompanist-appcompat-theme = { module = "com.google.accompanist:accompanist-appcompat-theme", version.ref = "accompanist" }
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
+accompanist-placeholder-material = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
+## Dagger
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
+dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
+javax-inject = "javax.inject:javax.inject:1"
+## kotlin
+kotlin-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutine" }
+kotlin-coroutine-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutine" }
+kotlin-coroutine-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3"
+## Material
+material = "com.google.android.material:material:1.7.0"
+## GMS (google mobile service)
+gms-play-services-auth = "com.google.android.gms:play-services-auth:20.3.0"
+gms-play-services-location = "com.google.android.gms:play-services-location:20.0.0"
+gms-play-services-oss-licences = "com.google.android.gms:play-services-oss-licenses:17.0.0"
+## Firebase
+firebase-bom = "com.google.firebase:firebase-bom:31.0.2"
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
+firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+## MLKit
+mlkit-text-recognition-korean = "com.google.mlkit:text-recognition-korean:16.0.0-beta6"
+## Zxing
+zxing-core = "com.google.zxing:core:3.5.1"
+## Squareup
+squareup-retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+squareup-moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+squareup-moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+squareup-moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshi" }
+squareup-retrofit2-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+## Naver Map
+naver-map-sdk = "com.naver.maps:map-sdk:3.16.0"
+## Glide
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+landscapist-glide = "com.github.skydoves:landscapist-glide:2.1.0"
+## Timber
+timber = "com.jakewharton.timber:timber:4.7.1"
+## Facebook
+facebook-shimmer = "com.facebook.shimmer:shimmer:0.5.0"
+## Airbnb
+airbnb-lottie = "com.airbnb.android:lottie:5.2.0"
+
+# Test
+junit4 = "junit:junit:4.13.2"
+junit5-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
+junit5-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
+junit5-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit5" }
+mockk = "io.mockk:mockk:1.12.0"
+google-truth = "com.google.truth:truth:1.1.3"
+test-core = "androidx.test:core:1.5.0"
+robolectric = "org.robolectric:robolectric:4.9"
+turbine = "app.cash.turbine:turbine:0.12.1"
+
+# Android Test
+android-junit = "androidx.test.ext:junit:1.1.3"
+espresso-core = "androidx.test.espresso:espresso-core:3.4.0"
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
+
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidStudioGradlePlugin" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "dagger" }
+
+[bundles]
+androidX-compose = [
+    "androidX-compose-material",
+    "androidX-compose-icons-extended",
+    "androidX-compose-ui-tooling-preview",
+]
+androidX-compose-lifecycle = [
+    "androidX-compose-lifecycle-viewmodel",
+    "androidX-compose-lifecycle-runtime"
+]
+androidX-compose-debug = [
+    "androidX-compose-ui-tooling"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidStudioGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidStudioGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
