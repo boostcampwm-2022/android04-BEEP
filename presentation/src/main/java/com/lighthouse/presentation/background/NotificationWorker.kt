@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.lighthouse.core.utils.time.TimeCalculator
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
-import com.lighthouse.core.utils.time.TimeCalculator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
