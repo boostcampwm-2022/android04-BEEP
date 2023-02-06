@@ -63,7 +63,7 @@ dependencies {
 
     implementation(libs.airbnb.lottie)
 
-    annotationProcessor(libs.glide.compiler)
+    ksp(libs.glide.ksp)
 
     testImplementation(libs.junit4)
     testImplementation(libs.junit5.jupiter.params)

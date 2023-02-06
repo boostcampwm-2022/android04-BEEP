@@ -108,7 +108,7 @@ squareup-retrofit2-converter-moshi = { module = "com.squareup.retrofit2:converte
 naver-map-sdk = "com.naver.maps:map-sdk:3.16.0"
 ## Glide
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
 landscapist-glide = "com.github.skydoves:landscapist-glide:2.1.0"
 ## Timber
 timber = "com.jakewharton.timber:timber:4.7.1"

@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.timber)
 
     ksp(libs.androidX.room.compiler)
-    annotationProcessor(libs.glide.compiler)
+    ksp(libs.glide.ksp)
 
     testImplementation(libs.junit4)
 }
