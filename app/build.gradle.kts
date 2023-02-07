@@ -40,6 +40,7 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.presentation)
     implementation(projects.data)
+    implementation(projects.dataDatabase)
     implementation(projects.dataRemote)
 
     implementation(libs.androidX.hilt.work)
