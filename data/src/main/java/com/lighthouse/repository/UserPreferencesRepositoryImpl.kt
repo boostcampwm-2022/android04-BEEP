@@ -8,9 +8,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.lighthouse.domain.model.UserPreferenceOption
+import com.lighthouse.beep.model.user.UserPreferenceOption
+import com.lighthouse.core.android.utils.crypto.CryptoObjectHelper
 import com.lighthouse.domain.repository.UserPreferencesRepository
-import com.lighthouse.util.CryptoObjectHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -101,7 +101,10 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setBooleanOption(option: UserPreferenceOption, value: Boolean): Result<Unit> = runCatching {
+    override suspend fun setBooleanOption(
+        option: UserPreferenceOption,
+        value: Boolean
+    ): Result<Unit> = runCatching {
         val key = getPreferenceKey(option)
 
         withContext(Dispatchers.IO) {

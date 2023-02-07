@@ -1,6 +1,6 @@
 package com.lighthouse.presentation.mapper
 
-import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 
 fun List<BrandPlaceInfo>.toPresentation(): List<BrandPlaceInfoUiModel> = map {

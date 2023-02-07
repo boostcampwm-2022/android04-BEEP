@@ -1,6 +1,6 @@
 package com.lighthouse.domain.repository
 
-import com.lighthouse.domain.model.UserPreferenceOption
+import com.lighthouse.beep.model.user.UserPreferenceOption
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferencesRepository {

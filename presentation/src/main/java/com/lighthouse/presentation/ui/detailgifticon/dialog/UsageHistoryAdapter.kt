@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lighthouse.domain.model.UsageHistory
+import com.lighthouse.beep.model.user.UsageHistory
+import com.lighthouse.common.utils.geography.Geography
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.databinding.ItemUsageHistoryBinding
-import com.lighthouse.presentation.util.Geography
 
 class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapter.UsageHistoryViewHolder>(diffUtil) {
 

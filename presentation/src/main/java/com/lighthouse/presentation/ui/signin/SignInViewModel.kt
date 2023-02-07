@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.model.UserPreferenceOption
+import com.lighthouse.beep.model.user.UserPreferenceOption
 import com.lighthouse.domain.usecase.setting.GetGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetOptionStoredUseCase
 import com.lighthouse.domain.usecase.setting.SaveGuestOptionUseCase

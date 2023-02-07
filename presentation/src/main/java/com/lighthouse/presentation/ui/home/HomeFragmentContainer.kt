@@ -25,7 +25,12 @@ class HomeFragmentContainer : Fragment(R.layout.fragment_home_container) {
             mainViewModel.hasVariableGifticon.collectLatest { hasGifticon ->
                 when (hasGifticon) {
                     true -> childFragmentManager.commit { replace(R.id.fcv_home, HomeFragment()) }
-                    false -> childFragmentManager.commit { replace(R.id.fcv_home, HomeEmptyFragment()) }
+                    false -> childFragmentManager.commit {
+                        replace(
+                            R.id.fcv_home,
+                            HomeEmptyFragment()
+                        )
+                    }
                 }
             }
         }

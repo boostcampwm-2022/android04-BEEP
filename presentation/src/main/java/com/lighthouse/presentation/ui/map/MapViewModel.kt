@@ -3,13 +3,14 @@ package com.lighthouse.presentation.ui.map
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.model.error.BeepError
+import com.lighthouse.beep.model.location.VertexLocation
+import com.lighthouse.beep.model.result.DbResult
+import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.core.utils.time.TimeCalculator
-import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.VertexLocation
-import com.lighthouse.domain.model.BeepError
-import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
@@ -19,7 +20,6 @@ import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.ui.common.UiState
-import com.lighthouse.presentation.util.resource.UIText
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

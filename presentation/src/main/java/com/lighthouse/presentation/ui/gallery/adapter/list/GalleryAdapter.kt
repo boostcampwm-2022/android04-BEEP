@@ -24,13 +24,18 @@ class GalleryAdapter(
             holder is GalleryHeaderViewHolder && item is GalleryUIModel.Header -> {
                 holder.bind(item)
             }
+
             holder is GalleryItemViewHolder && item is GalleryUIModel.Gallery -> {
                 holder.bind(item)
             }
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (UPDATE_SELECTED in payloads) {
             val item = getItem(position)
             if (holder is GalleryItemViewHolder && item is GalleryUIModel.Gallery) {
@@ -51,19 +56,27 @@ class GalleryAdapter(
 
     companion object {
         private val diff = object : DiffUtil.ItemCallback<GalleryUIModel>() {
-            override fun areItemsTheSame(oldItem: GalleryUIModel, newItem: GalleryUIModel): Boolean {
+            override fun areItemsTheSame(
+                oldItem: GalleryUIModel,
+                newItem: GalleryUIModel
+            ): Boolean {
                 return when {
                     oldItem is GalleryUIModel.Header && newItem is GalleryUIModel.Header -> {
                         oldItem.date == newItem.date
                     }
+
                     oldItem is GalleryUIModel.Gallery && newItem is GalleryUIModel.Gallery -> {
                         oldItem.id == newItem.id
                     }
+
                     else -> false
                 }
             }
 
-            override fun areContentsTheSame(oldItem: GalleryUIModel, newItem: GalleryUIModel): Boolean {
+            override fun areContentsTheSame(
+                oldItem: GalleryUIModel,
+                newItem: GalleryUIModel
+            ): Boolean {
                 return oldItem == newItem
             }
 

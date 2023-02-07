@@ -1,8 +1,8 @@
 package com.lighthouse.presentation.mapper
 
 import android.graphics.RectF
+import com.lighthouse.beep.model.gallery.GalleryImage
 import com.lighthouse.core.exts.toDate
-import com.lighthouse.domain.model.GalleryImage
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 import com.lighthouse.presentation.model.GalleryUIModel

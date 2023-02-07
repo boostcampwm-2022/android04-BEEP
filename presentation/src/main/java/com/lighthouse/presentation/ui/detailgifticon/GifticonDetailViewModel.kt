@@ -3,11 +3,12 @@ package com.lighthouse.presentation.ui.detailgifticon
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.model.result.DbResult
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.exts.toConcurrency
 import com.lighthouse.core.exts.toDayOfMonth
 import com.lighthouse.core.exts.toMonth
 import com.lighthouse.core.exts.toYear
-import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
@@ -18,7 +19,6 @@ import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.CashAmountPreset
 import com.lighthouse.presentation.model.GifticonUIModel
-import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,9 +42,14 @@ class GifticonDetailViewModel @Inject constructor(
     private val unUseGifticonUseCase: UnUseGifticonUseCase
 ) : ViewModel() {
 
-    private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
+    private val gifticonId =
+        stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
     private val gifticonDbResult =
-        getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
+        getGifticonUseCase(gifticonId).stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            DbResult.Loading
+        )
 
     private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
     val mode = _mode.asStateFlow()
@@ -134,11 +139,13 @@ class GifticonDetailViewModel @Inject constructor(
             GifticonDetailMode.UNUSED -> {
                 event(GifticonDetailEvent.UseGifticonButtonClicked)
             }
+
             GifticonDetailMode.USED -> {
                 viewModelScope.launch {
                     unUseGifticonUseCase(gifticonId)
                 }
             }
+
             GifticonDetailMode.EDIT -> {
                 if (checkEditValidation().not()) {
                     event(GifticonDetailEvent.ExistEmptyInfo)
@@ -153,7 +160,11 @@ class GifticonDetailViewModel @Inject constructor(
         viewModelScope.launch {
             if (gifticon.value?.isCashCard == true) {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
-                useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
+                useCashCardGifticonUseCase(
+                    gifticonId,
+                    amountToBeUsed.value,
+                    hasLocationPermission.value
+                )
                 amountToBeUsed.value = 0
                 event(GifticonDetailEvent.UseGifticonComplete)
             } else {

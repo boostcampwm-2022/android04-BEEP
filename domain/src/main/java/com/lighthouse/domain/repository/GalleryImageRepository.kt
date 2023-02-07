@@ -1,7 +1,7 @@
 package com.lighthouse.domain.repository
 
 import androidx.paging.PagingData
-import com.lighthouse.domain.model.GalleryImage
+import com.lighthouse.beep.model.gallery.GalleryImage
 import kotlinx.coroutines.flow.Flow
 
 interface GalleryImageRepository {

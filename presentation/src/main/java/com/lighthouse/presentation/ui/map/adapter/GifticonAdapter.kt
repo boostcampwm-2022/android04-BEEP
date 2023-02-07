@@ -33,7 +33,8 @@ class GifticonAdapter(
     inner class GifticonHorizontalItemViewHolder(
         parent: ViewGroup,
         private val binding: ItemGifticonHorizontalBinding = ItemGifticonHorizontalBinding.bind(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_gifticon_horizontal, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_gifticon_horizontal, parent, false)
         )
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -51,7 +52,8 @@ class GifticonAdapter(
     inner class GifticonVerticalItemViewHolder(
         parent: ViewGroup,
         private val binding: ItemGifticonVerticalBinding = ItemGifticonVerticalBinding.bind(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_gifticon_vertical, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_gifticon_vertical, parent, false)
         )
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -68,11 +70,17 @@ class GifticonAdapter(
 
     companion object {
         private val diff = object : DiffUtil.ItemCallback<GifticonUIModel>() {
-            override fun areItemsTheSame(oldItem: GifticonUIModel, newItem: GifticonUIModel): Boolean {
+            override fun areItemsTheSame(
+                oldItem: GifticonUIModel,
+                newItem: GifticonUIModel
+            ): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: GifticonUIModel, newItem: GifticonUIModel): Boolean {
+            override fun areContentsTheSame(
+                oldItem: GifticonUIModel,
+                newItem: GifticonUIModel
+            ): Boolean {
                 return oldItem == newItem
             }
         }

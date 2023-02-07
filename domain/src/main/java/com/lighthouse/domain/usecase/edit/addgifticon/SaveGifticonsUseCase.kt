@@ -1,6 +1,6 @@
 package com.lighthouse.domain.usecase.edit.addgifticon
 
-import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.domain.repository.AuthRepository
 import com.lighthouse.domain.repository.GifticonRepository
 import javax.inject.Inject

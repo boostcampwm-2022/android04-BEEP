@@ -16,6 +16,8 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.lighthouse.core.android.utils.permission.LocationPermissionManager
+import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
@@ -32,8 +34,6 @@ import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.edit.modifygifticon.ModifyGifticonActivity
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
-import com.lighthouse.presentation.util.permission.LocationPermissionManager
-import com.lighthouse.presentation.util.permission.core.permissions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -88,7 +88,8 @@ class GifticonDetailActivity : AppCompatActivity() {
 
         override fun onAuthError(@StringRes stringId: Int?) {
             if (stringId != null) {
-                Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 authenticate()
             }
@@ -146,9 +147,11 @@ class GifticonDetailActivity : AppCompatActivity() {
                 binding.abGifticonDetail.setExpanded(false, true)
                 binding.svGifticonDetail.scrollToBottom()
             }
+
             is GifticonDetailEvent.EditButtonClicked -> {
                 gotoModifyGifticon(viewModel.gifticon.value?.id)
             }
+
             is GifticonDetailEvent.ExistEmptyInfo -> {
                 Toast.makeText(
                     this,
@@ -156,26 +159,33 @@ class GifticonDetailActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+
             is GifticonDetailEvent.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
+
             is GifticonDetailEvent.UseGifticonButtonClicked -> {
                 authenticate()
             }
+
             is GifticonDetailEvent.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
+
             is GifticonDetailEvent.UseGifticonComplete -> {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
             }
+
             is GifticonDetailEvent.ShowOriginalImage -> {
                 showOriginGifticonDialog(event.origin)
             }
+
             is GifticonDetailEvent.ShowLargeBarcode -> {
                 showLargeBarcodeDialog(event.barcode)
             }
+
             else -> { // TODO(이벤트 처리)
             }
         }
@@ -229,7 +239,12 @@ class GifticonDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             do {
                 dialog
-                    .setMessage(getString(R.string.gifticon_detail_invalid_dialog_message, lastSecond))
+                    .setMessage(
+                        getString(
+                            R.string.gifticon_detail_invalid_dialog_message,
+                            lastSecond
+                        )
+                    )
                 dialog.show()
                 delay(1000)
             } while (--lastSecond > 0)

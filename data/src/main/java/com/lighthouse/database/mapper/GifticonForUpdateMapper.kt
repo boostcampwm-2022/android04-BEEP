@@ -1,8 +1,8 @@
 package com.lighthouse.database.mapper
 
 import android.net.Uri
+import com.lighthouse.beep.model.gifticon.GifticonForUpdate
 import com.lighthouse.database.entity.GifticonWithCrop
-import com.lighthouse.domain.model.GifticonForUpdate
 import com.lighthouse.mapper.toEntity
 
 fun GifticonForUpdate.toEntity(newCroppedUri: Uri?): GifticonWithCrop {

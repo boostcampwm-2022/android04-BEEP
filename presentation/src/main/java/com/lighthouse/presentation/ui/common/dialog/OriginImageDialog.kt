@@ -8,10 +8,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import com.lighthouse.core.android.exts.getRequiredParcelableExtra
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.binding.loadUri
 import com.lighthouse.presentation.databinding.DialogOriginImageBinding
-import com.lighthouse.presentation.extension.getParcelableCompat
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.viewBindings
 
@@ -20,7 +20,7 @@ class OriginImageDialog : DialogFragment(R.layout.dialog_origin_image) {
     private val binding: DialogOriginImageBinding by viewBindings()
 
     private val originUri
-        get() = arguments?.getParcelableCompat(Extras.KEY_ORIGIN_IMAGE, Uri::class.java)
+        get() = arguments?.getRequiredParcelableExtra<Uri>(Extras.KEY_ORIGIN_IMAGE)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {

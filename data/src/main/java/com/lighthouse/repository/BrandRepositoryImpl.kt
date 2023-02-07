@@ -1,9 +1,9 @@
 package com.lighthouse.repository
 
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
+import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.datasource.brand.BrandLocalDataSource
 import com.lighthouse.datasource.brand.BrandRemoteDataSource
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.domain.repository.BrandRepository
 import com.lighthouse.mapper.toDomain
 import com.lighthouse.model.BeepErrorData

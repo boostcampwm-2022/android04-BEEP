@@ -1,7 +1,7 @@
 package com.lighthouse.domain.usecase
 
-import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.domain.repository.AuthRepository
 import com.lighthouse.domain.repository.GifticonRepository
 import kotlinx.coroutines.flow.Flow

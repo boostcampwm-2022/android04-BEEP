@@ -3,8 +3,8 @@ package com.lighthouse.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.database.entity.SectionEntity.Companion.SECTION_TABLE
-import com.lighthouse.domain.Dms
 import java.util.Date
 
 @Entity(tableName = SECTION_TABLE)

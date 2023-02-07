@@ -1,7 +1,7 @@
 package com.lighthouse.domain.repository
 
-import com.lighthouse.domain.model.GalleryImage
-import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import java.util.Date
 
 interface GifticonImageRecognizeRepository {

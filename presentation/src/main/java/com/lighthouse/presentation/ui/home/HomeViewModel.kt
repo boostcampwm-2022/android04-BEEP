@@ -2,13 +2,13 @@ package com.lighthouse.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.model.error.BeepError
+import com.lighthouse.beep.model.location.VertexLocation
+import com.lighthouse.beep.model.result.DbResult
+import com.lighthouse.common.utils.geography.LocationConverter.diffLocation
+import com.lighthouse.common.utils.geography.LocationConverter.setDmsLocation
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
-import com.lighthouse.domain.LocationConverter.diffLocation
-import com.lighthouse.domain.LocationConverter.setDmsLocation
-import com.lighthouse.domain.VertexLocation
-import com.lighthouse.domain.model.BeepError
-import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase

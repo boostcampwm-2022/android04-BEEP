@@ -26,8 +26,8 @@ import com.lighthouse.presentation.ui.edit.modifygifticon.event.ModifyGifticonCr
 import com.lighthouse.presentation.ui.edit.modifygifticon.event.ModifyGifticonEvent
 import com.lighthouse.presentation.ui.edit.modifygifticon.event.ModifyGifticonTag
 import com.lighthouse.presentation.ui.edit.modifygifticon.event.ModifyGifticonValid
-import com.lighthouse.presentation.util.resource.AnimInfo
-import com.lighthouse.presentation.util.resource.UIText
+import com.lighthouse.core.android.utils.resource.AnimInfo
+import com.lighthouse.core.android.utils.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

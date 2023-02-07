@@ -9,15 +9,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.lighthouse.core.android.exts.screenHeight
+import com.lighthouse.core.android.utils.barcode.BarcodeUtil
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.DialogUseGifticonBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
-import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.ui.common.compose.ConcurrencyField
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel
-import com.lighthouse.presentation.util.BarcodeUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -58,7 +60,15 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
         viewLifecycleOwner.repeatOnStarted {
             viewModel.gifticon.collect {
                 val gifticon = it ?: return@collect
-                barcodeUtil.displayBitmap(binding.ivBarcode, gifticon.barcode)
+                val rotatedBarcode = withContext(Dispatchers.IO) {
+                    barcodeUtil.createBarcodeBitmap(
+                        requireContext(),
+                        gifticon.barcode,
+                        binding.ivBarcode.width,
+                        binding.ivBarcode.height
+                    )
+                }
+                binding.ivBarcode.setImageBitmap(rotatedBarcode)
                 binding.tvBarcodeNumber.text = divideBarcodeNumber(gifticon.barcode)
             }
         }

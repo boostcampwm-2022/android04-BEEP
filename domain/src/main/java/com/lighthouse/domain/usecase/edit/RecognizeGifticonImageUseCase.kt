@@ -1,7 +1,7 @@
 package com.lighthouse.domain.usecase.edit
 
-import com.lighthouse.domain.model.GalleryImage
-import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.domain.repository.GifticonImageRecognizeRepository
 import javax.inject.Inject
 

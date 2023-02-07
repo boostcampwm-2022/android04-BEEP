@@ -1,7 +1,7 @@
 package com.lighthouse.repository
 
+import com.lighthouse.core.android.utils.crypto.CryptoObjectHelper
 import com.lighthouse.domain.repository.SecurityRepository
-import com.lighthouse.util.CryptoObjectHelper
 import javax.crypto.Cipher
 
 class SecurityRepositoryImpl : SecurityRepository {

@@ -11,7 +11,7 @@
 
         <variable
             name="geo"
-            type="com.lighthouse.presentation.util.Geography" />
+            type="com.lighthouse.common.utils.geography.Geography" />
 
         <import
             alias="mode"

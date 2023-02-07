@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.mapper
 
 import android.net.Uri
-import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.beep.model.gifticon.Gifticon
 import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
 

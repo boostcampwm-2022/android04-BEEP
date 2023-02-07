@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.usecase.gallery.GetGalleryImagesUseCase
@@ -15,7 +16,6 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.event.GalleryEvent
-import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

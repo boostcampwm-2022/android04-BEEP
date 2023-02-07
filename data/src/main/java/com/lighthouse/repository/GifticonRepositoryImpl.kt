@@ -1,21 +1,20 @@
 package com.lighthouse.repository
 
 import android.net.Uri
+import com.lighthouse.beep.model.etc.SortBy
+import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForUpdate
+import com.lighthouse.beep.model.result.DbResult
+import com.lighthouse.beep.model.user.UsageHistory
+import com.lighthouse.core.utils.uuid.UUID
 import com.lighthouse.database.mapper.toDomain
 import com.lighthouse.database.mapper.toEntity
 import com.lighthouse.datasource.gifticon.GifticonImageSource
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
-import com.lighthouse.domain.model.Brand
-import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonForAddition
-import com.lighthouse.domain.model.GifticonForUpdate
-import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.mapper.toDomain
 import com.lighthouse.model.GifticonImageResult
-import com.lighthouse.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -26,25 +25,27 @@ class GifticonRepositoryImpl @Inject constructor(
     private val gifticonImageSource: GifticonImageSource
 ) : GifticonRepository {
 
-    override fun getGifticon(id: String): Flow<DbResult<Gifticon>> = flow {
-        emit(DbResult.Loading)
-        gifticonLocalDataSource.getGifticon(id).collect {
-            emit(DbResult.Success(it))
+    override fun getGifticon(id: String): Flow<DbResult<Gifticon>> =
+        flow<DbResult<Gifticon>> {
+            emit(DbResult.Loading)
+            gifticonLocalDataSource.getGifticon(id).collect {
+                emit(DbResult.Success(it))
+            }
+        }.catch { e ->
+            emit(DbResult.Failure(e))
         }
-    }.catch { e ->
-        emit(DbResult.Failure(e))
-    }
 
-    override fun getAllGifticons(userId: String, sortBy: SortBy): Flow<DbResult<List<Gifticon>>> = flow {
-        emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllGifticons(userId, sortBy).collect {
-            emit(DbResult.Success(it))
+    override fun getAllGifticons(userId: String, sortBy: SortBy) =
+        flow {
+            emit(DbResult.Loading)
+            gifticonLocalDataSource.getAllGifticons(userId, sortBy).collect {
+                emit(DbResult.Success(it))
+            }
+        }.catch { e ->
+            emit(DbResult.Failure(e))
         }
-    }.catch { e ->
-        emit(DbResult.Failure(e))
-    }
 
-    override fun getAllUsedGifticons(userId: String): Flow<DbResult<List<Gifticon>>> = flow {
+    override fun getAllUsedGifticons(userId: String) = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getAllUsedGifticons(userId).collect {
             emit(DbResult.Success(it))
@@ -66,14 +67,15 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>> = flow {
-        emit(DbResult.Loading)
-        gifticonLocalDataSource.getAllBrands(userId, filterExpired).collect {
-            emit(DbResult.Success(it))
+    override fun getAllBrands(userId: String, filterExpired: Boolean) =
+        flow {
+            emit(DbResult.Loading)
+            gifticonLocalDataSource.getAllBrands(userId, filterExpired).collect {
+                emit(DbResult.Success(it))
+            }
+        }.catch { e ->
+            emit(DbResult.Failure(e))
         }
-    }.catch { e ->
-        emit(DbResult.Failure(e))
-    }
 
     override suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate? {
         return gifticonLocalDataSource.getGifticonCrop(userId, id)?.toDomain()
@@ -91,7 +93,10 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity(croppedUri))
     }
 
-    override suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>) {
+    override suspend fun saveGifticons(
+        userId: String,
+        gifticonForAdditions: List<GifticonForAddition>
+    ) {
         val newGifticons = gifticonForAdditions.map { gifticonForAddition ->
             val id = UUID.generate()
             var result: GifticonImageResult? = null
@@ -107,7 +112,7 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.insertGifticons(newGifticons)
     }
 
-    override fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>> = flow {
+    override fun getUsageHistory(gifticonId: String) = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getUsageHistory(gifticonId).collect {
             if (it.isEmpty()) {
@@ -128,7 +133,11 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.useGifticon(gifticonId, usageHistory)
     }
 
-    override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory) {
+    override suspend fun useCashCardGifticon(
+        gifticonId: String,
+        amount: Int,
+        usageHistory: UsageHistory
+    ) {
         gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, usageHistory)
     }
 
@@ -168,7 +177,8 @@ class GifticonRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun hasGifticonBrand(brand: String) = gifticonLocalDataSource.hasGifticonBrand(brand)
+    override suspend fun hasGifticonBrand(brand: String) =
+        gifticonLocalDataSource.hasGifticonBrand(brand)
 
     override suspend fun moveUserIdGifticon(oldUserId: String, newUserId: String) {
         gifticonLocalDataSource.moveUserIdGifticon(oldUserId, newUserId)

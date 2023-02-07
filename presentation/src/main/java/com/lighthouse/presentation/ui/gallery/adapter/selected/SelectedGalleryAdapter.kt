@@ -9,7 +9,10 @@ class SelectedGalleryAdapter(
     private val onClickGallery: (GalleryUIModel.Gallery) -> Unit
 ) : BindableListAdapter<GalleryUIModel.Gallery, SelectedGalleryItemViewHolder>(diff) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedGalleryItemViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): SelectedGalleryItemViewHolder {
         return SelectedGalleryItemViewHolder(parent, onClickGallery)
     }
 
@@ -19,11 +22,17 @@ class SelectedGalleryAdapter(
 
     companion object {
         private val diff = object : DiffUtil.ItemCallback<GalleryUIModel.Gallery>() {
-            override fun areItemsTheSame(oldItem: GalleryUIModel.Gallery, newItem: GalleryUIModel.Gallery): Boolean {
+            override fun areItemsTheSame(
+                oldItem: GalleryUIModel.Gallery,
+                newItem: GalleryUIModel.Gallery
+            ): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: GalleryUIModel.Gallery, newItem: GalleryUIModel.Gallery): Boolean {
+            override fun areContentsTheSame(
+                oldItem: GalleryUIModel.Gallery,
+                newItem: GalleryUIModel.Gallery
+            ): Boolean {
                 return oldItem == newItem
             }
         }

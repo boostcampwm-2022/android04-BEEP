@@ -5,6 +5,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.core.android.utils.resource.AnimInfo
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.exts.toDayOfMonth
 import com.lighthouse.core.exts.toDigit
 import com.lighthouse.core.exts.toMonth
@@ -28,8 +30,6 @@ import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonEvent
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonValid
-import com.lighthouse.presentation.util.resource.AnimInfo
-import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

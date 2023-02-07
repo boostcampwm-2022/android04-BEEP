@@ -1,8 +1,8 @@
 package com.lighthouse.datasource.brand
 
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
+import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.database.entity.BrandLocationEntity
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.model.BrandPlaceInfo
 
 interface BrandLocalDataSource {
 

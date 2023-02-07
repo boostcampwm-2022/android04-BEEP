@@ -1,7 +1,7 @@
 package com.lighthouse.datasource.brand
 
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.LocationConverter
+import com.lighthouse.beep.model.location.Dms
+import com.lighthouse.common.utils.geography.LocationConverter
 import com.lighthouse.model.BeepErrorData
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 import com.lighthouse.network.NetworkApiService

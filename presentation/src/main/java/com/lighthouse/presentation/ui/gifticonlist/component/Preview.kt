@@ -2,8 +2,8 @@ package com.lighthouse.presentation.ui.gifticonlist.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.lighthouse.domain.model.Brand
-import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.gifticon.Gifticon
 
 val sampleGifticonItems = listOf<Gifticon>(
 //    Gifticon(

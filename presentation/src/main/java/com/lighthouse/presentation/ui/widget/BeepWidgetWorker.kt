@@ -9,12 +9,12 @@ import androidx.glance.appwidget.updateAll
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.lighthouse.domain.model.DbResult
+import com.lighthouse.beep.model.result.DbResult
+import com.lighthouse.core.android.utils.permission.core.checkPermission
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.domain.usecase.GetUserLocationUseCase
 import com.lighthouse.presentation.mapper.toPresentation
-import com.lighthouse.presentation.util.permission.core.checkPermission
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -79,6 +79,7 @@ class BeepWidgetWorker @AssistedInject constructor(
                     Result.success()
                 }
             }
+
             false -> {
                 count = 0
                 setWidgetState(WidgetState.NoExistsLocationPermission)
@@ -108,7 +109,8 @@ class BeepWidgetWorker @AssistedInject constructor(
                     nearGifticonBrands[gifticon.key] != null
                 }
 
-                val gifticonAndBrandWithCategory = nearGifticonBrands.map { it to nearGifticonCount[it.key] }
+                val gifticonAndBrandWithCategory =
+                    nearGifticonBrands.map { it to nearGifticonCount[it.key] }
 
                 when (nearGifticonCount.isEmpty()) {
                     true -> setWidgetState(WidgetState.Empty)

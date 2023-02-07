@@ -1,11 +1,11 @@
 package com.lighthouse.datasource.brand
 
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
+import com.lighthouse.beep.model.location.Dms
+import com.lighthouse.common.utils.geography.LocationConverter
 import com.lighthouse.database.dao.BrandWithSectionDao
 import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.database.entity.SectionEntity
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.model.BrandPlaceInfo
 import com.lighthouse.mapper.toEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

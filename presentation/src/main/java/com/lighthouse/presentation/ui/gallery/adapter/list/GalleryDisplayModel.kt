@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.ui.gallery.adapter.list
 
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.model.GalleryUIModel
-import com.lighthouse.presentation.util.resource.UIText
 
 class GalleryDisplayModel(
     var item: GalleryUIModel.Gallery,

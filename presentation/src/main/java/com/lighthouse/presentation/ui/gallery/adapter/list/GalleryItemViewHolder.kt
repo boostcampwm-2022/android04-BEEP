@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.binding.setUIText
 import com.lighthouse.presentation.databinding.ItemGalleryBinding
 import com.lighthouse.presentation.model.GalleryUIModel
-import com.lighthouse.presentation.util.resource.UIText
 
 class GalleryItemViewHolder(
     parent: ViewGroup,

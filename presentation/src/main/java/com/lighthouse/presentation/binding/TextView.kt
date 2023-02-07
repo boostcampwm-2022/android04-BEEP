@@ -12,12 +12,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.exts.toDayOfMonth
 import com.lighthouse.core.exts.toMonth
 import com.lighthouse.core.exts.toYear
 import com.lighthouse.core.utils.time.TimeCalculator
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.util.resource.UIText
 import java.text.DecimalFormat
 import java.util.Date
 

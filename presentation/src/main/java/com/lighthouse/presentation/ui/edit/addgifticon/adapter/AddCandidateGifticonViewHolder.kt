@@ -12,7 +12,8 @@ class AddCandidateGifticonViewHolder(
     private val onClick: (AddGifticonItemUIModel.Gifticon) -> Unit,
     private val onDelete: (AddGifticonItemUIModel.Gifticon) -> Unit,
     private val binding: ItemAddCandidateGifticonBinding = ItemAddCandidateGifticonBinding.bind(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_add_candidate_gifticon, parent, false)
+        LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_add_candidate_gifticon, parent, false)
     )
 ) : RecyclerView.ViewHolder(binding.root) {
 

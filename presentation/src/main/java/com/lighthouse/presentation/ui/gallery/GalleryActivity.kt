@@ -8,16 +8,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import com.lighthouse.core.android.exts.dp
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGalleryBinding
-import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.GalleryUIModel
 import com.lighthouse.presentation.ui.gallery.adapter.list.GalleryAdapter
 import com.lighthouse.presentation.ui.gallery.adapter.selected.SelectedGalleryAdapter
 import com.lighthouse.presentation.ui.gallery.event.GalleryEvent
-import com.lighthouse.presentation.util.recycler.GridSectionSpaceItemDecoration
+import com.lighthouse.presentation.utils.recycler.GridSectionSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,7 +1,7 @@
 package com.lighthouse.domain.usecase
 
-import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
+import com.lighthouse.common.utils.geography.LocationConverter
 import com.lighthouse.domain.repository.BrandRepository
 import javax.inject.Inject
 

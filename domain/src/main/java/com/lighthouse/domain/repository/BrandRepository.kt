@@ -1,7 +1,7 @@
 package com.lighthouse.domain.repository
 
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
+import com.lighthouse.beep.model.location.Dms
 
 interface BrandRepository {
 

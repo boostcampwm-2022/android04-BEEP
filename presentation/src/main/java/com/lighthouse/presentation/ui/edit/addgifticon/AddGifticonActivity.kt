@@ -16,10 +16,11 @@ import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.core.android.exts.getParcelableExtra
+import com.lighthouse.core.android.exts.getRequiredParcelableArrayListExtra
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityAddGifticonBinding
-import com.lighthouse.presentation.extension.getParcelable
-import com.lighthouse.presentation.extension.getParcelableArrayList
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
@@ -36,7 +37,6 @@ import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonCrop
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonEvent
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonTag
 import com.lighthouse.presentation.ui.gallery.GalleryActivity
-import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,19 +66,22 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     )
 
-    private val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val list = result.data?.getParcelableArrayList(
-                Extras.KEY_SELECTED_GALLERY_ITEM,
-                GalleryUIModel.Gallery::class.java
-            ) ?: emptyList()
-            viewModel.loadGalleryImages(list)
+    private val gallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val list =
+                    result.data.getRequiredParcelableArrayListExtra<GalleryUIModel.Gallery>(
+                        Extras.KEY_SELECTED_GALLERY_ITEM
+                    )
+                viewModel.loadGalleryImages(list.toList())
+            }
         }
-    }
 
     private fun getCropResult(result: ActivityResult): CroppedImage? {
-        val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
-        val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
+        val croppedUri =
+            result.data.getParcelableExtra<Uri>(Extras.KEY_CROPPED_IMAGE) ?: return null
+        val croppedRect =
+            result.data.getParcelableExtra<RectF>(Extras.KEY_CROPPED_RECT) ?: return null
         return CroppedImage(croppedUri, croppedRect)
     }
 
@@ -92,6 +95,7 @@ class AddGifticonActivity : AppCompatActivity() {
                         input.copyTo(output)
                     }
                 }
+
                 CroppedImage(outputFile.toUri(), imageResult.croppedRect)
             } else {
                 null
@@ -99,34 +103,39 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        lifecycleScope.launch {
-            val gifticon = viewModel.selectedGifticon.value ?: return@launch
-            val croppedImage = getCropResult(result, gifticon.id) ?: return@launch
-            viewModel.updateCroppedGifticonImage(croppedImage)
+    private val cropGifticon =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            lifecycleScope.launch {
+                val gifticon = viewModel.selectedGifticon.value ?: return@launch
+                val croppedImage = getCropResult(result, gifticon.id) ?: return@launch
+                viewModel.updateCroppedGifticonImage(croppedImage)
+            }
         }
-    }
 
     private val cropGifticonName =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             viewModel.recognizeGifticonName(getCropResult(result))
         }
 
-    private val cropBrandName = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeBrand(getCropResult(result))
-    }
+    private val cropBrandName =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeBrand(getCropResult(result))
+        }
 
-    private val cropBarcode = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeBarcode(getCropResult(result))
-    }
+    private val cropBarcode =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeBarcode(getCropResult(result))
+        }
 
-    private val cropBalance = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeBalance(getCropResult(result))
-    }
+    private val cropBalance =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeBalance(getCropResult(result))
+        }
 
-    private val cropExpired = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeExpired(getCropResult(result))
-    }
+    private val cropExpired =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeExpired(getCropResult(result))
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,12 +167,25 @@ class AddGifticonActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { event ->
                 when (event) {
                     is AddGifticonEvent.PopupBackStack -> cancelAddGifticon()
-                    is AddGifticonEvent.ShowCancelConfirmation -> showConfirmationCancelDialog()
-                    is AddGifticonEvent.ShowDeleteConfirmation -> showConfirmationDeleteDialog(event.gifticon)
+                    is AddGifticonEvent.ShowCancelConfirmation ->
+                        showConfirmationCancelDialog()
+
+                    is AddGifticonEvent.ShowDeleteConfirmation ->
+                        showConfirmationDeleteDialog(event.gifticon)
+
                     is AddGifticonEvent.NavigateToGallery -> gotoGallery(event.list)
-                    is AddGifticonEvent.NavigateToCrop -> gotoCrop(event.crop, event.origin, event.croppedRect)
-                    is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(event.origin)
-                    is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(event.date)
+                    is AddGifticonEvent.NavigateToCrop -> gotoCrop(
+                        event.crop,
+                        event.origin,
+                        event.croppedRect
+                    )
+
+                    is AddGifticonEvent.ShowOriginGifticon ->
+                        showOriginGifticonDialog(event.origin)
+
+                    is AddGifticonEvent.ShowExpiredAtDatePicker ->
+                        showExpiredAtDatePicker(event.date)
+
                     is AddGifticonEvent.RequestLoading -> requestLoading(event.loading)
                     is AddGifticonEvent.RequestFocus -> requestFocus(event.tag)
                     is AddGifticonEvent.RequestScroll -> requestScroll(event.tag)
@@ -302,11 +324,15 @@ class AddGifticonActivity : AppCompatActivity() {
             else -> binding.clContainer
         }
         focusView.requestFocus()
-        val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodService =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (tag.needKeyboard) {
             inputMethodService.showSoftInput(focusView, 0)
         } else {
-            inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            inputMethodService.hideSoftInputFromWindow(
+                currentFocus?.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
         }
     }
 
@@ -328,7 +354,8 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun showSnackBar(uiText: UIText) {
-        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     companion object {

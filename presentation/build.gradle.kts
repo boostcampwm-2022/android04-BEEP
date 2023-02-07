@@ -16,6 +16,10 @@ android {
 
 dependencies {
     implementation(projects.core)
+    implementation(projects.coreAndroid)
+    implementation(projects.model)
+    implementation(projects.common)
+    implementation(projects.commonAndroid)
     implementation(projects.domain)
 
     implementation(libs.androidX.core.ktx)
@@ -65,18 +69,6 @@ dependencies {
     implementation(libs.airbnb.lottie)
 
     ksp(libs.glide.ksp)
-
-    testImplementation(libs.junit4)
-    testImplementation(libs.junit5.jupiter.params)
-    testImplementation(libs.junit5.jupiter.engine)
-    testImplementation(libs.junit5.vintage.engine)
-    testImplementation(libs.mockk)
-    testImplementation(libs.google.truth)
-    testImplementation(libs.kotlin.coroutine.test)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.turbine)
-
-    androidTestImplementation(libs.test.core)
 }
 
 // JUnit5

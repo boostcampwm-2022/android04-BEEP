@@ -1,9 +1,9 @@
 package com.lighthouse.repository
 
 import android.net.Uri
+import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.datasource.gifticon.GifticonImageRecognizeSource
-import com.lighthouse.domain.model.GalleryImage
-import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.repository.GifticonImageRecognizeRepository
 import java.util.Date
 import javax.inject.Inject

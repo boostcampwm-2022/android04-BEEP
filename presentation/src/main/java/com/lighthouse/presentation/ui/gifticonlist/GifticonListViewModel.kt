@@ -2,11 +2,11 @@ package com.lighthouse.presentation.ui.gifticonlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.core.exts.isExpired
 import com.lighthouse.core.utils.flow.combine
-import com.lighthouse.domain.model.Brand
-import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
 import com.lighthouse.domain.usecase.RemoveGifticonUseCase
@@ -103,7 +103,11 @@ class GifticonListViewModel @Inject constructor(
 
             is DbResult.Loading -> {
                 val gifticons = gifticons.value.let { result ->
-                    if (result is DbResult.Success) result.data.map { it.toPresentation() } else emptyList()
+                    if (result is DbResult.Success) {
+                        result.data.map { it.toPresentation() }
+                    } else {
+                        emptyList()
+                    }
                 }
                 GifticonListViewState(
                     sortBy = sortBy,

@@ -1,6 +1,6 @@
 package com.lighthouse.presentation.mapper
 
-import com.lighthouse.domain.model.SortBy
+import com.lighthouse.beep.model.etc.SortBy
 import com.lighthouse.presentation.model.GifticonSortBy
 
 fun GifticonSortBy.toDomain(): SortBy {

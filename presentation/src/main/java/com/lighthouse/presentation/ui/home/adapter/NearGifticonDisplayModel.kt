@@ -1,8 +1,8 @@
 package com.lighthouse.presentation.ui.home.adapter
 
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.model.GifticonWithDistanceUIModel
-import com.lighthouse.presentation.util.resource.UIText
 
 class NearGifticonDisplayModel(
     val item: GifticonWithDistanceUIModel

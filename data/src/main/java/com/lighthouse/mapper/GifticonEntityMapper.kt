@@ -1,7 +1,7 @@
 package com.lighthouse.mapper
 
+import com.lighthouse.beep.model.gifticon.Gifticon
 import com.lighthouse.database.entity.GifticonEntity
-import com.lighthouse.domain.model.Gifticon
 
 fun GifticonEntity.toDomain(): Gifticon {
     return Gifticon(

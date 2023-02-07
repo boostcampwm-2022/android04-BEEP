@@ -3,9 +3,9 @@ package com.lighthouse.presentation.ui.main
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.model.user.UserPreferenceOption
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
-import com.lighthouse.domain.model.UserPreferenceOption
 import com.lighthouse.domain.usecase.HasVariableGifticonUseCase
 import com.lighthouse.domain.usecase.setting.GetOptionStoredUseCase
 import com.lighthouse.domain.usecase.setting.SaveNotificationOptionUseCase

@@ -1,7 +1,7 @@
 package com.lighthouse.database.mapper
 
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.database.entity.GifticonWithCrop
-import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.mapper.toEntity
 import com.lighthouse.model.GifticonImageResult
 import java.util.Date

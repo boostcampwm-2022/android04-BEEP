@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.core.android.utils.permission.StoragePermissionManager
+import com.lighthouse.core.android.utils.permission.core.permissions
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMainBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
@@ -23,9 +26,6 @@ import com.lighthouse.presentation.ui.home.HomeFragmentContainer
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.security.SecurityActivity
 import com.lighthouse.presentation.ui.setting.SettingFragment
-import com.lighthouse.presentation.util.permission.StoragePermissionManager
-import com.lighthouse.presentation.util.permission.core.permissions
-import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
                         viewModel.gotoHome()
                     }
                 }
+
                 else -> {
                     viewModel.gotoHome()
                 }
@@ -60,20 +61,24 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val gifticonListFragment by lazy {
-        supportFragmentManager.findFragmentByTag(GifticonListFragment::class.java.name) ?: GifticonListFragment()
+        supportFragmentManager.findFragmentByTag(GifticonListFragment::class.java.name)
+            ?: GifticonListFragment()
     }
     private val homeFragment by lazy {
-        supportFragmentManager.findFragmentByTag(HomeFragmentContainer::class.java.name) ?: HomeFragmentContainer()
+        supportFragmentManager.findFragmentByTag(HomeFragmentContainer::class.java.name)
+            ?: HomeFragmentContainer()
     }
     private val settingFragment by lazy {
-        supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name) ?: SettingFragment()
+        supportFragmentManager.findFragmentByTag(SettingFragment::class.java.name)
+            ?: SettingFragment()
     }
 
-    private val addGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            showSnackBar(UIText.StringResource(R.string.main_registration_completed))
+    private val addGifticon =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                showSnackBar(UIText.StringResource(R.string.main_registration_completed))
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,9 +148,15 @@ class MainActivity : AppCompatActivity() {
                 if (fragment != null) {
                     supportFragmentManager.commit {
                         if (page.ordinal < prevPage.ordinal) {
-                            setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right)
+                            setCustomAnimations(
+                                R.anim.anim_slide_in_left,
+                                R.anim.anim_slide_out_right
+                            )
                         } else if (page.ordinal > prevPage.ordinal) {
-                            setCustomAnimations(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
+                            setCustomAnimations(
+                                R.anim.anim_slide_in_right,
+                                R.anim.anim_slide_out_left
+                            )
                         }
                         if (preFragment != null && preFragment != fragment) {
                             hide(preFragment)
@@ -206,6 +217,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSnackBar(uiText: UIText) {
-        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT)
+            .show()
     }
 }

@@ -30,6 +30,12 @@ fun includeProject(moduleName: String, rootFolderName: String = "") {
 
 includeProject(":app")
 includeProject(":core")
+includeProject(":core-android")
+includeProject(":model")
+includeProject(":common", "commons")
+includeProject(":common-android", "commons")
+includeProject(":common-location", "commons")
+includeProject(":common-recognizer", "commons")
 includeProject(":data")
 includeProject(":presentation")
 includeProject(":domain")

@@ -8,10 +8,10 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.lighthouse.core.android.exts.screenHeight
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentPinBinding
 import com.lighthouse.presentation.extension.repeatOnStarted
-import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.security.AuthCallback
 import dagger.hilt.android.AndroidEntryPoint

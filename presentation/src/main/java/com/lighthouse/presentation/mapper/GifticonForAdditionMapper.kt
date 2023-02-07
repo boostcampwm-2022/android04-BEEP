@@ -3,7 +3,7 @@ package com.lighthouse.presentation.mapper
 import android.graphics.RectF
 import android.net.Uri
 import androidx.core.graphics.toRectF
-import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.CroppedImage
 

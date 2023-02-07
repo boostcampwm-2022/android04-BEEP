@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.ui.edit.modifygifticon.event
 
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.util.resource.UIText
 
 enum class ModifyGifticonValid(val tag: ModifyGifticonTag, val text: UIText) {
     INVALID_NOTHING_CHANGED(

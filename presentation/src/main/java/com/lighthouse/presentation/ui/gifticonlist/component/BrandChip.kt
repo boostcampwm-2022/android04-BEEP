@@ -47,7 +47,7 @@ import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
-import com.lighthouse.domain.model.Brand
+import com.lighthouse.beep.model.brand.Brand
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.common.compose.TextCheckbox
 

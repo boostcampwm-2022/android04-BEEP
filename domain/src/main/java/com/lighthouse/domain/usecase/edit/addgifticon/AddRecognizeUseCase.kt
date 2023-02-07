@@ -1,7 +1,7 @@
 package com.lighthouse.domain.usecase.edit.addgifticon
 
-import com.lighthouse.domain.model.GalleryImage
-import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.beep.model.gallery.GalleryImage
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.domain.usecase.edit.RecognizeBalanceUseCase
 import com.lighthouse.domain.usecase.edit.RecognizeBarcodeUseCase
 import com.lighthouse.domain.usecase.edit.RecognizeBrandNameUseCase

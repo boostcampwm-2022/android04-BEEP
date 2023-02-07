@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.mapper
 
 import androidx.core.graphics.toRect
-import com.lighthouse.domain.model.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.presentation.model.AddGifticonUIModel
 import com.lighthouse.presentation.model.GalleryUIModel
 

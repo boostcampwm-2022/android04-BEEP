@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.cropgifticon.event
 
 import android.graphics.Bitmap
 import android.graphics.RectF
-import com.lighthouse.presentation.util.resource.UIText
+import com.lighthouse.core.android.utils.resource.UIText
 
 sealed class CropGifticonEvent {
 

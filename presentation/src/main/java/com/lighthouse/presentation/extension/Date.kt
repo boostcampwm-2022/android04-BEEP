@@ -2,6 +2,7 @@ package com.lighthouse.presentation.extension
 
 import android.content.Context
 import android.text.Spannable
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.exts.isExpired
 import com.lighthouse.core.exts.toDayOfMonth
 import com.lighthouse.core.exts.toMonth
@@ -10,7 +11,6 @@ import com.lighthouse.core.utils.time.TimeCalculator
 import com.lighthouse.core.utils.time.TimeCalculator.MAX_DAY
 import com.lighthouse.core.utils.time.TimeCalculator.MIN_DAY
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.util.resource.UIText
 import java.util.Date
 
 fun Date.toDday(context: Context): String {

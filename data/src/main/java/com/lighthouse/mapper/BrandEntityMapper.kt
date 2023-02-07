@@ -1,9 +1,9 @@
 package com.lighthouse.mapper
 
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
+import com.lighthouse.common.utils.geography.LocationConverter
 import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.datasource.brand.BrandLocalDataSourceImpl
-import com.lighthouse.domain.LocationConverter
-import com.lighthouse.domain.model.BrandPlaceInfo
 
 fun List<BrandLocationEntity>.toDomain(): List<BrandPlaceInfo> = this.map { brandLocationEntity ->
     BrandPlaceInfo(

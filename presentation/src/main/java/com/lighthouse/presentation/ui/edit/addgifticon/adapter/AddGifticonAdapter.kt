@@ -14,7 +14,12 @@ class AddGifticonAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_GALLERY -> AddGotoGalleryViewHolder(parent, onClickGallery)
-            TYPE_GIFTICON -> AddCandidateGifticonViewHolder(parent, onClickGifticon, onDeleteGifticon)
+            TYPE_GIFTICON -> AddCandidateGifticonViewHolder(
+                parent,
+                onClickGifticon,
+                onDeleteGifticon
+            )
+
             else -> throw IllegalArgumentException("잘못된 viewType 입니다.")
         }
     }
@@ -28,7 +33,11 @@ class AddGifticonAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNotEmpty()) {
             val flag = payloads.getOrNull(0) as? Int ?: 0
             val item = getItem(position)
@@ -55,21 +64,31 @@ class AddGifticonAdapter(
 
     companion object {
         private val diff = object : DiffUtil.ItemCallback<AddGifticonItemUIModel>() {
-            override fun areItemsTheSame(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Boolean {
+            override fun areItemsTheSame(
+                oldItem: AddGifticonItemUIModel,
+                newItem: AddGifticonItemUIModel
+            ): Boolean {
                 return when {
                     oldItem is AddGifticonItemUIModel.Gallery && newItem is AddGifticonItemUIModel.Gallery -> true
                     oldItem is AddGifticonItemUIModel.Gifticon && newItem is AddGifticonItemUIModel.Gifticon -> {
                         oldItem.id == newItem.id
                     }
+
                     else -> false
                 }
             }
 
-            override fun areContentsTheSame(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Boolean {
+            override fun areContentsTheSame(
+                oldItem: AddGifticonItemUIModel,
+                newItem: AddGifticonItemUIModel
+            ): Boolean {
                 return oldItem == newItem
             }
 
-            override fun getChangePayload(oldItem: AddGifticonItemUIModel, newItem: AddGifticonItemUIModel): Any? {
+            override fun getChangePayload(
+                oldItem: AddGifticonItemUIModel,
+                newItem: AddGifticonItemUIModel
+            ): Any? {
                 if (oldItem is AddGifticonItemUIModel.Gifticon &&
                     newItem is AddGifticonItemUIModel.Gifticon &&
                     newItem.thumbnailImage == oldItem.thumbnailImage

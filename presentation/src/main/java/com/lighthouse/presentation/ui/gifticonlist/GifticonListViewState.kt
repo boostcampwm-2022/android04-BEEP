@@ -1,6 +1,6 @@
 package com.lighthouse.presentation.ui.gifticonlist
 
-import com.lighthouse.domain.model.Brand
+import com.lighthouse.beep.model.brand.Brand
 import com.lighthouse.presentation.model.GifticonSortBy
 import com.lighthouse.presentation.model.GifticonUIModel
 

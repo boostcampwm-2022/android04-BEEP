@@ -1,7 +1,7 @@
 package com.lighthouse.domain.usecase
 
+import com.lighthouse.beep.model.user.UsageHistory
 import com.lighthouse.core.exts.currentTime
-import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject

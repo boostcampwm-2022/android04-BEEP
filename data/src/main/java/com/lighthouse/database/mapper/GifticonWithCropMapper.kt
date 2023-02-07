@@ -1,9 +1,9 @@
 package com.lighthouse.database.mapper
 
+import com.lighthouse.beep.model.gifticon.GifticonForUpdate
 import com.lighthouse.database.entity.GifticonCropEntity
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
-import com.lighthouse.domain.model.GifticonForUpdate
 import com.lighthouse.mapper.toDomain
 
 fun GifticonWithCrop.toDomain(): GifticonForUpdate {

@@ -11,12 +11,12 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.domain.LocationConverter
+import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.core.android.exts.dp
+import com.lighthouse.core.android.exts.screenHeight
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityMapBinding
-import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
-import com.lighthouse.presentation.extension.screenHeight
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.extra.Extras.CATEGORY_ACCOMMODATION
 import com.lighthouse.presentation.extra.Extras.CATEGORY_CAFE
@@ -29,7 +29,7 @@ import com.lighthouse.presentation.ui.common.GifticonViewHolderType
 import com.lighthouse.presentation.ui.common.UiState
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
-import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
+import com.lighthouse.presentation.utils.recycler.ListSpaceItemDecoration
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate

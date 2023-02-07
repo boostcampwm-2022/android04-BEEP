@@ -1,7 +1,7 @@
 package com.lighthouse.presentation.ui.edit.addgifticon.event
 
+import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.util.resource.UIText
 
 enum class AddGifticonValid(val tag: AddGifticonTag, val text: UIText) {
     INVALID_EMPTY(

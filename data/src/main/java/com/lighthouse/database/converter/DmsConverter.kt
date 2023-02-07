@@ -1,8 +1,8 @@
 package com.lighthouse.database.converter
 
 import androidx.room.TypeConverter
-import com.lighthouse.domain.Dms
-import com.lighthouse.domain.LocationConverter
+import com.lighthouse.beep.model.location.Dms
+import com.lighthouse.common.utils.geography.LocationConverter
 
 class DmsConverter {
 

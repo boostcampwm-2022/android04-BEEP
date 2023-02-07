@@ -12,11 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.core.android.exts.dp
+import com.lighthouse.core.android.exts.screenWidth
+import com.lighthouse.core.android.utils.permission.LocationPermissionManager
+import com.lighthouse.core.android.utils.permission.core.permissions
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentHomeBinding
-import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.extension.repeatOnStarted
-import com.lighthouse.presentation.extension.screenWidth
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.model.BrandPlaceInfoUiModel
 import com.lighthouse.presentation.ui.common.GifticonViewHolderType
@@ -28,9 +30,7 @@ import com.lighthouse.presentation.ui.home.adapter.NearGifticonAdapter
 import com.lighthouse.presentation.ui.main.MainViewModel
 import com.lighthouse.presentation.ui.map.MapActivity
 import com.lighthouse.presentation.ui.map.adapter.GifticonAdapter
-import com.lighthouse.presentation.util.permission.LocationPermissionManager
-import com.lighthouse.presentation.util.permission.core.permissions
-import com.lighthouse.presentation.util.recycler.ListSpaceItemDecoration
+import com.lighthouse.presentation.utils.recycler.ListSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -71,9 +71,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val nearGifticonAdapter = NearGifticonAdapter { gifticon ->
         gotoGifticonDetail(gifticon.id)
     }
-    private val expireGifticonAdapter = GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
-        gotoGifticonDetail(gifticon.id)
-    }
+    private val expireGifticonAdapter =
+        GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
+            gotoGifticonDetail(gifticon.id)
+        }
 
     private fun gotoGifticonDetail(id: String) {
         startActivity(
@@ -156,6 +157,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 locationPermissionDialog
                     .show(parentFragmentManager, ConfirmationDialog::class.java.name)
             }
+
             else -> locationPermissionLauncher.launch(PERMISSIONS)
         }
     }
@@ -178,6 +180,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     companion object {
-        val PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val PERMISSIONS = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
     }
 }

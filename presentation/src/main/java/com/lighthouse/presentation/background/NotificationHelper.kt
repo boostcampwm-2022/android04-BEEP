@@ -11,7 +11,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
-import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.beep.model.gifticon.Gifticon
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailActivity

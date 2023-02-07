@@ -2,6 +2,7 @@
 androidStudioGradlePlugin = "7.4.0"
 
 # AndroidX
+activity = "1.6.1"
 lifecycle = "2.6.0-alpha04"
 paging = "3.1.1"
 room = "2.4.3"
@@ -38,6 +39,8 @@ mockito = "2.28.2"
 
 [libraries]
 # AndroidX
+androidX-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+androidX-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 androidX-appcompat = "androidx.appcompat:appcompat:1.5.1"
 androidX-biometric = "androidx.biometric:biometric:1.1.0"
 androidX-core-ktx = "androidx.core:core-ktx:1.9.0"

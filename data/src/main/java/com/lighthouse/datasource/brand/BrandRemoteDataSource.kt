@@ -1,6 +1,6 @@
 package com.lighthouse.datasource.brand
 
-import com.lighthouse.domain.Dms
+import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 
 interface BrandRemoteDataSource {

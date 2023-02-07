@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.lighthouse.beep.model.brand.Brand
 import com.lighthouse.database.entity.GifticonCropEntity
 import com.lighthouse.database.entity.GifticonCropEntity.Companion.GIFTICON_CROP_TABLE
 import com.lighthouse.database.entity.GifticonEntity
@@ -16,7 +17,6 @@ import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
 import com.lighthouse.database.mapper.toGifticonCropEntity
 import com.lighthouse.database.mapper.toGifticonEntity
-import com.lighthouse.domain.model.Brand
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.util.Date

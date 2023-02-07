@@ -1,6 +1,6 @@
 package com.lighthouse.mapper
 
-import com.lighthouse.domain.model.BeepError
+import com.lighthouse.beep.model.error.BeepError
 import com.lighthouse.model.BeepErrorData
 
 internal fun BeepErrorData.toDomain(): BeepError = when (this) {

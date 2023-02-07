@@ -1,12 +1,12 @@
 package com.lighthouse.domain.repository
 
-import com.lighthouse.domain.model.Brand
-import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.GifticonForAddition
-import com.lighthouse.domain.model.GifticonForUpdate
-import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
+import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.etc.SortBy
+import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForUpdate
+import com.lighthouse.beep.model.result.DbResult
+import com.lighthouse.beep.model.user.UsageHistory
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonRepository {

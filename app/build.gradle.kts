@@ -32,6 +32,10 @@ android {
 
 dependencies {
     implementation(projects.core)
+    implementation(projects.coreAndroid)
+    implementation(projects.model)
+    implementation(projects.common)
+    implementation(projects.commonAndroid)
     implementation(projects.domain)
     implementation(projects.presentation)
     implementation(projects.data)
@@ -59,8 +63,6 @@ dependencies {
 
     ksp(libs.androidX.room.compiler)
     ksp(libs.glide.ksp)
-
-    testImplementation(libs.junit4)
 }
 
 kapt {

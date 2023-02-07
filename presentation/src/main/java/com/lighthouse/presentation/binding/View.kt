@@ -4,8 +4,8 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.databinding.BindingAdapter
-import com.lighthouse.presentation.util.OnThrottleClickListener
-import com.lighthouse.presentation.util.resource.AnimInfo
+import com.lighthouse.core.android.utils.resource.AnimInfo
+import com.lighthouse.presentation.utils.throttle.OnThrottleClickListener
 
 @BindingAdapter("isVisible")
 fun applyVisibility(view: View, visible: Boolean) {
@@ -43,6 +43,7 @@ fun View.playAnimationByAnimInfo(animInfo: AnimInfo?) {
                 clearAnimation()
             }
         }
+
         is AnimInfo.DynamicAnim -> {
             if (animInfo.condition) {
                 startAnimation(animInfo.animation)
@@ -53,8 +54,15 @@ fun View.playAnimationByAnimInfo(animInfo: AnimInfo?) {
     }
 }
 
-@BindingAdapter(value = ["isAnimatedVisible", "visibleAnimation", "goneAnimation"], requireAll = false)
-fun View.playVisibilityAnimation(visible: Boolean, visibleAnimation: Animation?, goneAnimation: Animation?) {
+@BindingAdapter(
+    value = ["isAnimatedVisible", "visibleAnimation", "goneAnimation"],
+    requireAll = false
+)
+fun View.playVisibilityAnimation(
+    visible: Boolean,
+    visibleAnimation: Animation?,
+    goneAnimation: Animation?
+) {
     if (visible) {
         visibility = View.VISIBLE
         visibleAnimation?.let { startAnimation(it) }

@@ -1,6 +1,6 @@
 package com.lighthouse.domain.usecase.setting
 
-import com.lighthouse.domain.model.UserPreferenceOption
+import com.lighthouse.beep.model.user.UserPreferenceOption
 import com.lighthouse.domain.repository.UserPreferencesRepository
 import javax.inject.Inject
 
