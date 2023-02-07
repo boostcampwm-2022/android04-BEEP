@@ -17,8 +17,8 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        buildConfigField("String", "kakaoSearchId", getApiKey("kakao_search_id"))
-        manifestPlaceholders["naver_map_api_id"] = getApiKey("naver_map_api_id")
+        val naverMapApiId = gradleLocalProperties(rootDir).getProperty("naver_map_api_id")
+        manifestPlaceholders["naver_map_api_id"] = naverMapApiId
     }
 
     buildFeatures {
@@ -40,6 +40,7 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.presentation)
     implementation(projects.data)
+    implementation(projects.dataRemote)
 
     implementation(libs.androidX.hilt.work)
     implementation(libs.androidX.work.runtime.ktx)
@@ -68,8 +69,4 @@ dependencies {
 
 kapt {
     useBuildCache = true
-}
-
-fun getApiKey(propertyKey: String): String {
-    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }

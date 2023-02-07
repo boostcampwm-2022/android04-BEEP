@@ -1,10 +1,10 @@
-package com.lighthouse.network
+package com.lighthouse.data.remote.api
 
-import com.lighthouse.model.BrandPlaceInfoDataContainer
+import com.lighthouse.data.remote.model.BrandPlaceInfoDataContainer
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface NetworkApiService {
+internal interface KakaoApiService {
 
     @GET("v2/local/search/keyword.json")
     suspend fun getAllBrandPlaceInfo(

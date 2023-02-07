@@ -1,9 +1,11 @@
-package com.lighthouse.mapper
+package com.lighthouse.data.remote.mapper
 
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
-import com.lighthouse.model.BrandPlaceInfoDataContainer
+import com.lighthouse.data.remote.model.BrandPlaceInfoDataContainer
 
-internal fun List<BrandPlaceInfoDataContainer.BrandPlaceInfoData>.toDomain(brandName: String): List<BrandPlaceInfo> {
+internal fun List<BrandPlaceInfoDataContainer.BrandPlaceInfoData>.toDomain(
+    brandName: String
+): List<BrandPlaceInfo> {
     return this.map {
         BrandPlaceInfo(
             addressName = it.addressName,

@@ -1,10 +1,10 @@
-package com.lighthouse.di
+package com.lighthouse.data.remote.utils
 
-import com.lighthouse.beep.BuildConfig
+import com.lighthouse.data.remote.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class HTTPRequestInterceptor : Interceptor {
+internal class HTTPRequestInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val origin = chain.request()
