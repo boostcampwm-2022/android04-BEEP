@@ -4,8 +4,6 @@ import com.lighthouse.datasource.auth.AuthDataSource
 import com.lighthouse.datasource.auth.AuthDataSourceImpl
 import com.lighthouse.datasource.brand.BrandLocalDataSource
 import com.lighthouse.datasource.brand.BrandLocalDataSourceImpl
-import com.lighthouse.datasource.brand.BrandRemoteDataSource
-import com.lighthouse.datasource.brand.BrandRemoteDataSourceImpl
 import com.lighthouse.datasource.gallery.GalleryImageLocalSource
 import com.lighthouse.datasource.gallery.GalleryImageLocalSourceImpl
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
@@ -41,12 +39,6 @@ abstract class DataModule {
     abstract fun bindAuthDataSource(
         source: AuthDataSourceImpl
     ): AuthDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindBrandRemoteDataSource(
-        source: BrandRemoteDataSourceImpl
-    ): BrandRemoteDataSource
 
     @Binds
     @Singleton

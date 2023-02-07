@@ -10,7 +10,7 @@
 
         <variable
             name="geo"
-            type="com.lighthouse.common.utils.geography.Geography" />
+            type="com.lighthouse.common.geography.Geography" />
     </data>
 
     <LinearLayout
