@@ -1,4 +1,4 @@
-package com.lighthouse.common.utils.geography
+package com.lighthouse.common.geography
 
 import android.content.Context
 import android.location.Address
@@ -9,7 +9,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
-class Geography @Inject constructor(@ApplicationContext private val context: Context) {
+class Geography @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     // 위도 경도로 주소 구하는 Reverse-GeoCoding
     fun getAddress(position: VertexLocation?): String {
@@ -26,7 +28,8 @@ class Geography @Inject constructor(@ApplicationContext private val context: Con
                     location = it.first()
                 }
             } else {
-                location = geoCoder.getFromLocation(position.latitude, position.longitude, 1)?.first()
+                location =
+                    geoCoder.getFromLocation(position.latitude, position.longitude, 1)?.first()
             }
             addr = listOfNotNull(
                 location?.adminArea,
