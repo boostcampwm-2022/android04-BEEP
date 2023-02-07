@@ -2,7 +2,7 @@ package com.lighthouse.datasource.gallery
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.lighthouse.domain.model.GalleryImage
+import com.lighthouse.beep.model.gallery.GalleryImage
 
 class GalleryImagePagingSource(
     private val localSource: GalleryImageLocalSource,

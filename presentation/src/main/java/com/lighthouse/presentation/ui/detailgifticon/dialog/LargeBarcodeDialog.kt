@@ -15,7 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LargeBarcodeDialog : DialogFragment(R.layout.dialog_large_barcode) {
@@ -26,8 +25,8 @@ class LargeBarcodeDialog : DialogFragment(R.layout.dialog_large_barcode) {
             ""
         }
 
-    @Inject
-    lateinit var barcodeUtil: BarcodeUtil
+    // Hilt를 이용하여 주입
+    private val barcodeUtil = BarcodeUtil()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

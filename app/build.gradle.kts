@@ -36,6 +36,7 @@ dependencies {
     implementation(projects.model)
     implementation(projects.common)
     implementation(projects.commonAndroid)
+    implementation(projects.commonLocation)
     implementation(projects.domain)
     implementation(projects.presentation)
     implementation(projects.data)

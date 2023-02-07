@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lighthouse.beep.common"
+    namespace = "com.lighthouse.beep.common.location"
 }
 
 dependencies {

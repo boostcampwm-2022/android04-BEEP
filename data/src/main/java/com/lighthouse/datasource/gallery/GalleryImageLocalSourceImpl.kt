@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
-import com.lighthouse.domain.model.GalleryImage
+import com.lighthouse.beep.model.gallery.GalleryImage
 import java.util.Date
 import javax.inject.Inject
 

@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.domain.model.DbResult
+import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.domain.usecase.GetGifticonsUseCase
 import com.lighthouse.presentation.mapper.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel

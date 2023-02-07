@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.lighthouse.domain.model.UserPreferenceOption" />
+        <import type="com.lighthouse.beep.model.user.UserPreferenceOption" />
 
         <variable
             name="vm"

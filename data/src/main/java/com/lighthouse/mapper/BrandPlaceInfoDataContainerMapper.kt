@@ -1,6 +1,6 @@
 package com.lighthouse.mapper
 
-import com.lighthouse.domain.model.BrandPlaceInfo
+import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.model.BrandPlaceInfoDataContainer
 
 internal fun List<BrandPlaceInfoDataContainer.BrandPlaceInfoData>.toDomain(brandName: String): List<BrandPlaceInfo> {

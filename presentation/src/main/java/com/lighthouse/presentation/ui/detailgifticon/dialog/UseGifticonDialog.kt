@@ -20,7 +20,6 @@ import com.lighthouse.presentation.ui.detailgifticon.GifticonDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon) {
@@ -28,8 +27,7 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
     private val viewModel: GifticonDetailViewModel by activityViewModels()
     private var amountToUse = mutableStateOf(0)
 
-    @Inject
-    lateinit var barcodeUtil: BarcodeUtil
+    private val barcodeUtil = BarcodeUtil()
 
     override fun getTheme(): Int {
         return R.style.Theme_BEEP_BottomSheetDialog

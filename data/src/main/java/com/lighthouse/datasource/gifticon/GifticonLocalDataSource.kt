@@ -1,11 +1,11 @@
 package com.lighthouse.datasource.gifticon
 
+import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.etc.SortBy
+import com.lighthouse.beep.model.gifticon.Gifticon
+import com.lighthouse.beep.model.user.UsageHistory
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
-import com.lighthouse.domain.model.Brand
-import com.lighthouse.domain.model.Gifticon
-import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonLocalDataSource {

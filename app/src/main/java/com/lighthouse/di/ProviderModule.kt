@@ -1,7 +1,7 @@
 package com.lighthouse.di
 
 import android.content.Context
-import com.lighthouse.datasource.location.SharedLocationManager
+import com.lighthouse.common.utils.location.SharedLocationManager
 import com.lighthouse.presentation.background.NotificationHelper
 import dagger.Module
 import dagger.Provides
