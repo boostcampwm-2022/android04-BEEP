@@ -6,9 +6,7 @@ sealed class DbResult<out T> {
     object Empty : DbResult<Nothing>()
     data class Failure(val throwable: Throwable) : DbResult<Nothing>()
 
-    data class NotFoundError(val throwable: Throwable) : DbResult<Nothing>()
-    data class SelectError(val throwable: Throwable) : DbResult<Nothing>()
-    data class InsertError(val throwable: Throwable) : DbResult<Nothing>()
-    data class UpdateError(val throwable: Throwable) : DbResult<Nothing>()
-    data class DeleteError(val throwable: Throwable) : DbResult<Nothing>()
+    val isSuccess: Boolean get() = this is Success
+
+    val isFailure: Boolean get() = this is Failure
 }

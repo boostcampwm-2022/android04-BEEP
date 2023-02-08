@@ -1,4 +1,4 @@
-package com.lighthouse.database.converter
+package com.lighthouse.data.database.converter
 
 import android.net.Uri
 import androidx.room.TypeConverter

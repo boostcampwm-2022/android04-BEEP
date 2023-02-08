@@ -1,4 +1,4 @@
-package com.lighthouse.database.converter
+package com.lighthouse.data.database.converter
 
 import android.graphics.Rect
 import androidx.core.text.isDigitsOnly
