@@ -2,8 +2,6 @@ package com.lighthouse.di
 
 import com.lighthouse.datasource.auth.AuthDataSource
 import com.lighthouse.datasource.auth.AuthDataSourceImpl
-import com.lighthouse.datasource.brand.BrandLocalDataSource
-import com.lighthouse.datasource.brand.BrandLocalDataSourceImpl
 import com.lighthouse.datasource.gallery.GalleryImageLocalSource
 import com.lighthouse.datasource.gallery.GalleryImageLocalSourceImpl
 import com.lighthouse.datasource.gifticon.GifticonLocalDataSource
@@ -17,13 +15,13 @@ import com.lighthouse.domain.repository.LocationRepository
 import com.lighthouse.domain.repository.SecurityRepository
 import com.lighthouse.domain.repository.UserPreferencesRepository
 import com.lighthouse.repository.AuthRepositoryImpl
-import com.lighthouse.repository.BrandRepositoryImpl
 import com.lighthouse.repository.GalleryImageRepositoryImpl
 import com.lighthouse.repository.GifticonImageRecognizeRepositoryImpl
 import com.lighthouse.repository.GifticonRepositoryImpl
 import com.lighthouse.repository.LocationRepositoryImpl
 import com.lighthouse.repository.SecurityRepositoryImpl
 import com.lighthouse.repository.UserPreferencesRepositoryImpl
+import com.lighthouse.repository.brand.BrandRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -39,12 +37,6 @@ abstract class DataModule {
     abstract fun bindAuthDataSource(
         source: AuthDataSourceImpl
     ): AuthDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindBrandLocalDataSource(
-        source: BrandLocalDataSourceImpl
-    ): BrandLocalDataSource
 
     @Binds
     @Singleton

@@ -1,0 +1,3 @@
+package com.lighthouse.repository.gifticon
+
+class GifticonUsageHistoryRepositoryImpl
