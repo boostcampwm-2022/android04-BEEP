@@ -1,6 +1,5 @@
 package com.lighthouse.data.database.repository.gifticon
 
-import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.beep.model.user.UsageHistory
 import com.lighthouse.data.database.dao.GifticonUsageHistoryDao
 import com.lighthouse.data.database.ext.runCatchingDB
@@ -19,7 +18,7 @@ internal class GifticonUsageHistoryDatabaseRepositoryImpl @Inject constructor(
         userId: String,
         gifticonId: String,
         usageHistory: UsageHistory
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonUsageHistoryDao.useGifticonAndInsertHistory(
                 userId,
@@ -33,7 +32,7 @@ internal class GifticonUsageHistoryDatabaseRepositoryImpl @Inject constructor(
         gifticonId: String,
         amount: Int,
         usageHistory: UsageHistory
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonUsageHistoryDao.useCashCardGifticonAndInsertHistory(
                 userId,
@@ -46,7 +45,7 @@ internal class GifticonUsageHistoryDatabaseRepositoryImpl @Inject constructor(
     override suspend fun revertUsedGifticon(
         userId: String,
         gifticonId: String
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonUsageHistoryDao.revertUsedGifticonAndDeleteHistory(
                 userId,
@@ -58,7 +57,7 @@ internal class GifticonUsageHistoryDatabaseRepositoryImpl @Inject constructor(
     override fun getUsageHistory(
         userId: String,
         gifticonId: String
-    ): DbResult<Flow<List<UsageHistory>>> {
+    ): Result<Flow<List<UsageHistory>>> {
         return runCatchingDB {
             gifticonUsageHistoryDao.getUsageHistory(
                 userId,
@@ -72,7 +71,7 @@ internal class GifticonUsageHistoryDatabaseRepositoryImpl @Inject constructor(
     override suspend fun insertUsageHistory(
         gifticonId: String,
         usageHistory: UsageHistory
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonUsageHistoryDao.insertUsageHistory(usageHistory.toEntity(gifticonId))
         }

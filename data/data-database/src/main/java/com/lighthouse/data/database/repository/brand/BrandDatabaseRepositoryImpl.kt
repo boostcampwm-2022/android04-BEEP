@@ -2,8 +2,8 @@ package com.lighthouse.data.database.repository.brand
 
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.beep.model.location.Dms
-import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.data.database.dao.BrandLocationDao
+import com.lighthouse.data.database.exception.DBNotFoundException
 import com.lighthouse.data.database.ext.runCatchingDB
 import com.lighthouse.data.database.mapper.brand.combineSectionId
 import com.lighthouse.data.database.mapper.brand.toDomain
@@ -21,14 +21,10 @@ internal class BrandDatabaseRepositoryImpl @Inject constructor(
         x: Dms,
         y: Dms,
         brandName: String
-    ): DbResult<List<BrandPlaceInfo>> {
+    ): Result<List<BrandPlaceInfo>> {
         val sections = brandLocationDao.getBrands(combineSectionId(x, y, brandName))
-        return if (sections != null) {
-            runCatchingDB {
-                sections.brands.toDomain()
-            }
-        } else {
-            DbResult.Failure(Exception())
+        return runCatchingDB {
+            sections?.brands?.toDomain() ?: throw DBNotFoundException("Section을 찾을 수 없습니다.")
         }
     }
 
@@ -37,13 +33,13 @@ internal class BrandDatabaseRepositoryImpl @Inject constructor(
         x: Dms,
         y: Dms,
         brandName: String
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             brandLocationDao.insertBrand(brandPlaceInfoList.toEntity(), x, y, brandName)
         }
     }
 
-    override suspend fun removeExpirationBrands(): DbResult<Unit> {
+    override suspend fun removeExpirationBrands(): Result<Unit> {
         val date: Date = Calendar.getInstance().apply {
             add(Calendar.MONTH, -1)
         }.time

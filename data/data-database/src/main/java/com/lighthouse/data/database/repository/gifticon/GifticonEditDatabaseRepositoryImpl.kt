@@ -1,7 +1,6 @@
 package com.lighthouse.data.database.repository.gifticon
 
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
-import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.data.database.dao.GifticonEditDao
 import com.lighthouse.data.database.ext.runCatchingDB
 import com.lighthouse.data.database.mapper.gifticon.edit.toEntity
@@ -14,7 +13,7 @@ internal class GifticonEditDatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun insertGifticons(
         gifticonWithCropList: List<GifticonWithCrop>
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonEditDao.insertGifticonWithCrop(gifticonWithCropList.toEntity())
         }
@@ -22,7 +21,7 @@ internal class GifticonEditDatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun updateGifticon(
         gifticonWithCrop: GifticonWithCrop
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonEditDao.updateGifticonWithCrop(gifticonWithCrop.toEntity())
         }
@@ -31,7 +30,7 @@ internal class GifticonEditDatabaseRepositoryImpl @Inject constructor(
     override suspend fun deleteGifticon(
         userId: String,
         gifticonId: String
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonEditDao.deleteGifticon(userId, gifticonId)
         }
@@ -40,7 +39,7 @@ internal class GifticonEditDatabaseRepositoryImpl @Inject constructor(
     override suspend fun moveUserIdGifticon(
         oldUserId: String,
         newUserId: String
-    ): DbResult<Unit> {
+    ): Result<Unit> {
         return runCatchingDB {
             gifticonEditDao.moveUserIdGifticon(oldUserId, newUserId)
         }

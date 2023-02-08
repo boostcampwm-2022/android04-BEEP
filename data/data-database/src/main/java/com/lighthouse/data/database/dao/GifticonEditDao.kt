@@ -9,7 +9,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.lighthouse.data.database.entity.DBGifticonCropEntity
 import com.lighthouse.data.database.entity.DBGifticonEntity
-import com.lighthouse.data.database.exception.NotFoundException
+import com.lighthouse.data.database.exception.DBNotFoundException
 import com.lighthouse.data.database.mapper.gifticon.edit.toGifticonCropEntity
 import com.lighthouse.data.database.mapper.gifticon.edit.toGifticonEntity
 import com.lighthouse.data.database.model.DBGifticonWithCrop
@@ -114,7 +114,7 @@ internal interface GifticonEditDao {
                 memo
             )
             if (updatedCount == 0) {
-                throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
+                throw DBNotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
             }
             updateGifticonCrop(userId, id, croppedRect)
         }

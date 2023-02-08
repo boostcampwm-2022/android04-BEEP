@@ -4,9 +4,8 @@ import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.etc.SortBy
 import com.lighthouse.beep.model.gifticon.Gifticon
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
-import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.data.database.dao.GifticonSearchDao
-import com.lighthouse.data.database.exception.NotFoundException
+import com.lighthouse.data.database.exception.DBNotFoundException
 import com.lighthouse.data.database.ext.runCatchingDB
 import com.lighthouse.data.database.mapper.gifticon.edit.toDomain
 import com.lighthouse.data.database.mapper.gifticon.search.toDomain
@@ -23,7 +22,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
     override fun getGifticon(
         userId: String,
         gifticonId: String
-    ): DbResult<Flow<Gifticon>> {
+    ): Result<Flow<Gifticon>> {
         return runCatchingDB {
             gifticonSearchDao.getGifticon(userId, gifticonId).map {
                 it.toDomain()
@@ -36,7 +35,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): DbResult<Flow<List<Gifticon>>> {
+    ): Result<Flow<List<Gifticon>>> {
         val gifticons = when (filterExpired) {
             true -> when (sortBy) {
                 SortBy.RECENT -> gifticonSearchDao.getAllGifticonsSortByRecent(
@@ -77,7 +76,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         filterBrand: Set<String>,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): DbResult<Flow<List<Gifticon>>> {
+    ): Result<Flow<List<Gifticon>>> {
         val upperFilterBrand = filterBrand.map {
             it.uppercase()
         }.toSet()
@@ -125,7 +124,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): DbResult<Flow<List<BrandWithGifticonCount>>> {
+    ): Result<Flow<List<BrandWithGifticonCount>>> {
         val brandWithGifticonCount = when (filterExpired) {
             true -> gifticonSearchDao.getAllBrands(userId, isUsed, Date())
             false -> gifticonSearchDao.getAllBrands(userId, isUsed)
@@ -143,7 +142,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         brand: String,
         filterExpired: Boolean
-    ): DbResult<Flow<List<Gifticon>>> {
+    ): Result<Flow<List<Gifticon>>> {
         val gifticons = when (filterExpired) {
             true -> gifticonSearchDao.getGifticonByBrand(userId, isUsed, brand)
             false -> gifticonSearchDao.getGifticonByBrand(userId, isUsed, brand, Date())
@@ -158,10 +157,10 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
     override suspend fun getGifticonCrop(
         userId: String,
         gifticonId: String
-    ): DbResult<GifticonWithCrop> {
+    ): Result<GifticonWithCrop> {
         return runCatchingDB {
             gifticonSearchDao.getGifticonWithCrop(userId, gifticonId)?.toDomain()
-                ?: throw NotFoundException("해당 기프티콘을 찾을 수 없습니다.")
+                ?: throw DBNotFoundException("해당 기프티콘을 찾을 수 없습니다.")
         }
     }
 
@@ -169,7 +168,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): DbResult<Flow<Boolean>> {
+    ): Result<Flow<Boolean>> {
         return runCatchingDB {
             when (filterExpired) {
                 true -> gifticonSearchDao.hasGifticon(userId, isUsed)
@@ -178,7 +177,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun hasGifticonBrand(userId: String, brand: String): DbResult<Boolean> {
+    override suspend fun hasGifticonBrand(userId: String, brand: String): Result<Boolean> {
         return runCatchingDB {
             gifticonSearchDao.hasGifticonBrand(userId, brand)
         }

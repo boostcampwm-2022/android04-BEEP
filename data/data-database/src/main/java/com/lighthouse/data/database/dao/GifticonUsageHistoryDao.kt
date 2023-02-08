@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.lighthouse.data.database.entity.DBUsageHistoryEntity
-import com.lighthouse.data.database.exception.NotFoundException
-import com.lighthouse.data.database.exception.UpdateException
+import com.lighthouse.data.database.exception.DBNotFoundException
+import com.lighthouse.data.database.exception.DBUpdateException
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -114,7 +114,7 @@ internal interface GifticonUsageHistoryDao {
         val gifticonId = usageHistory.gifticonId
 
         if (updateGifticonUsed(userId, gifticonId, true) == 0) {
-            throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
+            throw DBNotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
         }
 
         insertUsageHistory(usageHistory)
@@ -136,18 +136,18 @@ internal interface GifticonUsageHistoryDao {
         val balance = getCurrentGifticonBalance(userId, gifticonId)
 
         if (balance < amount) {
-            throw UpdateException("사용할 금액이 잔액보다 많습니다.")
+            throw DBUpdateException("사용할 금액이 잔액보다 많습니다.")
         }
 
         if (updateGifticonBalance(userId, gifticonId, balance - amount) == 0) {
-            throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
+            throw DBNotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
         }
 
         insertUsageHistory(usageHistory)
 
         if (balance == amount) {
             if (updateGifticonUsed(userId, gifticonId, true) == 0) {
-                throw NotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
+                throw DBNotFoundException("업데이트할 기프티콘을 찾을 수 없습니다.")
             }
         }
     }
@@ -166,11 +166,11 @@ internal interface GifticonUsageHistoryDao {
         if (isCashCard) {
             val totalBalance = getTotalGifticonBalance(userId, gifticonId)
             if (updateGifticonBalance(userId, gifticonId, totalBalance) == 0) {
-                throw NotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
+                throw DBNotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
             }
         }
         if (updateGifticonUsed(userId, gifticonId, false) == 0) {
-            throw NotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
+            throw DBNotFoundException("기프티콘의 정보를 찾을 수 없습니다.")
         }
         deleteUsageHistory(userId, gifticonId)
     }
