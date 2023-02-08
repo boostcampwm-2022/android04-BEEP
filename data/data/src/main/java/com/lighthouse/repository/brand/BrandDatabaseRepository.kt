@@ -4,6 +4,7 @@ import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.beep.model.location.Dms
 
 interface BrandDatabaseRepository {
+
     suspend fun getBrands(
         x: Dms,
         y: Dms,
