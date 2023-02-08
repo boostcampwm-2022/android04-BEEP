@@ -4,6 +4,7 @@ import com.lighthouse.beep.model.user.UserPreferenceOption
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferencesRepository {
+
     suspend fun setPinString(pinString: String): Result<Unit>
     fun getPinString(): Flow<String>
 

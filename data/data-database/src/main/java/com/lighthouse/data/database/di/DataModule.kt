@@ -19,22 +19,22 @@ import dagger.hilt.components.SingletonComponent
 internal abstract class DataModule {
 
     @Binds
-    abstract fun bindsDatabaseRepository(
+    abstract fun bindsBrandDatabaseRepository(
         repository: BrandDatabaseRepositoryImpl
     ): BrandDatabaseRepository
 
     @Binds
-    abstract fun bindsGifticonEditRepository(
+    abstract fun bindsGifticonEditDatabaseRepository(
         repository: GifticonEditDatabaseRepositoryImpl
     ): GifticonEditDatabaseRepository
 
     @Binds
-    abstract fun bindsGifticonSearchRepository(
+    abstract fun bindsGifticonSearchDatabaseRepository(
         repository: GifticonSearchDatabaseRepositoryImpl
     ): GifticonSearchDatabaseRepository
 
     @Binds
-    abstract fun bindsGifticonUsageHistoryRepository(
+    abstract fun bindsGifticonUsageHistoryDatabaseRepository(
         repository: GifticonUsageHistoryDatabaseRepositoryImpl
     ): GifticonUsageHistoryDatabaseRepository
 }
