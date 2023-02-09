@@ -3,6 +3,7 @@ package com.lighthouse.repository.gifticon
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
 
 interface GifticonEditDatabaseRepository {
+
     suspend fun insertGifticons(
         gifticonWithCropList: List<GifticonWithCrop>
     ): Result<Unit>

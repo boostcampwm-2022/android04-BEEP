@@ -7,6 +7,7 @@ import com.lighthouse.beep.model.gifticon.GifticonWithCrop
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonSearchDatabaseRepository {
+
     fun getGifticon(
         userId: String,
         gifticonId: String

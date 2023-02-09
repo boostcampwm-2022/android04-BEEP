@@ -24,14 +24,21 @@ interface UserPreferenceRepository {
         securityOption: SecurityOption
     ): Result<Unit>
 
-    fun getSecurityOption(userId: String): Result<Flow<SecurityOption>>
+    fun getSecurityOption(userId: String): Flow<Result<SecurityOption>>
 
     suspend fun setNotificationEnable(
         userId: String,
         enable: Boolean
     ): Result<Unit>
 
-    fun getNotificationEnable(userId: String): Result<Flow<Boolean>>
+    fun getNotificationEnable(userId: String): Flow<Result<Boolean>>
+
+    suspend fun setFilterExpired(
+        userId: String,
+        filterExpired: Boolean
+    ): Result<Unit>
+
+    fun getFilterExpired(userId: String): Flow<Result<Boolean>>
 
     suspend fun transferData(
         oldUserId: String,

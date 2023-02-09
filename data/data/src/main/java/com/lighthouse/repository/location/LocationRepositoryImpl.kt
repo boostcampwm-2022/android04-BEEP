@@ -1,7 +1,7 @@
-package com.lighthouse.repository
+package com.lighthouse.repository.location
 
-import com.lighthouse.common.utils.location.SharedLocationManager
-import com.lighthouse.domain.repository.LocationRepository
+import com.lighthouse.domain.repository.location.LocationRepository
+import com.lighthouse.utils.location.SharedLocationManager
 import javax.inject.Inject
 
 class LocationRepositoryImpl @Inject constructor(

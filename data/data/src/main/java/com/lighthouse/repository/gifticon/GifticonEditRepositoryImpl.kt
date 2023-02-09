@@ -1,7 +1,8 @@
 package com.lighthouse.repository.gifticon
 
-import com.lighthouse.beep.model.gifticon.GifticonWithCrop
-import com.lighthouse.domain.repository.GifticonEditRepository
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForUpdate
+import com.lighthouse.domain.repository.gifticon.GifticonEditRepository
 import javax.inject.Inject
 
 internal class GifticonEditRepositoryImpl @Inject constructor(
@@ -9,11 +10,14 @@ internal class GifticonEditRepositoryImpl @Inject constructor(
     private val gifticonStorageRepository: GifticonStorageRepository
 ) : GifticonEditRepository {
 
-    override suspend fun insertGifticons(gifticonWithCropList: List<GifticonWithCrop>): Result<Unit> {
+    override suspend fun insertGifticons(
+        userId: String,
+        gifticonForAdditionList: List<GifticonForAddition>
+    ): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop): Result<Unit> {
+    override suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate): Result<Unit> {
         TODO("Not yet implemented")
     }
 

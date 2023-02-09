@@ -1,4 +1,4 @@
-package com.lighthouse.domain.repository
+package com.lighthouse.domain.repository.gifticon
 
 import com.lighthouse.beep.model.user.UsageHistory
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,7 @@ interface GifticonUsageHistoryRepository {
     fun getUsageHistory(
         userId: String,
         gifticonId: String
-    ): Result<Flow<List<UsageHistory>>>
+    ): Flow<Result<List<UsageHistory>>>
 
     suspend fun insertUsageHistory(
         gifticonId: String,

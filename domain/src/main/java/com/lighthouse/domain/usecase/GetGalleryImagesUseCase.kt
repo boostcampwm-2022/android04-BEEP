@@ -1,8 +1,8 @@
-package com.lighthouse.domain.usecase.gallery
+package com.lighthouse.domain.usecase
 
 import androidx.paging.PagingData
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.domain.repository.GalleryImageRepository
+import com.lighthouse.domain.repository.gallery.GalleryImageRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -11,6 +11,6 @@ class GetGalleryImagesUseCase @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<PagingData<GalleryImage>> {
-        return galleryImageRepository.getImages()
+        return galleryImageRepository.getImages(20)
     }
 }

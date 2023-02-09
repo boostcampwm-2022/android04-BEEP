@@ -1,21 +1,23 @@
 package com.lighthouse.mapper
 
 import android.net.Uri
-import com.lighthouse.beep.model.gifticon.GifticonForAddition
-import com.lighthouse.common.recognizer.GifticonRecognizeInfo
+import com.lighthouse.beep.model.gifticon.GifticonRecognizeResult
+import com.lighthouse.common.mapper.toDomain
+import com.lighthouse.utils.recognizer.model.GifticonRecognizeInfo
 
-fun GifticonRecognizeInfo.toDomain(originUri: Uri, croppedUri: Uri?): GifticonForAddition {
-    return GifticonForAddition(
-        true,
+fun GifticonRecognizeInfo.toDomain(
+    originUri: Uri,
+    croppedUri: Uri?
+): GifticonRecognizeResult {
+    return GifticonRecognizeResult(
         name,
         brand,
         barcode,
         expiredAt,
         isCashCard,
         balance,
-        originUri.toString(),
-        croppedUri?.toString() ?: "",
-        croppedRect.toDomain(),
-        ""
+        originUri.toDomain(),
+        croppedUri.toDomain(),
+        croppedRect.toDomain()
     )
 }

@@ -1,12 +1,13 @@
 package com.lighthouse.domain.usecase.setting
 
-import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.domain.repository.user.UserRepository
 import javax.inject.Inject
 
 class RemoveUserDataUseCase @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userRepository: UserRepository
 ) {
+
     suspend operator fun invoke(): Result<Unit> {
-        return userPreferencesRepository.removeCurrentUserData()
+        return userRepository.clearData()
     }
 }

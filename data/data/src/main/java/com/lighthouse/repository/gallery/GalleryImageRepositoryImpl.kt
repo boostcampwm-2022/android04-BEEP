@@ -1,16 +1,23 @@
 package com.lighthouse.repository.gallery
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.lighthouse.beep.model.gallery.GalleryImage
-import com.lighthouse.domain.repository.GalleryImageRepository
+import com.lighthouse.domain.repository.gallery.GalleryImageRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GalleryImageRepositoryImpl @Inject constructor(
-    private val galleryImageContentRepository: GalleryImageContentRepository
+internal class GalleryImageRepositoryImpl @Inject constructor(
+    private val dataSource: GalleryImageDataSource
 ) : GalleryImageRepository {
 
     override fun getImages(pageSize: Int): Flow<PagingData<GalleryImage>> {
-        return galleryImageContentRepository.getImages(pageSize)
+        return Pager(
+            config = PagingConfig(pageSize = pageSize, enablePlaceholders = false),
+            pagingSourceFactory = {
+                GalleryImagePagingSource(dataSource, 0, pageSize)
+            }
+        ).flow
     }
 }

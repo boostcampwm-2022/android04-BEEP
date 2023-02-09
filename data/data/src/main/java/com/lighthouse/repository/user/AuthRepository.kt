@@ -9,5 +9,7 @@ interface AuthRepository {
 
     fun getCurrentUserId(): String
 
+    fun createIV(): ByteArray
+
     fun encrypt(pin: String, iv: IvParameterSpec)
 }

@@ -1,4 +1,4 @@
-package com.lighthouse.domain.repository
+package com.lighthouse.domain.repository.location
 
 import com.lighthouse.beep.model.location.VertexLocation
 import kotlinx.coroutines.flow.Flow

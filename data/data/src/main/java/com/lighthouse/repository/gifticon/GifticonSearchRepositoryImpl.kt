@@ -4,7 +4,7 @@ import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.etc.SortBy
 import com.lighthouse.beep.model.gifticon.Gifticon
 import com.lighthouse.beep.model.gifticon.GifticonWithCrop
-import com.lighthouse.domain.repository.GifticonSearchRepository
+import com.lighthouse.domain.repository.gifticon.GifticonSearchRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
     override fun getGifticon(
         userId: String,
         gifticonId: String
-    ): Result<Flow<Gifticon>> {
+    ): Flow<Result<Gifticon>> {
         TODO("Not yet implemented")
     }
 
@@ -24,7 +24,7 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): Result<Flow<List<Gifticon>>> {
+    ): Flow<Result<List<Gifticon>>> {
         TODO("Not yet implemented")
     }
 
@@ -34,7 +34,7 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         filterBrand: Set<String>,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): Result<Flow<List<Gifticon>>> {
+    ): Flow<Result<List<Gifticon>>> {
         TODO("Not yet implemented")
     }
 
@@ -43,7 +43,7 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         brand: String,
         filterExpired: Boolean
-    ): Result<Flow<List<Gifticon>>> {
+    ): Flow<Result<List<Gifticon>>> {
         TODO("Not yet implemented")
     }
 
@@ -51,7 +51,7 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Result<Flow<List<BrandWithGifticonCount>>> {
+    ): Flow<Result<List<BrandWithGifticonCount>>> {
         TODO("Not yet implemented")
     }
 
@@ -66,7 +66,7 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Result<Flow<Boolean>> {
+    ): Flow<Result<Boolean>> {
         TODO("Not yet implemented")
     }
 

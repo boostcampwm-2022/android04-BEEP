@@ -1,7 +1,7 @@
 package com.lighthouse.repository.gifticon
 
 import com.lighthouse.beep.model.user.UsageHistory
-import com.lighthouse.domain.repository.GifticonUsageHistoryRepository
+import com.lighthouse.domain.repository.gifticon.GifticonUsageHistoryRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -36,7 +36,7 @@ internal class GifticonUsageHistoryRepositoryImpl @Inject constructor(
     override fun getUsageHistory(
         userId: String,
         gifticonId: String
-    ): Result<Flow<List<UsageHistory>>> {
+    ): Flow<Result<List<UsageHistory>>> {
         TODO("Not yet implemented")
     }
 

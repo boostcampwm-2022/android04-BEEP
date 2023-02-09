@@ -3,7 +3,7 @@ package com.lighthouse.repository.brand
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.common.converter.LocationConverter
-import com.lighthouse.domain.repository.BrandRepository
+import com.lighthouse.domain.repository.brand.BrandRepository
 import javax.inject.Inject
 
 internal class BrandRepositoryImpl @Inject constructor(

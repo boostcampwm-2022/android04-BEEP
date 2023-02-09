@@ -3,6 +3,7 @@ package com.lighthouse.repository.user
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
+import javax.crypto.Cipher
 import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
@@ -10,16 +11,24 @@ internal class UserRepositoryImpl @Inject constructor(
     private val userPreferenceRepository: UserPreferenceRepository
 ) : UserRepository {
 
+    override fun getUserId(): String {
+        return authRepository.getCurrentUserId()
+    }
+
     override fun isGuest(): Flow<Boolean> {
         return authRepository.isGuest()
     }
 
-    override suspend fun setPinPassword(pinPassword: ByteArray): Result<Unit> {
-        val userId = authRepository.getCurrentUserId()
-        return userPreferenceRepository.setPinPassword(userId, pinPassword)
+    override fun getFingerprintCipher(): Cipher {
+        TODO("Not yet implemented")
     }
 
-    override suspend fun confirmPinPassword(pinPassword: String): Result<Unit> {
+    override suspend fun setPinPassword(pinPassword: String): Result<Unit> {
+        val userId = authRepository.getCurrentUserId()
+        return userPreferenceRepository.setPinPassword(userId, pinPassword.toByteArray())
+    }
+
+    override suspend fun confirmPinPassword(pinPassword: String): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -27,7 +36,7 @@ internal class UserRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getSecurityOption(): Flow<SecurityOption> {
+    override fun getSecurityOption(): Flow<Result<SecurityOption>> {
         TODO("Not yet implemented")
     }
 
@@ -35,7 +44,7 @@ internal class UserRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun getNotificationEnable(): Flow<Boolean> {
+    override fun getNotificationEnable(): Flow<Result<Boolean>> {
         TODO("Not yet implemented")
     }
 

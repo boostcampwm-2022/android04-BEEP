@@ -1,4 +1,4 @@
-package com.lighthouse.domain.repository
+package com.lighthouse.domain.repository.brand
 
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.beep.model.location.Dms

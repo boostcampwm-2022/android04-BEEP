@@ -1,13 +1,13 @@
 package com.lighthouse.domain.usecase.setting
 
-import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.domain.repository.user.UserRepository
 import javax.inject.Inject
 
 class SavePinUseCase @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userRepository: UserRepository
 ) {
 
     suspend operator fun invoke(pinString: String): Result<Unit> {
-        return userPreferencesRepository.setPinString(pinString)
+        return userRepository.setPinPassword(pinString)
     }
 }

@@ -1,15 +1,17 @@
-package com.lighthouse.domain.repository
+package com.lighthouse.domain.repository.gifticon
 
-import com.lighthouse.beep.model.gifticon.GifticonWithCrop
+import com.lighthouse.beep.model.gifticon.GifticonForAddition
+import com.lighthouse.beep.model.gifticon.GifticonForUpdate
 
 interface GifticonEditRepository {
 
     suspend fun insertGifticons(
-        gifticonWithCropList: List<GifticonWithCrop>
+        userId: String,
+        gifticonForAdditionList: List<GifticonForAddition>
     ): Result<Unit>
 
     suspend fun updateGifticon(
-        gifticonWithCrop: GifticonWithCrop
+        gifticonForUpdate: GifticonForUpdate
     ): Result<Unit>
 
     suspend fun deleteGifticon(

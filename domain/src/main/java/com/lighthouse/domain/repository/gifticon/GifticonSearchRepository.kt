@@ -1,4 +1,4 @@
-package com.lighthouse.domain.repository
+package com.lighthouse.domain.repository.gifticon
 
 import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.etc.SortBy
@@ -11,14 +11,14 @@ interface GifticonSearchRepository {
     fun getGifticon(
         userId: String,
         gifticonId: String
-    ): Result<Flow<Gifticon>>
+    ): Flow<Result<Gifticon>>
 
     fun getAllGifticons(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean,
         sortBy: SortBy = SortBy.DEADLINE
-    ): Result<Flow<List<Gifticon>>>
+    ): Flow<Result<List<Gifticon>>>
 
     fun getFilteredGifticons(
         userId: String,
@@ -26,20 +26,20 @@ interface GifticonSearchRepository {
         filterBrand: Set<String>,
         filterExpired: Boolean,
         sortBy: SortBy = SortBy.DEADLINE
-    ): Result<Flow<List<Gifticon>>>
+    ): Flow<Result<List<Gifticon>>>
 
     fun getGifticonByBrand(
         userId: String,
         isUsed: Boolean,
         brand: String,
         filterExpired: Boolean
-    ): Result<Flow<List<Gifticon>>>
+    ): Flow<Result<List<Gifticon>>>
 
     fun getAllBrands(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Result<Flow<List<BrandWithGifticonCount>>>
+    ): Flow<Result<List<BrandWithGifticonCount>>>
 
     suspend fun getGifticonCrop(
         userId: String,
@@ -50,7 +50,7 @@ interface GifticonSearchRepository {
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Result<Flow<Boolean>>
+    ): Flow<Result<Boolean>>
 
     suspend fun hasGifticonBrand(
         userId: String,

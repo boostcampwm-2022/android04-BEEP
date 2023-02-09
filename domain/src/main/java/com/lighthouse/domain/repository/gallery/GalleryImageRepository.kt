@@ -1,4 +1,4 @@
-package com.lighthouse.domain.repository
+package com.lighthouse.domain.repository.gallery
 
 import androidx.paging.PagingData
 import com.lighthouse.beep.model.gallery.GalleryImage

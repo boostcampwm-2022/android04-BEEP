@@ -4,7 +4,7 @@ package com.lighthouse.domain.usecase
 // import com.lighthouse.core.utils.location.DmsLocation
 // import com.lighthouse.core.utils.location.LocationConverter
 // import com.lighthouse.domain.model.BrandPlaceInfo
-// import com.lighthouse.domain.repository.BrandRepository
+// import com.lighthouse.domain.repository.brand.BrandRepository
 // import io.mockk.coEvery
 // import io.mockk.mockk
 // import kotlinx.coroutines.ExperimentalCoroutinesApi

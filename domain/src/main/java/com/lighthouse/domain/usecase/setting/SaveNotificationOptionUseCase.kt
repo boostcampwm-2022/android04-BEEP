@@ -1,14 +1,13 @@
 package com.lighthouse.domain.usecase.setting
 
-import com.lighthouse.beep.model.user.UserPreferenceOption
-import com.lighthouse.domain.repository.UserPreferencesRepository
+import com.lighthouse.domain.repository.user.UserRepository
 import javax.inject.Inject
 
 class SaveNotificationOptionUseCase @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userRepository: UserRepository
 ) {
 
-    suspend operator fun invoke(option: Boolean): Result<Unit> {
-        return userPreferencesRepository.setBooleanOption(UserPreferenceOption.NOTIFICATION, option)
+    suspend operator fun invoke(enable: Boolean): Result<Unit> {
+        return userRepository.setNotificationEnable(enable)
     }
 }
