@@ -1,11 +1,11 @@
-package com.lighthouse.datasource.gallery
+package com.lighthouse.data.content.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.lighthouse.beep.model.gallery.GalleryImage
 
-class GalleryImagePagingSource(
-    private val localSource: GalleryImageLocalSource,
+internal class GalleryImagePagingSource(
+    private val dataSource: GalleryImageDataSource,
     private val page: Int,
     private val limit: Int
 ) : PagingSource<Int, GalleryImage>() {
@@ -19,7 +19,7 @@ class GalleryImagePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GalleryImage> {
         val current = params.key ?: page
-        val results = localSource.getImages(current, params.loadSize)
+        val results = dataSource.getImages(current, params.loadSize)
         return try {
             LoadResult.Page(
                 data = results,
