@@ -3,7 +3,7 @@ package com.lighthouse.data.remote.repository
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.beep.model.error.BeepError
 import com.lighthouse.beep.model.location.Dms
-import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.common.converter.LocationConverter
 import com.lighthouse.data.remote.api.KakaoApiService
 import com.lighthouse.data.remote.mapper.toDomain
 import com.lighthouse.repository.brand.BrandRemoteRepository

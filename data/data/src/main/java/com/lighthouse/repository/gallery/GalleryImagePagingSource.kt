@@ -1,4 +1,4 @@
-package com.lighthouse.data.content.datasource
+package com.lighthouse.repository.gallery
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

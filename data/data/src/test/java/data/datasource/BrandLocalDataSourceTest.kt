@@ -4,10 +4,10 @@ package data.datasource
 // import androidx.room.Room
 // import androidx.test.core.app.ApplicationProvider
 // import com.google.common.truth.Truth
-// import com.lighthouse.database.BeepDatabase
-// import com.lighthouse.database.dao.BrandWithSectionDao
-// import com.lighthouse.database.entity.BrandLocationEntity
-// import com.lighthouse.database.entity.SectionEntity
+// import com.lighthouse.data.local.BeepDatabase
+// import com.lighthouse.data.local.di.BrandWithSectionDao
+// import com.lighthouse.data.local.model.BrandLocationEntity
+// import com.lighthouse.data.local.model.SectionEntity
 // import com.lighthouse.core.utils.location.Dms
 // import kotlinx.coroutines.ExperimentalCoroutinesApi
 // import kotlinx.coroutines.test.runTest

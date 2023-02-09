@@ -1,4 +1,4 @@
-package com.lighthouse.common.geography
+package com.lighthouse.utils.location
 
 import android.content.Context
 import android.location.Address
@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
-class Geography @Inject constructor(
+class GeographyManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 

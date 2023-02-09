@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.lighthouse.beep.model.location.Dms
-import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.common.converter.LocationConverter
 import com.lighthouse.data.database.entity.DBBrandLocationEntity
 import com.lighthouse.data.database.entity.DBSectionEntity
 import com.lighthouse.data.database.mapper.brand.combineSectionId

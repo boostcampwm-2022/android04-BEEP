@@ -1,8 +1,8 @@
-package com.lighthouse.beep.model.gifticon
+package com.lighthouse.model.gifticon
 
 import java.io.File
 
-data class GifticonImageResult(
+internal data class GifticonImageResult(
     val sampleSize: Int,
     val originFile: File,
     val croppedFile: File

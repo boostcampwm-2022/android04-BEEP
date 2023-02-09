@@ -1,9 +1,9 @@
-package com.lighthouse.common.recognizer.processor
+package com.lighthouse.utils.recognizer.processor
 
 import android.content.res.Resources
 import android.graphics.Bitmap
 
-open class ScaleProcessor {
+internal open class ScaleProcessor {
     private val screenWidth by lazy {
         Resources.getSystem().displayMetrics.widthPixels
     }

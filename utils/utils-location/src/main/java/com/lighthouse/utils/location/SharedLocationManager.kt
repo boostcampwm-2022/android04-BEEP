@@ -1,4 +1,4 @@
-package com.lighthouse.common.utils.location
+package com.lighthouse.utils.location
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -18,7 +18,9 @@ import javax.inject.Inject
 class SharedLocationManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
+    private val fusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 
     private val locationRequest = LocationRequest.create().apply {
         interval = LOCATION_INTERVAL

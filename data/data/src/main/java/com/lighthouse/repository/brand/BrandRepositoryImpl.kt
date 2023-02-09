@@ -2,7 +2,7 @@ package com.lighthouse.repository.brand
 
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
 import com.lighthouse.beep.model.location.Dms
-import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.common.converter.LocationConverter
 import com.lighthouse.domain.repository.BrandRepository
 import javax.inject.Inject
 
@@ -16,14 +16,11 @@ internal class BrandRepositoryImpl @Inject constructor(
         x: Double,
         y: Double,
         size: Int
-    ): Result<List<BrandPlaceInfo>> {
+    ): Result<List<BrandPlaceInfo>> = runCatching {
         val cardinalLocations = LocationConverter.getCardinalDirections(x, y)
-
-        return runCatching {
-            cardinalLocations.flatMap { location ->
-                brandNames.flatMap { brandName ->
-                    getBrandPlaceInfo(brandName, location.x, location.y, size).getOrThrow()
-                }
+        cardinalLocations.flatMap { location ->
+            brandNames.flatMap { brandName ->
+                getBrandPlaceInfo(brandName, location.x, location.y, size).getOrThrow()
             }
         }
     }
