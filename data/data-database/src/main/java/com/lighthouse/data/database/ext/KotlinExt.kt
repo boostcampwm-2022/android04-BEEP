@@ -1,8 +1,8 @@
 package com.lighthouse.data.database.ext
 
+import com.lighthouse.beep.model.exception.common.NotFoundException
 import com.lighthouse.beep.model.exception.db.DeleteException
 import com.lighthouse.beep.model.exception.db.InsertException
-import com.lighthouse.beep.model.exception.db.NotFoundException
 import com.lighthouse.beep.model.exception.db.SelectException
 import com.lighthouse.beep.model.exception.db.UpdateException
 import com.lighthouse.data.database.exception.DBDeleteException

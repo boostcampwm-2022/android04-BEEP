@@ -1,4 +1,4 @@
-package com.lighthouse.data.database
+package com.lighthouse.data.database.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

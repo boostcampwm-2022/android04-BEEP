@@ -2,11 +2,11 @@ package com.lighthouse.data.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.lighthouse.data.database.BeepDatabase
 import com.lighthouse.data.database.dao.BrandLocationDao
 import com.lighthouse.data.database.dao.GifticonEditDao
 import com.lighthouse.data.database.dao.GifticonSearchDao
 import com.lighthouse.data.database.dao.GifticonUsageHistoryDao
+import com.lighthouse.data.database.database.BeepDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ import dagger.hilt.components.SingletonComponent
 @Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
-internal object DataBaseModule {
+internal object DatabaseModule {
 
     @Provides
     fun provideBeepDatabase(
