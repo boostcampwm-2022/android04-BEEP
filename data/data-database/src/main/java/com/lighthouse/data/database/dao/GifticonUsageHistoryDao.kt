@@ -105,6 +105,8 @@ internal interface GifticonUsageHistoryDao {
      * 기프티콘을 사용, 사용기록 추가
      * 1. 유저 ID
      * 2. 사용기록
+     * DBNotFoundException
+     * 업데이트 된 정보가 없을 경우 에러
      * */
     @Transaction
     suspend fun useGifticonAndInsertHistory(
@@ -125,6 +127,11 @@ internal interface GifticonUsageHistoryDao {
      * 1. 유저 ID
      * 2. 사용할 금액
      * 3. 사용기록
+     * DBUpdateException
+     * 사용할 금액이 잔액보다 많은 경우 에러
+     *
+     * DBNotFoundException
+     * 업데이트 된 정보가 없을 경우 에러
      * */
     @Transaction
     suspend fun useCashCardGifticonAndInsertHistory(
@@ -156,6 +163,8 @@ internal interface GifticonUsageHistoryDao {
      * 기프티콘 사용을 되돌립니다.
      * 1. 유저 ID
      * 2. 기프티콘 ID
+     * DBNotFoundException
+     * 업데이트 된 정보가 없을 경우 에러
      * */
     @Transaction
     suspend fun revertUsedGifticonAndDeleteHistory(

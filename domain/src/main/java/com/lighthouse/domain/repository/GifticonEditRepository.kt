@@ -17,7 +17,7 @@ interface GifticonEditRepository {
         gifticonId: String
     ): Result<Unit>
 
-    suspend fun moveUserIdGifticon(
+    suspend fun transferGifticon(
         oldUserId: String,
         newUserId: String
     ): Result<Unit>

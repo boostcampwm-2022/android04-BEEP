@@ -93,7 +93,7 @@ internal interface GifticonEditDao {
      * 1. 유저 ID
      * 2. 업데이트할 기프티콘 정보
      *
-     * AssertionError
+     * DBNotFoundException
      * 업데이트 된 정보가 없을 경우 에러
      * */
     @Transaction

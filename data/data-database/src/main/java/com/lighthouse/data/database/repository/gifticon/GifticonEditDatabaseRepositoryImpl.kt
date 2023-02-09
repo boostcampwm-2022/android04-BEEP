@@ -36,7 +36,7 @@ internal class GifticonEditDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun moveUserIdGifticon(
+    override suspend fun transferGifticon(
         oldUserId: String,
         newUserId: String
     ): Result<Unit> {

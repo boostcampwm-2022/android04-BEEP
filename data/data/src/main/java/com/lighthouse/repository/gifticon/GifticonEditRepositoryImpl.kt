@@ -5,7 +5,8 @@ import com.lighthouse.domain.repository.GifticonEditRepository
 import javax.inject.Inject
 
 internal class GifticonEditRepositoryImpl @Inject constructor(
-    private val gifticonEditDatabaseRepository: GifticonEditDatabaseRepository
+    private val gifticonEditDatabaseRepository: GifticonEditDatabaseRepository,
+    private val gifticonStorageRepository: GifticonStorageRepository
 ) : GifticonEditRepository {
 
     override suspend fun insertGifticons(gifticonWithCropList: List<GifticonWithCrop>): Result<Unit> {
@@ -23,7 +24,7 @@ internal class GifticonEditRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun moveUserIdGifticon(
+    override suspend fun transferGifticon(
         oldUserId: String,
         newUserId: String
     ): Result<Unit> {
