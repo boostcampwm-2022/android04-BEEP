@@ -73,7 +73,7 @@ internal class GifticonStorageRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteFile(uri: Uri): Result<Unit> = runCatching {
+    suspend fun deleteFile(uri: Uri?): Result<Unit> = runCatching {
         withContext(Dispatchers.IO) {
             context.deleteFile(uri)
         }

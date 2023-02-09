@@ -11,7 +11,7 @@ class GetGifticonUseCase @Inject constructor(
     private val gifticonRepository: GifticonSearchRepository
 ) {
 
-    operator fun invoke(gifticonId: String): Flow<Result<Gifticon>> {
+    operator fun invoke(gifticonId: String): Flow<Gifticon> {
         return gifticonRepository.getGifticon(
             userRepository.getUserId(),
             gifticonId

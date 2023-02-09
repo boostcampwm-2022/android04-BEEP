@@ -11,7 +11,7 @@ class GetUsageHistoriesUseCase @Inject constructor(
     private val gifticonRepository: GifticonUsageHistoryRepository
 ) {
 
-    operator fun invoke(gifticonId: String): Flow<Result<List<UsageHistory>>> {
+    operator fun invoke(gifticonId: String): Flow<List<UsageHistory>> {
         return gifticonRepository.getUsageHistory(
             userRepository.getUserId(),
             gifticonId

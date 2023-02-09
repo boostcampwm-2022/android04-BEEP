@@ -16,7 +16,7 @@ class GetFilteredGifticonsUseCase @Inject constructor(
         filter: Set<String>,
         sortBy: SortBy = SortBy.DEADLINE,
         filterExpired: Boolean = false
-    ): Flow<Result<List<Gifticon>>> {
+    ): Flow<List<Gifticon>> {
         return if (filter.isEmpty()) {
             gifticonRepository.getAllGifticons(
                 userRepository.getUserId(),

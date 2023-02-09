@@ -13,7 +13,7 @@ class GetGifticonsUseCase @Inject constructor(
     operator fun invoke(
         isUsed: Boolean,
         filteredExpired: Boolean
-    ): Flow<Result<List<Gifticon>>> {
+    ): Flow<List<Gifticon>> {
         return gifticonRepository.getAllGifticons(
             userUserRepository.getUserId(),
             isUsed,

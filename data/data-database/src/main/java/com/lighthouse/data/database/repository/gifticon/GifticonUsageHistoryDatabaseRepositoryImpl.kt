@@ -57,14 +57,12 @@ internal class GifticonUsageHistoryDatabaseRepositoryImpl @Inject constructor(
     override fun getUsageHistory(
         userId: String,
         gifticonId: String
-    ): Result<Flow<List<UsageHistory>>> {
-        return runCatchingDB {
-            gifticonUsageHistoryDao.getUsageHistory(
-                userId,
-                gifticonId
-            ).map {
-                it.toDomain()
-            }
+    ): Flow<List<UsageHistory>> {
+        return gifticonUsageHistoryDao.getUsageHistory(
+            userId,
+            gifticonId
+        ).map {
+            it.toDomain()
         }
     }
 

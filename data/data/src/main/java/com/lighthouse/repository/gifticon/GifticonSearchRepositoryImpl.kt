@@ -15,8 +15,11 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
     override fun getGifticon(
         userId: String,
         gifticonId: String
-    ): Flow<Result<Gifticon>> {
-        TODO("Not yet implemented")
+    ): Flow<Gifticon> {
+        return gifticonSearchDatabaseRepository.getGifticon(
+            userId,
+            gifticonId
+        )
     }
 
     override fun getAllGifticons(
@@ -24,8 +27,13 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): Flow<Result<List<Gifticon>>> {
-        TODO("Not yet implemented")
+    ): Flow<List<Gifticon>> {
+        return gifticonSearchDatabaseRepository.getAllGifticons(
+            userId,
+            isUsed,
+            filterExpired,
+            sortBy
+        )
     }
 
     override fun getFilteredGifticons(
@@ -34,8 +42,14 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         filterBrand: Set<String>,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): Flow<Result<List<Gifticon>>> {
-        TODO("Not yet implemented")
+    ): Flow<List<Gifticon>> {
+        return gifticonSearchDatabaseRepository.getFilteredGifticons(
+            userId,
+            isUsed,
+            filterBrand,
+            filterExpired,
+            sortBy
+        )
     }
 
     override fun getGifticonByBrand(
@@ -43,37 +57,56 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         brand: String,
         filterExpired: Boolean
-    ): Flow<Result<List<Gifticon>>> {
-        TODO("Not yet implemented")
+    ): Flow<List<Gifticon>> {
+        return gifticonSearchDatabaseRepository.getGifticonByBrand(
+            userId,
+            isUsed,
+            brand,
+            filterExpired
+        )
     }
 
     override fun getAllBrands(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Flow<Result<List<BrandWithGifticonCount>>> {
-        TODO("Not yet implemented")
+    ): Flow<List<BrandWithGifticonCount>> {
+        return gifticonSearchDatabaseRepository.getAllBrands(
+            userId,
+            isUsed,
+            filterExpired
+        )
     }
 
     override suspend fun getGifticonCrop(
         userId: String,
         gifticonId: String
     ): Result<GifticonWithCrop> {
-        TODO("Not yet implemented")
+        return gifticonSearchDatabaseRepository.getGifticonCrop(
+            userId,
+            gifticonId
+        )
     }
 
     override fun hasGifticon(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Flow<Result<Boolean>> {
-        TODO("Not yet implemented")
+    ): Flow<Boolean> {
+        return gifticonSearchDatabaseRepository.hasGifticon(
+            userId,
+            isUsed,
+            filterExpired
+        )
     }
 
     override suspend fun hasGifticonBrand(
         userId: String,
         brand: String
     ): Result<Boolean> {
-        TODO("Not yet implemented")
+        return gifticonSearchDatabaseRepository.hasGifticonBrand(
+            userId,
+            brand
+        )
     }
 }

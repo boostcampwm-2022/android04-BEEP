@@ -20,7 +20,7 @@ import java.io.File
 import java.util.Date
 import javax.inject.Inject
 
-internal class GifticonRecognizerRepositoryImpl @Inject constructor(
+internal class GifticonRecognizeRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : GifticonRecognizeRepository {
 

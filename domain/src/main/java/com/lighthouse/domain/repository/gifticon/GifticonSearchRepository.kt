@@ -11,14 +11,14 @@ interface GifticonSearchRepository {
     fun getGifticon(
         userId: String,
         gifticonId: String
-    ): Flow<Result<Gifticon>>
+    ): Flow<Gifticon>
 
     fun getAllGifticons(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean,
         sortBy: SortBy = SortBy.DEADLINE
-    ): Flow<Result<List<Gifticon>>>
+    ): Flow<List<Gifticon>>
 
     fun getFilteredGifticons(
         userId: String,
@@ -26,20 +26,20 @@ interface GifticonSearchRepository {
         filterBrand: Set<String>,
         filterExpired: Boolean,
         sortBy: SortBy = SortBy.DEADLINE
-    ): Flow<Result<List<Gifticon>>>
+    ): Flow<List<Gifticon>>
 
     fun getGifticonByBrand(
         userId: String,
         isUsed: Boolean,
         brand: String,
         filterExpired: Boolean
-    ): Flow<Result<List<Gifticon>>>
+    ): Flow<List<Gifticon>>
 
     fun getAllBrands(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Flow<Result<List<BrandWithGifticonCount>>>
+    ): Flow<List<BrandWithGifticonCount>>
 
     suspend fun getGifticonCrop(
         userId: String,
@@ -50,7 +50,7 @@ interface GifticonSearchRepository {
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Flow<Result<Boolean>>
+    ): Flow<Boolean>
 
     suspend fun hasGifticonBrand(
         userId: String,

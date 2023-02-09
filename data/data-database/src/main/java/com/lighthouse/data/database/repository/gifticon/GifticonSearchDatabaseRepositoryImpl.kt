@@ -22,11 +22,9 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
     override fun getGifticon(
         userId: String,
         gifticonId: String
-    ): Result<Flow<Gifticon>> {
-        return runCatchingDB {
-            gifticonSearchDao.getGifticon(userId, gifticonId).map {
-                it.toDomain()
-            }
+    ): Flow<Gifticon> {
+        return gifticonSearchDao.getGifticon(userId, gifticonId).map {
+            it.toDomain()
         }
     }
 
@@ -35,7 +33,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): Result<Flow<List<Gifticon>>> {
+    ): Flow<List<Gifticon>> {
         val gifticons = when (filterExpired) {
             true -> when (sortBy) {
                 SortBy.RECENT -> gifticonSearchDao.getAllGifticonsSortByRecent(
@@ -63,10 +61,8 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
                 )
             }
         }
-        return runCatchingDB {
-            gifticons.map {
-                it.toDomain()
-            }
+        return gifticons.map {
+            it.toDomain()
         }
     }
 
@@ -76,7 +72,7 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         filterBrand: Set<String>,
         filterExpired: Boolean,
         sortBy: SortBy
-    ): Result<Flow<List<Gifticon>>> {
+    ): Flow<List<Gifticon>> {
         val upperFilterBrand = filterBrand.map {
             it.uppercase()
         }.toSet()
@@ -113,10 +109,8 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
             }
         }
 
-        return runCatchingDB {
-            gifticons.map {
-                it.toDomain()
-            }
+        return gifticons.map {
+            it.toDomain()
         }
     }
 
@@ -124,16 +118,14 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Result<Flow<List<BrandWithGifticonCount>>> {
+    ): Flow<List<BrandWithGifticonCount>> {
         val brandWithGifticonCount = when (filterExpired) {
             true -> gifticonSearchDao.getAllBrands(userId, isUsed, Date())
             false -> gifticonSearchDao.getAllBrands(userId, isUsed)
         }
 
-        return runCatchingDB {
-            brandWithGifticonCount.map {
-                it.toDomain()
-            }
+        return brandWithGifticonCount.map {
+            it.toDomain()
         }
     }
 
@@ -142,15 +134,13 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         brand: String,
         filterExpired: Boolean
-    ): Result<Flow<List<Gifticon>>> {
+    ): Flow<List<Gifticon>> {
         val gifticons = when (filterExpired) {
             true -> gifticonSearchDao.getGifticonByBrand(userId, isUsed, brand)
             false -> gifticonSearchDao.getGifticonByBrand(userId, isUsed, brand, Date())
         }
-        return runCatchingDB {
-            gifticons.map {
-                it.toDomain()
-            }
+        return gifticons.map {
+            it.toDomain()
         }
     }
 
@@ -168,12 +158,10 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         userId: String,
         isUsed: Boolean,
         filterExpired: Boolean
-    ): Result<Flow<Boolean>> {
-        return runCatchingDB {
-            when (filterExpired) {
-                true -> gifticonSearchDao.hasGifticon(userId, isUsed)
-                false -> gifticonSearchDao.hasGifticon(userId, isUsed, Date())
-            }
+    ): Flow<Boolean> {
+        return when (filterExpired) {
+            true -> gifticonSearchDao.hasGifticon(userId, isUsed)
+            false -> gifticonSearchDao.hasGifticon(userId, isUsed, Date())
         }
     }
 

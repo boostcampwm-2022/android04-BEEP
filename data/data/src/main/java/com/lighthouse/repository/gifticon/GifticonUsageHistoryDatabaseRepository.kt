@@ -25,7 +25,7 @@ interface GifticonUsageHistoryDatabaseRepository {
     fun getUsageHistory(
         userId: String,
         gifticonId: String
-    ): Result<Flow<List<UsageHistory>>>
+    ): Flow<List<UsageHistory>>
 
     suspend fun insertUsageHistory(
         gifticonId: String,

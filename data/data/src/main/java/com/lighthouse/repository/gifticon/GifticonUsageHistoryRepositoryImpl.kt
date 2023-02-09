@@ -14,7 +14,11 @@ internal class GifticonUsageHistoryRepositoryImpl @Inject constructor(
         gifticonId: String,
         usageHistory: UsageHistory
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        return gifticonUsageHistoryDatabaseRepository.useGifticon(
+            userId,
+            gifticonId,
+            usageHistory
+        )
     }
 
     override suspend fun useCashCardGifticon(
@@ -23,27 +27,41 @@ internal class GifticonUsageHistoryRepositoryImpl @Inject constructor(
         amount: Int,
         usageHistory: UsageHistory
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        return gifticonUsageHistoryDatabaseRepository.useCashCardGifticon(
+            userId,
+            gifticonId,
+            amount,
+            usageHistory
+        )
     }
 
     override suspend fun revertUsedGifticon(
         userId: String,
         gifticonId: String
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        return gifticonUsageHistoryDatabaseRepository.revertUsedGifticon(
+            userId,
+            gifticonId
+        )
     }
 
     override fun getUsageHistory(
         userId: String,
         gifticonId: String
-    ): Flow<Result<List<UsageHistory>>> {
-        TODO("Not yet implemented")
+    ): Flow<List<UsageHistory>> {
+        return gifticonUsageHistoryDatabaseRepository.getUsageHistory(
+            userId,
+            gifticonId
+        )
     }
 
     override suspend fun insertUsageHistory(
         gifticonId: String,
         usageHistory: UsageHistory
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        return gifticonUsageHistoryDatabaseRepository.insertUsageHistory(
+            gifticonId,
+            usageHistory
+        )
     }
 }

@@ -10,7 +10,10 @@ class GetAllBrandsUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val gifticonRepository: GifticonSearchRepository
 ) {
-    operator fun invoke(filterExpired: Boolean = false): Flow<Result<List<BrandWithGifticonCount>>> {
+
+    operator fun invoke(
+        filterExpired: Boolean = false
+    ): Flow<List<BrandWithGifticonCount>> {
         return gifticonRepository.getAllBrands(
             userRepository.getUserId(),
             false,

@@ -67,15 +67,19 @@ fun Context.decodeSampledBitmap(uri: Uri, sampleSize: Int): Bitmap {
     }
 }
 
-fun Context.deleteFile(uri: Uri) {
-    when (uri.scheme) {
+fun Context.deleteFile(uri: Uri?) {
+    if (exists(uri).not()) {
+        return
+    }
+    when (uri?.scheme) {
         ContentResolver.SCHEME_CONTENT -> contentResolver.delete(uri, null, null)
         ContentResolver.SCHEME_FILE -> uri.toFile().delete()
         else -> throw IOException("알 수 없는 scheme 입니다.")
     }
 }
 
-fun Context.exists(uri: Uri): Boolean {
+fun Context.exists(uri: Uri?): Boolean {
+    uri ?: return false
     return when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> {
             contentResolver.query(uri, null, null, null, null)?.use { cursor ->
