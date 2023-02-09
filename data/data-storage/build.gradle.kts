@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.lighthouse.data.preference"
+    namespace = "com.lighthouse.data.storage"
 }
 
 dependencies {
@@ -17,6 +17,5 @@ dependencies {
     implementation(projects.commonAndroid)
     implementation(projects.data)
 
-    implementation(libs.androidX.datastore.preferences)
-    implementation(libs.javax.inject)
+    implementation(libs.timber)
 }

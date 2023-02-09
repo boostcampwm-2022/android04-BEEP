@@ -1,6 +1,7 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("beep.android.library")
+    id("beep.android.hilt")
     alias(libs.plugins.ksp)
 }
 
@@ -14,8 +15,6 @@ dependencies {
     implementation(projects.model)
     implementation(projects.common)
     implementation(projects.commonAndroid)
-    implementation(projects.commonLocation)
-    implementation(projects.commonRecognizer)
     implementation(projects.domain)
 
 //    implementation(libs.androidX.room.runtime)
