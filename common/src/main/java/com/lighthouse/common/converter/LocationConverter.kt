@@ -1,4 +1,4 @@
-package com.lighthouse.common.utils.geography
+package com.lighthouse.common.converter
 
 import com.lighthouse.beep.model.location.Dms
 import com.lighthouse.beep.model.location.DmsLocation
