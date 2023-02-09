@@ -13,9 +13,10 @@ dependencies {
     implementation(projects.core)
     implementation(projects.coreAndroid)
     implementation(projects.model)
-    implementation(projects.common)
     implementation(projects.commonAndroid)
     implementation(projects.domain)
+    implementation(projects.utilsLocation)
+    implementation(projects.utilsRecognizer)
 
 //    implementation(libs.androidX.room.runtime)
 //    implementation(libs.androidX.room.ktx)
