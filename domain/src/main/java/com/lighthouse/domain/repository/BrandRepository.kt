@@ -5,6 +5,13 @@ import com.lighthouse.beep.model.location.Dms
 
 interface BrandRepository {
 
+    suspend fun getAroundBrandPlaceInfo(
+        brandNames: List<String>,
+        x: Double,
+        y: Double,
+        size: Int
+    ): Result<List<BrandPlaceInfo>>
+
     suspend fun getBrandPlaceInfo(
         brandName: String,
         x: Dms,
