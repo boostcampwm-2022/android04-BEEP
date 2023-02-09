@@ -12,5 +12,6 @@ dependencies {
     implementation(projects.coreAndroid)
     implementation(projects.model)
 
-    implementation(libs.mlkit.text.recognition.korean)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
 }
