@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
-import com.lighthouse.presentation.ui.setting.SecurityOption
+import com.lighthouse.beep.model.user.SecurityOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch

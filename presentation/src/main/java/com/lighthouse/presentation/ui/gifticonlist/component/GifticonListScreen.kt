@@ -49,7 +49,7 @@ fun GifticonListScreen(
             } else {
                 BrandChipListScreen(
                     modifier = Modifier.padding(top = 24.dp),
-                    brands = viewState.brands,
+                    brandWithGifticonCounts = viewState.brandWithGifticonCounts,
                     filters = viewState.selectedFilter,
                     onClickEntireBrandDialog = {
                         viewModel.showEntireBrandsDialog()
@@ -79,7 +79,7 @@ fun GifticonListScreen(
         }
         if (viewState.entireBrandsDialogShown) {
             AllBrandChipsDialog(
-                brands = viewState.brands,
+                brandWithGifticonCounts = viewState.brandWithGifticonCounts,
                 modifier = Modifier
                     .padding(16.dp),
                 selectedFilters = viewState.selectedFilter,

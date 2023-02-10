@@ -16,7 +16,7 @@ import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.ui.common.viewBindings
 import com.lighthouse.presentation.ui.security.SecurityViewModel
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
-import com.lighthouse.presentation.ui.setting.SecurityOption
+import com.lighthouse.beep.model.user.SecurityOption
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 

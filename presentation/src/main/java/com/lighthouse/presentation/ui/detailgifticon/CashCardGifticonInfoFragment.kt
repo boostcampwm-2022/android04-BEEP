@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.lighthouse.common.geography.Geography
+import com.lighthouse.utils.location.Geography
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentCashCardGifticonInfoBinding
 import com.lighthouse.presentation.ui.common.viewBindings
@@ -17,7 +17,7 @@ class CashCardGifticonInfoFragment : Fragment(R.layout.fragment_cash_card_giftic
         super.onViewCreated(view, savedInstanceState)
 
         binding.vm = viewModel
-        binding.geo = Geography(requireContext())
+        binding.geo = com.lighthouse.utils.location.Geography(requireContext())
         binding.lifecycleOwner = viewLifecycleOwner
         binding.ctfBalance.addOnValueListener {
             viewModel.editBalance(it)

@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.gifticonlist.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.gifticon.Gifticon
 
 val sampleGifticonItems = listOf<Gifticon>(
@@ -67,19 +67,19 @@ val sampleGifticonItems = listOf<Gifticon>(
 @Preview
 @Composable
 fun ChipPreview() {
-    BrandChip(Brand("스타벅스", 10))
+    BrandChip(BrandWithGifticonCount("스타벅스", 10))
 }
 
 @Preview
 @Composable
 fun BrandChipsPreview() {
     BrandChipList(
-        brands = listOf(
-            Brand("스타벅스", 10),
-            Brand("베스킨라빈스", 12),
-            Brand("맘스터치", 1),
-            Brand("김밥천국", 3),
-            Brand("투썸", 7)
+        brandWithGifticonCounts = listOf(
+            BrandWithGifticonCount("스타벅스", 10),
+            BrandWithGifticonCount("베스킨라빈스", 12),
+            BrandWithGifticonCount("맘스터치", 1),
+            BrandWithGifticonCount("김밥천국", 3),
+            BrandWithGifticonCount("투썸", 7)
         )
     )
 }
@@ -105,15 +105,15 @@ fun BrandChipsPreview() {
 @Composable
 fun BrandChipsDialogPreview() {
     AllBrandChipsDialog(
-        brands = listOf(
-            Brand(name = "스타벅스", count = 18),
-            Brand(name = "베스킨라빈스", count = 18),
-            Brand(name = "BHC", count = 18),
-            Brand(name = "GS25", count = 18),
-            Brand(name = "CU", count = 18),
-            Brand(name = "서브웨이", count = 18),
-            Brand(name = "세븐일레븐", count = 18),
-            Brand(name = "파파존스", count = 18)
+        brandWithGifticonCounts = listOf(
+            BrandWithGifticonCount(name = "스타벅스", count = 18),
+            BrandWithGifticonCount(name = "베스킨라빈스", count = 18),
+            BrandWithGifticonCount(name = "BHC", count = 18),
+            BrandWithGifticonCount(name = "GS25", count = 18),
+            BrandWithGifticonCount(name = "CU", count = 18),
+            BrandWithGifticonCount(name = "서브웨이", count = 18),
+            BrandWithGifticonCount(name = "세븐일레븐", count = 18),
+            BrandWithGifticonCount(name = "파파존스", count = 18)
         )
     )
 }

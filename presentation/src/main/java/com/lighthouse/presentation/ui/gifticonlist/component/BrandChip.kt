@@ -47,25 +47,25 @@ import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
-import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.ui.common.compose.TextCheckbox
 
 @Composable
 fun BrandChipListScreen(
     modifier: Modifier,
-    brands: List<Brand>,
+    brandWithGifticonCounts: List<BrandWithGifticonCount>,
     filters: Set<String>,
     onClickEntireBrandDialog: () -> Unit = {},
     onClickTotalChip: () -> Unit = {},
-    onClickChip: (Brand) -> Unit = {}
+    onClickChip: (BrandWithGifticonCount) -> Unit = {}
 ) {
     Row(
         modifier = modifier
     ) {
         BrandChipList(
             modifier = Modifier.weight(1f),
-            brands = brands,
+            brandWithGifticonCounts = brandWithGifticonCounts,
             selectedFilters = filters,
             onClickTotalChip = {
                 onClickTotalChip()
@@ -92,30 +92,30 @@ fun BrandChipListScreen(
 @Composable
 fun BrandChipList(
     modifier: Modifier = Modifier,
-    brands: List<Brand> = emptyList(),
+    brandWithGifticonCounts: List<BrandWithGifticonCount> = emptyList(),
     selectedFilters: Set<String> = emptySet(),
     onClickTotalChip: () -> Unit = {},
-    onClickChip: (Brand) -> Unit = {}
+    onClickChip: (BrandWithGifticonCount) -> Unit = {}
 ) {
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         item { // "전체" 칩
-            val entireChipBrand = Brand(
+            val entireChipBrandWithGifticonCount = BrandWithGifticonCount(
                 name = stringResource(id = R.string.main_filter_all),
-                count = brands.sumOf { it.count }
+                count = brandWithGifticonCounts.sumOf { it.count }
             )
             BrandChip(
-                brand = entireChipBrand,
+                brandWithGifticonCount = entireChipBrandWithGifticonCount,
                 selected = selectedFilters.isEmpty()
             ) {
                 onClickTotalChip()
             }
         }
-        items(brands) { brand ->
+        items(brandWithGifticonCounts) { brand ->
             BrandChip(
-                brand = brand,
+                brandWithGifticonCount = brand,
                 selected = selectedFilters.contains(brand.name)
             ) {
                 onClickChip(brand)
@@ -128,11 +128,11 @@ fun BrandChipList(
 @Composable
 fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
-    brands: List<Brand> = emptyList(),
+    brandWithGifticonCounts: List<BrandWithGifticonCount> = emptyList(),
     showExpiredGifticon: Boolean = false,
     selectedFilters: Set<String> = emptySet(),
     onCheckFilterExpired: (Boolean) -> Unit = {},
-    onClickChip: (Brand) -> Unit = {},
+    onClickChip: (BrandWithGifticonCount) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -175,9 +175,9 @@ fun AllBrandChipsDialog(
                         mainAxisSpacing = 8.dp,
                         mainAxisSize = SizeMode.Expand
                     ) {
-                        brands.forEach {
+                        brandWithGifticonCounts.forEach {
                             BrandChip(
-                                brand = it,
+                                brandWithGifticonCount = it,
                                 selected = selectedFilters.contains(it.name)
                             ) { selected ->
                                 onClickChip(selected)
@@ -193,15 +193,15 @@ fun AllBrandChipsDialog(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BrandChip(
-    brand: Brand,
+    brandWithGifticonCount: BrandWithGifticonCount,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    onClick: (Brand) -> Unit = {}
+    onClick: (BrandWithGifticonCount) -> Unit = {}
 ) {
     FilterChip(
         selected = selected,
         onClick = {
-            onClick(brand)
+            onClick(brandWithGifticonCount)
         },
         modifier = modifier.wrapContentWidth(),
         colors = ChipDefaults.filterChipColors(
@@ -215,9 +215,9 @@ fun BrandChip(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = brand.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(text = brandWithGifticonCount.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                text = brand.count.toString(),
+                text = brandWithGifticonCount.count.toString(),
                 modifier = Modifier.padding(start = 4.dp),
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
             )

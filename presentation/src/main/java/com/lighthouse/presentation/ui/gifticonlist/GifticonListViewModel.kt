@@ -2,7 +2,7 @@ package com.lighthouse.presentation.ui.gifticonlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lighthouse.beep.model.brand.Brand
+import com.lighthouse.beep.model.brand.BrandWithGifticonCount
 import com.lighthouse.beep.model.gifticon.Gifticon
 import com.lighthouse.beep.model.result.DbResult
 import com.lighthouse.core.exts.isExpired
@@ -39,7 +39,7 @@ class GifticonListViewModel @Inject constructor(
     private val filter = MutableStateFlow(setOf<String>())
     private val sortBy = MutableStateFlow(GifticonSortBy.DEADLINE)
     private val gifticons = MutableStateFlow<DbResult<List<Gifticon>>>(DbResult.Loading)
-    private val brands = MutableStateFlow<DbResult<List<Brand>>>(DbResult.Loading)
+    private val brands = MutableStateFlow<DbResult<List<BrandWithGifticonCount>>>(DbResult.Loading)
     private val entireBrandsDialogShown = MutableStateFlow(false)
     private val showExpiredGifticon = MutableStateFlow(false)
 
@@ -94,7 +94,7 @@ class GifticonListViewModel @Inject constructor(
                             .map { it.toPresentation() }
                     },
                     showExpiredGifticon = showExpired,
-                    brands = brands,
+                    brandWithGifticonCounts = brands,
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
                     loading = false
@@ -112,7 +112,7 @@ class GifticonListViewModel @Inject constructor(
                 GifticonListViewState(
                     sortBy = sortBy,
                     gifticons = gifticons,
-                    brands = emptyList(),
+                    brandWithGifticonCounts = emptyList(),
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
                     loading = true
@@ -133,11 +133,11 @@ class GifticonListViewModel @Inject constructor(
         entireBrandsDialogShown.value = false
     }
 
-    fun toggleFilterSelection(brand: Brand) {
-        filter.value = if (brand.name in state.value.selectedFilter) {
-            filter.value.minus(brand.name)
+    fun toggleFilterSelection(brandWithGifticonCount: BrandWithGifticonCount) {
+        filter.value = if (brandWithGifticonCount.name in state.value.selectedFilter) {
+            filter.value.minus(brandWithGifticonCount.name)
         } else {
-            filter.value.plus(brand.name)
+            filter.value.plus(brandWithGifticonCount.name)
         }
     }
 

@@ -15,7 +15,7 @@ import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.usecase.edit.HasGifticonBrandUseCase
 import com.lighthouse.domain.usecase.edit.modifygifticon.GetGifticonForUpdateUseCase
 import com.lighthouse.domain.usecase.edit.modifygifticon.ModifyGifticonUseCase
-import com.lighthouse.domain.usecase.edit.modifygifticon.ModifyRecognizeUseCase
+import com.lighthouse.domain.usecase.edit.RecognizeGifticonFieldsUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toDomain
@@ -47,7 +47,7 @@ class ModifyGifticonViewModel @Inject constructor(
     getGifticonForUpdateUseCase: GetGifticonForUpdateUseCase,
     private val hasGifticonBrandUseCase: HasGifticonBrandUseCase,
     private val modifyGifticonUseCase: ModifyGifticonUseCase,
-    private val modifyRecognizeUseCase: ModifyRecognizeUseCase
+    private val recognizeGifticonFieldsUseCase: RecognizeGifticonFieldsUseCase
 ) : ViewModel() {
 
     private val today = Calendar.getInstance().let {
@@ -403,7 +403,7 @@ class ModifyGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = modifyRecognizeUseCase.gifticonName(uri.toString())
+            val result = recognizeGifticonFieldsUseCase.gifticonName(uri.toString())
             if (result != "") {
                 updateGifticon { it.copy(name = result, nameRectF = croppedImage.croppedRect) }
                 displayName.value = result
@@ -418,7 +418,7 @@ class ModifyGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = modifyRecognizeUseCase.brandName(uri.toString())
+            val result = recognizeGifticonFieldsUseCase.brandName(uri.toString())
             if (result != "") {
                 updateGifticon {
                     it.copy(
@@ -438,7 +438,7 @@ class ModifyGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = modifyRecognizeUseCase.barcode(uri.toString())
+            val result = recognizeGifticonFieldsUseCase.barcode(uri.toString())
             if (result != "") {
                 updateGifticon {
                     it.copy(
@@ -457,7 +457,7 @@ class ModifyGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = modifyRecognizeUseCase.balance(uri.toString())
+            val result = recognizeGifticonFieldsUseCase.balance(uri.toString())
             if (result > 0) {
                 updateGifticon {
                     it.copy(
@@ -477,7 +477,7 @@ class ModifyGifticonViewModel @Inject constructor(
         croppedImage ?: return
         val uri = croppedImage.uri ?: return
         viewModelScope.launch {
-            val result = modifyRecognizeUseCase.expired(uri.toString())
+            val result = recognizeGifticonFieldsUseCase.expired(uri.toString())
             if (result != EMPTY_DATE) {
                 updateGifticon {
                     it.copy(

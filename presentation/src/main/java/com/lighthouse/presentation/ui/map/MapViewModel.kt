@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.model.error.BeepError
 import com.lighthouse.beep.model.location.VertexLocation
 import com.lighthouse.beep.model.result.DbResult
-import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.utils.location.LocationConverter
 import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
@@ -167,8 +167,8 @@ class MapViewModel @Inject constructor(
                     isNeededFirstLoading = false
                     return@collectLatest
                 }
-                val currentDms = LocationConverter.setDmsLocation(location)
-                val prevDms = prevVertex.value?.let { LocationConverter.setDmsLocation(it) }
+                val currentDms = com.lighthouse.utils.location.LocationConverter.setDmsLocation(location)
+                val prevDms = prevVertex.value?.let { com.lighthouse.utils.location.LocationConverter.setDmsLocation(it) }
 
                 if (prevDms != currentDms) prevVertex.value = location
             }

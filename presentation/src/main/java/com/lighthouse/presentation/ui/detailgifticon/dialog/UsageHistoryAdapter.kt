@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.beep.model.user.UsageHistory
-import com.lighthouse.common.geography.Geography
+import com.lighthouse.utils.location.Geography
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.databinding.ItemUsageHistoryBinding
@@ -16,7 +16,7 @@ class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapte
     class UsageHistoryViewHolder(private val binding: ItemUsageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(usageHistory: UsageHistory) {
-            binding.geo = Geography(binding.root.context)
+            binding.geo = com.lighthouse.utils.location.Geography(binding.root.context)
             binding.usage = usageHistory
         }
     }

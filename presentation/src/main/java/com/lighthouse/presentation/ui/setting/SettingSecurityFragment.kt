@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.FragmentSecuritySettingBinding
 import com.lighthouse.presentation.extra.Extras

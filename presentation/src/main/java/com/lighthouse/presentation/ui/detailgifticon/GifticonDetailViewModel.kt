@@ -11,7 +11,7 @@ import com.lighthouse.core.exts.toMonth
 import com.lighthouse.core.exts.toYear
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
-import com.lighthouse.domain.usecase.UnUseGifticonUseCase
+import com.lighthouse.domain.usecase.UnUseGifticonsUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
@@ -39,7 +39,7 @@ class GifticonDetailViewModel @Inject constructor(
     getUsageHistoryUseCase: GetUsageHistoriesUseCase,
     private val useGifticonUseCase: UseGifticonUseCase,
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
-    private val unUseGifticonUseCase: UnUseGifticonUseCase
+    private val unUseGifticonUseCase: UnUseGifticonsUseCase
 ) : ViewModel() {
 
     private val gifticonId =

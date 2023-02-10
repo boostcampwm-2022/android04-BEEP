@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.utils.location.LocationConverter
 import com.lighthouse.core.android.exts.dp
 import com.lighthouse.core.android.exts.screenHeight
 import com.lighthouse.presentation.R
@@ -187,7 +187,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val brandPlaceInfo = viewModel.brandInfos.filter { brandPlaceInfo ->
                 brandPlaceInfo.brandLowerName == brandName
             }.minByOrNull { location ->
-                LocationConverter.diffLocation(
+                com.lighthouse.utils.location.LocationConverter.diffLocation(
                     location.x,
                     location.y,
                     currentLocation.longitude,

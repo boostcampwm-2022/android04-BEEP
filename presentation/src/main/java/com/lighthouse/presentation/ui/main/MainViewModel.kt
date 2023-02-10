@@ -12,7 +12,7 @@ import com.lighthouse.domain.usecase.setting.SaveNotificationOptionUseCase
 import com.lighthouse.domain.usecase.setting.SaveSecurityOptionUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
-import com.lighthouse.presentation.ui.setting.SecurityOption
+import com.lighthouse.beep.model.user.SecurityOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

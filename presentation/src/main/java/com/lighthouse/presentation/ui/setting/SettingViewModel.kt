@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.domain.usecase.MoveUserIdGifticonUseCase
 import com.lighthouse.domain.usecase.setting.GetGuestOptionUseCase
 import com.lighthouse.domain.usecase.setting.GetNotificationOptionUseCase

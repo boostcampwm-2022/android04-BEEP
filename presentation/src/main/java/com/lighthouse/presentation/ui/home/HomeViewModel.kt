@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.model.error.BeepError
 import com.lighthouse.beep.model.location.VertexLocation
 import com.lighthouse.beep.model.result.DbResult
-import com.lighthouse.common.utils.geography.LocationConverter.diffLocation
-import com.lighthouse.common.utils.geography.LocationConverter.setDmsLocation
+import com.lighthouse.utils.location.LocationConverter.diffLocation
+import com.lighthouse.utils.location.LocationConverter.setDmsLocation
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
 import com.lighthouse.domain.usecase.GetBrandPlaceInfosUseCase

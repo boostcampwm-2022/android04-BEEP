@@ -10,7 +10,7 @@ import androidx.paging.map
 import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
-import com.lighthouse.domain.usecase.gallery.GetGalleryImagesUseCase
+import com.lighthouse.domain.usecase.GetGalleryImagesUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.mapper.toPresentation

@@ -16,7 +16,7 @@ import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.SecurityViewModel
 import com.lighthouse.presentation.ui.security.event.SecurityDirections
 import com.lighthouse.presentation.ui.security.fingerprint.biometric.BiometricAuth
-import com.lighthouse.presentation.ui.setting.SecurityOption
+import com.lighthouse.beep.model.user.SecurityOption
 
 class FingerprintFragment : Fragment(R.layout.fragment_fingerprint), AuthCallback {
 
