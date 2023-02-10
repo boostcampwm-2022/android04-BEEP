@@ -17,6 +17,9 @@ interface UserRepository {
     suspend fun setNotificationEnable(enable: Boolean): Result<Unit>
     fun getNotificationEnable(): Flow<Result<Boolean>>
 
+    suspend fun setFilterExpired(enable: Boolean): Result<Unit>
+    fun getFilterExpired(): Flow<Result<Boolean>>
+
     suspend fun transferData(newUserId: String): Result<Unit>
     suspend fun clearData(): Result<Unit>
 }

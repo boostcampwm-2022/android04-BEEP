@@ -13,6 +13,11 @@ interface GifticonSearchRepository {
         gifticonId: String
     ): Flow<Gifticon>
 
+    fun getGifticons(
+        userId: String,
+        count: Int
+    ): Flow<List<Gifticon>>
+
     fun getAllGifticons(
         userId: String,
         isUsed: Boolean,
@@ -56,4 +61,8 @@ interface GifticonSearchRepository {
         userId: String,
         brand: String
     ): Result<Boolean>
+
+    fun getGifticonBrands(
+        userId: String
+    ): Flow<List<String>>
 }

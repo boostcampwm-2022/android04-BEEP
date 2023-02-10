@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.lighthouse.beep.model.error.BeepError
 import com.lighthouse.beep.model.location.VertexLocation
 import com.lighthouse.beep.model.result.DbResult
-import com.lighthouse.utils.location.LocationConverter
 import com.lighthouse.core.android.utils.resource.UIText
 import com.lighthouse.core.utils.flow.MutableEventFlow
 import com.lighthouse.core.utils.flow.asEventFlow
@@ -64,9 +63,11 @@ class MapViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val allBrands = allGifticons.transform { gifticons ->
-        emit(gifticons.map { it.brand.lowercase() }.distinct())
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    private val allBrands = getGifticonUseCase.getGifticonBrands().transform { brands ->
+        if (brands is DbResult.Success) {
+            emit(brands.data)
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _gifticonData = MutableStateFlow<List<GifticonUIModel>>(emptyList())
     val gifticonData = _gifticonData.asStateFlow()
@@ -117,7 +118,7 @@ class MapViewModel @Inject constructor(
         private set
 
     private var removeMarker = allBrands.transform {
-        val brands = it ?: return@transform
+        val brands = it
         val removeMarkers =
             markerHolder.filter { marker -> brands.contains(marker.captionText.lowercase()).not() }
         emit(removeMarkers)
@@ -184,7 +185,7 @@ class MapViewModel @Inject constructor(
                     updateGifticons()
                     return@collectLatest
                 }
-                val brands = allBrands.value ?: return@collectLatest
+                val brands = allBrands.value
 
                 _state.emit(UiState.Loading)
                 getBrandPlaceInfosUseCase(

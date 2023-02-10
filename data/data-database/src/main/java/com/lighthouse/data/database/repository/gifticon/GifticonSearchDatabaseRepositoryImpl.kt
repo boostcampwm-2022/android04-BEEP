@@ -28,6 +28,19 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getGifticons(
+        userId: String,
+        count: Int
+    ): Flow<List<Gifticon>> {
+        return gifticonSearchDao.getGifticons(
+            userId,
+            Date(),
+            count
+        ).map {
+            it.toDomain()
+        }
+    }
+
     override fun getAllGifticons(
         userId: String,
         isUsed: Boolean,
@@ -169,5 +182,9 @@ internal class GifticonSearchDatabaseRepositoryImpl @Inject constructor(
         return runCatchingDB {
             gifticonSearchDao.hasGifticonBrand(userId, brand)
         }
+    }
+
+    override fun getGifticonBrands(userId: String): Flow<List<String>> {
+        return gifticonSearchDao.getGifticonBrands(userId, Date())
     }
 }

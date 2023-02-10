@@ -16,10 +16,14 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         userId: String,
         gifticonId: String
     ): Flow<Gifticon> {
-        return gifticonSearchDatabaseRepository.getGifticon(
-            userId,
-            gifticonId
-        )
+        return gifticonSearchDatabaseRepository.getGifticon(userId, gifticonId)
+    }
+
+    override fun getGifticons(
+        userId: String,
+        count: Int
+    ): Flow<List<Gifticon>> {
+        return gifticonSearchDatabaseRepository.getGifticons(userId, count)
     }
 
     override fun getAllGifticons(
@@ -71,21 +75,14 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         filterExpired: Boolean
     ): Flow<List<BrandWithGifticonCount>> {
-        return gifticonSearchDatabaseRepository.getAllBrands(
-            userId,
-            isUsed,
-            filterExpired
-        )
+        return gifticonSearchDatabaseRepository.getAllBrands(userId, isUsed, filterExpired)
     }
 
     override suspend fun getGifticonCrop(
         userId: String,
         gifticonId: String
     ): Result<GifticonWithCrop> {
-        return gifticonSearchDatabaseRepository.getGifticonCrop(
-            userId,
-            gifticonId
-        )
+        return gifticonSearchDatabaseRepository.getGifticonCrop(userId, gifticonId)
     }
 
     override fun hasGifticon(
@@ -93,20 +90,17 @@ internal class GifticonSearchRepositoryImpl @Inject constructor(
         isUsed: Boolean,
         filterExpired: Boolean
     ): Flow<Boolean> {
-        return gifticonSearchDatabaseRepository.hasGifticon(
-            userId,
-            isUsed,
-            filterExpired
-        )
+        return gifticonSearchDatabaseRepository.hasGifticon(userId, isUsed, filterExpired)
     }
 
     override suspend fun hasGifticonBrand(
         userId: String,
         brand: String
     ): Result<Boolean> {
-        return gifticonSearchDatabaseRepository.hasGifticonBrand(
-            userId,
-            brand
-        )
+        return gifticonSearchDatabaseRepository.hasGifticonBrand(userId, brand)
+    }
+
+    override fun getGifticonBrands(userId: String): Flow<List<String>> {
+        return gifticonSearchDatabaseRepository.getGifticonBrands(userId)
     }
 }

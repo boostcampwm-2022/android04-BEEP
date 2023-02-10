@@ -26,6 +26,23 @@ internal interface GifticonSearchDao {
     ): Flow<DBGifticonEntity>
 
     /**
+     * 사용 가능한 기프티콘 중에서 count 만큼만 갖고 오기
+     * 1. 유저 ID
+     * 2. 기준 시간
+     * 3. 가져올 개수
+     * */
+    @Query(
+        "SELECT * FROM gifticon_table " +
+            "WHERE user_id = :userId AND expire_at = :time AND is_used = 0 " +
+            "LIMIT :count"
+    )
+    fun getGifticons(
+        userId: String,
+        time: Date,
+        count: Int
+    ): Flow<List<DBGifticonEntity>>
+
+    /**
      * 기프티콘 리스트를 가져온다
      * 1. 유저 ID
      * 2. 사용여부
@@ -308,4 +325,15 @@ internal interface GifticonSearchDao {
         userId: String,
         brand: String
     ): Boolean
+
+    /**
+     * 오늘 날짜를 기준으로 사용 가능한 기프티콘의 브랜드명 갖고 오기
+     * 1. 유저 ID
+     * 2. 기준 시간
+     * */
+    @Query(
+        "SELECT DISTINCT brand FROM gifticon_table " +
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0"
+    )
+    fun getGifticonBrands(userId: String, time: Date): Flow<List<String>>
 }

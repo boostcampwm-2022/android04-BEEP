@@ -1,14 +1,13 @@
 package com.lighthouse.domain.usecase
 
 import com.lighthouse.domain.repository.user.UserRepository
-import javax.crypto.Cipher
 import javax.inject.Inject
 
-class GetFingerprintCipherUseCase @Inject constructor(
+class SaveFilterExpiredUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
-    operator fun invoke(): Cipher {
-        return userRepository.getFingerprintCipher()
+    suspend operator fun invoke(enable: Boolean): Result<Unit> {
+        return userRepository.setFilterExpired(enable)
     }
 }
