@@ -1,7 +1,7 @@
 package com.lighthouse.data.database.mapper.brand
 
 import com.lighthouse.beep.model.brand.BrandPlaceInfo
-import com.lighthouse.common.utils.geography.LocationConverter
+import com.lighthouse.common.converter.LocationConverter
 import com.lighthouse.data.database.entity.DBBrandLocationEntity
 
 internal fun List<BrandPlaceInfo>.toEntity(): List<DBBrandLocationEntity> {

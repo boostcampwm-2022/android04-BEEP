@@ -3,7 +3,6 @@ package com.lighthouse.repository.gifticon
 import androidx.core.net.toUri
 import com.lighthouse.beep.model.gifticon.GifticonForAddition
 import com.lighthouse.beep.model.gifticon.GifticonForUpdate
-import com.lighthouse.common.mapper.toUri
 import com.lighthouse.core.utils.uuid.UUID
 import com.lighthouse.domain.repository.gifticon.GifticonEditRepository
 import com.lighthouse.mapper.toGifticonWithCrop

@@ -3,6 +3,7 @@ package com.lighthouse.data.preference.repository
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.lighthouse.beep.model.auth.EncryptData
 import com.lighthouse.beep.model.user.SecurityOption
 import com.lighthouse.data.preference.exception.PrefNotFoundException
 import com.lighthouse.data.preference.ext.booleanKey
@@ -19,38 +20,29 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : UserPreferenceRepository {
 
-    override suspend fun getIV(userId: String): Result<ByteArray?> = runCatchingPref {
-        val key = byteArrayKey(userId, KEY_NAME_IV)
-        dataStore.data.first()[key]
-    }
-
-    override suspend fun setIV(
+    override suspend fun setEncryptData(
         userId: String,
-        iv: ByteArray
+        encryptData: EncryptData
     ): Result<Unit> = runCatchingPref {
-        val key = byteArrayKey(userId, KEY_NAME_IV)
+        val pinPasswordKey = byteArrayKey(userId, KEY_NAME_PIN_PASSWORD)
+        val ivKey = byteArrayKey(userId, KEY_NAME_IV)
+
         dataStore.edit { pref ->
-            pref[key] = iv
+            pref[pinPasswordKey] = encryptData.data
+            pref[ivKey] = encryptData.iv
         }
     }
 
-    override suspend fun setPinPassword(
-        userId: String,
-        pinPassword: ByteArray
-    ): Result<Unit> = runCatchingPref {
-        val key = byteArrayKey(userId, KEY_NAME_PIN_PASSWORD)
-        dataStore.edit { pref ->
-            pref[key] = pinPassword
-        }
-    }
+    override suspend fun getEncryptData(userId: String): Result<EncryptData> = runCatchingPref {
+        val pinPasswordKey = byteArrayKey(userId, KEY_NAME_PIN_PASSWORD)
+        val ivKey = byteArrayKey(userId, KEY_NAME_IV)
 
-    override suspend fun confirmPinPassword(
-        userId: String,
-        pinPassword: ByteArray
-    ): Result<Boolean> = runCatchingPref {
-        val key = byteArrayKey(userId, KEY_NAME_PIN_PASSWORD)
-        val savedPinPassword = dataStore.data.first()[key]
-        savedPinPassword.contentEquals(pinPassword)
+        dataStore.data.map { pref ->
+            val data = pref[pinPasswordKey]
+                ?: throw PrefNotFoundException("PinPassword 값이 없습니다.")
+            val iv = pref[ivKey] ?: throw PrefNotFoundException("IV 값이 없습니다.")
+            EncryptData(data, iv)
+        }.first()
     }
 
     override suspend fun setSecurityOption(
@@ -65,11 +57,13 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
 
     override fun getSecurityOption(
         userId: String
-    ): Result<Flow<SecurityOption>> = runCatchingPref {
+    ): Flow<Result<SecurityOption>> {
         val key = stringKey(userId, KEY_NAME_SECURITY_OPTION)
-        dataStore.data.map { pref ->
-            val value = pref[key] ?: throw PrefNotFoundException("Security 값이 없습니다.")
-            SecurityOption.valueOf(value)
+        return dataStore.data.map { pref ->
+            runCatchingPref {
+                val value = pref[key] ?: throw PrefNotFoundException("Security 값이 없습니다.")
+                SecurityOption.valueOf(value)
+            }
         }
     }
 
@@ -77,19 +71,24 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
         userId: String,
         enable: Boolean
     ): Result<Unit> = runCatchingPref {
-        val key = booleanKey(userId, KEY_NAME_NOTIFICATION_ENABLE)
-        dataStore.edit { pref ->
-            pref[key] = enable
-        }
+        return setBoolean(userId, KEY_NAME_NOTIFICATION_ENABLE, enable)
     }
 
     override fun getNotificationEnable(
         userId: String
-    ): Result<Flow<Boolean>> = runCatchingPref {
-        val key = booleanKey(userId, KEY_NAME_NOTIFICATION_ENABLE)
-        dataStore.data.map { pref ->
-            pref[key] ?: throw PrefNotFoundException("Notification Enable 값이 없습니다.")
-        }
+    ): Flow<Result<Boolean>> {
+        return getBoolean(userId, KEY_NAME_NOTIFICATION_ENABLE)
+    }
+
+    override suspend fun setFilterExpired(
+        userId: String,
+        filterExpired: Boolean
+    ): Result<Unit> {
+        return setBoolean(userId, KEY_NAME_FILTER_EXPIRED, filterExpired)
+    }
+
+    override fun getFilterExpired(userId: String): Flow<Result<Boolean>> {
+        return getBoolean(userId, KEY_NAME_FILTER_EXPIRED)
     }
 
     override suspend fun transferData(
@@ -103,6 +102,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
             SecurityOption.valueOf(it)
         } ?: throw PrefNotFoundException("Security 값이 없습니다.")
         val notificationEnable = data[booleanKey(oldUserId, KEY_NAME_NOTIFICATION_ENABLE)]
+        val filterExpired = data[booleanKey(oldUserId, KEY_NAME_FILTER_EXPIRED)]
 
         dataStore.edit { pref ->
             if (iv != null) {
@@ -113,6 +113,7 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
             }
             pref[stringKey(newUserId, KEY_NAME_SECURITY_OPTION)] = securityOption.name
             pref[booleanKey(newUserId, KEY_NAME_NOTIFICATION_ENABLE)] = notificationEnable ?: false
+            pref[booleanKey(newUserId, KEY_NAME_FILTER_EXPIRED)] = filterExpired ?: false
         }
 
         clearData(oldUserId)
@@ -124,6 +125,27 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
             pref.remove(byteArrayKey(userId, KEY_NAME_PIN_PASSWORD))
             pref.remove(byteArrayKey(userId, KEY_NAME_SECURITY_OPTION))
             pref.remove(byteArrayKey(userId, KEY_NAME_NOTIFICATION_ENABLE))
+            pref.remove(byteArrayKey(userId, KEY_NAME_FILTER_EXPIRED))
+        }
+    }
+
+    private suspend fun setBoolean(
+        userId: String,
+        keyName: String,
+        value: Boolean
+    ): Result<Unit> = runCatchingPref {
+        val key = booleanKey(userId, keyName)
+        dataStore.edit { pref ->
+            pref[key] = value
+        }
+    }
+
+    private fun getBoolean(userId: String, keyName: String): Flow<Result<Boolean>> {
+        val key = booleanKey(userId, keyName)
+        return dataStore.data.map { pref ->
+            runCatchingPref {
+                pref[key] ?: throw PrefNotFoundException("$keyName 값이 없습니다.")
+            }
         }
     }
 
@@ -132,5 +154,6 @@ internal class UserPreferenceRepositoryImpl @Inject constructor(
         private const val KEY_NAME_IV = "IV"
         private const val KEY_NAME_SECURITY_OPTION = "SecurityOption"
         private const val KEY_NAME_NOTIFICATION_ENABLE = "NotificationEnable"
+        private const val KEY_NAME_FILTER_EXPIRED = "FilterExpired"
     }
 }

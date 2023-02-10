@@ -12,4 +12,14 @@ data class Rectangle(
 
     val height
         get() = bottom - top
+
+    fun sampling(sampleSize: Int?): Rectangle {
+        val size = sampleSize ?: 1
+        return Rectangle(
+            left / size,
+            top / size,
+            right / size,
+            bottom / size
+        )
+    }
 }

@@ -13,6 +13,7 @@ dependencies {
     implementation(projects.model)
     implementation(projects.common)
     implementation(projects.commonAndroid)
+    implementation(projects.data)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)

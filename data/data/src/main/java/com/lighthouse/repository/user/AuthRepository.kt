@@ -1,7 +1,7 @@
 package com.lighthouse.repository.user
 
+import com.lighthouse.beep.model.auth.EncryptData
 import kotlinx.coroutines.flow.Flow
-import javax.crypto.spec.IvParameterSpec
 
 interface AuthRepository {
 
@@ -9,7 +9,7 @@ interface AuthRepository {
 
     fun getCurrentUserId(): String
 
-    fun createIV(): ByteArray
+    fun encrypt(alias: String, data: String): Result<EncryptData>
 
-    fun encrypt(pin: String, iv: IvParameterSpec)
+    fun decrypt(alias: String, data: EncryptData): Result<String>
 }
