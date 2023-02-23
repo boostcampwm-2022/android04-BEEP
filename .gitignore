@@ -9,3 +9,5 @@
 local.properties
 /.idea/
 /buildSrc/build/
+build-logic/convention/build
+build-logic/build
