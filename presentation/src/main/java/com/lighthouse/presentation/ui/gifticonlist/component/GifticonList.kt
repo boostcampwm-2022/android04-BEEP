@@ -2,6 +2,7 @@ package com.lighthouse.presentation.ui.gifticonlist.component
 
 import android.content.Intent
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -74,6 +75,7 @@ import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GifticonList(
     gifticons: List<GifticonUIModel>,
@@ -84,11 +86,13 @@ fun GifticonList(
     var showExpiredGifticons by rememberSaveable { mutableStateOf(true) }
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 36.dp),
     ) {
         itemsIndexed(items = gifticons, key = { _, item -> item.id }) { index, gifticon ->
+            var space = 8.dp
+
+            // 사용 기한 만료된 기프티콘 토글 열
             if (
                 index > 0 && gifticons.lastIndex >= index &&
                 gifticons[index - 1].expireAt.isExpired().not() && gifticon.expireAt.isExpired()
@@ -96,10 +100,19 @@ fun GifticonList(
                 ExpiredGifticonToggleColumn(showList = showExpiredGifticons) {
                     showExpiredGifticons = it
                 }
+                space = 0.dp
             }
+
+            // 기프티콘 목록
             if (gifticon.expireAt.isExpired().not() || showExpiredGifticons) {
+                if (index > 0) {
+                    Spacer(Modifier.height(space))
+                }
                 GifticonItem(
                     gifticon = gifticon,
+                    modifier = Modifier.animateItemPlacement(
+                        animationSpec = tween(600),
+                    ),
                     onUse = { onUse(it) },
                     onRemove = { onRemove(it) },
                 )
@@ -112,6 +125,7 @@ fun GifticonList(
 @Composable
 fun GifticonItem(
     gifticon: GifticonUIModel,
+    modifier: Modifier = Modifier,
     onUse: (GifticonUIModel) -> Unit = {},
     onRemove: (GifticonUIModel) -> Unit = {},
 ) {
@@ -122,7 +136,7 @@ fun GifticonItem(
     val scope = rememberCoroutineScope()
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(RoundedCornerShape(cornerSize))
@@ -160,7 +174,7 @@ fun GifticonItem(
             onClick = {
                 onUse(gifticon)
                 scope.launch {
-                    swipeableState.animateTo(0, tween(600, 0))
+                    swipeableState.animateTo(0, tween(300, 0))
                 }
             },
             modifier = Modifier.align(Alignment.CenterEnd).padding(end = 20.dp).wrapContentWidth(),
@@ -264,11 +278,11 @@ fun GifticonItem(
 }
 
 @Composable
-fun ExpiredGifticonToggleColumn(showList: Boolean, onClick: (Boolean) -> Unit) {
+fun ExpiredGifticonToggleColumn(showList: Boolean, modifier: Modifier = Modifier, onClick: (Boolean) -> Unit) {
     val icon = if (showList) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onClick(showList.not()) }
             .padding(vertical = 12.dp, horizontal = 8.dp),
