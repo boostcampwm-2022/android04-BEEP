@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -49,7 +50,6 @@ import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.ui.common.compose.TextCheckbox
 
 @Composable
 fun BrandChipListScreen(
@@ -58,10 +58,10 @@ fun BrandChipListScreen(
     filters: Set<String>,
     onClickEntireBrandDialog: () -> Unit = {},
     onClickTotalChip: () -> Unit = {},
-    onClickChip: (Brand) -> Unit = {}
+    onClickChip: (Brand) -> Unit = {},
 ) {
     Row(
-        modifier = modifier
+        modifier = modifier,
     ) {
         BrandChipList(
             modifier = Modifier.weight(1f),
@@ -72,18 +72,18 @@ fun BrandChipListScreen(
             },
             onClickChip = {
                 onClickChip(it)
-            }
+            },
         )
         IconButton(
             modifier = Modifier,
             onClick = {
                 onClickEntireBrandDialog()
-            }
+            },
         ) {
             Image(
                 imageVector = Icons.Outlined.Tune,
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
-                contentDescription = stringResource(R.string.gifticon_list_show_all_brand_chips_button)
+                contentDescription = stringResource(R.string.gifticon_list_show_all_brand_chips_button),
             )
         }
     }
@@ -95,20 +95,20 @@ fun BrandChipList(
     brands: List<Brand> = emptyList(),
     selectedFilters: Set<String> = emptySet(),
     onClickTotalChip: () -> Unit = {},
-    onClickChip: (Brand) -> Unit = {}
+    onClickChip: (Brand) -> Unit = {},
 ) {
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         item { // "전체" 칩
             val entireChipBrand = Brand(
                 name = stringResource(id = R.string.main_filter_all),
-                count = brands.sumOf { it.count }
+                count = brands.sumOf { it.count },
             )
             BrandChip(
                 brand = entireChipBrand,
-                selected = selectedFilters.isEmpty()
+                selected = selectedFilters.isEmpty(),
             ) {
                 onClickTotalChip()
             }
@@ -116,7 +116,7 @@ fun BrandChipList(
         items(brands) { brand ->
             BrandChip(
                 brand = brand,
-                selected = selectedFilters.contains(brand.name)
+                selected = selectedFilters.contains(brand.name),
             ) {
                 onClickChip(brand)
             }
@@ -129,18 +129,16 @@ fun BrandChipList(
 fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
-    showExpiredGifticon: Boolean = false,
     selectedFilters: Set<String> = emptySet(),
-    onCheckFilterExpired: (Boolean) -> Unit = {},
     onClickChip: (Brand) -> Unit = {},
-    onDismiss: () -> Unit = {}
+    onDismiss: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(
-            usePlatformDefaultWidth = false // 다이얼로그 너비 제한 제거
-        )
+            usePlatformDefaultWidth = false, // 다이얼로그 너비 제한 제거
+        ),
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -148,24 +146,17 @@ fun AllBrandChipsDialog(
                 .fillMaxSize()
                 .clickable(
                     interactionSource = interactionSource, // Ripple 효과 제거
-                    indication = null
+                    indication = null,
                 ) {
                     onDismiss()
-                }
+                },
         ) {
             Surface(
                 modifier = modifier,
                 shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colors.background
+                color = MaterialTheme.colors.background,
             ) {
                 Column {
-                    TextCheckbox(
-                        checked = showExpiredGifticon,
-                        textStyle = MaterialTheme.typography.body2,
-                        text = stringResource(R.string.gifticon_list_brands_dialog_show_expired_gifticon_option)
-                    ) { checked ->
-                        onCheckFilterExpired(checked)
-                    }
                     val scrollState = rememberScrollState()
                     FlowRow(
                         modifier = Modifier
@@ -173,12 +164,12 @@ fun AllBrandChipsDialog(
                             .verticalScroll(scrollState),
                         mainAxisAlignment = FlowMainAxisAlignment.Start,
                         mainAxisSpacing = 8.dp,
-                        mainAxisSize = SizeMode.Expand
+                        mainAxisSize = SizeMode.Expand,
                     ) {
                         brands.forEach {
                             BrandChip(
                                 brand = it,
-                                selected = selectedFilters.contains(it.name)
+                                selected = selectedFilters.contains(it.name),
                             ) { selected ->
                                 onClickChip(selected)
                             }
@@ -196,7 +187,7 @@ fun BrandChip(
     brand: Brand,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    onClick: (Brand) -> Unit = {}
+    onClick: (Brand) -> Unit = {},
 ) {
     FilterChip(
         selected = selected,
@@ -208,18 +199,18 @@ fun BrandChip(
             backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
             contentColor = MaterialTheme.colors.onSurface,
             selectedBackgroundColor = MaterialTheme.colors.primary,
-            selectedContentColor = Color.White
-        )
+            selectedContentColor = Color.White,
+        ),
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(text = brand.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
                 text = brand.count.toString(),
                 modifier = Modifier.padding(start = 4.dp),
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
             )
         }
     }
@@ -229,21 +220,21 @@ fun BrandChip(
 fun BrandChipLoadingScreen(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         BrandChipLoadingList(
             Modifier
                 .weight(1f)
                 .padding(end = 16.dp),
-            5
+            5,
         )
         Icon(
             modifier = Modifier.placeholder(
                 visible = true,
-                highlight = PlaceholderHighlight.shimmer()
+                highlight = PlaceholderHighlight.shimmer(),
             ),
             imageVector = Icons.Outlined.Tune,
-            contentDescription = null
+            contentDescription = null,
         )
     }
 }
@@ -252,7 +243,7 @@ fun BrandChipLoadingScreen(modifier: Modifier = Modifier) {
 fun BrandChipLoadingList(modifier: Modifier = Modifier, count: Int = 3) {
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         items(count) {
             BrandChipLoading()
@@ -268,8 +259,8 @@ fun BrandChipLoading(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(16.dp))
             .placeholder(
                 visible = true,
-                highlight = PlaceholderHighlight.shimmer()
-            )
+                highlight = PlaceholderHighlight.shimmer(),
+            ),
     )
 }
 
@@ -277,6 +268,20 @@ fun BrandChipLoading(modifier: Modifier = Modifier) {
 @Composable
 fun BrandChipLoadingPreview() {
     BrandChipLoading()
+}
+
+@Preview(widthDp = 500, heightDp = 500)
+@Composable
+fun AllBrandChipsDialogPreview() {
+    AllBrandChipsDialog(
+        modifier = Modifier.wrapContentSize(),
+        brands = listOf(
+            Brand("스타벅스", 10),
+            Brand("투썸플레이스", 2),
+            Brand("배스킨라빈스31", 5),
+            Brand("파리바게트", 8),
+        ),
+    )
 }
 
 @Preview

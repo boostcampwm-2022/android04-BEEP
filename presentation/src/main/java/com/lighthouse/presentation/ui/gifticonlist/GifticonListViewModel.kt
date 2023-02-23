@@ -9,17 +9,16 @@ import com.lighthouse.domain.usecase.GetAllBrandsUseCase
 import com.lighthouse.domain.usecase.GetFilteredGifticonsUseCase
 import com.lighthouse.domain.usecase.RemoveGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
-import com.lighthouse.domain.util.isExpired
 import com.lighthouse.presentation.mapper.toDomain
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.GifticonSortBy
 import com.lighthouse.presentation.model.GifticonUIModel
-import com.lighthouse.presentation.util.flow.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -33,15 +32,15 @@ class GifticonListViewModel @Inject constructor(
     getAllBrandsUseCase: GetAllBrandsUseCase,
     private val getFilteredGifticonsUseCase: GetFilteredGifticonsUseCase,
     private val useGifticonUseCase: UseGifticonUseCase,
-    private val removeGifticonUseCase: RemoveGifticonUseCase
+    private val removeGifticonUseCase: RemoveGifticonUseCase,
 ) : ViewModel() {
 
     private val filter = MutableStateFlow(setOf<String>())
     private val sortBy = MutableStateFlow(GifticonSortBy.DEADLINE)
     private val gifticons = MutableStateFlow<DbResult<List<Gifticon>>>(DbResult.Loading)
-    private val brands = MutableStateFlow<DbResult<List<Brand>>>(DbResult.Loading)
+    private val brands =
+        getAllBrandsUseCase().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DbResult.Loading)
     private val entireBrandsDialogShown = MutableStateFlow(false)
-    private val showExpiredGifticon = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
@@ -58,24 +57,15 @@ class GifticonListViewModel @Inject constructor(
                 gifticons.value = dbResult
             }
         }
-        viewModelScope.launch {
-            showExpiredGifticon.flatMapLatest { showExpired ->
-                getAllBrandsUseCase(showExpired.not()).distinctUntilChanged()
-            }.debounce(50).collect { dbResult ->
-                filter.value = emptySet() // 만료된 기프티콘 표시 옵션이 변경되면 필터 초기화
-                brands.value = dbResult
-            }
-        }
     }
 
     val state = combine(
         sortBy,
         gifticons,
-        showExpiredGifticon,
         brands,
         entireBrandsDialogShown,
-        filter
-    ) { sortBy, gifticonResult, showExpired, brandResult, entireBrandsDialogShown, filter ->
+        filter,
+    ) { sortBy, gifticonResult, brandResult, entireBrandsDialogShown, filter ->
         when (gifticonResult) {
             is DbResult.Success -> {
                 val brands = when (brandResult) {
@@ -86,18 +76,14 @@ class GifticonListViewModel @Inject constructor(
                 }
                 GifticonListViewState(
                     sortBy = sortBy,
-                    gifticons = if (showExpired) {
-                        gifticonResult.data.map { it.toPresentation() }
-                    } else {
-                        gifticonResult.data.filterNot { it.expireAt.isExpired() }.map { it.toPresentation() }
-                    },
-                    showExpiredGifticon = showExpired,
+                    gifticons = gifticonResult.data.map { it.toPresentation() },
                     brands = brands,
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
-                    loading = false
+                    loading = false,
                 )
             }
+
             is DbResult.Loading -> {
                 val gifticons = gifticons.value.let { result ->
                     if (result is DbResult.Success) result.data.map { it.toPresentation() } else emptyList()
@@ -108,9 +94,10 @@ class GifticonListViewModel @Inject constructor(
                     brands = emptyList(),
                     entireBrandsDialogShown = entireBrandsDialogShown,
                     selectedFilter = filter,
-                    loading = true
+                    loading = true,
                 )
             }
+
             else -> {
                 GifticonListViewState()
             }
@@ -131,10 +118,6 @@ class GifticonListViewModel @Inject constructor(
         } else {
             filter.value.plus(brand.name)
         }
-    }
-
-    fun filterUsedGifticon(show: Boolean = true) {
-        showExpiredGifticon.value = show
     }
 
     fun clearFilter() {

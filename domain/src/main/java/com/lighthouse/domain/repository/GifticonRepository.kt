@@ -17,10 +17,10 @@ interface GifticonRepository {
     fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,
-        sortBy: SortBy = SortBy.DEADLINE
+        sortBy: SortBy = SortBy.DEADLINE,
     ): Flow<DbResult<List<Gifticon>>>
 
-    fun getAllBrands(userId: String, filterExpired: Boolean): Flow<DbResult<List<Brand>>>
+    fun getAllBrands(userId: String): Flow<DbResult<List<Brand>>>
     suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>)
     suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate?
     suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate)

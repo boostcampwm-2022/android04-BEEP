@@ -31,7 +31,7 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 @Composable
 fun GifticonListScreen(
     modifier: Modifier = Modifier,
-    viewModel: GifticonListViewModel = viewModel()
+    viewModel: GifticonListViewModel = viewModel(),
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
     var removeGifticonDialogState by remember { mutableStateOf<GifticonUIModel?>(null) }
@@ -41,7 +41,7 @@ fun GifticonListScreen(
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.05f))
             .padding(horizontal = 16.dp),
-        color = Color.Transparent
+        color = Color.Transparent,
     ) {
         Column {
             if (viewState.loading) {
@@ -59,7 +59,7 @@ fun GifticonListScreen(
                     },
                     onClickChip = {
                         viewModel.toggleFilterSelection(it)
-                    }
+                    },
                 )
             }
             if (viewState.loading) {
@@ -73,7 +73,7 @@ fun GifticonListScreen(
                     },
                     onRemove = {
                         removeGifticonDialogState = it
-                    }
+                    },
                 )
             }
         }
@@ -83,16 +83,12 @@ fun GifticonListScreen(
                 modifier = Modifier
                     .padding(16.dp),
                 selectedFilters = viewState.selectedFilter,
-                showExpiredGifticon = viewState.showExpiredGifticon,
-                onCheckFilterExpired = {
-                    viewModel.filterUsedGifticon(it)
-                },
                 onClickChip = {
                     viewModel.toggleFilterSelection(it)
                 },
                 onDismiss = {
                     viewModel.dismissEntireBrandsDialog()
-                }
+                },
             )
         }
     }
@@ -104,7 +100,7 @@ fun GifticonListScreen(
                     Image(
                         imageVector = Icons.Default.Warning,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(Color.Red)
+                        colorFilter = ColorFilter.tint(Color.Red),
                     )
                     Text(stringResource(R.string.gifticon_list_remove_gifticon_dialog_title))
                 }
@@ -114,14 +110,14 @@ fun GifticonListScreen(
                 TextButton(
                     onClick = {
                         viewModel.removeGifticon(
-                            gifticon = removeGifticonDialogState ?: return@TextButton
+                            gifticon = removeGifticonDialogState ?: return@TextButton,
                         )
                         removeGifticonDialogState = null
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.gifticon_list_remove_gifticon_dialog_remove_button))
                 }
-            }
+            },
         )
     }
 }

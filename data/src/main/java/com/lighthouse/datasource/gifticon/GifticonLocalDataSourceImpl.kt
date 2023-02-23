@@ -9,7 +9,6 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
-import com.lighthouse.domain.util.isExpired
 import com.lighthouse.domain.util.today
 import com.lighthouse.mapper.toDomain
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +16,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GifticonLocalDataSourceImpl @Inject constructor(
-    private val gifticonDao: GifticonDao
+    private val gifticonDao: GifticonDao,
 ) : GifticonLocalDataSource {
 
     override fun getGifticon(id: String): Flow<Gifticon> {
@@ -45,7 +44,7 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,
-        sortBy: SortBy
+        sortBy: SortBy,
     ): Flow<List<Gifticon>> {
         val upperFilter = filter.map { it.uppercase() }.toSet()
         val gifticons = when (sortBy) {
@@ -57,15 +56,9 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>> {
+    override fun getAllBrands(userId: String): Flow<List<Brand>> {
         return gifticonDao.getAllGifticons(userId).map {
-            if (filterExpired) {
-                it.filterNot { entity ->
-                    entity.expireAt.isExpired()
-                }
-            } else {
-                it
-            }.groupBy { entity ->
+            it.groupBy { entity ->
                 entity.brand.uppercase()
             }.map { entry ->
                 Brand(entry.key.uppercase(), entry.value.size)
@@ -92,11 +85,11 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override suspend fun useCashCardGifticon(
         gifticonId: String,
         amount: Int,
-        usageHistory: UsageHistory
+        usageHistory: UsageHistory,
     ) {
         gifticonDao.useCashCardGifticonTransaction(
             amount,
-            usageHistory.toUsageHistoryEntity(gifticonId)
+            usageHistory.toUsageHistoryEntity(gifticonId),
         )
     }
 
