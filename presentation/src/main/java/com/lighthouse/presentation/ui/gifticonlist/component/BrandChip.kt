@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -89,6 +90,7 @@ fun BrandChipListScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BrandChipList(
     modifier: Modifier = Modifier,
@@ -108,6 +110,7 @@ fun BrandChipList(
             )
             BrandChip(
                 brand = entireChipBrand,
+                modifier = Modifier.animateItemPlacement(),
                 selected = selectedFilters.isEmpty(),
             ) {
                 onClickTotalChip()
