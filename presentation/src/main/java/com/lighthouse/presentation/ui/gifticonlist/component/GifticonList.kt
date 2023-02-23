@@ -58,10 +58,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
 import com.lighthouse.domain.util.isExpired
+import com.lighthouse.domain.util.today
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dpToPx
 import com.lighthouse.presentation.extension.toConcurrency
@@ -292,92 +290,6 @@ fun ExpiredGifticonToggleColumn(showList: Boolean, modifier: Modifier = Modifier
     }
 }
 
-@Composable
-fun GifticonLoadingList(count: Int = 5) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 36.dp),
-    ) {
-        items(count) {
-            GifticonLoadingItem()
-        }
-    }
-}
-
-@Composable
-fun GifticonLoadingItem() {
-    val cornerSize = 8.dp
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(130.dp),
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize)),
-    ) {
-        Row {
-            Spacer(
-                modifier = Modifier.fillMaxHeight()
-                    .clip(RoundedCornerShape(topStart = cornerSize, bottomStart = cornerSize))
-                    .aspectRatio(1f)
-                    .align(Alignment.CenterVertically)
-                    .placeholder(
-                        visible = true,
-                        highlight = PlaceholderHighlight.shimmer(),
-                    ),
-            )
-            Box(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                Text(
-                    text = "D-00",
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(cornerSize))
-                        .placeholder(
-                            visible = true,
-                            highlight = PlaceholderHighlight.shimmer(),
-                        )
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .align(Alignment.TopEnd),
-                )
-                Text(
-                    text = "~ 2022.00.00",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 16.dp, end = 16.dp)
-                        .placeholder(
-                            visible = true,
-                            highlight = PlaceholderHighlight.shimmer(),
-                        ),
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                            .placeholder(
-                                visible = true,
-                                highlight = PlaceholderHighlight.shimmer(),
-                            ),
-                        text = "브랜드 자리",
-                    )
-                    Text(
-                        modifier = Modifier
-                            .placeholder(
-                                visible = true,
-                                highlight = PlaceholderHighlight.shimmer(),
-                            ),
-                        text = "제목이 들어갈 자리입니다",
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 fun ExpiredGifticonToggleColumnPreview() {
@@ -387,11 +299,19 @@ fun ExpiredGifticonToggleColumnPreview() {
 @Preview
 @Composable
 fun GifticonLoadingPreview() {
-    GifticonLoadingItem()
-}
-
-@Preview
-@Composable
-fun GifticonListLoadingPreview() {
-    GifticonLoadingList(3)
+    GifticonItem(
+        GifticonUIModel(
+            "",
+            true,
+            null,
+            "test 기프티콘",
+            "브랜드",
+            today,
+            "",
+            false,
+            0,
+            "",
+            false,
+        ),
+    )
 }
