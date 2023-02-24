@@ -157,6 +157,7 @@ fun GifticonItem(
             )
             .background(if (swipeableState.offset.value < 0) colorResource(id = R.color.point_green_dark) else Color.Red),
     ) {
+        // 기프티콘 아이템 뒤 버튼들
         TextButton(
             onClick = {
                 onRemove(gifticon)
@@ -190,6 +191,7 @@ fun GifticonItem(
             )
         }
 
+        // 기프티콘 아이템
         Card(
             modifier = Modifier
                 .offset {
@@ -221,7 +223,7 @@ fun GifticonItem(
                         .align(Alignment.CenterVertically),
                 )
                 Box(
-                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface),
+                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface.copy(alpha = 0f)),
                 ) {
                     Text(
                         text = gifticon.expireAt.toDday(context),
