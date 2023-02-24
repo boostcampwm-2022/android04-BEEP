@@ -155,7 +155,10 @@ fun AllBrandChipsDialog(
                 },
         ) {
             Surface(
-                modifier = modifier,
+                modifier = modifier.clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                ) { },
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colors.background,
             ) {
