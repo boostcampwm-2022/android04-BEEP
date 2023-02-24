@@ -237,7 +237,9 @@ interface GifticonDao {
      */
     @Query(
         "SELECT * FROM $GIFTICON_TABLE " +
-            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 LIMIT :count",
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 " +
+            "ORDER BY expire_at " +
+            "LIMIT :count",
     )
     fun getSomeGifticons(userId: String, time: Date, count: Int): Flow<List<GifticonEntity>>
 }
