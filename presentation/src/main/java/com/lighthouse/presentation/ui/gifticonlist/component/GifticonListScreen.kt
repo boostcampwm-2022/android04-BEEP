@@ -83,8 +83,9 @@ fun GifticonListScreen(
                 modifier = Modifier
                     .padding(16.dp),
                 selectedFilters = viewState.selectedFilter,
-                onClickChip = {
-                    viewModel.toggleFilterSelection(it)
+                onApply = {
+                    viewModel.updateFilterSelection(it)
+                    viewModel.dismissEntireBrandsDialog()
                 },
                 onDismiss = {
                     viewModel.dismissEntireBrandsDialog()

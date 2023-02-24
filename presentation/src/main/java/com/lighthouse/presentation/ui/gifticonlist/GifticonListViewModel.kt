@@ -120,6 +120,10 @@ class GifticonListViewModel @Inject constructor(
         }
     }
 
+    fun updateFilterSelection(selectedBrands: Set<String>) {
+        filter.value = selectedBrands
+    }
+
     fun clearFilter() {
         filter.value = emptySet()
     }

@@ -1,5 +1,6 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -17,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
@@ -24,9 +27,12 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -126,10 +132,14 @@ fun AllBrandChipsDialog(
     modifier: Modifier = Modifier,
     brands: List<Brand> = emptyList(),
     selectedFilters: Set<String> = emptySet(),
-    onClickChip: (Brand) -> Unit = {},
+    onApply: (Set<String>) -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+
+    val newSelectedFilters = remember { mutableStateOf(selectedFilters) }
+    Log.d("로그", "_AllBrandChipsDialog: newFilter: ${newSelectedFilters.value}")
+
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(
@@ -152,11 +162,11 @@ fun AllBrandChipsDialog(
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colors.background,
             ) {
-                Column {
+                Column(modifier = Modifier.padding(16.dp)) {
                     val scrollState = rememberScrollState()
+                    // BrandChips
                     FlowRow(
                         modifier = Modifier
-                            .padding(16.dp)
                             .verticalScroll(scrollState),
                         mainAxisAlignment = FlowMainAxisAlignment.Start,
                         mainAxisSpacing = 8.dp,
@@ -165,10 +175,34 @@ fun AllBrandChipsDialog(
                         brands.forEach {
                             BrandChip(
                                 brand = it,
-                                selected = selectedFilters.contains(it.name),
+                                selected = newSelectedFilters.value.contains(it.name),
                             ) { selected ->
-                                onClickChip(selected)
+                                if (newSelectedFilters.value.contains(selected.name)) {
+                                    newSelectedFilters.value = newSelectedFilters.value.toMutableSet().apply {
+                                        remove(selected.name)
+                                    }
+                                } else {
+                                    newSelectedFilters.value = newSelectedFilters.value.toMutableSet().apply {
+                                        add(selected.name)
+                                    }
+                                }
                             }
+                        }
+                    }
+                    // Buttons
+                    Row(modifier = Modifier.padding(top = 24.dp)) {
+                        TextButton(
+                            onClick = { onDismiss() },
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Text(text = stringResource(id = R.string.all_cancel))
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Button(
+                            onClick = { onApply(newSelectedFilters.value.toSet()) },
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Text(text = stringResource(id = R.string.all_apply), color = MaterialTheme.colors.surface)
                         }
                     }
                 }
