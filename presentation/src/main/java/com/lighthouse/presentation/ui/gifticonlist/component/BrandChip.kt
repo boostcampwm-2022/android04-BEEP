@@ -1,6 +1,5 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -31,7 +30,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -115,7 +113,8 @@ fun BrandChipList(
                 onClickTotalChip()
             }
         }
-        items(brands) { brand ->
+        val sortedBrands = brands.sortedByDescending { selectedFilters.contains(it.name) }
+        items(sortedBrands) { brand ->
             BrandChip(
                 brand = brand,
                 selected = selectedFilters.contains(brand.name),
@@ -136,9 +135,7 @@ fun AllBrandChipsDialog(
     onDismiss: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-
     val newSelectedFilters = remember { mutableStateOf(selectedFilters) }
-    Log.d("로그", "_AllBrandChipsDialog: newFilter: ${newSelectedFilters.value}")
 
     Dialog(
         onDismissRequest = { onDismiss() },
