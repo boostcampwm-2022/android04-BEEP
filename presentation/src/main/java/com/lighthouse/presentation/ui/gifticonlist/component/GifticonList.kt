@@ -91,7 +91,7 @@ fun GifticonList(
         itemsIndexed(items = gifticons, key = { _, item -> item.id }) { index, gifticon ->
 
             // 사용 기한 만료된 기프티콘 토글 열
-            if (firstExpiredGifticon(gifticons, index)) {
+            if (isFirstExpiredGifticon(gifticons, index)) {
                 ExpiredGifticonToggleColumn(showList = showExpiredGifticons) {
                     showExpiredGifticons = it
                 }
@@ -118,7 +118,7 @@ fun GifticonList(
 }
 
 @Composable
-private fun firstExpiredGifticon(
+private fun isFirstExpiredGifticon(
     gifticons: List<GifticonUIModel>,
     index: Int,
 ) = index > 0 && gifticons.lastIndex >= index &&
