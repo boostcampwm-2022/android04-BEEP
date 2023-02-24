@@ -82,13 +82,13 @@ fun GifticonList(
     onRemove: (GifticonUIModel) -> Unit = {},
 ) {
     var showExpiredGifticons by rememberSaveable { mutableStateOf(true) }
+    var space = 8.dp
 
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 36.dp),
     ) {
         itemsIndexed(items = gifticons, key = { _, item -> item.id }) { index, gifticon ->
-            var space = 8.dp
 
             // 사용 기한 만료된 기프티콘 토글 열
             if (
@@ -114,6 +114,7 @@ fun GifticonList(
                     onUse = { onUse(it) },
                     onRemove = { onRemove(it) },
                 )
+                space = 8.dp
             }
         }
     }
