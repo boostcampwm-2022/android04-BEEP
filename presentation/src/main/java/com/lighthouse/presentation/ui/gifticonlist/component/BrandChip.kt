@@ -114,7 +114,7 @@ fun BrandChipList(
             }
         }
         val sortedBrands = brands.sortedByDescending { selectedFilters.contains(it.name) }
-        items(sortedBrands) { brand ->
+        items(sortedBrands, key = { brand -> brand.name }) { brand ->
             BrandChip(
                 brand = brand,
                 selected = selectedFilters.contains(brand.name),
