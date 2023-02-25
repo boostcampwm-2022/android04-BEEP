@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -292,7 +293,11 @@ fun ExpiredGifticonToggleColumn(showList: Boolean, modifier: Modifier = Modifier
             .clickable { onClick(showList.not()) }
             .padding(vertical = 12.dp, horizontal = 8.dp),
     ) {
-        Image(imageVector = icon, contentDescription = "show or hide expired gifticons icon")
+        Image(
+            imageVector = icon,
+            contentDescription = "show or hide expired gifticons icon",
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSurface),
+        )
         Text(text = "사용 기한이 만료된 기프티콘", modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
     }
 }
