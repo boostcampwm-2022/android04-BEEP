@@ -4,6 +4,7 @@ import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import kotlinx.coroutines.flow.Flow
@@ -16,19 +17,18 @@ interface GifticonLocalDataSource {
     fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,
-        sortBy: SortBy = SortBy.DEADLINE
+        sortBy: SortBy = SortBy.DEADLINE,
     ): Flow<List<Gifticon>>
 
     fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>>
     suspend fun getGifticonCrop(userId: String, gifticonId: String): GifticonWithCrop?
     suspend fun insertGifticons(gifticons: List<GifticonWithCrop>)
     suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop)
-    suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory)
-    suspend fun useCashCardGifticon(gifticonId: String, amount: Int, usageHistory: UsageHistory)
+    suspend fun useGifticon(gifticonId: String, history: History.Use)
+    suspend fun useCashCardGifticon(gifticonId: String, amount: Int, history: History.UseCashCard)
     suspend fun unUseGifticon(gifticonId: String)
     suspend fun removeGifticon(gifticonId: String)
     fun getUsageHistory(gifticonId: String): Flow<List<UsageHistory>>
-    suspend fun insertUsageHistory(gifticonId: String, usageHistory: UsageHistory)
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
     fun hasUsableGifticon(userId: String): Flow<Boolean>
     fun getUsableGifticons(userId: String): Flow<List<GifticonEntity>>

@@ -10,6 +10,7 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.model.GifticonForUpdate
+import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 class GifticonRepositoryImpl @Inject constructor(
     private val gifticonLocalDataSource: GifticonLocalDataSource,
-    private val gifticonImageSource: GifticonImageSource
+    private val gifticonImageSource: GifticonImageSource,
 ) : GifticonRepository {
 
     override fun getGifticon(id: String): Flow<DbResult<Gifticon>> = flow {
@@ -57,7 +58,7 @@ class GifticonRepositoryImpl @Inject constructor(
     override fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,
-        sortBy: SortBy
+        sortBy: SortBy,
     ): Flow<DbResult<List<Gifticon>>> = flow {
         emit(DbResult.Loading)
         gifticonLocalDataSource.getFilteredGifticons(userId, filter, sortBy).collect {
@@ -87,7 +88,7 @@ class GifticonRepositoryImpl @Inject constructor(
             croppedUri = gifticonImageSource.updateImage(
                 gifticonForUpdate.id,
                 Uri.parse(gifticonForUpdate.oldCroppedUri),
-                Uri.parse(gifticonForUpdate.croppedUri)
+                Uri.parse(gifticonForUpdate.croppedUri),
             )
         }
         gifticonLocalDataSource.updateGifticon(gifticonForUpdate.toEntity(croppedUri))
@@ -95,7 +96,7 @@ class GifticonRepositoryImpl @Inject constructor(
 
     override suspend fun saveGifticons(
         userId: String,
-        gifticonForAdditions: List<GifticonForAddition>
+        gifticonForAdditions: List<GifticonForAddition>,
     ) {
         val newGifticons = gifticonForAdditions.map { gifticonForAddition ->
             val id = UUID.generate()
@@ -104,7 +105,7 @@ class GifticonRepositoryImpl @Inject constructor(
                 result = gifticonImageSource.saveImage(
                     id,
                     Uri.parse(gifticonForAddition.originUri),
-                    Uri.parse(gifticonForAddition.tempCroppedUri)
+                    Uri.parse(gifticonForAddition.tempCroppedUri),
                 )
             }
             gifticonForAddition.toEntity(id, userId, result)
@@ -125,20 +126,12 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override suspend fun saveUsageHistory(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.insertUsageHistory(gifticonId, usageHistory)
+    override suspend fun useGifticon(gifticonId: String, history: History.Use) {
+        gifticonLocalDataSource.useGifticon(gifticonId, history)
     }
 
-    override suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.useGifticon(gifticonId, usageHistory)
-    }
-
-    override suspend fun useCashCardGifticon(
-        gifticonId: String,
-        amount: Int,
-        usageHistory: UsageHistory
-    ) {
-        gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, usageHistory)
+    override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, history: History.UseCashCard) {
+        gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, history)
     }
 
     override suspend fun unUseGifticon(gifticonId: String) {

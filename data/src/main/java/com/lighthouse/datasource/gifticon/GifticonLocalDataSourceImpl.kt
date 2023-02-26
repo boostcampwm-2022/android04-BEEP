@@ -3,10 +3,11 @@ package com.lighthouse.datasource.gifticon
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
+import com.lighthouse.database.mapper.toHistoryEntity
 import com.lighthouse.database.mapper.toUsageHistory
-import com.lighthouse.database.mapper.toUsageHistoryEntity
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
+import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.util.isExpired
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GifticonLocalDataSourceImpl @Inject constructor(
-    private val gifticonDao: GifticonDao
+    private val gifticonDao: GifticonDao,
 ) : GifticonLocalDataSource {
 
     override fun getGifticon(id: String): Flow<Gifticon> {
@@ -45,7 +46,7 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override fun getFilteredGifticons(
         userId: String,
         filter: Set<String>,
-        sortBy: SortBy
+        sortBy: SortBy,
     ): Flow<List<Gifticon>> {
         val upperFilter = filter.map { it.uppercase() }.toSet()
         val gifticons = when (sortBy) {
@@ -85,18 +86,18 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         gifticonDao.insertGifticonWithCropTransaction(gifticons)
     }
 
-    override suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonDao.useGifticonTransaction(usageHistory.toUsageHistoryEntity(gifticonId))
+    override suspend fun useGifticon(gifticonId: String, history: History.Use) {
+        gifticonDao.useGifticonTransaction(history.toHistoryEntity())
     }
 
     override suspend fun useCashCardGifticon(
         gifticonId: String,
         amount: Int,
-        usageHistory: UsageHistory
+        history: History.UseCashCard,
     ) {
         gifticonDao.useCashCardGifticonTransaction(
             amount,
-            usageHistory.toUsageHistoryEntity(gifticonId)
+            history.toHistoryEntity(),
         )
     }
 
@@ -114,10 +115,6 @@ class GifticonLocalDataSourceImpl @Inject constructor(
                 entity.toUsageHistory()
             }
         }
-    }
-
-    override suspend fun insertUsageHistory(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonDao.insertUsageHistory(usageHistory.toUsageHistoryEntity(gifticonId))
     }
 
     override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {

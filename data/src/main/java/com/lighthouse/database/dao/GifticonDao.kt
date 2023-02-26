@@ -12,6 +12,7 @@ import com.lighthouse.database.entity.GifticonCropEntity.Companion.GIFTICON_CROP
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
 import com.lighthouse.database.entity.GifticonWithCrop
+import com.lighthouse.database.entity.HistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity
 import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
 import com.lighthouse.database.mapper.toGifticonCropEntity
@@ -45,7 +46,7 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY expire_at")
     fun getFilteredGifticonsSortByDeadline(
         userId: String,
-        filters: Set<String>
+        filters: Set<String>,
     ): Flow<List<GifticonEntity>>
 
     @Query(
@@ -53,7 +54,7 @@ interface GifticonDao {
             "INNER JOIN $GIFTICON_CROP_TABLE " +
             "ON $GIFTICON_TABLE.id = $GIFTICON_CROP_TABLE.gifticon_id " +
             "WHERE id = :id AND user_id = :userId " +
-            "LIMIT 1"
+            "LIMIT 1",
     )
     suspend fun getGifticonWithCrop(userId: String, id: String): GifticonWithCrop?
 
@@ -61,7 +62,7 @@ interface GifticonDao {
         "SELECT brand AS name, COUNT(*) AS count " +
             "FROM $GIFTICON_TABLE " +
             "WHERE user_id = :userId " +
-            "GROUP BY brand ORDER BY count DESC"
+            "GROUP BY brand ORDER BY count DESC",
     )
     fun getAllBrands(userId: String): Flow<List<Brand>>
 
@@ -113,7 +114,7 @@ interface GifticonDao {
      * 기프티콘의 사용 기록을 추가한다
      * */
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertUsageHistory(usageHistory: UsageHistoryEntity)
+    suspend fun insertUsageHistory(history: HistoryEntity)
 
     /**
      * 기프티콘의 정보를 업데이트한다
@@ -128,7 +129,7 @@ interface GifticonDao {
             "is_cash_card = :isCashCard, " +
             "balance = :balance, " +
             "memo = :memo " +
-            "WHERE id = :id"
+            "WHERE id = :id",
     )
     suspend fun updateGifticon(
         id: String,
@@ -139,7 +140,7 @@ interface GifticonDao {
         barcode: String,
         isCashCard: Boolean,
         balance: Int,
-        memo: String
+        memo: String,
     )
 
     @Query("UPDATE $GIFTICON_CROP_TABLE SET cropped_rect = :croppedRect WHERE gifticon_id = :id")
@@ -157,7 +158,7 @@ interface GifticonDao {
                 barcode,
                 isCashCard,
                 balance,
-                memo
+                memo,
             )
             updateGifticonCrop(id, croppedRect)
         }
@@ -167,25 +168,25 @@ interface GifticonDao {
      * 기프티콘을 사용 상태로 변경하고, 사용 기록에 추가한다
      * */
     @Transaction
-    suspend fun useGifticonTransaction(usageHistory: UsageHistoryEntity) {
-        val gifticonId = usageHistory.gifticonId
+    suspend fun useGifticonTransaction(history: HistoryEntity) {
+        val gifticonId = history.gifticonId
 
         useGifticon(gifticonId)
-        insertUsageHistory(usageHistory)
+        insertUsageHistory(history)
     }
 
     /**
      * 금액권 기프티콘의 잔액을 차감하고 사용 기록에 추가한다. 잔액이 0원이 된다면 사용 상태로 변경한다
      * */
     @Transaction
-    suspend fun useCashCardGifticonTransaction(amount: Int, usageHistory: UsageHistoryEntity) {
-        val gifticonId = usageHistory.gifticonId
+    suspend fun useCashCardGifticonTransaction(amount: Int, history: HistoryEntity) {
+        val gifticonId = history.gifticonId
         val balance = getGifticon(gifticonId).first().balance
 
         assert(balance >= amount) // 사용할 금액이 잔액보다 많으면 안된다
 
         useCashCardGifticon(gifticonId, balance - amount)
-        insertUsageHistory(usageHistory)
+        insertUsageHistory(history)
 
         if (balance == amount) {
             useGifticon(gifticonId)
@@ -197,7 +198,7 @@ interface GifticonDao {
 
     @Query(
         "SELECT EXISTS (SELECT * FROM $GIFTICON_TABLE " +
-            "WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)"
+            "WHERE expire_at >= :time AND is_used = 0 AND user_id = :userId)",
     )
     fun hasUsableGifticon(userId: String, time: Date): Flow<Boolean>
 
@@ -212,7 +213,7 @@ interface GifticonDao {
      */
     @Query(
         "SELECT DISTINCT brand FROM $GIFTICON_TABLE " +
-            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0"
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0",
     )
     fun getGifticonBrands(userId: String, time: Date): Flow<List<String>>
 
@@ -221,7 +222,7 @@ interface GifticonDao {
      */
     @Query(
         "SELECT * FROM $GIFTICON_TABLE " +
-            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 LIMIT :count"
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 LIMIT :count",
     )
     fun getSomeGifticons(userId: String, time: Date, count: Int): Flow<List<GifticonEntity>>
 }

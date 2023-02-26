@@ -12,6 +12,7 @@ import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.BrandLocationEntity
 import com.lighthouse.database.entity.GifticonCropEntity
 import com.lighthouse.database.entity.GifticonEntity
+import com.lighthouse.database.entity.HistoryEntity
 import com.lighthouse.database.entity.SectionEntity
 import com.lighthouse.database.entity.UsageHistoryEntity
 
@@ -21,15 +22,16 @@ import com.lighthouse.database.entity.UsageHistoryEntity
         GifticonCropEntity::class,
         SectionEntity::class,
         BrandLocationEntity::class,
-        UsageHistoryEntity::class
+        UsageHistoryEntity::class,
+        HistoryEntity::class,
     ],
-    version = 1
+    version = 1,
 )
 @TypeConverters(
     DateConverter::class,
     DmsConverter::class,
     RectConverter::class,
-    UriConverter::class
+    UriConverter::class,
 )
 abstract class BeepDatabase : RoomDatabase() {
 
