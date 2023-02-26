@@ -173,7 +173,6 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{geo.getAddress(vm.latestUsageHistory.location)}"
             app:layout_constraintEnd_toStartOf="@id/iv_show_all_used_info_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"

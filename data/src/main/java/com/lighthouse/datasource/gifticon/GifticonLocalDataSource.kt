@@ -6,7 +6,6 @@ import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
 import kotlinx.coroutines.flow.Flow
 
 interface GifticonLocalDataSource {
@@ -28,7 +27,7 @@ interface GifticonLocalDataSource {
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, history: History.UseCashCard)
     suspend fun unUseGifticon(history: History.CancelUsage)
     suspend fun removeGifticon(gifticonId: String)
-    fun getUsageHistory(gifticonId: String): Flow<List<UsageHistory>>
+    fun getHistory(gifticonId: String): Flow<List<History>>
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>
     fun hasUsableGifticon(userId: String): Flow<Boolean>
     fun getUsableGifticons(userId: String): Flow<List<GifticonEntity>>

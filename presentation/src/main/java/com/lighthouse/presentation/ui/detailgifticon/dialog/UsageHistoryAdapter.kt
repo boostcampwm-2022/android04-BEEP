@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lighthouse.domain.model.UsageHistory
+import com.lighthouse.domain.model.History
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.adapter.BindableListAdapter
 import com.lighthouse.presentation.databinding.ItemUsageHistoryBinding
 import com.lighthouse.presentation.util.Geography
 
-class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapter.UsageHistoryViewHolder>(diffUtil) {
+class UsageHistoryAdapter : BindableListAdapter<History, UsageHistoryAdapter.UsageHistoryViewHolder>(diffUtil) {
 
     class UsageHistoryViewHolder(private val binding: ItemUsageHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(usageHistory: UsageHistory) {
+        fun bind(usageHistory: History) {
             binding.geo = Geography(binding.root.context)
-            binding.usage = usageHistory
+//            binding.usage = usageHistory
         }
     }
 
@@ -26,7 +26,7 @@ class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapte
             LayoutInflater.from(parent.context),
             R.layout.item_usage_history,
             parent,
-            false
+            false,
         )
         return UsageHistoryViewHolder(view)
     }
@@ -36,12 +36,12 @@ class UsageHistoryAdapter : BindableListAdapter<UsageHistory, UsageHistoryAdapte
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<UsageHistory>() {
-            override fun areItemsTheSame(oldItem: UsageHistory, newItem: UsageHistory): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<History>() {
+            override fun areItemsTheSame(oldItem: History, newItem: History): Boolean {
                 return oldItem.date == newItem.date
             }
 
-            override fun areContentsTheSame(oldItem: UsageHistory, newItem: UsageHistory): Boolean {
+            override fun areContentsTheSame(oldItem: History, newItem: History): Boolean {
                 return oldItem == newItem
             }
         }

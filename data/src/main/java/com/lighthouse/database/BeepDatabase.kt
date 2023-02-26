@@ -14,7 +14,6 @@ import com.lighthouse.database.entity.GifticonCropEntity
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.HistoryEntity
 import com.lighthouse.database.entity.SectionEntity
-import com.lighthouse.database.entity.UsageHistoryEntity
 
 @Database(
     entities = [
@@ -22,7 +21,6 @@ import com.lighthouse.database.entity.UsageHistoryEntity
         GifticonCropEntity::class,
         SectionEntity::class,
         BrandLocationEntity::class,
-        UsageHistoryEntity::class,
         HistoryEntity::class,
     ],
     version = 1,

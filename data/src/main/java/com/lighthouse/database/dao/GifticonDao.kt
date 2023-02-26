@@ -14,8 +14,6 @@ import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
 import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.database.entity.HistoryEntity
 import com.lighthouse.database.entity.HistoryEntity.Companion.HISTORY_TABLE
-import com.lighthouse.database.entity.UsageHistoryEntity
-import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
 import com.lighthouse.database.mapper.toGifticonCropEntity
 import com.lighthouse.database.mapper.toGifticonEntity
 import com.lighthouse.domain.model.Brand
@@ -108,8 +106,8 @@ interface GifticonDao {
     /**
      * 기프티콘의 사용 기록을 조회한다
      * */
-    @Query("SELECT * FROM $USAGE_HISTORY_TABLE WHERE gifticon_id = :gifticonId")
-    fun getUsageHistory(gifticonId: String): Flow<List<UsageHistoryEntity>>
+    @Query("SELECT * FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId")
+    fun getUsageHistory(gifticonId: String): Flow<List<HistoryEntity>>
 
     @Query("SELECT * FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId ORDER BY date DESC")
     fun getHistory(gifticonId: String): Flow<List<HistoryEntity>>

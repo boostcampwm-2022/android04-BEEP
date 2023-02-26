@@ -30,7 +30,6 @@ sealed class History(open val date: Date, open val gifticonId: String) {
     data class ModifyAmount(
         override val date: Date,
         override val gifticonId: String,
-        val newAmount: Int,
     ) : History(date, gifticonId)
 
     companion object {

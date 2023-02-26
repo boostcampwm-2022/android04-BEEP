@@ -4,12 +4,10 @@ import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
 import com.lighthouse.database.mapper.toHistoryEntity
-import com.lighthouse.database.mapper.toUsageHistory
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.util.currentTime
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.domain.util.today
@@ -80,7 +78,16 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop) {
+        val gifticonId = gifticonWithCrop.id
+        val latestBalance = gifticonDao.getLatestAmount(gifticonWithCrop.id)
+
         gifticonDao.updateGifticonWithCropTransaction(gifticonWithCrop)
+
+        // 금액 수정 시 기록 남기기
+        if (gifticonWithCrop.balance != latestBalance) {
+            val history = History.ModifyAmount(currentTime, gifticonId)
+            gifticonDao.insertUsageHistory(history.toHistoryEntity(gifticonWithCrop.balance))
+        }
     }
 
     override suspend fun insertGifticons(gifticons: List<GifticonWithCrop>) {
@@ -121,10 +128,11 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         gifticonDao.removeGifticon(gifticonId)
     }
 
-    override fun getUsageHistory(gifticonId: String): Flow<List<UsageHistory>> {
+    override fun getHistory(gifticonId: String): Flow<List<History>> {
         return gifticonDao.getUsageHistory(gifticonId).map { list ->
             list.map { entity ->
-                entity.toUsageHistory()
+                TODO("기록 가져오기")
+//                entity.toUsageHistory()
             }
         }
     }

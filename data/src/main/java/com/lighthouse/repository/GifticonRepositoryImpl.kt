@@ -12,7 +12,6 @@ import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.model.GifticonForUpdate
 import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
 import com.lighthouse.domain.util.currentTime
 import com.lighthouse.mapper.toDomain
@@ -114,9 +113,9 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.insertGifticons(newGifticons)
     }
 
-    override fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>> = flow {
+    override fun getHistory(gifticonId: String): Flow<DbResult<List<History>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalDataSource.getUsageHistory(gifticonId).collect {
+        gifticonLocalDataSource.getHistory(gifticonId).collect {
             if (it.isEmpty()) {
                 emit(DbResult.Empty)
             } else {

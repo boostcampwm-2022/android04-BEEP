@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.usecase.GetGifticonUseCase
-import com.lighthouse.domain.usecase.GetUsageHistoriesUseCase
+import com.lighthouse.domain.usecase.GetHistoriesUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
@@ -36,10 +36,10 @@ import javax.inject.Inject
 class GifticonDetailViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
     getGifticonUseCase: GetGifticonUseCase,
-    getUsageHistoryUseCase: GetUsageHistoriesUseCase,
+    getUsageHistoryUseCase: GetHistoriesUseCase,
     private val useGifticonUseCase: UseGifticonUseCase,
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
-    private val unUseGifticonUseCase: UnUseGifticonUseCase
+    private val unUseGifticonUseCase: UnUseGifticonUseCase,
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
@@ -76,8 +76,8 @@ class GifticonDetailViewModel @Inject constructor(
                 R.string.gifticon_detail_used_image_label,
                 date.toYear(),
                 date.toMonth(),
-                date.toDayOfMonth()
-            )
+                date.toDayOfMonth(),
+            ),
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
 
@@ -134,11 +134,13 @@ class GifticonDetailViewModel @Inject constructor(
             GifticonDetailMode.UNUSED -> {
                 event(GifticonDetailEvent.UseGifticonButtonClicked)
             }
+
             GifticonDetailMode.USED -> {
                 viewModelScope.launch {
                     unUseGifticonUseCase(gifticonId)
                 }
             }
+
             GifticonDetailMode.EDIT -> {
                 if (checkEditValidation().not()) {
                     event(GifticonDetailEvent.ExistEmptyInfo)

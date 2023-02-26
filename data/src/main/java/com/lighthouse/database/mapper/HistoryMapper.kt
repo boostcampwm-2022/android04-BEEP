@@ -32,7 +32,6 @@ fun HistoryEntity.toHistory(): History {
             History.ModifyAmount(
                 date,
                 gifticonId,
-                amount ?: throw IllegalArgumentException("new amount should not be null"),
             )
         }
 
@@ -65,7 +64,7 @@ fun History.toHistoryEntity(balance: Int?): HistoryEntity {
         balance = balance,
         amount = when (this) {
             is History.UseCashCard -> amount
-            is History.ModifyAmount -> newAmount
+            is History.ModifyAmount -> balance
             else -> null
         },
     )

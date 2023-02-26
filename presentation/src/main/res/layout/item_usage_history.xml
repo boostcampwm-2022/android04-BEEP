@@ -6,7 +6,7 @@
 
         <variable
             name="usage"
-            type="com.lighthouse.domain.model.UsageHistory" />
+            type="com.lighthouse.domain.model.History.Init" />
 
         <variable
             name="geo"
@@ -39,13 +39,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:paddingHorizontal="2dp"
-            android:text="@{geo.getAddress(usage.location)}"
             tools:text="서울시 용산구" />
 
         <TextView
             android:id="@+id/tv_usage_amount"
             style="@style/BEEP.TextStyle.Body2"
-            concurrencyFormat="@{usage.amount}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
