@@ -44,7 +44,10 @@ fun HistoryEntity.toHistory(): History {
     }
 }
 
-fun History.toHistoryEntity(): HistoryEntity {
+/**
+ * @param balance 사용이나 사용 취소, 수정 등의 동작이 수행된 후의 최종 금액
+ * */
+fun History.toHistoryEntity(balance: Int?): HistoryEntity {
     return HistoryEntity(
         historyType = History.getType(this),
         gifticonId = gifticonId,
@@ -59,6 +62,7 @@ fun History.toHistoryEntity(): HistoryEntity {
             is History.UseCashCard -> location?.latitude
             else -> null
         },
+        balance = balance,
         amount = when (this) {
             is History.UseCashCard -> amount
             is History.ModifyAmount -> newAmount

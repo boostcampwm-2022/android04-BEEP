@@ -10,6 +10,7 @@ import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
+import com.lighthouse.domain.util.currentTime
 import com.lighthouse.domain.util.isExpired
 import com.lighthouse.domain.util.today
 import com.lighthouse.mapper.toDomain
@@ -84,10 +85,15 @@ class GifticonLocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertGifticons(gifticons: List<GifticonWithCrop>) {
         gifticonDao.insertGifticonWithCropTransaction(gifticons)
+        gifticons.forEach { gifticon ->
+            val history = History.Init(currentTime, gifticon.id)
+            gifticonDao.insertUsageHistory(history.toHistoryEntity(gifticon.balance))
+        }
     }
 
     override suspend fun useGifticon(gifticonId: String, history: History.Use) {
-        gifticonDao.useGifticonTransaction(history.toHistoryEntity())
+        val latestAmount = gifticonDao.getLatestAmount(gifticonId)
+        gifticonDao.useGifticonTransaction(history.toHistoryEntity(latestAmount))
     }
 
     override suspend fun useCashCardGifticon(
@@ -95,14 +101,20 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         amount: Int,
         history: History.UseCashCard,
     ) {
+        val balance = gifticonDao.getLatestAmount(gifticonId)
+
+        balance ?: throw IllegalStateException("balance should not be null")
+        assert(balance >= amount) // 사용할 금액이 잔액보다 많으면 안된다
+
         gifticonDao.useCashCardGifticonTransaction(
             amount,
-            history.toHistoryEntity(),
+            history.toHistoryEntity(balance - amount),
         )
     }
 
-    override suspend fun unUseGifticon(gifticonId: String) {
-        gifticonDao.unUseGifticon(gifticonId)
+    override suspend fun unUseGifticon(history: History.CancelUsage) {
+        val secondLatestAmount = gifticonDao.getSecondLatestAmount(history.gifticonId)
+        gifticonDao.unUseGifticonTransaction(history.toHistoryEntity(secondLatestAmount))
     }
 
     override suspend fun removeGifticon(gifticonId: String) {

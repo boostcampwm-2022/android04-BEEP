@@ -26,7 +26,7 @@ interface GifticonLocalDataSource {
     suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop)
     suspend fun useGifticon(gifticonId: String, history: History.Use)
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, history: History.UseCashCard)
-    suspend fun unUseGifticon(gifticonId: String)
+    suspend fun unUseGifticon(history: History.CancelUsage)
     suspend fun removeGifticon(gifticonId: String)
     fun getUsageHistory(gifticonId: String): Flow<List<UsageHistory>>
     fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>>

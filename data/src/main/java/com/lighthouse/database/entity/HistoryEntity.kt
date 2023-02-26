@@ -24,6 +24,7 @@ data class HistoryEntity(
     @ColumnInfo(name = "date") val date: Date,
     @ColumnInfo(name = "longitude") val longitude: Double?,
     @ColumnInfo(name = "latitude") val latitude: Double?,
+    @ColumnInfo(name = "balance") val balance: Int?,
     @ColumnInfo(name = "amount") val amount: Int?,
 ) {
     companion object {

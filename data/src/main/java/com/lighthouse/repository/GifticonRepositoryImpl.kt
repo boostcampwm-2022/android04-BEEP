@@ -14,6 +14,7 @@ import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
 import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
+import com.lighthouse.domain.util.currentTime
 import com.lighthouse.mapper.toDomain
 import com.lighthouse.model.GifticonImageResult
 import com.lighthouse.util.UUID
@@ -135,7 +136,8 @@ class GifticonRepositoryImpl @Inject constructor(
     }
 
     override suspend fun unUseGifticon(gifticonId: String) {
-        gifticonLocalDataSource.unUseGifticon(gifticonId)
+        val history = History.CancelUsage(currentTime, gifticonId)
+        gifticonLocalDataSource.unUseGifticon(history)
     }
 
     override suspend fun removeGifticon(gifticonId: String) {

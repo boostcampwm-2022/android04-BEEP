@@ -12,14 +12,14 @@ sealed class History(open val date: Date, open val gifticonId: String) {
     data class Use(
         override val date: Date,
         override val gifticonId: String,
-        val location: VertexLocation?,
+        val location: VertexLocation? = null,
     ) : History(date, gifticonId)
 
     data class UseCashCard(
         override val date: Date,
         override val gifticonId: String,
         val amount: Int,
-        val location: VertexLocation?,
+        val location: VertexLocation? = null,
     ) : History(date, gifticonId)
 
     data class CancelUsage(
