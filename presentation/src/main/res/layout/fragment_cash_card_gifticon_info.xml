@@ -47,6 +47,7 @@
             android:layout_marginTop="4dp"
             android:background="@null"
             android:ellipsize="end"
+            android:enabled="false"
             android:importantForAutofill="no"
             android:inputType="textAutoComplete"
             android:maxLines="1"
@@ -77,6 +78,7 @@
             android:layout_marginTop="4dp"
             android:background="@null"
             android:ellipsize="end"
+            android:enabled="false"
             android:importantForAutofill="no"
             android:inputType="textAutoComplete"
             android:maxLines="1"
@@ -112,7 +114,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:minWidth="100dp"
-            android:onClick="@{() -> vm.expireDateClicked()}"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
             app:dateFormat="@{vm.tempGifticon.expireAt ?? vm.gifticon.expireAt}"
@@ -207,6 +208,7 @@
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="@id/tv_used_date_label"
             app:layout_constraintTop_toBottomOf="@id/tv_used_date_label"
+            app:setUIText="@{vm.latestUsedDate}"
             tools:text="2022.11.08" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -224,6 +226,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/bg_gifticon_memo"
+            android:enabled="false"
             android:gravity="top"
             android:hint="@string/gifticon_detail_memo_description"
             android:importantForAutofill="no"

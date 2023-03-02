@@ -78,9 +78,9 @@
                     tools:src="@mipmap/ic_launcher" />
 
                 <ImageView
-                    android:contentDescription="@string/all_used_mark_description"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:contentDescription="@string/all_used_mark_description"
                     android:src="@drawable/img_stamp"
                     app:goneAnimation="@{@anim/anim_fade_out}"
                     app:isAnimatedVisible="@{vm.gifticon.used}"
@@ -105,18 +105,19 @@
                     app:layout_constraintEnd_toEndOf="@id/iv_product_image"
                     app:layout_constraintStart_toStartOf="@id/iv_product_image"
                     app:layout_constraintTop_toTopOf="@id/iv_product_image"
+                    app:setUIText="@{vm.latestUsageHistoryUIText}"
                     app:visibleAnimation="@{@anim/anim_stamp}"
                     tools:text="사용 완료\n2022.12.28" />
 
                 <ImageView
                     android:id="@+id/iv_share_button"
-                    isVisible="@{false}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/gifticon_detail_share_gifticon_button_description"
                     android:onClick="@{() -> vm.shareButtonClicked()}"
                     android:src="@drawable/ic_share"
+                    app:isVisible="@{false}"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintTop_toBottomOf="@id/iv_product_image"
                     app:tint="@color/gray" />

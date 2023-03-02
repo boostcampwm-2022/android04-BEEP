@@ -7,7 +7,6 @@ sealed class GifticonDetailEvent {
     data class ShowOriginalImage(val origin: String) : GifticonDetailEvent()
     data class ShowLargeBarcode(val barcode: String) : GifticonDetailEvent()
     object EditButtonClicked : GifticonDetailEvent()
-    object ExpireDateClicked : GifticonDetailEvent()
     object UseGifticonButtonClicked : GifticonDetailEvent()
     object UseGifticonComplete : GifticonDetailEvent()
 }

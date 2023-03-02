@@ -27,7 +27,6 @@ import com.lighthouse.presentation.extension.scrollToBottom
 import com.lighthouse.presentation.extension.show
 import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
-import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.LargeBarcodeDialog
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.edit.modifygifticon.ModifyGifticonActivity
@@ -64,7 +63,6 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     private val btnMaster by lazy { binding.btnMaster }
     private val chip by lazy { binding.chipScrollDownForUseButton }
-    private val spinnerDatePicker = SpinnerDatePicker()
 
     private val locationPermission: LocationPermissionManager by permissions()
 
@@ -141,7 +139,7 @@ class GifticonDetailActivity : AppCompatActivity() {
             }
         }
         repeatOnStarted {
-            viewModel.history.collectLatest { histories ->
+            viewModel.historyUiModel.collectLatest { histories ->
                 historyBottomSheet.submitList(histories)
             }
         }
@@ -185,10 +183,6 @@ class GifticonDetailActivity : AppCompatActivity() {
                 gotoModifyGifticon(viewModel.gifticon.value?.id)
             }
 
-            is GifticonDetailEvent.ExpireDateClicked -> {
-                showDatePickerDialog()
-            }
-
             is GifticonDetailEvent.UseGifticonButtonClicked -> {
                 authenticate()
             }
@@ -223,10 +217,6 @@ class GifticonDetailActivity : AppCompatActivity() {
             putExtra(Extras.KEY_MODIFY_GIFTICON_ID, gifticonId)
         }
         startActivity(intent)
-    }
-
-    private fun showDatePickerDialog() {
-        spinnerDatePicker.show(supportFragmentManager)
     }
 
     private fun showUseGifticonDialog() {

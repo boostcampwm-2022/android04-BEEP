@@ -8,6 +8,41 @@ import com.lighthouse.presentation.model.HistoryUiModel
 import com.lighthouse.presentation.util.Geography
 import com.lighthouse.presentation.util.resource.UIText
 
+fun History.toUiModel(gifticonName: String, geography: Geography): HistoryUiModel.History {
+    val typeRes = when (this) {
+        is History.Init -> R.string.history_type_init
+        is History.Use -> R.string.history_type_use
+        is History.UseCashCard -> R.string.history_type_use
+        is History.CancelUsage -> R.string.history_type_cancel
+        is History.ModifyAmount -> R.string.history_type_modify_balance
+    }
+    val location = when (this) {
+        is History.Use -> geography.getAddress(location)
+        is History.UseCashCard -> geography.getAddress(location)
+        else -> ""
+    }
+    val balance = when (this) {
+        is History.UseCashCard -> UIText.StringResource(
+            R.string.all_cash_unit,
+            balance ?: throw IllegalStateException("balance should not be null"),
+        )
+
+        is History.ModifyAmount -> UIText.StringResource(
+            R.string.all_cash_unit,
+            balance ?: throw IllegalStateException("balance should not be null"),
+        )
+
+        else -> UIText.Empty
+    }
+    return HistoryUiModel.History(
+        date = date,
+        type = UIText.StringResource(typeRes),
+        gifticonName = gifticonName,
+        balance = balance,
+        location = location,
+    )
+}
+
 fun List<History>.toUiModel(gifticon: GifticonUIModel, geography: Geography): List<HistoryUiModel> {
     val histories = this@toUiModel
     val dateFormat = "yyyy-MM-dd"

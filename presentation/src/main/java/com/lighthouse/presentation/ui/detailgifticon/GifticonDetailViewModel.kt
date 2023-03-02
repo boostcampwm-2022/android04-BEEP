@@ -11,6 +11,9 @@ import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toConcurrency
+import com.lighthouse.presentation.extension.toDayOfMonth
+import com.lighthouse.presentation.extension.toMonth
+import com.lighthouse.presentation.extension.toYear
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.mapper.toUiModel
@@ -64,8 +67,42 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), GifticonDetailMode.UNUSED)
 
-    private val _history = MutableStateFlow<List<HistoryUiModel>>(emptyList())
-    val history = _history.asStateFlow()
+    val history = getHistoryUseCase(gifticonId)
+
+    private val latestHistory = history.mapLatest { historyResult ->
+        if (historyResult is DbResult.Success) {
+            historyResult.data.last().toUiModel(gifticon.value?.name ?: "", geography)
+        } else {
+            null
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    val latestUsageHistoryUIText = latestHistory.transform {
+        val date = it?.date ?: return@transform
+        emit(
+            UIText.StringResource(
+                R.string.gifticon_detail_used_image_label,
+                date.toYear(),
+                date.toMonth(),
+                date.toDayOfMonth(),
+            ),
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
+
+    val latestUsedDate = latestHistory.transform {
+        val date = it?.date ?: return@transform
+        emit(
+            UIText.StringResource(
+                R.string.all_date,
+                date.toYear(),
+                date.toMonth(),
+                date.toDayOfMonth(),
+            ),
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
+
+    private val _historyUiModel = MutableStateFlow<List<HistoryUiModel>>(emptyList())
+    val historyUiModel = _historyUiModel.asStateFlow()
 
     val balanceUIText: StateFlow<UIText> = gifticon.transform {
         if (it == null) return@transform
@@ -110,7 +147,7 @@ class GifticonDetailViewModel @Inject constructor(
                 // History 작업
                 getHistoryUseCase(gifticonId).collect { historyResult ->
                     when (historyResult) {
-                        DbResult.Empty -> _history.value = emptyList()
+                        DbResult.Empty -> _historyUiModel.value = emptyList()
                         is DbResult.Failure -> {
                             // TODO DbResult.Failure
                         }
@@ -121,7 +158,7 @@ class GifticonDetailViewModel @Inject constructor(
 
                         is DbResult.Success -> {
                             val histories = historyResult.data
-                            _history.value = histories.toUiModel(
+                            _historyUiModel.value = histories.toUiModel(
                                 gifticon,
                                 geography,
                             )
@@ -142,10 +179,6 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun editButtonClicked() {
         event(GifticonDetailEvent.EditButtonClicked)
-    }
-
-    fun expireDateClicked() {
-        event(GifticonDetailEvent.ExpireDateClicked)
     }
 
     fun showAllUsedInfoButtonClicked() {
