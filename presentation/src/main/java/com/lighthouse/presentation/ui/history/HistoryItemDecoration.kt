@@ -8,12 +8,14 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lighthouse.presentation.R
+import com.lighthouse.presentation.extension.dp
 import com.lighthouse.presentation.ui.history.adapter.gifticondetail.HistoryAdapter.Companion.HEADER_TYPE
 import com.lighthouse.presentation.ui.history.adapter.gifticondetail.HistoryAdapter.Companion.ITEM_TYPE
 
 class HistoryItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val dayDividerHeight = 30f
     private val itemDividerHeight = 2f
+    private val itemDividerPaddingHorizontal = 24.dp
 
     private val dayDividerPaint: Paint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.light_gray)
@@ -47,13 +49,19 @@ class HistoryItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
                 val top = item.top - dayDividerHeight
                 val bottom = item.top - dayDividerHeight
                 c.drawLine(0f, top, parent.width.toFloat(), bottom, dayDividerPaint)
-            } else if (parent.adapter?.getItemViewType(position) == ITEM_TYPE && parent.adapter?.getItemViewType(
-                    position - 1,
-                ) != HEADER_TYPE
+            } else if (
+                parent.adapter?.getItemViewType(position) == ITEM_TYPE &&
+                parent.adapter?.getItemViewType(position - 1) != HEADER_TYPE
             ) {
                 val top = item.top - itemDividerHeight
                 val bottom = item.top
-                c.drawLine(left.toFloat(), top, right.toFloat(), bottom.toFloat(), itemDividerPaint)
+                c.drawLine(
+                    left.toFloat() + itemDividerPaddingHorizontal,
+                    top,
+                    right.toFloat() - itemDividerPaddingHorizontal,
+                    bottom.toFloat(),
+                    itemDividerPaint,
+                )
             }
         }
     }
