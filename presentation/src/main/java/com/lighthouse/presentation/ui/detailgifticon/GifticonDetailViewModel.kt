@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
-import com.lighthouse.domain.model.History
 import com.lighthouse.domain.usecase.GetGifticonUseCase
 import com.lighthouse.domain.usecase.GetHistoryUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
@@ -12,9 +11,9 @@ import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toConcurrency
-import com.lighthouse.presentation.extension.toString
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.mapper.toPresentation
+import com.lighthouse.presentation.mapper.toUiModel
 import com.lighthouse.presentation.model.CashAmountPreset
 import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.model.HistoryUiModel
@@ -98,50 +97,17 @@ class GifticonDetailViewModel @Inject constructor(
                     is DbResult.Failure -> {
                         // TODO DbResult.Failure
                     }
+
                     DbResult.Loading -> {
                         // TODO DbResult.Loading
                     }
+
                     is DbResult.Success -> {
                         val histories = historyResult.data
-                        _history.value = histories.fold(mutableListOf<HistoryUiModel>()) { acc, history ->
-                            if (acc.isEmpty()) {
-                                history.date
-                                acc.add(HistoryUiModel.Header(history.date.toString("yyyy-MM-dd")))
-                            } else if (acc.last() is HistoryUiModel.History && (acc.last() as HistoryUiModel.History).date.toString(
-                                    "yyyy-MM-dd",
-                                ) != history.date.toString("yyyy-MM-dd")
-                            ) {
-                                acc.add(HistoryUiModel.Header(history.date.toString("yyyy-MM-dd")))
-                            }
-
-                            val typeRes = when (history) {
-                                is History.Init -> R.string.history_type_init
-                                is History.Use -> R.string.history_type_use
-                                is History.UseCashCard -> R.string.history_type_use
-                                is History.CancelUsage -> R.string.history_type_cancel
-                                is History.ModifyAmount -> R.string.history_type_modify_balance
-                            }
-
-                            val gifticon = gifticon.value ?: return@collect
-                            val location = when (history) {
-                                is History.Use -> geography.getAddress(history.location)
-                                is History.UseCashCard -> geography.getAddress(history.location)
-                                else -> ""
-                            }
-                            acc.add(
-                                HistoryUiModel.History(
-                                    date = history.date,
-                                    type = UIText.StringResource(typeRes),
-                                    gifticonName = gifticon.name,
-                                    balance = UIText.StringResource(
-                                        R.string.all_cash_unit,
-                                        gifticon.balance.toString(),
-                                    ),
-                                    location = location,
-                                ),
-                            )
-                            acc
-                        }
+                        _history.value = histories.toUiModel(
+                            gifticon.value ?: throw IllegalStateException("Gifticon should be not null"),
+                            geography,
+                        )
                     }
                 }
             }

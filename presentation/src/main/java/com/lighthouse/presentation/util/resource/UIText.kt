@@ -41,15 +41,15 @@ sealed class UIText(
         override fun makeSpannable(context: Context): Spannable =
             SpannableString(context.getString(resId, *args))
 
-        override fun hashCode(): Int {
-            var result = resId
-            result = 31 * result + args.contentHashCode()
-            return result
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is StringResource) return false
+
+            return resId == other.resId && args.contentEquals(other.args)
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (other !is StringResource) return false
-            return resId == other.resId && args.contentEquals(other.args)
+        override fun hashCode(): Int {
+            return 31 * resId.hashCode() + args.contentHashCode()
         }
     }
 
@@ -71,6 +71,17 @@ sealed class UIText(
             }
             return spannable
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is SpannableResource) return false
+
+            return text == other.text && spans.contentEquals(other.spans)
+        }
+
+        override fun hashCode(): Int {
+            return 31 * text.hashCode() + spans.contentHashCode()
+        }
     }
 
     class UITextSet(
@@ -84,6 +95,17 @@ sealed class UIText(
                 builder.append(it.makeSpannable(context))
             }
             return builder
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is UITextSet) return false
+
+            return texts.contentEquals(other.texts)
+        }
+
+        override fun hashCode(): Int {
+            return texts.contentHashCode()
         }
     }
 
