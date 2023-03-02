@@ -31,6 +31,7 @@
     <string name="confirmation_ok">확인</string>
     <string name="confirmation_title">권한 필요</string>
     <string name="confirmation_cancel">취소</string>
+    <string name="confirmation_modify">변경</string>
     <string name="confirmation_location_message">위치 정보 권한을 허용해주시면 근처 기프티콘을 추천해드려요. \n[설정]->[권한]에서 "위치" 항목을 사용으로 설정해 주세요.</string>
 
     <string name="main_menu_list">목록</string>
@@ -116,6 +117,13 @@
 
     <string name="modify_gifticon_back_description">기프티콘 편집에서 뒤로가기 버튼</string>
     <string name="modify_gifticon_title">기프티콘 편집</string>
+
+    <string name="modify_gifticon_type_alert_title">기프티콘 타입이 변경됩니다</string>
+    <string name="modify_gifticon_type_message_1">"기프티콘 타입이 변경되면 "</string>
+    <string name="modify_gifticon_type_message_2">" 및 "</string>
+    <string name="modify_gifticon_type_message_3">가 초기화됩니다.\n\n그래도 진행하시겠습니까?</string>
+    <string name="modify_gifticon_type_message_usage_history">사용 기록</string>
+    <string name="modify_gifticon_type_message_balance_info">잔액 정보</string>
 
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>

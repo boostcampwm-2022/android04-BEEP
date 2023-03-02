@@ -47,7 +47,7 @@ class ModifyGifticonViewModel @Inject constructor(
     getGifticonForUpdateUseCase: GetGifticonForUpdateUseCase,
     private val hasGifticonBrandUseCase: HasGifticonBrandUseCase,
     private val modifyGifticonUseCase: ModifyGifticonUseCase,
-    private val modifyRecognizeUseCase: ModifyRecognizeUseCase
+    private val modifyRecognizeUseCase: ModifyRecognizeUseCase,
 ) : ViewModel() {
 
     private val today = Calendar.getInstance().let {
@@ -69,7 +69,7 @@ class ModifyGifticonViewModel @Inject constructor(
     }
 
     private fun updateGifticon(
-        update: (ModifyGifticonUIModel) -> ModifyGifticonUIModel
+        update: (ModifyGifticonUIModel) -> ModifyGifticonUIModel,
     ) {
         gifticon.value = gifticon.value?.let {
             update(it)
@@ -356,8 +356,9 @@ class ModifyGifticonViewModel @Inject constructor(
                 ModifyGifticonValid.INVALID_BARCODE -> ModifyGifticonEvent.RequestFocus(ModifyGifticonTag.BARCODE)
                 ModifyGifticonValid.INVALID_BALANCE -> ModifyGifticonEvent.RequestFocus(ModifyGifticonTag.BALANCE)
                 ModifyGifticonValid.INVALID_EXPIRED_AT -> ModifyGifticonEvent.ShowExpiredAtDatePicker(
-                    expiredAtDate ?: today
+                    expiredAtDate ?: today,
                 )
+
                 else -> {
                     requestModifyGifticon()
                     return true
@@ -425,7 +426,7 @@ class ModifyGifticonViewModel @Inject constructor(
                     it.copy(
                         isCashCard = true,
                         balance = result.toString(),
-                        balanceRectF = croppedImage.croppedRect
+                        balanceRectF = croppedImage.croppedRect,
                     )
                 }
             } else {
@@ -512,13 +513,13 @@ class ModifyGifticonViewModel @Inject constructor(
 
     private fun gotoCropGifticon(
         crop: ModifyGifticonCrop,
-        croppedRect: RectF
+        croppedRect: RectF,
     ) {
         val originFileName = gifticon.value?.originFileName ?: return
         viewModelScope.launch {
             _eventFlow.emit(ModifyGifticonEvent.RequestFocus(ModifyGifticonTag.NONE))
             _eventFlow.emit(
-                ModifyGifticonEvent.NavigateToCrop(crop, originFileName, croppedRect)
+                ModifyGifticonEvent.NavigateToCrop(crop, originFileName, croppedRect),
             )
         }
     }
@@ -527,7 +528,7 @@ class ModifyGifticonViewModel @Inject constructor(
         val gifticon = gifticon.value ?: return
         gotoCropGifticon(
             crop = ModifyGifticonCrop.GIFTICON_IMAGE,
-            croppedRect = gifticon.croppedRect
+            croppedRect = gifticon.croppedRect,
         )
     }
 
@@ -535,7 +536,7 @@ class ModifyGifticonViewModel @Inject constructor(
         val gifticon = gifticon.value ?: return
         gotoCropGifticon(
             crop = ModifyGifticonCrop.GIFTICON_NAME,
-            croppedRect = gifticon.nameRectF
+            croppedRect = gifticon.nameRectF,
         )
     }
 
@@ -543,7 +544,7 @@ class ModifyGifticonViewModel @Inject constructor(
         val gifticon = gifticon.value ?: return
         gotoCropGifticon(
             crop = ModifyGifticonCrop.BRAND_NAME,
-            croppedRect = gifticon.brandNameRectF
+            croppedRect = gifticon.brandNameRectF,
         )
     }
 
@@ -551,7 +552,7 @@ class ModifyGifticonViewModel @Inject constructor(
         val gifticon = gifticon.value ?: return
         gotoCropGifticon(
             crop = ModifyGifticonCrop.BARCODE,
-            croppedRect = gifticon.barcodeRectF
+            croppedRect = gifticon.barcodeRectF,
         )
     }
 
@@ -559,7 +560,7 @@ class ModifyGifticonViewModel @Inject constructor(
         val gifticon = gifticon.value ?: return
         gotoCropGifticon(
             crop = ModifyGifticonCrop.BALANCE,
-            croppedRect = gifticon.balanceRectF
+            croppedRect = gifticon.balanceRectF,
         )
     }
 
@@ -567,7 +568,7 @@ class ModifyGifticonViewModel @Inject constructor(
         val gifticon = gifticon.value ?: return
         gotoCropGifticon(
             crop = ModifyGifticonCrop.EXPIRED,
-            croppedRect = gifticon.expiredAtRectF
+            croppedRect = gifticon.expiredAtRectF,
         )
     }
 
@@ -598,11 +599,24 @@ class ModifyGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             val valid: ModifyGifticonValid = checkGifticonValid(gifticon)
             if (valid == ModifyGifticonValid.VALID) {
-                modifyGifticonUseCase(gifticon.toDomain())
-                _eventFlow.emit(ModifyGifticonEvent.ModifyCompleted)
+                originGifticon?.let { origin ->
+                    if (origin.isCashCard != gifticon.isCashCard) {
+                        _eventFlow.emit(ModifyGifticonEvent.ModifyGifticonType)
+                    } else {
+                        completeModifyGifticon()
+                    }
+                }
             } else {
                 handleGifticonInvalid(valid)
             }
+        }
+    }
+
+    fun completeModifyGifticon() {
+        val gifticon = gifticon.value ?: return
+        viewModelScope.launch {
+            modifyGifticonUseCase(gifticon.toDomain())
+            _eventFlow.emit(ModifyGifticonEvent.ModifyCompleted)
         }
     }
 
