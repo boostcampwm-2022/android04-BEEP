@@ -25,6 +25,6 @@
     <color name="chip_init">#B0000000</color>
     <color name="chip_use">#B0FF0000</color>
     <color name="chip_cancel">#B00000FF</color>
-    <color name="chip_modify">#B000FF00</color>
+    <color name="chip_modify">#B006DA79</color>
 
 </resources>

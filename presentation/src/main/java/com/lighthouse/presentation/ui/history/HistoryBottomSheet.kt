@@ -1,9 +1,12 @@
 package com.lighthouse.presentation.ui.history
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lighthouse.presentation.databinding.DialogHistoryBinding
 import com.lighthouse.presentation.extension.screenHeight
@@ -23,7 +26,9 @@ class HistoryBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.cardContainer.apply {
+        dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            ?.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+        binding.clContainer.apply {
             layoutParams = layoutParams.apply {
                 height = (screenHeight * 0.9).toInt()
             }
