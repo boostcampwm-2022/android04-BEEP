@@ -21,4 +21,10 @@
     <color name="point_green">#06DA79</color>
     <color name="point_green_dark">#0EBA75</color>
     <color name="widget_background">#FFFFFFFF</color>
+
+    <color name="chip_init">#B0000000</color>
+    <color name="chip_use">#B0FF0000</color>
+    <color name="chip_cancel">#B00000FF</color>
+    <color name="chip_modify">#B000FF00</color>
+
 </resources>

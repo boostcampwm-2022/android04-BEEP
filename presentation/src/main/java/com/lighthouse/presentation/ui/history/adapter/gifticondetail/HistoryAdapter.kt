@@ -25,16 +25,15 @@ class HistoryAdapter : ListAdapter<HistoryUiModel, RecyclerView.ViewHolder>(diff
     }
 
     override fun getItemViewType(position: Int): Int {
-        when (currentList[position]) {
+        return when (currentList[position]) {
             is HistoryUiModel.Header -> HEADER_TYPE
             else -> ITEM_TYPE
         }
-        return super.getItemViewType(position)
     }
 
     companion object {
-        private const val HEADER_TYPE = 0
-        private const val ITEM_TYPE = 1
+        const val HEADER_TYPE = 0
+        const val ITEM_TYPE = 1
 
         private val diffUtil = object : DiffUtil.ItemCallback<HistoryUiModel>() {
             override fun areItemsTheSame(oldItem: HistoryUiModel, newItem: HistoryUiModel): Boolean {

@@ -24,6 +24,9 @@
     <string name="all_close_button">닫기</string>
     <string name="all_not_use">사용 안 함</string>
     <string name="all_remove">제거</string>
+    <string name="all_used_mark_description">사용 완료 마크</string>
+    <string name="all_button_history">히스토리 보기</string>
+    <string name="all_usage_history">사용 기록</string>
 
     <string name="confirmation_ok">확인</string>
     <string name="confirmation_title">권한 필요</string>
@@ -216,6 +219,11 @@
     <string name="dialog_usage_history_date_label">일자</string>
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
+
+    <string name="history_type_init">추가</string>
+    <string name="history_type_use">사용</string>
+    <string name="history_type_cancel">취소</string>
+    <string name="history_type_modify_balance">수정</string>
 
     <string name="setting_used_gifticon">사용한 기프티콘 확인</string>
     <string name="setting_imminent_notification">사용 임박 알림</string>

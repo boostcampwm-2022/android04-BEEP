@@ -3,7 +3,9 @@ package com.lighthouse.presentation.ui.detailgifticon
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.TypedValue
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -18,7 +21,6 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
-import com.lighthouse.presentation.databinding.DialogUsageHistoryBinding
 import com.lighthouse.presentation.extension.isOnScreen
 import com.lighthouse.presentation.extension.repeatOnStarted
 import com.lighthouse.presentation.extension.scrollToBottom
@@ -27,9 +29,9 @@ import com.lighthouse.presentation.extra.Extras
 import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.detailgifticon.dialog.LargeBarcodeDialog
-import com.lighthouse.presentation.ui.detailgifticon.dialog.UsageHistoryAdapter
 import com.lighthouse.presentation.ui.detailgifticon.dialog.UseGifticonDialog
 import com.lighthouse.presentation.ui.edit.modifygifticon.ModifyGifticonActivity
+import com.lighthouse.presentation.ui.history.HistoryBottomSheet
 import com.lighthouse.presentation.ui.security.AuthCallback
 import com.lighthouse.presentation.ui.security.AuthManager
 import com.lighthouse.presentation.util.permission.LocationPermissionManager
@@ -56,9 +58,7 @@ class GifticonDetailActivity : AppCompatActivity() {
             ?: CashCardGifticonInfoFragment()
     }
 
-    private lateinit var usageHistoryDialog: AlertDialog
     private lateinit var useGifticonDialog: UseGifticonDialog
-    private val usageHistoryAdapter by lazy { UsageHistoryAdapter() }
 
     private var largeBarcodeDialog: LargeBarcodeDialog? = null
 
@@ -67,6 +67,8 @@ class GifticonDetailActivity : AppCompatActivity() {
     private val spinnerDatePicker = SpinnerDatePicker()
 
     private val locationPermission: LocationPermissionManager by permissions()
+
+    private val historyBottomSheet = HistoryBottomSheet()
 
     @Inject
     lateinit var authManager: AuthManager
@@ -138,6 +140,38 @@ class GifticonDetailActivity : AppCompatActivity() {
                 showInvalidDialog()
             }
         }
+        repeatOnStarted {
+            viewModel.history.collectLatest { histories ->
+                historyBottomSheet.submitList(histories)
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_gifticon_detail, menu)
+
+        // Get colorOnPrimary
+        val colorOnPrimary = TypedValue()
+        this.theme.resolveAttribute(com.google.android.material.R.attr.colorOnPrimary, colorOnPrimary, true)
+
+        // Set colorOnPrimary
+        val item = menu?.findItem(R.id.menu_history)
+        item?.icon = item?.icon?.apply {
+            setTint(ContextCompat.getColor(this@GifticonDetailActivity, colorOnPrimary.resourceId))
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                showUsageHistoryDialog()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun handleEvent(event: GifticonDetailEvent) {
@@ -146,36 +180,45 @@ class GifticonDetailActivity : AppCompatActivity() {
                 binding.abGifticonDetail.setExpanded(false, true)
                 binding.svGifticonDetail.scrollToBottom()
             }
+
             is GifticonDetailEvent.EditButtonClicked -> {
                 gotoModifyGifticon(viewModel.gifticon.value?.id)
             }
+
             is GifticonDetailEvent.ExistEmptyInfo -> {
                 Toast.makeText(
                     this,
                     getString(R.string.gifticon_detail_exist_empty_info_toast),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
+
             is GifticonDetailEvent.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
+
             is GifticonDetailEvent.UseGifticonButtonClicked -> {
                 authenticate()
             }
+
             is GifticonDetailEvent.ShowAllUsedInfoButtonClicked -> {
                 showUsageHistoryDialog()
             }
+
             is GifticonDetailEvent.UseGifticonComplete -> {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
             }
+
             is GifticonDetailEvent.ShowOriginalImage -> {
                 showOriginGifticonDialog(event.origin)
             }
+
             is GifticonDetailEvent.ShowLargeBarcode -> {
                 showLargeBarcodeDialog(event.barcode)
             }
+
             else -> { // TODO(이벤트 처리)
             }
         }
@@ -200,19 +243,7 @@ class GifticonDetailActivity : AppCompatActivity() {
     }
 
     private fun showUsageHistoryDialog() {
-        if (::usageHistoryDialog.isInitialized.not()) {
-            val usageHistoryView = DataBindingUtil.inflate<DialogUsageHistoryBinding>(
-                LayoutInflater.from(this),
-                R.layout.dialog_usage_history,
-                null,
-                false
-            )
-            usageHistoryView.vm = viewModel
-            usageHistoryView.rvUsageHistory.adapter = usageHistoryAdapter
-            usageHistoryDialog = AlertDialog.Builder(this).setView(usageHistoryView.root).create()
-        }
-
-        usageHistoryDialog.show()
+        historyBottomSheet.show(supportFragmentManager, HistoryBottomSheet.TAG)
     }
 
     private fun showInvalidDialog() {

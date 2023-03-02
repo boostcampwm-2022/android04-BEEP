@@ -20,9 +20,13 @@
             style="@style/Widget.MaterialComponents.Chip.Action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{history.type}"
+            android:background="@drawable/bg_history_init"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:setUIText="@{history.type}"
             tools:text="사용" />
 
         <TextView
@@ -30,9 +34,9 @@
             style="@style/BEEP.TextStyle.H6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{history.balance}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:setUIText="@{history.balance}"
             tools:text="30,000" />
 
         <TextView

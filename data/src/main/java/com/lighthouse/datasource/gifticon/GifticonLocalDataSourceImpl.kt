@@ -3,6 +3,7 @@ package com.lighthouse.datasource.gifticon
 import com.lighthouse.database.dao.GifticonDao
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonWithCrop
+import com.lighthouse.database.mapper.toHistory
 import com.lighthouse.database.mapper.toHistoryEntity
 import com.lighthouse.domain.model.Brand
 import com.lighthouse.domain.model.Gifticon
@@ -131,8 +132,7 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override fun getHistory(gifticonId: String): Flow<List<History>> {
         return gifticonDao.getUsageHistory(gifticonId).map { list ->
             list.map { entity ->
-                TODO("기록 가져오기")
-//                entity.toUsageHistory()
+                entity.toHistory()
             }
         }
     }

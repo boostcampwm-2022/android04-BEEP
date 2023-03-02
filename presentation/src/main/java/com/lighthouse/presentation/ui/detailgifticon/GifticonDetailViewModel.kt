@@ -4,20 +4,21 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lighthouse.domain.model.DbResult
+import com.lighthouse.domain.model.History
 import com.lighthouse.domain.usecase.GetGifticonUseCase
-import com.lighthouse.domain.usecase.GetHistoriesUseCase
+import com.lighthouse.domain.usecase.GetHistoryUseCase
 import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toConcurrency
-import com.lighthouse.presentation.extension.toDayOfMonth
-import com.lighthouse.presentation.extension.toMonth
-import com.lighthouse.presentation.extension.toYear
+import com.lighthouse.presentation.extension.toString
 import com.lighthouse.presentation.extra.Extras.KEY_GIFTICON_ID
 import com.lighthouse.presentation.mapper.toPresentation
 import com.lighthouse.presentation.model.CashAmountPreset
 import com.lighthouse.presentation.model.GifticonUIModel
+import com.lighthouse.presentation.model.HistoryUiModel
+import com.lighthouse.presentation.util.Geography
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,10 +37,11 @@ import javax.inject.Inject
 class GifticonDetailViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
     getGifticonUseCase: GetGifticonUseCase,
-    getUsageHistoryUseCase: GetHistoriesUseCase,
+    getHistoryUseCase: GetHistoryUseCase,
     private val useGifticonUseCase: UseGifticonUseCase,
     private val useCashCardGifticonUseCase: UseCashCardGifticonUseCase,
     private val unUseGifticonUseCase: UnUseGifticonUseCase,
+    private val geography: Geography,
 ) : ViewModel() {
 
     private val gifticonId = stateHandle.get<String>(KEY_GIFTICON_ID) ?: error("Gifticon id is null")
@@ -56,30 +58,8 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val usageHistoryDbResult = getUsageHistoryUseCase(gifticonId)
-
-    val usageHistory = usageHistoryDbResult.transform {
-        if (it is DbResult.Success) {
-            emit(it.data)
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val latestUsageHistory = usageHistory.transform {
-        emit(it?.last())
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val latestUsageHistoryUIText = latestUsageHistory.transform {
-        if (it == null) return@transform
-        val date = it.date
-        emit(
-            UIText.StringResource(
-                R.string.gifticon_detail_used_image_label,
-                date.toYear(),
-                date.toMonth(),
-                date.toDayOfMonth(),
-            ),
-        )
-    }.stateIn(viewModelScope, SharingStarted.Lazily, UIText.Empty)
+    private val _history = MutableStateFlow<List<HistoryUiModel>>(emptyList())
+    val history = _history.asStateFlow()
 
     val balanceUIText: StateFlow<UIText> = gifticon.transform {
         if (it == null) return@transform
@@ -108,6 +88,65 @@ class GifticonDetailViewModel @Inject constructor(
 
     var hasLocationPermission = MutableStateFlow(false)
         private set
+
+    init {
+        viewModelScope.launch {
+            // History 작업
+            getHistoryUseCase(gifticonId).collect { historyResult ->
+                when (historyResult) {
+                    DbResult.Empty -> _history.value = emptyList()
+                    is DbResult.Failure -> {
+                        // TODO DbResult.Failure
+                    }
+                    DbResult.Loading -> {
+                        // TODO DbResult.Loading
+                    }
+                    is DbResult.Success -> {
+                        val histories = historyResult.data
+                        _history.value = histories.fold(mutableListOf<HistoryUiModel>()) { acc, history ->
+                            if (acc.isEmpty()) {
+                                history.date
+                                acc.add(HistoryUiModel.Header(history.date.toString("yyyy-MM-dd")))
+                            } else if (acc.last() is HistoryUiModel.History && (acc.last() as HistoryUiModel.History).date.toString(
+                                    "yyyy-MM-dd",
+                                ) != history.date.toString("yyyy-MM-dd")
+                            ) {
+                                acc.add(HistoryUiModel.Header(history.date.toString("yyyy-MM-dd")))
+                            }
+
+                            val typeRes = when (history) {
+                                is History.Init -> R.string.history_type_init
+                                is History.Use -> R.string.history_type_use
+                                is History.UseCashCard -> R.string.history_type_use
+                                is History.CancelUsage -> R.string.history_type_cancel
+                                is History.ModifyAmount -> R.string.history_type_modify_balance
+                            }
+
+                            val gifticon = gifticon.value ?: return@collect
+                            val location = when (history) {
+                                is History.Use -> geography.getAddress(history.location)
+                                is History.UseCashCard -> geography.getAddress(history.location)
+                                else -> ""
+                            }
+                            acc.add(
+                                HistoryUiModel.History(
+                                    date = history.date,
+                                    type = UIText.StringResource(typeRes),
+                                    gifticonName = gifticon.name,
+                                    balance = UIText.StringResource(
+                                        R.string.all_cash_unit,
+                                        gifticon.balance.toString(),
+                                    ),
+                                    location = location,
+                                ),
+                            )
+                            acc
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun scrollDownForUseButtonClicked() {
         event(GifticonDetailEvent.ScrollDownForUseButtonClicked)
