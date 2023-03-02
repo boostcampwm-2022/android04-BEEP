@@ -49,9 +49,9 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="@{history.gifticonName}"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_balance"
             app:layout_constraintEnd_toStartOf="@id/tv_balance"
             app:layout_constraintStart_toEndOf="@id/tv_history_type"
-            app:layout_constraintTop_toTopOf="parent"
             tools:text="스타벅스 3만원 권" />
 
         <TextView
