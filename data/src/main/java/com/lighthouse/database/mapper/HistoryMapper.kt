@@ -24,6 +24,7 @@ fun HistoryEntity.toHistory(): History {
                 date,
                 gifticonId,
                 amount ?: throw IllegalArgumentException("amount should not be null"),
+                balance ?: throw IllegalArgumentException("balance should not be null"),
                 location,
             )
         }
@@ -32,6 +33,7 @@ fun HistoryEntity.toHistory(): History {
             History.ModifyAmount(
                 date,
                 gifticonId,
+                balance,
             )
         }
 

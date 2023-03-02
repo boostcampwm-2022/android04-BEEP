@@ -35,15 +35,25 @@ fun List<History>.toUiModel(gifticon: GifticonUIModel, geography: Geography): Li
             is History.UseCashCard -> geography.getAddress(history.location)
             else -> ""
         }
+        val balance = when (history) {
+            is History.UseCashCard -> UIText.StringResource(
+                R.string.all_cash_unit,
+                history.balance ?: throw IllegalStateException("balance should not be null"),
+            )
+
+            is History.ModifyAmount -> UIText.StringResource(
+                R.string.all_cash_unit,
+                history.balance ?: throw IllegalStateException("balance should not be null"),
+            )
+
+            else -> UIText.Empty
+        }
         acc.add(
             HistoryUiModel.History(
                 date = history.date,
                 type = UIText.StringResource(typeRes),
                 gifticonName = gifticon.name,
-                balance = UIText.StringResource(
-                    R.string.all_cash_unit,
-                    gifticon.balance.toString(),
-                ),
+                balance = balance,
                 location = location,
             ),
         )
