@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:menu="@menu/menu_gifticon_detail"
                 app:navigationIcon="@drawable/ic_back"
                 app:navigationIconTint="?attr/colorOnPrimary"
                 app:title="@string/gifticon_detail_gifticon_detail_title"
@@ -78,6 +79,7 @@
                     tools:src="@mipmap/ic_launcher" />
 
                 <ImageView
+                    android:contentDescription="@string/all_used_mark_description"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:src="@drawable/img_stamp"
@@ -104,7 +106,6 @@
                     app:layout_constraintEnd_toEndOf="@id/iv_product_image"
                     app:layout_constraintStart_toStartOf="@id/iv_product_image"
                     app:layout_constraintTop_toTopOf="@id/iv_product_image"
-                    app:setUIText="@{vm.latestUsageHistoryUIText}"
                     app:visibleAnimation="@{@anim/anim_stamp}"
                     tools:text="사용 완료\n2022.12.28" />
 
