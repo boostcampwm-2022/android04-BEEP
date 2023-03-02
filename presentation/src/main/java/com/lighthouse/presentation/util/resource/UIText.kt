@@ -9,7 +9,7 @@ import androidx.annotation.StringRes
 import java.lang.ref.WeakReference
 
 sealed class UIText(
-    val clickable: Boolean = false
+    val clickable: Boolean = false,
 ) {
 
     private lateinit var spannableRef: WeakReference<Spannable>
@@ -36,17 +36,28 @@ sealed class UIText(
 
     class StringResource(
         @StringRes private val resId: Int,
-        private vararg val args: Any
+        private vararg val args: Any,
     ) : UIText() {
         override fun makeSpannable(context: Context): Spannable =
             SpannableString(context.getString(resId, *args))
+
+        override fun hashCode(): Int {
+            var result = resId
+            result = 31 * result + args.contentHashCode()
+            return result
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is StringResource) return false
+            return resId == other.resId && args.contentEquals(other.args)
+        }
     }
 
     class SpannableResource(
         private val text: UIText,
-        private vararg val spans: UISpan
+        private vararg val spans: UISpan,
     ) : UIText(
-        spans.any { it is UISpan.UIClickableSpan }
+        spans.any { it is UISpan.UIClickableSpan },
     ) {
         override fun makeSpannable(context: Context): Spannable {
             val spannable = text.makeSpannable(context)
@@ -55,7 +66,7 @@ sealed class UIText(
                     it.asSpan(context),
                     0,
                     spannable.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
                 )
             }
             return spannable
@@ -63,9 +74,9 @@ sealed class UIText(
     }
 
     class UITextSet(
-        private vararg val texts: UIText
+        private vararg val texts: UIText,
     ) : UIText(
-        texts.any { it.clickable }
+        texts.any { it.clickable },
     ) {
         override fun makeSpannable(context: Context): Spannable {
             val builder = SpannableStringBuilder()
@@ -101,7 +112,7 @@ sealed class UIText(
 
         fun appendStringResource(
             @StringRes resId: Int,
-            vararg args: Any
+            vararg args: Any,
         ) = apply { appendText(StringResource(resId, args)) }
 
         fun spanOnUnderline() =
