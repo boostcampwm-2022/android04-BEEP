@@ -28,7 +28,6 @@
                 android:id="@+id/tb_gifticon_detail"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
                 app:menu="@menu/menu_gifticon_detail"
                 app:navigationIcon="@drawable/ic_back"
                 app:navigationIconTint="?attr/colorOnPrimary"
