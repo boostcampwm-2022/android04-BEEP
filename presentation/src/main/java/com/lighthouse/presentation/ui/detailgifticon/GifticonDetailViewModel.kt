@@ -20,18 +20,22 @@ import com.lighthouse.presentation.model.HistoryUiModel
 import com.lighthouse.presentation.util.Geography
 import com.lighthouse.presentation.util.resource.UIText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class GifticonDetailViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
@@ -47,15 +51,18 @@ class GifticonDetailViewModel @Inject constructor(
     private val gifticonDbResult =
         getGifticonUseCase(gifticonId).stateIn(viewModelScope, SharingStarted.Eagerly, DbResult.Loading)
 
-    private val _mode = MutableStateFlow(GifticonDetailMode.UNUSED)
-    val mode = _mode.asStateFlow()
-
     val gifticon: StateFlow<GifticonUIModel?> = gifticonDbResult.transform {
         if (it is DbResult.Success) {
             emit(it.data.toPresentation())
-            switchMode(if (it.data.isUsed) GifticonDetailMode.USED else GifticonDetailMode.UNUSED)
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    private val mode = gifticon.mapLatest { gifticon ->
+        when (gifticon?.isUsed) {
+            true -> GifticonDetailMode.USED
+            else -> GifticonDetailMode.UNUSED
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), GifticonDetailMode.UNUSED)
 
     private val _history = MutableStateFlow<List<HistoryUiModel>>(emptyList())
     val history = _history.asStateFlow()
@@ -79,35 +86,46 @@ class GifticonDetailViewModel @Inject constructor(
     private val _tempGifticon = MutableStateFlow<GifticonUIModel?>(null)
     val tempGifticon = _tempGifticon.asStateFlow()
 
-    private val _scrollDownChipLabel = MutableStateFlow<UIText>(UIText.Empty)
-    val scrollDownChipLabel = _scrollDownChipLabel.asStateFlow()
+    val scrollDownChipLabel = mode.map { mode ->
+        when (mode) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_used)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
-    private val _masterButtonLabel = MutableStateFlow<UIText>(UIText.Empty)
-    val masterButtonLabel = _masterButtonLabel.asStateFlow()
+    val masterButtonLabel = mode.map { mode ->
+        when (mode) {
+            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_unused_mode_button_text)
+            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_used_mode_button_text)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
     var hasLocationPermission = MutableStateFlow(false)
         private set
 
     init {
         viewModelScope.launch {
-            // History 작업
-            getHistoryUseCase(gifticonId).collect { historyResult ->
-                when (historyResult) {
-                    DbResult.Empty -> _history.value = emptyList()
-                    is DbResult.Failure -> {
-                        // TODO DbResult.Failure
-                    }
+            gifticon.collect { gifticon ->
+                gifticon ?: return@collect
+                // History 작업
+                getHistoryUseCase(gifticonId).collect { historyResult ->
+                    when (historyResult) {
+                        DbResult.Empty -> _history.value = emptyList()
+                        is DbResult.Failure -> {
+                            // TODO DbResult.Failure
+                        }
 
-                    DbResult.Loading -> {
-                        // TODO DbResult.Loading
-                    }
+                        DbResult.Loading -> {
+                            // TODO DbResult.Loading
+                        }
 
-                    is DbResult.Success -> {
-                        val histories = historyResult.data
-                        _history.value = histories.toUiModel(
-                            gifticon.value ?: throw IllegalStateException("Gifticon should be not null"), // TODO History 를 lazy 하게 호출
-                            geography,
-                        )
+                        is DbResult.Success -> {
+                            val histories = historyResult.data
+                            _history.value = histories.toUiModel(
+                                gifticon,
+                                geography,
+                            )
+                        }
                     }
                 }
             }
@@ -143,14 +161,6 @@ class GifticonDetailViewModel @Inject constructor(
             GifticonDetailMode.USED -> {
                 viewModelScope.launch {
                     unUseGifticonUseCase(gifticonId)
-                }
-            }
-
-            GifticonDetailMode.EDIT -> {
-                if (checkEditValidation().not()) {
-                    event(GifticonDetailEvent.ExistEmptyInfo)
-                } else {
-                    _mode.value = GifticonDetailMode.UNUSED
                 }
             }
         }
@@ -202,25 +212,6 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun updateLocationPermission(isLocationPermission: Boolean) {
         hasLocationPermission.value = isLocationPermission
-    }
-
-    private fun switchMode(mode: GifticonDetailMode) {
-        _mode.value = mode
-        _scrollDownChipLabel.value = when (_mode.value) {
-            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
-            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_edit)
-            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_used)
-        }
-        _masterButtonLabel.value = when (_mode.value) {
-            GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_unused_mode_button_text)
-            GifticonDetailMode.EDIT -> UIText.StringResource(R.string.gifticon_detail_edit_mode_button_text)
-            GifticonDetailMode.USED -> UIText.StringResource(R.string.gifticon_detail_used_mode_button_text)
-        }
-    }
-
-    private fun checkEditValidation(): Boolean {
-        val temp = tempGifticon.value ?: return true
-        return (temp.name.trim().isBlank() || temp.brand.trim().isBlank()).not()
     }
 
     private fun event(event: GifticonDetailEvent) {

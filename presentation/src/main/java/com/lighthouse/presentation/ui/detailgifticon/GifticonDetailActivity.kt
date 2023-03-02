@@ -185,14 +185,6 @@ class GifticonDetailActivity : AppCompatActivity() {
                 gotoModifyGifticon(viewModel.gifticon.value?.id)
             }
 
-            is GifticonDetailEvent.ExistEmptyInfo -> {
-                Toast.makeText(
-                    this,
-                    getString(R.string.gifticon_detail_exist_empty_info_toast),
-                    Toast.LENGTH_SHORT,
-                ).show()
-            }
-
             is GifticonDetailEvent.ExpireDateClicked -> {
                 showDatePickerDialog()
             }
@@ -219,7 +211,8 @@ class GifticonDetailActivity : AppCompatActivity() {
                 showLargeBarcodeDialog(event.barcode)
             }
 
-            else -> { // TODO(이벤트 처리)
+            GifticonDetailEvent.ShareButtonClicked -> {
+                // TODO 공유 기능
             }
         }
     }
