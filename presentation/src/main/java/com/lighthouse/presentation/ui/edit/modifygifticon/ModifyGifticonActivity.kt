@@ -139,7 +139,8 @@ class ModifyGifticonActivity : AppCompatActivity() {
                     is ModifyGifticonEvent.ModifyGifticonType -> showTypeChangeAlertDialog { confirm ->
                         if (confirm) {
                             viewModel.completeModifyGifticon()
-                            // TODO History 삭제
+                            viewModel.resetHistoryButInit()
+                            // TODO 잔액 정보 제거
                         }
                     }
 

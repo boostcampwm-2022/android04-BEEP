@@ -137,6 +137,10 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun resetHistoryButInit(gifticonId: String) {
+        gifticonDao.resetHistoryButInit(gifticonId)
+    }
+
     override fun getGifticonByBrand(brand: String): Flow<List<GifticonEntity>> {
         return gifticonDao.getGifticonByBrand(brand)
     }

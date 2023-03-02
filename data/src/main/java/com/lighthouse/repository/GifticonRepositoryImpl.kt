@@ -126,6 +126,10 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
+    override suspend fun resetHistoryButInit(gifticonId: String) {
+        gifticonLocalDataSource.resetHistoryButInit(gifticonId)
+    }
+
     override suspend fun useGifticon(gifticonId: String, history: History.Use) {
         gifticonLocalDataSource.useGifticon(gifticonId, history)
     }

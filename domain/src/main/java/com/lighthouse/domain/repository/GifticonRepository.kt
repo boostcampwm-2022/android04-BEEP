@@ -24,7 +24,8 @@ interface GifticonRepository {
     suspend fun saveGifticons(userId: String, gifticonForAdditions: List<GifticonForAddition>)
     suspend fun getGifticonCrop(userId: String, id: String): GifticonForUpdate?
     suspend fun updateGifticon(gifticonForUpdate: GifticonForUpdate)
-    fun getHistory(gifticonId: String): Flow<DbResult<List<History>>>
+    fun getHistory(gifticonId: String): Flow<DbResult<List<History>>> // TODO History Repository 분리
+    suspend fun resetHistoryButInit(gifticonId: String)
     suspend fun useGifticon(gifticonId: String, history: History.Use)
     suspend fun useCashCardGifticon(gifticonId: String, amount: Int, history: History.UseCashCard)
     suspend fun unUseGifticon(gifticonId: String)

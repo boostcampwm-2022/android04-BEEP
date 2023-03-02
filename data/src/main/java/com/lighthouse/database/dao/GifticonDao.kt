@@ -128,6 +128,12 @@ interface GifticonDao {
     suspend fun insertUsageHistory(history: HistoryEntity)
 
     /**
+     * 초기 정보를 제외한 나머지 사용 기록을 제거한다
+     * */
+    @Query("DELETE FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId AND history_type != 0")
+    suspend fun resetHistoryButInit(gifticonId: String)
+
+    /**
      * 기프티콘의 정보를 업데이트한다
      * */
     @Query(

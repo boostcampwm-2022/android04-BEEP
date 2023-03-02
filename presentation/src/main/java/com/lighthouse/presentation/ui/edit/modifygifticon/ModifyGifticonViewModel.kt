@@ -6,6 +6,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lighthouse.domain.usecase.ResetHistoryButInitUseCase
 import com.lighthouse.domain.usecase.edit.HasGifticonBrandUseCase
 import com.lighthouse.domain.usecase.edit.modifygifticon.GetGifticonForUpdateUseCase
 import com.lighthouse.domain.usecase.edit.modifygifticon.ModifyGifticonUseCase
@@ -48,6 +49,7 @@ class ModifyGifticonViewModel @Inject constructor(
     private val hasGifticonBrandUseCase: HasGifticonBrandUseCase,
     private val modifyGifticonUseCase: ModifyGifticonUseCase,
     private val modifyRecognizeUseCase: ModifyRecognizeUseCase,
+    private val resetHistoryButInitUseCase: ResetHistoryButInitUseCase,
 ) : ViewModel() {
 
     private val today = Calendar.getInstance().let {
@@ -617,6 +619,12 @@ class ModifyGifticonViewModel @Inject constructor(
         viewModelScope.launch {
             modifyGifticonUseCase(gifticon.toDomain())
             _eventFlow.emit(ModifyGifticonEvent.ModifyCompleted)
+        }
+    }
+
+    fun resetHistoryButInit() {
+        viewModelScope.launch {
+            resetHistoryButInitUseCase(gifticonId)
         }
     }
 

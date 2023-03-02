@@ -105,7 +105,7 @@ class GifticonDetailViewModel @Inject constructor(
                     is DbResult.Success -> {
                         val histories = historyResult.data
                         _history.value = histories.toUiModel(
-                            gifticon.value ?: throw IllegalStateException("Gifticon should be not null"),
+                            gifticon.value ?: throw IllegalStateException("Gifticon should be not null"), // TODO History 를 lazy 하게 호출
                             geography,
                         )
                     }
