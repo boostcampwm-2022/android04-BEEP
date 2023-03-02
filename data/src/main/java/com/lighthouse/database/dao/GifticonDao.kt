@@ -106,9 +106,6 @@ interface GifticonDao {
     /**
      * 기프티콘의 사용 기록을 조회한다
      * */
-    @Query("SELECT * FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId")
-    fun getUsageHistory(gifticonId: String): Flow<List<HistoryEntity>>
-
     @Query("SELECT * FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId ORDER BY date DESC")
     fun getHistory(gifticonId: String): Flow<List<HistoryEntity>>
 

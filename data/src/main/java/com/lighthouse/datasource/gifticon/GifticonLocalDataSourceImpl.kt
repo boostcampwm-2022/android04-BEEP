@@ -130,7 +130,7 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     }
 
     override fun getHistory(gifticonId: String): Flow<List<History>> {
-        return gifticonDao.getUsageHistory(gifticonId).map { list ->
+        return gifticonDao.getHistory(gifticonId).map { list ->
             list.map { entity ->
                 entity.toHistory()
             }
