@@ -7,6 +7,7 @@ sealed class History(open val date: Date, open val gifticonId: String) {
     data class Init(
         override val date: Date,
         override val gifticonId: String,
+        val amount: Int? = null,
     ) : History(date, gifticonId)
 
     data class Use(

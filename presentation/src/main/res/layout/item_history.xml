@@ -30,14 +30,25 @@
             tools:text="사용" />
 
         <TextView
-            android:id="@+id/tv_balance"
+            android:id="@+id/tv_amount"
             style="@style/BEEP.TextStyle.H6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setUIText="@{history.balance}"
+            app:setUIText="@{history.amount}"
             tools:text="30,000" />
+
+        <TextView
+            android:id="@+id/tv_balance"
+            style="@style/BEEP.TextStyle.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/tv_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_amount"
+            app:layout_constraintTop_toTopOf="@id/tv_location"
+            app:setUIText="@{history.balance}"
+            tools:text="잔액: 30,000원" />
 
         <TextView
             android:id="@+id/tv_gifticon_name"
@@ -49,8 +60,8 @@
             android:gravity="start"
             android:maxLines="1"
             android:text="@{history.gifticonName}"
-            app:layout_constraintBaseline_toBaselineOf="@id/tv_balance"
-            app:layout_constraintEnd_toStartOf="@id/tv_balance"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_amount"
+            app:layout_constraintEnd_toStartOf="@id/tv_amount"
             app:layout_constraintStart_toEndOf="@id/tv_history_type"
             tools:text="스타벅스 3만원 권" />
 
@@ -60,9 +71,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:text="@{history.location}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/tv_gifticon_name"
+            app:layout_constraintEnd_toStartOf="@id/tv_balance"
             app:layout_constraintStart_toStartOf="@id/tv_gifticon_name"
             app:layout_constraintTop_toBottomOf="@id/tv_gifticon_name"
             tools:text="광주 광산구 신창로" />

@@ -12,7 +12,7 @@ fun HistoryEntity.toHistory(): History {
     }
     return when (historyType) {
         0 -> {
-            History.Init(date, gifticonId)
+            History.Init(date, gifticonId, amount)
         }
 
         1 -> {
@@ -65,6 +65,7 @@ fun History.toHistoryEntity(balance: Int?): HistoryEntity {
         },
         balance = balance,
         amount = when (this) {
+            is History.Init -> amount
             is History.UseCashCard -> amount
             is History.ModifyAmount -> balance
             else -> null

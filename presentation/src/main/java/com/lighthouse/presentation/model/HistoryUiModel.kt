@@ -10,6 +10,7 @@ sealed class HistoryUiModel {
         val date: Date,
         val type: UIText,
         val gifticonName: String,
+        val amount: UIText,
         val balance: UIText,
         val location: String,
     ) : HistoryUiModel()

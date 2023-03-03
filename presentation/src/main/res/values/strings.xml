@@ -232,6 +232,7 @@
     <string name="history_type_use">사용</string>
     <string name="history_type_cancel">취소</string>
     <string name="history_type_modify_balance">수정</string>
+    <string name="history_balance">잔액: %d원</string>
 
     <string name="setting_used_gifticon">사용한 기프티콘 확인</string>
     <string name="setting_imminent_notification">사용 임박 알림</string>

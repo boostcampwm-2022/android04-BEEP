@@ -94,7 +94,7 @@ class GifticonLocalDataSourceImpl @Inject constructor(
     override suspend fun insertGifticons(gifticons: List<GifticonWithCrop>) {
         gifticonDao.insertGifticonWithCropTransaction(gifticons)
         gifticons.forEach { gifticon ->
-            val history = History.Init(currentTime, gifticon.id)
+            val history = History.Init(currentTime, gifticon.id, gifticon.balance)
             gifticonDao.insertUsageHistory(history.toHistoryEntity(gifticon.balance))
         }
     }
