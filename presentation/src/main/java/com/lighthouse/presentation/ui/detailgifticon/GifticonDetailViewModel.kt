@@ -101,6 +101,10 @@ class GifticonDetailViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
+    val latestUsedLocation = latestHistory.map {
+        it?.location?.location
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
     private val _historyUiModel = MutableStateFlow<List<HistoryUiModel>>(emptyList())
     val historyUiModel = _historyUiModel.asStateFlow()
 
