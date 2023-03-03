@@ -5,6 +5,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toString
 import com.lighthouse.presentation.model.GifticonUIModel
 import com.lighthouse.presentation.model.HistoryUiModel
+import com.lighthouse.presentation.model.LocationUiModel
 import com.lighthouse.presentation.util.Geography
 import com.lighthouse.presentation.util.resource.UIText
 
@@ -17,9 +18,9 @@ fun History.toUiModel(gifticonName: String, geography: Geography): HistoryUiMode
         is History.ModifyAmount -> R.string.history_type_modify_balance
     }
     val location = when (this) {
-        is History.Use -> geography.getAddress(location)
-        is History.UseCashCard -> geography.getAddress(location)
-        else -> ""
+        is History.Use -> location?.let { LocationUiModel(it, geography.getAddress(location)) }
+        is History.UseCashCard -> location?.let { LocationUiModel(it, geography.getAddress(location)) }
+        else -> null
     }
     val amount = when (this) {
         is History.Init -> amount?.let {

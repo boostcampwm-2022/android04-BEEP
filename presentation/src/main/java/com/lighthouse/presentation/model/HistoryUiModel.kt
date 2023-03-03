@@ -12,6 +12,6 @@ sealed class HistoryUiModel {
         val gifticonName: String,
         val amount: UIText,
         val balance: UIText,
-        val location: String,
+        val location: LocationUiModel?,
     ) : HistoryUiModel()
 }
