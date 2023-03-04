@@ -156,7 +156,7 @@ interface GifticonDao {
         expire_at: Date,
         barcode: String,
         isCashCard: Boolean,
-        balance: Int,
+        balance: Int?,
         memo: String,
     )
 

@@ -11,7 +11,7 @@ data class GifticonWithDistanceUIModel(
     val name: String,
     val brand: String,
     val expireAt: Date,
-    val balance: Int,
+    val balance: Int?,
     val isUsed: Boolean,
-    val distance: Int
+    val distance: Int,
 )

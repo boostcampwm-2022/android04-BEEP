@@ -110,7 +110,7 @@ class GifticonDetailViewModel @Inject constructor(
 
     val balanceUIText: StateFlow<UIText> = gifticon.transform {
         if (it == null) return@transform
-        emit(UIText.StringResource(R.string.all_balance_label, it.balance.toConcurrency()))
+        emit(it.balance?.let { balance -> UIText.StringResource(R.string.all_balance_label, balance.toConcurrency()) } ?: UIText.Empty)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
     val failure = gifticonDbResult.transform {

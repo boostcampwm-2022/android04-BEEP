@@ -21,9 +21,9 @@ data class GifticonEntity(
     @ColumnInfo(name = "expire_at") val expireAt: Date,
     @ColumnInfo(name = "barcode") val barcode: String,
     @ColumnInfo(name = "is_cash_card") val isCashCard: Boolean,
-    @ColumnInfo(name = "balance") val balance: Int,
+    @ColumnInfo(name = "balance") val balance: Int?,
     @ColumnInfo(name = "memo") val memo: String,
-    @ColumnInfo(name = "is_used") val isUsed: Boolean
+    @ColumnInfo(name = "is_used") val isUsed: Boolean,
 ) {
     companion object {
         const val GIFTICON_TABLE = "gifticon_table"

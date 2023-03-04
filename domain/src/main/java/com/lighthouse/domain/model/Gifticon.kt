@@ -13,7 +13,7 @@ data class Gifticon(
     val expireAt: Date,
     val barcode: String,
     val isCashCard: Boolean,
-    val balance: Int,
+    val balance: Int?,
     val memo: String,
-    val isUsed: Boolean
+    val isUsed: Boolean,
 )

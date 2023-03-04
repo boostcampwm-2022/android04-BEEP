@@ -69,18 +69,18 @@ fun GifticonList(
     gifticons: List<GifticonUIModel>,
     modifier: Modifier = Modifier,
     onUse: (GifticonUIModel) -> Unit = {},
-    onRemove: (GifticonUIModel) -> Unit = {}
+    onRemove: (GifticonUIModel) -> Unit = {},
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
-        contentPadding = PaddingValues(vertical = 36.dp)
+        contentPadding = PaddingValues(vertical = 36.dp),
     ) {
         items(gifticons, key = { it.id }) { gifticon ->
             GifticonItem(
                 gifticon = gifticon,
                 onUse = { onUse(it) },
-                onRemove = { onRemove(it) }
+                onRemove = { onRemove(it) },
             )
         }
     }
@@ -88,7 +88,11 @@ fun GifticonList(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {}, onRemove: (GifticonUIModel) -> Unit = {}) {
+fun GifticonItem(
+    gifticon: GifticonUIModel,
+    onUse: (GifticonUIModel) -> Unit = {},
+    onRemove: (GifticonUIModel) -> Unit = {},
+) {
     val context = LocalContext.current
     val cornerSize = 8.dp
 
@@ -105,14 +109,14 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                 anchors = mapOf(
                     0f to 0,
                     -(100f.dpToPx) to 1,
-                    (100f.dpToPx) to 2
+                    (100f.dpToPx) to 2,
                 ),
                 thresholds = { _, _ ->
                     FractionalThreshold(0.3f)
                 },
-                orientation = Orientation.Horizontal
+                orientation = Orientation.Horizontal,
             )
-            .background(if (swipeableState.offset.value < 0) colorResource(id = R.color.point_green_dark) else Color.Red)
+            .background(if (swipeableState.offset.value < 0) colorResource(id = R.color.point_green_dark) else Color.Red),
     ) {
         TextButton(
             onClick = {
@@ -121,13 +125,13 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                     swipeableState.animateTo(0, tween(600, 0))
                 }
             },
-            modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp).wrapContentWidth()
+            modifier = Modifier.align(Alignment.CenterStart).padding(start = 20.dp).wrapContentWidth(),
         ) {
             Text(
                 text = stringResource(id = R.string.all_remove),
                 style = MaterialTheme.typography.button.copy(fontSize = 16.sp),
                 color = Color.White,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
         }
         TextButton(
@@ -137,13 +141,13 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                     swipeableState.animateTo(0, tween(600, 0))
                 }
             },
-            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 20.dp).wrapContentWidth()
+            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 20.dp).wrapContentWidth(),
         ) {
             Text(
                 text = stringResource(id = R.string.gifticon_list_use_complete),
                 style = MaterialTheme.typography.button.copy(fontSize = 16.sp),
                 color = Color.White,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
         }
 
@@ -159,9 +163,9 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                 context.startActivity(
                     Intent(context, GifticonDetailActivity::class.java).apply {
                         putExtra(Extras.KEY_GIFTICON_ID, gifticon.id)
-                    }
+                    },
                 )
-            }
+            },
         ) {
             Row {
                 GlideImage(
@@ -169,16 +173,16 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         contentDescription = stringResource(R.string.gifticon_product_image),
-                        alignment = Alignment.Center
+                        alignment = Alignment.Center,
                     ),
                     modifier = Modifier
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(topStart = cornerSize, bottomStart = cornerSize))
                         .aspectRatio(1f)
-                        .align(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically),
                 )
                 Box(
-                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface)
+                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface),
                 ) {
                     Text(
                         text = gifticon.expireAt.toDday(context),
@@ -189,12 +193,12 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                                     Color.Gray
                                 } else {
                                     MaterialTheme.colors.primary
-                                }
+                                },
                             )
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .align(Alignment.TopEnd),
                         color = Color.White,
-                        style = MaterialTheme.typography.caption
+                        style = MaterialTheme.typography.caption,
                     )
                     Text(
                         text = gifticon.expireAt.toExpireDate(context).toString(),
@@ -202,30 +206,30 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
                             .align(Alignment.BottomEnd)
                             .padding(bottom = 16.dp, end = 16.dp),
                         style = MaterialTheme.typography.body2,
-                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f),
                     )
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
                     ) {
                         Text(
                             text = gifticon.brand,
                             style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f),
                         )
                         Text(
                             text = gifticon.name,
                             maxLines = 1,
                             style = MaterialTheme.typography.body1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                         if (gifticon.isCashCard) {
                             Text(
                                 modifier = Modifier.padding(top = 4.dp),
-                                text = gifticon.balance.toConcurrency(context, true),
-                                color = colorResource(R.color.beep_pink)
+                                text = gifticon.balance?.toConcurrency(context, true) ?: "",
+                                color = colorResource(R.color.beep_pink),
                             )
                         } else {
                             Spacer(Modifier.height(16.dp))
@@ -241,7 +245,7 @@ fun GifticonItem(gifticon: GifticonUIModel, onUse: (GifticonUIModel) -> Unit = {
 fun GifticonLoadingList(count: Int = 5) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 36.dp)
+        contentPadding = PaddingValues(vertical = 36.dp),
     ) {
         items(count) {
             GifticonLoadingItem()
@@ -257,7 +261,7 @@ fun GifticonLoadingItem() {
         modifier = Modifier
             .fillMaxWidth()
             .height(130.dp),
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize))
+        shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize)),
     ) {
         Row {
             Spacer(
@@ -267,11 +271,11 @@ fun GifticonLoadingItem() {
                     .align(Alignment.CenterVertically)
                     .placeholder(
                         visible = true,
-                        highlight = PlaceholderHighlight.shimmer()
-                    )
+                        highlight = PlaceholderHighlight.shimmer(),
+                    ),
             )
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 Text(
                     text = "D-00",
@@ -279,10 +283,10 @@ fun GifticonLoadingItem() {
                         .clip(RoundedCornerShape(cornerSize))
                         .placeholder(
                             visible = true,
-                            highlight = PlaceholderHighlight.shimmer()
+                            highlight = PlaceholderHighlight.shimmer(),
                         )
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .align(Alignment.TopEnd)
+                        .align(Alignment.TopEnd),
                 )
                 Text(
                     text = "~ 2022.00.00",
@@ -291,31 +295,31 @@ fun GifticonLoadingItem() {
                         .padding(bottom = 16.dp, end = 16.dp)
                         .placeholder(
                             visible = true,
-                            highlight = PlaceholderHighlight.shimmer()
-                        )
+                            highlight = PlaceholderHighlight.shimmer(),
+                        ),
                 )
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         modifier = Modifier
                             .padding(bottom = 4.dp)
                             .placeholder(
                                 visible = true,
-                                highlight = PlaceholderHighlight.shimmer()
+                                highlight = PlaceholderHighlight.shimmer(),
                             ),
-                        text = "브랜드 자리"
+                        text = "브랜드 자리",
                     )
                     Text(
                         modifier = Modifier
                             .placeholder(
                                 visible = true,
-                                highlight = PlaceholderHighlight.shimmer()
+                                highlight = PlaceholderHighlight.shimmer(),
                             ),
-                        text = "제목이 들어갈 자리입니다"
+                        text = "제목이 들어갈 자리입니다",
                     )
                 }
             }
