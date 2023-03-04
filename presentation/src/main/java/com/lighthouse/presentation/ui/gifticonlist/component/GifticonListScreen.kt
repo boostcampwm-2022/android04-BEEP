@@ -2,11 +2,13 @@ package com.lighthouse.presentation.ui.gifticonlist.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -17,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -31,7 +34,7 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 @Composable
 fun GifticonListScreen(
     modifier: Modifier = Modifier,
-    viewModel: GifticonListViewModel = viewModel()
+    viewModel: GifticonListViewModel = viewModel(),
 ) {
     val viewState by viewModel.state.collectAsStateWithLifecycle()
     var removeGifticonDialogState by remember { mutableStateOf<GifticonUIModel?>(null) }
@@ -41,41 +44,38 @@ fun GifticonListScreen(
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.05f))
             .padding(horizontal = 16.dp),
-        color = Color.Transparent
+        color = Color.Transparent,
     ) {
+        if (viewState.loading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
         Column {
-            if (viewState.loading) {
-                BrandChipLoadingScreen(modifier = Modifier.padding(top = 24.dp))
-            } else {
-                BrandChipListScreen(
-                    modifier = Modifier.padding(top = 24.dp),
-                    brands = viewState.brands,
-                    filters = viewState.selectedFilter,
-                    onClickEntireBrandDialog = {
-                        viewModel.showEntireBrandsDialog()
-                    },
-                    onClickTotalChip = {
-                        viewModel.clearFilter()
-                    },
-                    onClickChip = {
-                        viewModel.toggleFilterSelection(it)
-                    }
-                )
-            }
-            if (viewState.loading) {
-                GifticonLoadingList()
-            } else {
-                GifticonList(
-                    gifticons = viewState.gifticons,
-                    Modifier.padding(top = 8.dp),
-                    onUse = {
-                        viewModel.completeUsage(it)
-                    },
-                    onRemove = {
-                        removeGifticonDialogState = it
-                    }
-                )
-            }
+            BrandChipListScreen(
+                modifier = Modifier.padding(top = 24.dp),
+                brands = viewState.brands,
+                filters = viewState.selectedFilter,
+                onClickEntireBrandDialog = {
+                    viewModel.showEntireBrandsDialog()
+                },
+                onClickTotalChip = {
+                    viewModel.clearFilter()
+                },
+                onClickChip = {
+                    viewModel.toggleFilterSelection(it)
+                },
+            )
+            GifticonList(
+                gifticons = viewState.gifticons,
+                Modifier.padding(top = 8.dp),
+                onUse = {
+                    viewModel.completeUsage(it)
+                },
+                onRemove = {
+                    removeGifticonDialogState = it
+                },
+            )
         }
         if (viewState.entireBrandsDialogShown) {
             AllBrandChipsDialog(
@@ -83,16 +83,13 @@ fun GifticonListScreen(
                 modifier = Modifier
                     .padding(16.dp),
                 selectedFilters = viewState.selectedFilter,
-                showExpiredGifticon = viewState.showExpiredGifticon,
-                onCheckFilterExpired = {
-                    viewModel.filterUsedGifticon(it)
-                },
-                onClickChip = {
-                    viewModel.toggleFilterSelection(it)
+                onApply = {
+                    viewModel.updateFilterSelection(it)
+                    viewModel.dismissEntireBrandsDialog()
                 },
                 onDismiss = {
                     viewModel.dismissEntireBrandsDialog()
-                }
+                },
             )
         }
     }
@@ -104,7 +101,7 @@ fun GifticonListScreen(
                     Image(
                         imageVector = Icons.Default.Warning,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(Color.Red)
+                        colorFilter = ColorFilter.tint(Color.Red),
                     )
                     Text(stringResource(R.string.gifticon_list_remove_gifticon_dialog_title))
                 }
@@ -114,14 +111,14 @@ fun GifticonListScreen(
                 TextButton(
                     onClick = {
                         viewModel.removeGifticon(
-                            gifticon = removeGifticonDialogState ?: return@TextButton
+                            gifticon = removeGifticonDialogState ?: return@TextButton,
                         )
                         removeGifticonDialogState = null
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.gifticon_list_remove_gifticon_dialog_remove_button))
                 }
-            }
+            },
         )
     }
 }
