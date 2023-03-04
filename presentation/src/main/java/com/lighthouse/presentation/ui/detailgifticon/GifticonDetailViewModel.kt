@@ -71,7 +71,7 @@ class GifticonDetailViewModel @Inject constructor(
 
     private val latestHistory = history.mapLatest { historyResult ->
         if (historyResult is DbResult.Success) {
-            historyResult.data.last().toUiModel(gifticon.value?.name ?: "", geography)
+            historyResult.data.first().toUiModel(gifticon.value?.name ?: "", geography)
         } else {
             null
         }

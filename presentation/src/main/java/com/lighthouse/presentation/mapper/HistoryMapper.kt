@@ -18,8 +18,8 @@ fun History.toUiModel(gifticonName: String, geography: Geography): HistoryUiMode
         is History.ModifyAmount -> R.string.history_type_modify_balance
     }
     val location = when (this) {
-        is History.Use -> location?.let { LocationUiModel(it, geography.getAddress(location)) }
-        is History.UseCashCard -> location?.let { LocationUiModel(it, geography.getAddress(location)) }
+        is History.Use -> location?.let { LocationUiModel(it, geography.getAddress(it)) }
+        is History.UseCashCard -> location?.let { LocationUiModel(it, geography.getAddress(it)) }
         else -> null
     }
     val amount = when (this) {
