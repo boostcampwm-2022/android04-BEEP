@@ -27,7 +27,11 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE id = :id")
     fun getGifticon(id: String): Flow<GifticonEntity>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 ORDER BY created_at DESC")
+    @Query(
+        "SELECT * FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId AND is_used = 0 " +
+            "ORDER BY (CASE WHEN expire_at < STRFTIME('%s', DATE('now')) * 1000 THEN 1 ELSE 0 END), created_at DESC",
+    )
     fun getAllGifticons(userId: String): Flow<List<GifticonEntity>>
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 1 ORDER BY created_at DESC")
@@ -36,13 +40,25 @@ interface GifticonDao {
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 ORDER BY expire_at")
     fun getAllUsableGifticons(userId: String, time: Date): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 ORDER BY expire_at")
+    @Query(
+        "SELECT * FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId AND is_used = 0 " +
+            "ORDER BY (CASE WHEN expire_at < STRFTIME('%s', DATE('now')) * 1000 THEN 1 ELSE 0 END), expire_at",
+    )
     fun getAllGifticonsSortByDeadline(userId: String): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY created_at DESC")
+    @Query(
+        "SELECT * FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) " +
+            "ORDER BY (CASE WHEN expire_at < STRFTIME('%s', DATE('now')) * 1000 THEN 1 ELSE 0 END), created_at DESC",
+    )
     fun getFilteredGifticons(userId: String, filters: Set<String>): Flow<List<GifticonEntity>>
 
-    @Query("SELECT * FROM $GIFTICON_TABLE WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) ORDER BY expire_at")
+    @Query(
+        "SELECT * FROM $GIFTICON_TABLE " +
+            "WHERE user_id = :userId AND is_used = 0 AND UPPER(brand) IN(:filters) " +
+            "ORDER BY (CASE WHEN expire_at < STRFTIME('%s', DATE('now')) * 1000 THEN 1 ELSE 0 END), expire_at",
+    )
     fun getFilteredGifticonsSortByDeadline(
         userId: String,
         filters: Set<String>,
@@ -265,7 +281,9 @@ interface GifticonDao {
      */
     @Query(
         "SELECT * FROM $GIFTICON_TABLE " +
-            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 LIMIT :count",
+            "WHERE user_id = :userId AND expire_at >= :time AND is_used = 0 " +
+            "ORDER BY expire_at " +
+            "LIMIT :count",
     )
     fun getSomeGifticons(userId: String, time: Date, count: Int): Flow<List<GifticonEntity>>
 }

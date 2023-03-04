@@ -8,6 +8,7 @@
     <string name="all_concurrency_format">#,###</string>
     <string name="all_balance_label">남은 금액:%s원</string>
     <string name="all_cancel">취소</string>
+    <string name="all_apply">적용</string>
     <string name="all_do_cancel">취소하기</string>
     <string name="all_d_day_more_than_year">D-365+</string>
     <string name="all_d_day_expired">만료</string>

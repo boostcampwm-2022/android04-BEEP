@@ -2,7 +2,10 @@ package com.lighthouse.presentation.ui.gifticonlist.component
 
 import android.content.Intent
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -29,28 +32,35 @@ import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
 import com.lighthouse.domain.util.isExpired
+import com.lighthouse.domain.util.today
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.dpToPx
 import com.lighthouse.presentation.extension.toConcurrency
@@ -64,6 +74,7 @@ import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GifticonList(
     gifticons: List<GifticonUIModel>,
@@ -71,25 +82,54 @@ fun GifticonList(
     onUse: (GifticonUIModel) -> Unit = {},
     onRemove: (GifticonUIModel) -> Unit = {},
 ) {
+    var showExpiredGifticons by rememberSaveable { mutableStateOf(true) }
+    var space = 8.dp
+
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 36.dp),
     ) {
-        items(gifticons, key = { it.id }) { gifticon ->
-            GifticonItem(
-                gifticon = gifticon,
-                onUse = { onUse(it) },
-                onRemove = { onRemove(it) },
-            )
+        itemsIndexed(items = gifticons, key = { _, item -> item.id }) { index, gifticon ->
+
+            // 사용 기한 만료된 기프티콘 토글 열
+            if (isFirstExpiredGifticon(gifticons, index)) {
+                ExpiredGifticonToggleColumn(showList = showExpiredGifticons) {
+                    showExpiredGifticons = it
+                }
+                space = 0.dp
+            }
+
+            // 기프티콘 목록
+            if (gifticon.expireAt.isExpired().not() || showExpiredGifticons) {
+                if (index > 0) {
+                    Spacer(Modifier.height(space))
+                }
+                GifticonItem(
+                    gifticon = gifticon,
+                    modifier = Modifier.animateItemPlacement(
+                        animationSpec = tween(600),
+                    ),
+                    onUse = { onUse(it) },
+                    onRemove = { onRemove(it) },
+                )
+                space = 8.dp
+            }
         }
     }
 }
+
+@Composable
+private fun isFirstExpiredGifticon(
+    gifticons: List<GifticonUIModel>,
+    index: Int,
+) = index > 0 && gifticons.lastIndex >= index &&
+    gifticons[index - 1].expireAt.isExpired().not() && gifticons[index].expireAt.isExpired()
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GifticonItem(
     gifticon: GifticonUIModel,
+    modifier: Modifier = Modifier,
     onUse: (GifticonUIModel) -> Unit = {},
     onRemove: (GifticonUIModel) -> Unit = {},
 ) {
@@ -100,7 +140,7 @@ fun GifticonItem(
     val scope = rememberCoroutineScope()
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .clip(RoundedCornerShape(cornerSize))
@@ -118,6 +158,7 @@ fun GifticonItem(
             )
             .background(if (swipeableState.offset.value < 0) colorResource(id = R.color.point_green_dark) else Color.Red),
     ) {
+        // 기프티콘 아이템 뒤 버튼들
         TextButton(
             onClick = {
                 onRemove(gifticon)
@@ -138,7 +179,7 @@ fun GifticonItem(
             onClick = {
                 onUse(gifticon)
                 scope.launch {
-                    swipeableState.animateTo(0, tween(600, 0))
+                    swipeableState.animateTo(0, tween(300, 0))
                 }
             },
             modifier = Modifier.align(Alignment.CenterEnd).padding(end = 20.dp).wrapContentWidth(),
@@ -151,6 +192,7 @@ fun GifticonItem(
             )
         }
 
+        // 기프티콘 아이템
         Card(
             modifier = Modifier
                 .offset {
@@ -182,7 +224,7 @@ fun GifticonItem(
                         .align(Alignment.CenterVertically),
                 )
                 Box(
-                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface),
+                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.surface.copy(alpha = 0f)),
                 ) {
                     Text(
                         text = gifticon.expireAt.toDday(context),
@@ -242,99 +284,46 @@ fun GifticonItem(
 }
 
 @Composable
-fun GifticonLoadingList(count: Int = 5) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 36.dp),
+fun ExpiredGifticonToggleColumn(showList: Boolean, modifier: Modifier = Modifier, onClick: (Boolean) -> Unit) {
+    val icon = if (showList) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick(showList.not()) }
+            .padding(vertical = 12.dp, horizontal = 8.dp),
     ) {
-        items(count) {
-            GifticonLoadingItem()
-        }
+        Image(
+            imageVector = icon,
+            contentDescription = "show or hide expired gifticons icon",
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onSurface),
+        )
+        Text(text = "사용 기한이 만료된 기프티콘", modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
     }
 }
 
+@Preview
 @Composable
-fun GifticonLoadingItem() {
-    val cornerSize = 8.dp
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(130.dp),
-        shape = MaterialTheme.shapes.medium.copy(CornerSize(cornerSize)),
-    ) {
-        Row {
-            Spacer(
-                modifier = Modifier.fillMaxHeight()
-                    .clip(RoundedCornerShape(topStart = cornerSize, bottomStart = cornerSize))
-                    .aspectRatio(1f)
-                    .align(Alignment.CenterVertically)
-                    .placeholder(
-                        visible = true,
-                        highlight = PlaceholderHighlight.shimmer(),
-                    ),
-            )
-            Box(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                Text(
-                    text = "D-00",
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(cornerSize))
-                        .placeholder(
-                            visible = true,
-                            highlight = PlaceholderHighlight.shimmer(),
-                        )
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .align(Alignment.TopEnd),
-                )
-                Text(
-                    text = "~ 2022.00.00",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 16.dp, end = 16.dp)
-                        .placeholder(
-                            visible = true,
-                            highlight = PlaceholderHighlight.shimmer(),
-                        ),
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                            .placeholder(
-                                visible = true,
-                                highlight = PlaceholderHighlight.shimmer(),
-                            ),
-                        text = "브랜드 자리",
-                    )
-                    Text(
-                        modifier = Modifier
-                            .placeholder(
-                                visible = true,
-                                highlight = PlaceholderHighlight.shimmer(),
-                            ),
-                        text = "제목이 들어갈 자리입니다",
-                    )
-                }
-            }
-        }
-    }
+fun ExpiredGifticonToggleColumnPreview() {
+    ExpiredGifticonToggleColumn(true) {}
 }
 
 @Preview
 @Composable
 fun GifticonLoadingPreview() {
-    GifticonLoadingItem()
-}
-
-@Preview
-@Composable
-fun GifticonListLoadingPreview() {
-    GifticonLoadingList(3)
+    GifticonItem(
+        GifticonUIModel(
+            "",
+            true,
+            null,
+            "test 기프티콘",
+            "브랜드",
+            today,
+            "",
+            false,
+            0,
+            "",
+            false,
+        ),
+    )
 }
