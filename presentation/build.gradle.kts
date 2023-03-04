@@ -38,7 +38,6 @@ dependencies {
 
     implementation(libs.accompanist.appcompat.theme)
     implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.placeholder.material)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)

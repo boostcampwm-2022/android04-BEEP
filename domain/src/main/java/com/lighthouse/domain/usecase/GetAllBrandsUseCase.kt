@@ -10,12 +10,12 @@ import javax.inject.Inject
 
 class GetAllBrandsUseCase @Inject constructor(
     private val gifticonRepository: GifticonRepository,
-    authRepository: AuthRepository
+    authRepository: AuthRepository,
 ) {
     val userId = authRepository.getCurrentUserId()
 
-    operator fun invoke(filterExpired: Boolean = false): Flow<DbResult<List<Brand>>> {
-        return gifticonRepository.getAllBrands(userId, filterExpired).transform {
+    operator fun invoke(): Flow<DbResult<List<Brand>>> {
+        return gifticonRepository.getAllBrands(userId).transform {
             if (it is DbResult.Success) {
                 emit(DbResult.Success(it.data.sortedByDescending { brand -> brand.count }))
             } else {

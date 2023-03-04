@@ -58,19 +58,14 @@ class GifticonLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>> {
+    override fun getAllBrands(userId: String): Flow<List<Brand>> {
         return gifticonDao.getAllGifticons(userId).map {
-            if (filterExpired) {
-                it.filterNot { entity ->
-                    entity.expireAt.isExpired()
+            it.filterNot { gifticon -> gifticon.expireAt.isExpired() }
+                .groupBy { entity ->
+                    entity.brand.uppercase()
+                }.map { entry ->
+                    Brand(entry.key.uppercase(), entry.value.size)
                 }
-            } else {
-                it
-            }.groupBy { entity ->
-                entity.brand.uppercase()
-            }.map { entry ->
-                Brand(entry.key.uppercase(), entry.value.size)
-            }
         }
     }
 

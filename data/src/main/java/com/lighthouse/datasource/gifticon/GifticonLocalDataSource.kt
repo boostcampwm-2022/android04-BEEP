@@ -19,7 +19,7 @@ interface GifticonLocalDataSource {
         sortBy: SortBy = SortBy.DEADLINE,
     ): Flow<List<Gifticon>>
 
-    fun getAllBrands(userId: String, filterExpired: Boolean): Flow<List<Brand>>
+    fun getAllBrands(userId: String): Flow<List<Brand>>
     suspend fun getGifticonCrop(userId: String, gifticonId: String): GifticonWithCrop?
     suspend fun insertGifticons(gifticons: List<GifticonWithCrop>)
     suspend fun updateGifticon(gifticonWithCrop: GifticonWithCrop)
