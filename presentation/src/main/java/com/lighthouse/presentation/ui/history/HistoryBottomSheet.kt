@@ -17,7 +17,7 @@ import timber.log.Timber
 class HistoryBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogHistoryBinding
-    private val historyAdapter = HistoryAdapter()
+    private val historyAdapter by lazy { HistoryAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogHistoryBinding.inflate(inflater, container, false)
