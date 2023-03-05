@@ -24,40 +24,40 @@ fun History.toUiModel(gifticonName: String, geography: Geography): HistoryUiMode
     }
     val amount = when (this) {
         is History.Init -> amount?.let {
-            UIText.StringResource(
-                R.string.all_cash_unit,
+            UIText.CurrencyString(
                 it,
+                R.string.all_cash_unit,
             )
         } ?: UIText.Empty
 
-        is History.UseCashCard -> UIText.StringResource(
-            R.string.all_cash_unit,
+        is History.UseCashCard -> UIText.CurrencyString(
             amount,
+            R.string.all_cash_unit,
         )
 
-        is History.ModifyAmount -> UIText.StringResource(
-            R.string.all_cash_unit,
+        is History.ModifyAmount -> UIText.CurrencyString(
             balance ?: throw IllegalStateException("balance should not be null"),
+            R.string.all_cash_unit,
         )
 
         else -> UIText.Empty
     }
     val balance = when (this) {
         is History.Init -> this.amount?.let {
-            UIText.StringResource(
-                R.string.history_balance,
+            UIText.CurrencyString(
                 it,
+                R.string.history_balance,
             )
         } ?: UIText.Empty
 
-        is History.UseCashCard -> UIText.StringResource(
-            R.string.history_balance,
+        is History.UseCashCard -> UIText.CurrencyString(
             balance ?: throw IllegalStateException("balance should not be null"),
+            R.string.history_balance,
         )
 
-        is History.ModifyAmount -> UIText.StringResource(
-            R.string.history_balance,
+        is History.ModifyAmount -> UIText.CurrencyString(
             balance ?: throw IllegalStateException("balance should not be null"),
+            R.string.history_balance,
         )
 
         else -> UIText.Empty

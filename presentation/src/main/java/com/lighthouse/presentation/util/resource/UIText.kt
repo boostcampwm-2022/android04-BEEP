@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import java.lang.ref.WeakReference
+import java.text.DecimalFormat
 
 sealed class UIText(
     val clickable: Boolean = false,
@@ -50,6 +51,31 @@ sealed class UIText(
 
         override fun hashCode(): Int {
             return 31 * resId.hashCode() + args.contentHashCode()
+        }
+    }
+
+    class CurrencyString(
+        private val number: Float,
+        @StringRes private val resId: Int? = null,
+        private val format: String? = null,
+    ) : UIText() {
+
+        constructor(
+            number: Int,
+            @StringRes resId: Int? = null,
+            format: String? = null,
+        ) : this(number.toFloat(), resId, format)
+
+        override fun makeSpannable(context: Context): Spannable {
+            val numberFormat = format
+                ?: if (number == number.toInt().toFloat()) {
+                    "#,###"
+                } else {
+                    "#,###.##"
+                }
+            val formatter = DecimalFormat(numberFormat)
+            val formatted = formatter.format(number)
+            return resId?.let { SpannableString(context.getString(it, formatted)) } ?: SpannableString(formatted)
         }
     }
 
