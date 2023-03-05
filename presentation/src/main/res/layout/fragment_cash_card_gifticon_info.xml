@@ -39,22 +39,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/tv_product_name"
-            style="@style/Theme.BEEP.EditText"
+            style="@style/Theme.BEEP.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ellipsize="end"
-            android:enabled="false"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.tempGifticon.name ?? vm.gifticon.name}"
+            android:text="@{vm.gifticon.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
             tools:text="딸기마카롱설빙" />
@@ -70,22 +64,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name" />
 
-        <EditText
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/et_brand"
-            style="@style/Theme.BEEP.EditText"
+            style="@style/Theme.BEEP.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ellipsize="end"
-            android:enabled="false"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.tempGifticon.brand ?? vm.gifticon.brand}"
+            android:text="@{vm.gifticon.brand}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
             tools:text="설빙" />
@@ -139,6 +127,7 @@
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
+            app:editable="false"
             app:layout_constraintStart_toStartOf="@id/gl_center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/tv_balance_label"
             app:value="@{vm.gifticon.balance}"
@@ -162,14 +151,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_brand" />
 
-        <TextView
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/tv_used_address"
             style="@style/BEEP.TextStyle.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@{vm.latestUsedLocation}"
             app:layout_constraintEnd_toStartOf="@id/iv_show_all_used_info_button"
             app:layout_constraintStart_toStartOf="parent"

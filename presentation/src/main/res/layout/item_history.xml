@@ -40,7 +40,7 @@
             app:setUIText="@{history.amount}"
             tools:text="30,000" />
 
-        <TextView
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/tv_balance"
             style="@style/BEEP.TextStyle.Caption"
             android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
             app:setUIText="@{history.balance}"
             tools:text="잔액: 30,000원" />
 
-        <TextView
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/tv_gifticon_name"
             style="@style/BEEP.TextStyle.Body1"
             android:layout_width="0dp"

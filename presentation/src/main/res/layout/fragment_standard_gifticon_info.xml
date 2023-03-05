@@ -32,25 +32,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/tv_product_name"
-            style="@style/Theme.BEEP.EditText"
-            android:layout_width="wrap_content"
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
+            android:id="@+id/stv_product_name"
+            style="@style/Theme.BEEP.TextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ellipsize="end"
-            android:enabled="false"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.tempGifticon.name ?? vm.gifticon.name}"
+            android:text="@{vm.gifticon.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
-            tools:text="딸기마카롱설빙" />
+            tools:text="기프티콘 이름" />
 
         <TextView
             android:id="@+id/tv_brand_label"
@@ -61,20 +55,14 @@
             android:labelFor="@id/tv_brand"
             android:text="@string/gifticon_detail_product_brand_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_name" />
+            app:layout_constraintTop_toBottomOf="@id/stv_product_name" />
 
-        <EditText
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/et_brand"
-            style="@style/Theme.BEEP.EditText"
+            style="@style/Theme.BEEP.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ellipsize="end"
-            android:enabled="false"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
