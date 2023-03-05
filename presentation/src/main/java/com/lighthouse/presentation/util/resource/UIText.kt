@@ -54,7 +54,7 @@ sealed class UIText(
         }
     }
 
-    class CurrencyString(
+    class NumberFormatString(
         private val number: Float,
         @StringRes private val resId: Int? = null,
         private val format: String? = null,
