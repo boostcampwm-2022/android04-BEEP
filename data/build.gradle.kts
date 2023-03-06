@@ -35,7 +35,7 @@ dependencies {
     implementation(libs.gms.play.services.location)
 
     implementation(libs.timber)
-    implementation(libs.androidX.test.core.ktx)
+    implementation(libs.test.core.ktx)
 
     ksp(libs.androidX.room.compiler)
     ksp(libs.squareup.moshi.kotlin.codegen)
