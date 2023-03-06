@@ -3,18 +3,21 @@ package com.lighthouse.domain.model
 import com.lighthouse.domain.VertexLocation
 import java.util.Date
 
-sealed class History(open val date: Date, open val gifticonId: String) {
+sealed interface History {
+    val date: Date
+    val gifticonId: String
+
     data class Init(
         override val date: Date,
         override val gifticonId: String,
         val amount: Int? = null,
-    ) : History(date, gifticonId)
+    ) : History
 
     data class Use(
         override val date: Date,
         override val gifticonId: String,
         val location: VertexLocation? = null,
-    ) : History(date, gifticonId)
+    ) : History
 
     data class UseCashCard(
         override val date: Date,
@@ -22,18 +25,18 @@ sealed class History(open val date: Date, open val gifticonId: String) {
         val amount: Int,
         val balance: Int? = null,
         val location: VertexLocation? = null,
-    ) : History(date, gifticonId)
+    ) : History
 
     data class CancelUsage(
         override val date: Date,
         override val gifticonId: String,
-    ) : History(date, gifticonId)
+    ) : History
 
     data class ModifyAmount(
         override val date: Date,
         override val gifticonId: String,
         val balance: Int? = null,
-    ) : History(date, gifticonId)
+    ) : History
 
     companion object {
         fun getType(history: History): Int = when (history) {
