@@ -146,10 +146,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@{@string/all_balance_label(vm.gifticon.balance)}"
-                app:setUIText="@{vm.balanceUIText}"
                 app:layout_constraintEnd_toEndOf="@id/guid_end"
                 app:layout_constraintStart_toStartOf="@id/guid_start"
                 app:layout_constraintTop_toBottomOf="@id/ctf_amount_to_be_used"
+                app:setUIText="@{vm.balanceUIText}"
                 tools:text="남은 금액:3,620원" />
 
             <TextView
@@ -171,11 +171,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
+                android:enabled="@{!vm.completeUseProgress}"
                 android:onClick="@{() -> vm.completeUseGifticonButtonClicked()}"
                 android:text="@string/use_gifticon_dialog_complete_button_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/guid_end"
                 app:layout_constraintStart_toStartOf="@id/guid_start" />
+
+            <ProgressBar
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:indeterminateTint="?attr/colorPrimary"
+                android:padding="4dp"
+                app:isVisible="@{vm.completeUseProgress}"
+                app:layout_constraintBottom_toBottomOf="@id/btn_use_gifticon_completed"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="@id/btn_use_gifticon_completed"
+                app:layout_constraintStart_toStartOf="@id/btn_use_gifticon_completed"
+                app:layout_constraintTop_toTopOf="@id/btn_use_gifticon_completed" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

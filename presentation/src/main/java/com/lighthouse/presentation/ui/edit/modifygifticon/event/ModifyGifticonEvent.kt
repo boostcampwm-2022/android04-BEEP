@@ -9,6 +9,7 @@ sealed class ModifyGifticonEvent {
     object PopupBackStack : ModifyGifticonEvent()
     object ShowCancelConfirmation : ModifyGifticonEvent()
     object ModifyCompleted : ModifyGifticonEvent()
+    object ModifyGifticonType : ModifyGifticonEvent()
     data class NavigateToCrop(val crop: ModifyGifticonCrop, val originFileName: String, val croppedRect: RectF) :
         ModifyGifticonEvent()
 

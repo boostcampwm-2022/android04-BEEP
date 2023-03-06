@@ -5,7 +5,12 @@
         <attr name="editable" format="boolean" />
         <attr name="value" format="integer" />
     </declare-styleable>
+
     <declare-styleable name="VerticalTextView">
         <attr name="topDown" format="reference|boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ScrollableTextView">
+        <attr name="android:text" />
     </declare-styleable>
 </resources>

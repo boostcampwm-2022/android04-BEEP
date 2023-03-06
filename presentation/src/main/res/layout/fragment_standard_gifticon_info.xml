@@ -32,25 +32,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/tv_product_name"
-            style="@style/Theme.BEEP.EditText"
-            android:layout_width="wrap_content"
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
+            android:id="@+id/stv_product_name"
+            style="@style/Theme.BEEP.TextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ellipsize="end"
-            android:enabled="@{vm.mode == mode.EDIT}"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.tempGifticon.name ?? vm.gifticon.name}"
+            android:text="@{vm.gifticon.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
-            tools:text="딸기마카롱설빙" />
+            tools:text="기프티콘 이름" />
 
         <TextView
             android:id="@+id/tv_brand_label"
@@ -61,24 +55,18 @@
             android:labelFor="@id/tv_brand"
             android:text="@string/gifticon_detail_product_brand_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_name" />
+            app:layout_constraintTop_toBottomOf="@id/stv_product_name" />
 
-        <EditText
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
             android:id="@+id/et_brand"
-            style="@style/Theme.BEEP.EditText"
+            style="@style/Theme.BEEP.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ellipsize="end"
-            android:enabled="@{vm.mode == mode.EDIT}"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:maxLines="1"
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.tempGifticon.brand ?? vm.gifticon.brand}"
+            android:text="@{vm.gifticon.brand}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
             tools:text="설빙" />
@@ -106,12 +94,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:enabled="@{vm.mode==mode.EDIT}"
             android:minWidth="100dp"
-            android:onClick="@{() -> vm.expireDateClicked()}"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            app:dateFormat="@{vm.tempGifticon.expireAt ?? vm.gifticon.expireAt}"
+            app:dateFormat="@{vm.gifticon.expireAt}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expire_at_label"
             tools:text="2023.07.03" />
@@ -142,7 +128,7 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{geo.getAddress(vm.latestUsageHistory.location)}"
+            android:text="@{vm.latestUsedLocation}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_used_address_label"
@@ -164,9 +150,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:dateFormat="@{vm.latestUsageHistory.date}"
             app:layout_constraintStart_toStartOf="@id/tv_used_date_label"
             app:layout_constraintTop_toBottomOf="@id/tv_used_date_label"
+            app:setUIText="@{vm.latestUsedDate}"
             tools:text="2022.11.08" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -184,14 +170,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/bg_gifticon_memo"
-            android:enabled="@{vm.mode == mode.EDIT}"
+            android:enabled="false"
             android:gravity="top"
             android:hint="@string/gifticon_detail_memo_description"
             android:importantForAutofill="no"
             android:inputType="none"
-            android:minHeight="150dp"
+            android:minHeight="100dp"
             android:padding="16dp"
-            android:text="@{vm.tempGifticon.memo ?? vm.gifticon.memo}"
+            android:text="@{vm.gifticon.memo}"
             android:textAppearance="@style/BEEP.TextStyle.Body1"
             android:textColorHint="#616161"
             app:layout_constraintEnd_toEndOf="parent"

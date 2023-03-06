@@ -77,6 +77,10 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
     </style>
 
+    <style name="BEEP.CustomBottomSheet" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:background">@drawable/bottom_sheet_background</item>
+    </style>
+
     <style name="ShapeAppearanceOverlay_card_custom_corners">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">30dp</item>

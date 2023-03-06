@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="history"
+            type="com.lighthouse.presentation.model.HistoryUiModel.History" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tv_history_type"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_history_init"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setUIText="@{history.type}"
+            tools:text="사용" />
+
+        <TextView
+            android:id="@+id/tv_amount"
+            style="@style/BEEP.TextStyle.H6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setUIText="@{history.amount}"
+            tools:text="30,000" />
+
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
+            android:id="@+id/tv_balance"
+            style="@style/BEEP.TextStyle.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/tv_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_amount"
+            app:layout_constraintTop_toTopOf="@id/tv_location"
+            app:setUIText="@{history.balance}"
+            tools:text="잔액: 30,000원" />
+
+        <com.lighthouse.presentation.ui.common.view.ScrollableTextView
+            android:id="@+id/tv_gifticon_name"
+            style="@style/BEEP.TextStyle.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="1"
+            android:text="@{history.gifticonName}"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_amount"
+            app:layout_constraintEnd_toStartOf="@id/tv_amount"
+            app:layout_constraintStart_toEndOf="@id/tv_history_type"
+            tools:text="스타벅스 3만원 권" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            style="@style/BEEP.TextStyle.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{history.location.displayText}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_balance"
+            app:layout_constraintStart_toStartOf="@id/tv_gifticon_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_gifticon_name"
+            tools:text="광주 광산구 신창로" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

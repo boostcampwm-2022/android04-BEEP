@@ -11,7 +11,9 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
@@ -126,13 +128,22 @@ class ModifyGifticonActivity : AppCompatActivity() {
                     is ModifyGifticonEvent.NavigateToCrop -> gotoCrop(
                         event.crop,
                         event.originFileName,
-                        event.croppedRect
+                        event.croppedRect,
                     )
+
                     is ModifyGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(event.originFileName)
                     is ModifyGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(event.date)
                     is ModifyGifticonEvent.RequestFocus -> requestFocus(event.tag)
                     is ModifyGifticonEvent.RequestScroll -> requestScroll(event.tag)
                     is ModifyGifticonEvent.ShowSnackBar -> showSnackBar(event.uiText)
+                    is ModifyGifticonEvent.ModifyGifticonType -> showTypeChangeAlertDialog { confirm ->
+                        if (confirm) {
+                            viewModel.completeModifyGifticon()
+                            viewModel.resetHistoryButInit()
+                            // TODO 잔액 정보 제거
+                        }
+                    }
+
                     is ModifyGifticonEvent.ModifyCompleted -> completeModifyGifticon()
                 }
             }
@@ -254,6 +265,42 @@ class ModifyGifticonActivity : AppCompatActivity() {
 
     private fun showSnackBar(uiText: UIText) {
         Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showTypeChangeAlertDialog(confirm: (Boolean) -> Unit) {
+        val message = UIText.Builder()
+            .appendDynamicString(getString(R.string.modify_gifticon_type_message_1))
+            .spanOnTextColor(R.color.black)
+            .appendDynamicString(getString(R.string.modify_gifticon_type_message_usage_history))
+            .spanOnTextColor(R.color.beep_pink)
+            .appendDynamicString(getString(R.string.modify_gifticon_type_message_2))
+            .spanOnTextColor(R.color.black)
+            .appendDynamicString(getString(R.string.modify_gifticon_type_message_balance_info))
+            .spanOnTextColor(R.color.beep_pink)
+            .appendDynamicString(getString(R.string.modify_gifticon_type_message_3))
+            .spanOnTextColor(R.color.black)
+            .build()
+            .asString(this)
+
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.modify_gifticon_type_alert_title))
+            .setIcon(R.drawable.ic_warning)
+            .setMessage(message)
+            .setPositiveButton(getString(R.string.confirmation_modify)) { _, _ ->
+                confirm(true)
+            }
+            .setNeutralButton(R.string.confirmation_cancel) { _, _ ->
+                confirm(false)
+            }
+            .show()
+            .apply {
+                getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(
+                    ContextCompat.getColor(
+                        this@ModifyGifticonActivity,
+                        R.color.black_50,
+                    ),
+                )
+            }
     }
 
     companion object {

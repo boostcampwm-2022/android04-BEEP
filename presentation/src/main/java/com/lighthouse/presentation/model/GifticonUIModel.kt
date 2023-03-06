@@ -13,9 +13,9 @@ data class GifticonUIModel(
     val expireAt: Date,
     val barcode: String,
     val isCashCard: Boolean,
-    val balance: Int,
+    val balance: Int?,
     val memo: String,
-    val isUsed: Boolean
+    val isUsed: Boolean,
 ) : Serializable {
 
     val originPath = "origin$id"

@@ -10,9 +10,10 @@ import com.lighthouse.domain.model.DbResult
 import com.lighthouse.domain.model.Gifticon
 import com.lighthouse.domain.model.GifticonForAddition
 import com.lighthouse.domain.model.GifticonForUpdate
+import com.lighthouse.domain.model.History
 import com.lighthouse.domain.model.SortBy
-import com.lighthouse.domain.model.UsageHistory
 import com.lighthouse.domain.repository.GifticonRepository
+import com.lighthouse.domain.util.currentTime
 import com.lighthouse.mapper.toDomain
 import com.lighthouse.model.GifticonImageResult
 import com.lighthouse.util.UUID
@@ -112,9 +113,9 @@ class GifticonRepositoryImpl @Inject constructor(
         gifticonLocalDataSource.insertGifticons(newGifticons)
     }
 
-    override fun getUsageHistory(gifticonId: String): Flow<DbResult<List<UsageHistory>>> = flow {
+    override fun getHistory(gifticonId: String): Flow<DbResult<List<History>>> = flow {
         emit(DbResult.Loading)
-        gifticonLocalDataSource.getUsageHistory(gifticonId).collect {
+        gifticonLocalDataSource.getHistory(gifticonId).collect {
             if (it.isEmpty()) {
                 emit(DbResult.Empty)
             } else {
@@ -125,24 +126,21 @@ class GifticonRepositoryImpl @Inject constructor(
         emit(DbResult.Failure(e))
     }
 
-    override suspend fun saveUsageHistory(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.insertUsageHistory(gifticonId, usageHistory)
+    override suspend fun resetHistoryButInit(gifticonId: String) {
+        gifticonLocalDataSource.resetHistoryButInit(gifticonId)
     }
 
-    override suspend fun useGifticon(gifticonId: String, usageHistory: UsageHistory) {
-        gifticonLocalDataSource.useGifticon(gifticonId, usageHistory)
+    override suspend fun useGifticon(gifticonId: String, history: History.Use) {
+        gifticonLocalDataSource.useGifticon(gifticonId, history)
     }
 
-    override suspend fun useCashCardGifticon(
-        gifticonId: String,
-        amount: Int,
-        usageHistory: UsageHistory,
-    ) {
-        gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, usageHistory)
+    override suspend fun useCashCardGifticon(gifticonId: String, amount: Int, history: History.UseCashCard) {
+        gifticonLocalDataSource.useCashCardGifticon(gifticonId, amount, history)
     }
 
     override suspend fun unUseGifticon(gifticonId: String) {
-        gifticonLocalDataSource.unUseGifticon(gifticonId)
+        val history = History.CancelUsage(currentTime, gifticonId)
+        gifticonLocalDataSource.unUseGifticon(history)
     }
 
     override suspend fun removeGifticon(gifticonId: String) {

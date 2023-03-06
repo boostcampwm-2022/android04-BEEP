@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="widget_background">#000000</color>
+
+    <color name="chip_init">#B0777777</color>
+    <color name="chip_use">#B0FF0000</color>
+    <color name="chip_cancel">#B00000FF</color>
+    <color name="chip_modify">#B006DA79</color>
 </resources>

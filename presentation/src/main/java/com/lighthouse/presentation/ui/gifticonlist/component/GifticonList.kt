@@ -270,7 +270,7 @@ fun GifticonItem(
                         if (gifticon.isCashCard) {
                             Text(
                                 modifier = Modifier.padding(top = 4.dp),
-                                text = gifticon.balance.toConcurrency(context, true),
+                                text = gifticon.balance?.toConcurrency(context, true) ?: "",
                                 color = colorResource(R.color.beep_pink),
                             )
                         } else {

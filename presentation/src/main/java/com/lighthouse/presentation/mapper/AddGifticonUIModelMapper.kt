@@ -9,7 +9,7 @@ fun AddGifticonUIModel.toGalleryUIModel(order: Int): GalleryUIModel.Gallery = Ga
     id = id,
     uri = origin,
     selectedOrder = order,
-    createdDate = createdDate
+    createdDate = createdDate,
 )
 
 fun AddGifticonUIModel.toDomain(): GifticonForAddition {
@@ -20,10 +20,10 @@ fun AddGifticonUIModel.toDomain(): GifticonForAddition {
         barcode = barcode,
         expiredAt = expiredAt,
         isCashCard = isCashCard,
-        balance = balance.toIntOrNull() ?: 0,
+        balance = if (isCashCard) balance.toIntOrNull() else null,
         memo = memo,
         originUri = origin.toString(),
         tempCroppedUri = gifticonImage.uri?.toString() ?: "",
-        croppedRect = gifticonImage.croppedRect.toRect().toDomain()
+        croppedRect = gifticonImage.croppedRect.toRect().toDomain(),
     )
 }

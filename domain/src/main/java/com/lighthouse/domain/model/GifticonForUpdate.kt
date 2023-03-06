@@ -11,13 +11,13 @@ data class GifticonForUpdate(
     val barcode: String,
     val expiredAt: Date,
     val isCashCard: Boolean,
-    val balance: Int,
+    val balance: Int?,
     val oldCroppedUri: String,
     val croppedUri: String,
     val croppedRect: Rectangle,
     val memo: String,
     val isUsed: Boolean,
-    val createdAt: Date
+    val createdAt: Date,
 ) {
     val isUpdatedImage
         get() = oldCroppedUri != croppedUri

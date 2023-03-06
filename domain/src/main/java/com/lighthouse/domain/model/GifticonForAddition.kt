@@ -9,9 +9,9 @@ data class GifticonForAddition(
     val barcode: String,
     val expiredAt: Date,
     val isCashCard: Boolean,
-    val balance: Int,
+    val balance: Int?,
     val originUri: String,
     val tempCroppedUri: String,
     val croppedRect: Rectangle,
-    val memo: String
+    val memo: String,
 )

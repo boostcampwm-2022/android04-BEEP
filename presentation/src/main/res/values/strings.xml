@@ -25,10 +25,14 @@
     <string name="all_close_button">닫기</string>
     <string name="all_not_use">사용 안 함</string>
     <string name="all_remove">제거</string>
+    <string name="all_used_mark_description">사용 완료 마크</string>
+    <string name="all_button_history">히스토리 보기</string>
+    <string name="all_usage_history">사용 기록</string>
 
     <string name="confirmation_ok">확인</string>
     <string name="confirmation_title">권한 필요</string>
     <string name="confirmation_cancel">취소</string>
+    <string name="confirmation_modify">변경</string>
     <string name="confirmation_location_message">위치 정보 권한을 허용해주시면 근처 기프티콘을 추천해드려요. \n[설정]->[권한]에서 "위치" 항목을 사용으로 설정해 주세요.</string>
 
     <string name="main_menu_list">목록</string>
@@ -114,6 +118,13 @@
 
     <string name="modify_gifticon_back_description">기프티콘 편집에서 뒤로가기 버튼</string>
     <string name="modify_gifticon_title">기프티콘 편집</string>
+
+    <string name="modify_gifticon_type_alert_title">기프티콘 타입이 변경됩니다</string>
+    <string name="modify_gifticon_type_message_1">"기프티콘 타입이 변경되면 "</string>
+    <string name="modify_gifticon_type_message_2">" 및 "</string>
+    <string name="modify_gifticon_type_message_3">가 초기화됩니다.\n\n그래도 진행하시겠습니까?</string>
+    <string name="modify_gifticon_type_message_usage_history">사용 기록</string>
+    <string name="modify_gifticon_type_message_balance_info">잔액 정보</string>
 
     <string name="gallery_back_description">뒤로가기 버튼</string>
     <string name="gallery_image_description">갤러리 이미지</string>
@@ -217,6 +228,12 @@
     <string name="dialog_usage_history_date_label">일자</string>
     <string name="dialog_usage_history_address_label">위치</string>
     <string name="dialog_usage_history_amount_label">금액</string>
+
+    <string name="history_type_init">추가</string>
+    <string name="history_type_use">사용</string>
+    <string name="history_type_cancel">취소</string>
+    <string name="history_type_modify_balance">수정</string>
+    <string name="history_balance">잔액: %s원</string>
 
     <string name="setting_used_gifticon">사용한 기프티콘 확인</string>
     <string name="setting_imminent_notification">사용 임박 알림</string>

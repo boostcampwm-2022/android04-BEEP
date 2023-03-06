@@ -7,9 +7,10 @@ import android.text.SpannableStringBuilder
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import java.lang.ref.WeakReference
+import java.text.DecimalFormat
 
 sealed class UIText(
-    val clickable: Boolean = false
+    val clickable: Boolean = false,
 ) {
 
     private lateinit var spannableRef: WeakReference<Spannable>
@@ -36,17 +37,53 @@ sealed class UIText(
 
     class StringResource(
         @StringRes private val resId: Int,
-        private vararg val args: Any
+        private vararg val args: Any,
     ) : UIText() {
         override fun makeSpannable(context: Context): Spannable =
             SpannableString(context.getString(resId, *args))
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is StringResource) return false
+
+            return resId == other.resId && args.contentEquals(other.args)
+        }
+
+        override fun hashCode(): Int {
+            return 31 * resId.hashCode() + args.contentHashCode()
+        }
+    }
+
+    class NumberFormatString(
+        private val number: Float,
+        @StringRes private val resId: Int? = null,
+        private val format: String? = null,
+    ) : UIText() {
+
+        constructor(
+            number: Int,
+            @StringRes resId: Int? = null,
+            format: String? = null,
+        ) : this(number.toFloat(), resId, format)
+
+        override fun makeSpannable(context: Context): Spannable {
+            val numberFormat = format
+                ?: if (number == number.toInt().toFloat()) {
+                    "#,###"
+                } else {
+                    "#,###.##"
+                }
+            val formatter = DecimalFormat(numberFormat)
+            val formatted = formatter.format(number)
+            return resId?.let { SpannableString(context.getString(it, formatted)) } ?: SpannableString(formatted)
+        }
     }
 
     class SpannableResource(
         private val text: UIText,
-        private vararg val spans: UISpan
+        private vararg val spans: UISpan,
     ) : UIText(
-        spans.any { it is UISpan.UIClickableSpan }
+        spans.any { it is UISpan.UIClickableSpan },
     ) {
         override fun makeSpannable(context: Context): Spannable {
             val spannable = text.makeSpannable(context)
@@ -55,17 +92,28 @@ sealed class UIText(
                     it.asSpan(context),
                     0,
                     spannable.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
                 )
             }
             return spannable
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is SpannableResource) return false
+
+            return text == other.text && spans.contentEquals(other.spans)
+        }
+
+        override fun hashCode(): Int {
+            return 31 * text.hashCode() + spans.contentHashCode()
+        }
     }
 
     class UITextSet(
-        private vararg val texts: UIText
+        private vararg val texts: UIText,
     ) : UIText(
-        texts.any { it.clickable }
+        texts.any { it.clickable },
     ) {
         override fun makeSpannable(context: Context): Spannable {
             val builder = SpannableStringBuilder()
@@ -73,6 +121,17 @@ sealed class UIText(
                 builder.append(it.makeSpannable(context))
             }
             return builder
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is UITextSet) return false
+
+            return texts.contentEquals(other.texts)
+        }
+
+        override fun hashCode(): Int {
+            return texts.contentHashCode()
         }
     }
 
@@ -101,7 +160,7 @@ sealed class UIText(
 
         fun appendStringResource(
             @StringRes resId: Int,
-            vararg args: Any
+            vararg args: Any,
         ) = apply { appendText(StringResource(resId, args)) }
 
         fun spanOnUnderline() =

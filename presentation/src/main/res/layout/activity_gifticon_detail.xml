@@ -28,7 +28,7 @@
                 android:id="@+id/tb_gifticon_detail"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:menu="@menu/menu_gifticon_detail"
                 app:navigationIcon="@drawable/ic_back"
                 app:navigationIconTint="?attr/colorOnPrimary"
                 app:title="@string/gifticon_detail_gifticon_detail_title"
@@ -80,6 +80,7 @@
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:contentDescription="@string/all_used_mark_description"
                     android:src="@drawable/img_stamp"
                     app:goneAnimation="@{@anim/anim_fade_out}"
                     app:isAnimatedVisible="@{vm.gifticon.used}"
@@ -110,13 +111,13 @@
 
                 <ImageView
                     android:id="@+id/iv_share_button"
-                    isVisible="@{false}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginTop="16dp"
                     android:contentDescription="@string/gifticon_detail_share_gifticon_button_description"
                     android:onClick="@{() -> vm.shareButtonClicked()}"
                     android:src="@drawable/ic_share"
+                    app:isVisible="@{false}"
                     app:layout_constraintEnd_toEndOf="@id/gl_end"
                     app:layout_constraintTop_toBottomOf="@id/iv_product_image"
                     app:tint="@color/gray" />
@@ -129,6 +130,7 @@
                     android:contentDescription="@string/gifticon_detail_edit_gifticon_button_description"
                     android:onClick="@{() -> vm.editButtonClicked()}"
                     android:src="@drawable/ic_mode_edit"
+                    app:isVisible="@{!vm.gifticon.used}"
                     app:layout_constraintEnd_toStartOf="@id/iv_share_button"
                     app:layout_constraintTop_toTopOf="@id/iv_share_button"
                     app:tint="@color/gray" />

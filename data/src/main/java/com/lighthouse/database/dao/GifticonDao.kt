@@ -12,8 +12,8 @@ import com.lighthouse.database.entity.GifticonCropEntity.Companion.GIFTICON_CROP
 import com.lighthouse.database.entity.GifticonEntity
 import com.lighthouse.database.entity.GifticonEntity.Companion.GIFTICON_TABLE
 import com.lighthouse.database.entity.GifticonWithCrop
-import com.lighthouse.database.entity.UsageHistoryEntity
-import com.lighthouse.database.entity.UsageHistoryEntity.Companion.USAGE_HISTORY_TABLE
+import com.lighthouse.database.entity.HistoryEntity
+import com.lighthouse.database.entity.HistoryEntity.Companion.HISTORY_TABLE
 import com.lighthouse.database.mapper.toGifticonCropEntity
 import com.lighthouse.database.mapper.toGifticonEntity
 import com.lighthouse.domain.model.Brand
@@ -122,14 +122,32 @@ interface GifticonDao {
     /**
      * 기프티콘의 사용 기록을 조회한다
      * */
-    @Query("SELECT * FROM $USAGE_HISTORY_TABLE WHERE gifticon_id = :gifticonId")
-    fun getUsageHistory(gifticonId: String): Flow<List<UsageHistoryEntity>>
+    @Query("SELECT * FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId ORDER BY date DESC")
+    fun getHistory(gifticonId: String): Flow<List<HistoryEntity>>
+
+    @Query(
+        "SELECT balance FROM $HISTORY_TABLE " +
+            "WHERE gifticon_id = :gifticonId ORDER BY date DESC LIMIT 1",
+    )
+    suspend fun getLatestAmount(gifticonId: String): Int?
+
+    @Query(
+        "SELECT balance FROM $HISTORY_TABLE " +
+            "WHERE gifticon_id = :gifticonId ORDER BY date DESC LIMIT 1 OFFSET 1",
+    )
+    suspend fun getSecondLatestAmount(gifticonId: String): Int?
 
     /**
      * 기프티콘의 사용 기록을 추가한다
      * */
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertUsageHistory(usageHistory: UsageHistoryEntity)
+    suspend fun insertUsageHistory(history: HistoryEntity)
+
+    /**
+     * 초기 정보를 제외한 나머지 사용 기록을 제거한다
+     * */
+    @Query("DELETE FROM $HISTORY_TABLE WHERE gifticon_id = :gifticonId AND history_type != 0")
+    suspend fun resetHistoryButInit(gifticonId: String)
 
     /**
      * 기프티콘의 정보를 업데이트한다
@@ -154,9 +172,12 @@ interface GifticonDao {
         expire_at: Date,
         barcode: String,
         isCashCard: Boolean,
-        balance: Int,
+        balance: Int?,
         memo: String,
     )
+
+    @Query("SELECT is_cash_card FROM $GIFTICON_TABLE WHERE id = :gifticonId")
+    fun isCashCard(gifticonId: String): Boolean
 
     @Query("UPDATE $GIFTICON_CROP_TABLE SET cropped_rect = :croppedRect WHERE gifticon_id = :id")
     suspend fun updateGifticonCrop(id: String, croppedRect: Rect)
@@ -183,29 +204,52 @@ interface GifticonDao {
      * 기프티콘을 사용 상태로 변경하고, 사용 기록에 추가한다
      * */
     @Transaction
-    suspend fun useGifticonTransaction(usageHistory: UsageHistoryEntity) {
-        val gifticonId = usageHistory.gifticonId
+    suspend fun useGifticonTransaction(history: HistoryEntity) {
+        val gifticonId = history.gifticonId
 
         useGifticon(gifticonId)
-        insertUsageHistory(usageHistory)
+        insertUsageHistory(history)
     }
 
     /**
      * 금액권 기프티콘의 잔액을 차감하고 사용 기록에 추가한다. 잔액이 0원이 된다면 사용 상태로 변경한다
      * */
     @Transaction
-    suspend fun useCashCardGifticonTransaction(amount: Int, usageHistory: UsageHistoryEntity) {
-        val gifticonId = usageHistory.gifticonId
-        val balance = getGifticon(gifticonId).first().balance
+    suspend fun useCashCardGifticonTransaction(amount: Int, history: HistoryEntity) {
+        val gifticonId = history.gifticonId
+        val balance = getLatestAmount(gifticonId) ?: throw IllegalStateException("balance should not be null")
 
         assert(balance >= amount) // 사용할 금액이 잔액보다 많으면 안된다
 
         useCashCardGifticon(gifticonId, balance - amount)
-        insertUsageHistory(usageHistory)
+        insertUsageHistory(history)
 
         if (balance == amount) {
             useGifticon(gifticonId)
         }
+    }
+
+    @Transaction
+    suspend fun unUseGifticonTransaction(history: HistoryEntity) {
+        val gifticonId = history.gifticonId
+
+        // 가장 최근 금액으로 복구
+        if (isCashCard(gifticonId)) {
+            val gifticon = getGifticon(gifticonId).first()
+            updateGifticon(
+                id = gifticonId,
+                croppedUri = gifticon.croppedUri,
+                name = gifticon.name,
+                brand = gifticon.brand,
+                expire_at = gifticon.expireAt,
+                barcode = gifticon.barcode,
+                isCashCard = gifticon.isCashCard,
+                balance = history.balance ?: throw IllegalStateException("balance should not be null"),
+                memo = gifticon.memo,
+            )
+        }
+        unUseGifticon(gifticonId)
+        insertUsageHistory(history)
     }
 
     @Query("SELECT * FROM $GIFTICON_TABLE WHERE brand =:brand")

@@ -16,6 +16,7 @@ import com.lighthouse.presentation.R
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
+import com.lighthouse.presentation.ui.common.view.ScrollableTextView
 import com.lighthouse.presentation.util.TimeCalculator
 import com.lighthouse.presentation.util.resource.UIText
 import java.text.DecimalFormat
@@ -28,7 +29,7 @@ fun applyDateFormat(view: TextView, date: Date?) {
         R.string.all_date,
         date.toYear(),
         date.toMonth(),
-        date.toDayOfMonth()
+        date.toDayOfMonth(),
     )
 }
 
@@ -39,7 +40,7 @@ fun applyConcurrencyFormat(view: TextView, amount: Int) {
     view.text = if (amount > 0) {
         view.context.resources.getString(
             R.string.all_cash_unit,
-            formattedNumber
+            formattedNumber,
         )
     } else {
         ""
@@ -53,6 +54,15 @@ fun TextView.setUIText(uiText: UIText?) {
         movementMethod = LinkMovementMethod()
     }
     text = uiText.asString(context)
+}
+
+@BindingAdapter("setUIText")
+fun ScrollableTextView.setUIText(uiText: UIText?) {
+    if (uiText == null) return
+    if (uiText.clickable) {
+        setMovementMethod(LinkMovementMethod())
+    }
+    setText(uiText.asString(context))
 }
 
 /**
@@ -82,7 +92,7 @@ fun applyUnderLine(view: TextView, targetText: String) {
 fun TextView.applyClickable(
     targetText: String,
     onClickListener: View.OnClickListener,
-    drawUnderLine: Boolean? = null
+    drawUnderLine: Boolean? = null,
 ) {
     val start = text.indexOf(string = targetText, ignoreCase = false)
 
@@ -103,7 +113,7 @@ fun TextView.applyClickable(
             },
             start,
             end,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
     }
     movementMethod = LinkMovementMethod()
@@ -128,7 +138,7 @@ fun setMapBottomText(view: TextView, uiText: UIText?) {
             ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.beep_pink)),
             start,
             end + 1,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
         view.setText(spannableString, TextView.BufferType.NORMAL)
     } else {
@@ -143,8 +153,9 @@ fun setDday(view: TextView, date: Date) {
         dDay == TimeCalculator.MIN_DAY -> view.context.getString(R.string.all_d_very_day)
         dDay in TimeCalculator.MIN_DAY until TimeCalculator.MAX_DAY -> String.format(
             view.context.getString(R.string.all_d_day),
-            dDay
+            dDay,
         )
+
         dDay < TimeCalculator.MIN_DAY -> view.context.getString(R.string.all_d_day_expired)
         else -> view.context.getString(R.string.all_d_day_more_than_year)
     }

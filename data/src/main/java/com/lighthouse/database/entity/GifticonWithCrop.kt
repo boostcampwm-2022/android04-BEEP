@@ -15,9 +15,9 @@ class GifticonWithCrop(
     @ColumnInfo(name = "expire_at") val expireAt: Date,
     @ColumnInfo(name = "barcode") val barcode: String,
     @ColumnInfo(name = "is_cash_card") val isCashCard: Boolean,
-    @ColumnInfo(name = "balance") val balance: Int,
+    @ColumnInfo(name = "balance") val balance: Int?,
     @ColumnInfo(name = "memo") val memo: String,
     @ColumnInfo(name = "cropped_rect") val croppedRect: Rect,
     @ColumnInfo(name = "is_used") val isUsed: Boolean,
-    @ColumnInfo(name = "created_at") val createdAt: Date
+    @ColumnInfo(name = "created_at") val createdAt: Date,
 )
