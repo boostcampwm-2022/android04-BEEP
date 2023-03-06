@@ -1,6 +1,7 @@
 package com.lighthouse.presentation.ui.gifticonlist.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,7 @@ import com.lighthouse.presentation.ui.gifticonlist.GifticonListViewModel
 
 @Composable
 fun GifticonAppBar(
-    viewModel: GifticonListViewModel = viewModel()
+    viewModel: GifticonListViewModel = viewModel(),
 ) {
     val viewState = viewModel.state.collectAsStateWithLifecycle()
     val sortBy: GifticonSortBy = viewState.value.sortBy
@@ -49,30 +50,32 @@ fun GifticonAppBar(
             Box(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier
-                        .clickable {
-                            expanded = true
-                        }.align(Alignment.Center),
-                    horizontalArrangement = Arrangement.Center
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = { expanded = true },
+                        ).align(Alignment.Center),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         text = stringResource(id = sortBy.stringRes),
                         color = Color.White,
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.h6,
                     )
                     Icon(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = stringResource(R.string.gifticon_list_toolbar_dropdown_icon_description),
-                        tint = Color.White
+                        tint = Color.White,
                     )
                 }
             }
 
             DropDownToolbarMenu(
                 expanded = expanded,
-                onDismiss = { expanded = false }
+                onDismiss = { expanded = false },
             )
-        }
+        },
     )
 }
 
@@ -81,25 +84,25 @@ fun DropDownToolbarMenu(
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
     viewModel: GifticonListViewModel = viewModel(),
-    onDismiss: () -> Unit = {}
+    onDismiss: () -> Unit = {},
 ) {
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = { onDismiss() },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         GifticonSortBy.values().forEach {
             DropdownMenuItem(
                 onClick = {
                     viewModel.sort(it)
                     onDismiss()
-                }
+                },
             ) {
                 Text(
                     text = stringResource(id = it.stringRes),
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colors.onSurface,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }
