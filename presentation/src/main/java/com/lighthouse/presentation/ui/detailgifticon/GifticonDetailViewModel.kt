@@ -212,7 +212,7 @@ class GifticonDetailViewModel @Inject constructor(
             _completeUseProgress.value = true
             if (gifticon.value?.isCashCard == true) {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
-                if (amountToBeUsed.value > 0) { // 0원을 사용하는 경우 무시
+                if (amountToBeUsed.value > 0) { // 0원 이상인 경우만 사용 처리
                     useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
                     editBalance(0)
                 }
