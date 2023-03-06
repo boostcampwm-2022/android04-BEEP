@@ -110,7 +110,10 @@ class GifticonDetailViewModel @Inject constructor(
 
     val balanceUIText: StateFlow<UIText> = gifticon.transform {
         if (it == null) return@transform
-        emit(it.balance?.let { balance -> UIText.StringResource(R.string.all_balance_label, balance.toConcurrency()) } ?: UIText.Empty)
+        emit(
+            it.balance?.let { balance -> UIText.StringResource(R.string.all_balance_label, balance.toConcurrency()) }
+                ?: UIText.Empty,
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
     val failure = gifticonDbResult.transform {
@@ -119,7 +122,8 @@ class GifticonDetailViewModel @Inject constructor(
         }
     }
 
-    val amountToBeUsed = MutableStateFlow(0)
+    private val _amountToBeUsed = MutableStateFlow(0)
+    val amountToBeUsed = _amountToBeUsed.asStateFlow()
 
     private val _event = MutableSharedFlow<GifticonDetailEvent>()
     val event = _event.asSharedFlow()
@@ -208,7 +212,7 @@ class GifticonDetailViewModel @Inject constructor(
             if (gifticon.value?.isCashCard == true) {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
                 useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
-                amountToBeUsed.value = 0
+                editBalance(0)
                 event(GifticonDetailEvent.UseGifticonComplete)
             } else {
                 useGifticonUseCase(gifticonId, hasLocationPermission.value)
@@ -219,13 +223,9 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun amountChipClicked(amountPreset: CashAmountPreset) {
         amountPreset.amount?.let { amount ->
-            amountToBeUsed.update {
-                minOf(it + amount, gifticon.value?.balance ?: 0)
-            }
+            editBalance(minOf(_amountToBeUsed.value + amount, gifticon.value?.balance ?: 0))
         } ?: run { // "전액" 버튼이 클릭된 경우
-            amountToBeUsed.update {
-                gifticon.value?.balance ?: return@run
-            }
+            editBalance(gifticon.value?.balance ?: return@run)
         }
     }
 
@@ -242,9 +242,7 @@ class GifticonDetailViewModel @Inject constructor(
     }
 
     fun editBalance(newBalance: Int) {
-        tempGifticon.value?.let {
-            _tempGifticon.value = it.copy(balance = newBalance)
-        }
+        _amountToBeUsed.update { newBalance }
     }
 
     fun updateLocationPermission(isLocationPermission: Boolean) {

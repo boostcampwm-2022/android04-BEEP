@@ -25,7 +25,7 @@ fun ConcurrencyField(
     editable: Boolean = true,
     suffixText: String = stringResource(id = R.string.all_cash_origin_unit),
     upperLimit: Int = Int.MAX_VALUE,
-    onValueChanged: (Int) -> Unit = {}
+    onValueChanged: (Int) -> Unit = {},
 ) {
     val typography = textStyle ?: MaterialTheme.typography.body1
     var text = value.toString()
@@ -46,15 +46,15 @@ fun ConcurrencyField(
             if (inputText.toInt() > upperLimit) {
                 return@BasicTextField
             }
-            text = inputText
             onValueChanged(inputText.toIntOrNull() ?: 0)
+            text = inputText
         },
         modifier = modifier,
         readOnly = editable.not(),
         singleLine = true,
         visualTransformation = ConcurrencyFormatVisualTransformation(suffixText),
         textStyle = typography,
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
     )
 }
 
@@ -82,7 +82,7 @@ class ConcurrencyFormatVisualTransformation(val suffixText: String = "") : Visua
                         offset - (commas - commasAtRight)
                     }
                 }
-            }
+            },
         )
     }
 
