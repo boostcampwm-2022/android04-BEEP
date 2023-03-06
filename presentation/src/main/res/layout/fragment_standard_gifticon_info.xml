@@ -66,7 +66,7 @@
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            android:text="@{vm.tempGifticon.brand ?? vm.gifticon.brand}"
+            android:text="@{vm.gifticon.brand}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_label"
             tools:text="설빙" />
@@ -97,7 +97,7 @@
             android:minWidth="100dp"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            app:dateFormat="@{vm.tempGifticon.expireAt ?? vm.gifticon.expireAt}"
+            app:dateFormat="@{vm.gifticon.expireAt}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expire_at_label"
             tools:text="2023.07.03" />
@@ -177,7 +177,7 @@
             android:inputType="none"
             android:minHeight="100dp"
             android:padding="16dp"
-            android:text="@{vm.tempGifticon.memo ?? vm.gifticon.memo}"
+            android:text="@{vm.gifticon.memo}"
             android:textAppearance="@style/BEEP.TextStyle.Body1"
             android:textColorHint="#616161"
             app:layout_constraintEnd_toEndOf="parent"

@@ -128,9 +128,6 @@ class GifticonDetailViewModel @Inject constructor(
     private val _event = MutableSharedFlow<GifticonDetailEvent>()
     val event = _event.asSharedFlow()
 
-    private val _tempGifticon = MutableStateFlow<GifticonUIModel?>(null)
-    val tempGifticon = _tempGifticon.asStateFlow()
-
     val scrollDownChipLabel = mode.map { mode ->
         when (mode) {
             GifticonDetailMode.UNUSED -> UIText.StringResource(R.string.gifticon_detail_scroll_down_chip_unused)
