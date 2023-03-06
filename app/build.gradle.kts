@@ -21,6 +21,21 @@ android {
         manifestPlaceholders["naver_map_api_id"] = getApiKey("naver_map_api_id")
     }
 
+    lint.disable.apply {
+        addAll(
+            listOf(
+                "LogNotTimber",
+                "StringFormatInTimber",
+                "ThrowableNotAtBeginning",
+                "BinaryOperationInTimber",
+                "TimberArgCount",
+                "TimberArgTypes",
+                "TimberTagLength",
+                "TimberExceptionLogging",
+            ),
+        )
+    }
+
     buildFeatures {
         dataBinding = true
     }
