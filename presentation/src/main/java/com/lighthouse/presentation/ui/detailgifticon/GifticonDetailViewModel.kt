@@ -145,6 +145,9 @@ class GifticonDetailViewModel @Inject constructor(
     var hasLocationPermission = MutableStateFlow(false)
         private set
 
+    private val _completeUseProgress = MutableStateFlow(false)
+    val completeUseProgress = _completeUseProgress.asStateFlow()
+
     init {
         viewModelScope.launch {
             gifticon.collect { gifticon ->
@@ -206,15 +209,19 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun completeUseGifticonButtonClicked() {
         viewModelScope.launch {
+            _completeUseProgress.value = true
             if (gifticon.value?.isCashCard == true) {
                 assert((gifticon.value?.balance ?: 0) >= amountToBeUsed.value)
-                useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
-                editBalance(0)
+                if (amountToBeUsed.value > 0) { // 0원을 사용하는 경우 무시
+                    useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
+                    editBalance(0)
+                }
                 event(GifticonDetailEvent.UseGifticonComplete)
             } else {
                 useGifticonUseCase(gifticonId, hasLocationPermission.value)
                 event(GifticonDetailEvent.UseGifticonComplete)
             }
+            _completeUseProgress.value = false
         }
     }
 
