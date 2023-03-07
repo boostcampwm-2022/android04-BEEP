@@ -107,7 +107,6 @@ fun BrandChipList(
             )
             BrandChip(
                 brand = entireChipBrand,
-                modifier = Modifier.animateItemPlacement(),
                 selected = selectedFilters.isEmpty(),
             ) {
                 onClickTotalChip()
@@ -117,6 +116,7 @@ fun BrandChipList(
         items(sortedBrands, key = { brand -> brand.name }) { brand ->
             BrandChip(
                 brand = brand,
+                modifier = Modifier.animateItemPlacement(),
                 selected = selectedFilters.contains(brand.name),
             ) {
                 onClickChip(brand)
