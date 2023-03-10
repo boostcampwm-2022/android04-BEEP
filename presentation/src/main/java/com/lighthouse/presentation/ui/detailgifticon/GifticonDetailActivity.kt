@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.extension.isOnScreen
@@ -220,6 +221,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
+                showCancelUsageSnackBar()
             }
 
             is GifticonDetailEvent.ShowOriginalImage -> {
@@ -293,6 +295,19 @@ class GifticonDetailActivity : AppCompatActivity() {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
         }.show(supportFragmentManager)
+    }
+
+    private fun showCancelUsageSnackBar() {
+        Snackbar.make(
+            binding.root,
+            getString(R.string.gifticon_detail_after_usage_message),
+            5000,
+        ).apply {
+            setAction(R.string.gifticon_detail_used_mode_button_text) {
+                viewModel.cancelUsage()
+                dismiss()
+            }
+        }.show()
     }
 
     private fun showLargeBarcodeDialog(barcode: String) {

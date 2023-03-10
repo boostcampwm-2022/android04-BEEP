@@ -209,9 +209,7 @@ class GifticonDetailViewModel @Inject constructor(
             }
 
             GifticonDetailMode.USED -> {
-                viewModelScope.launch {
-                    unUseGifticonUseCase(gifticonId)
-                }
+                cancelUsage()
             }
         }
     }
@@ -260,6 +258,12 @@ class GifticonDetailViewModel @Inject constructor(
 
     fun updateLocationPermission(isLocationPermission: Boolean) {
         hasLocationPermission.value = isLocationPermission
+    }
+
+    fun cancelUsage() {
+        viewModelScope.launch {
+            unUseGifticonUseCase(gifticonId)
+        }
     }
 
     private fun event(event: GifticonDetailEvent) {
