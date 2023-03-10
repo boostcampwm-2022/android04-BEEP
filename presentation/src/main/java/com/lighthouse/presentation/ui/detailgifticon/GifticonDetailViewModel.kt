@@ -10,7 +10,6 @@ import com.lighthouse.domain.usecase.UnUseGifticonUseCase
 import com.lighthouse.domain.usecase.UseCashCardGifticonUseCase
 import com.lighthouse.domain.usecase.UseGifticonUseCase
 import com.lighthouse.presentation.R
-import com.lighthouse.presentation.extension.toConcurrency
 import com.lighthouse.presentation.extension.toDayOfMonth
 import com.lighthouse.presentation.extension.toMonth
 import com.lighthouse.presentation.extension.toYear
@@ -108,11 +107,21 @@ class GifticonDetailViewModel @Inject constructor(
     private val _historyUiModel = MutableStateFlow<List<HistoryUiModel>>(emptyList())
     val historyUiModel = _historyUiModel.asStateFlow()
 
+    val balanceOriginUIText: StateFlow<UIText> = gifticon.transform {
+        if (it == null) return@transform
+        emit(
+            it.balance?.let { balance ->
+                UIText.NumberFormatString(balance, R.string.all_cash_unit)
+            } ?: UIText.Empty,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
+
     val balanceUIText: StateFlow<UIText> = gifticon.transform {
         if (it == null) return@transform
         emit(
-            it.balance?.let { balance -> UIText.StringResource(R.string.all_balance_label, balance.toConcurrency()) }
-                ?: UIText.Empty,
+            it.balance?.let { balance ->
+                UIText.NumberFormatString(balance, R.string.all_balance_label)
+            } ?: UIText.Empty,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UIText.Empty)
 
