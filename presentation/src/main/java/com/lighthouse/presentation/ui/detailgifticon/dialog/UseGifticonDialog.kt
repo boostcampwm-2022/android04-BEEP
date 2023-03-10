@@ -69,8 +69,10 @@ class UseGifticonDialog : BottomSheetDialogFragment(R.layout.dialog_use_gifticon
     }
 
     private fun initBottomSheetDialog(view: View) {
-        val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        BottomSheetBehavior.from(view.parent as View).apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
         binding.layoutContainer.minHeight = (screenHeight * 0.9).toInt()
     }
 
