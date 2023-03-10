@@ -70,15 +70,15 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     @Inject
     lateinit var authManager: AuthManager
-    private val biometricLauncher: ActivityResultLauncher<Intent> =
+    private val usageBiometricLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
-                Activity.RESULT_OK -> authenticate()
-                else -> authCallback.onAuthError()
+                Activity.RESULT_OK -> usageAuthCallback.onAuthSuccess()
+                else -> usageAuthCallback.onAuthError()
             }
         }
 
-    private val authCallback = object : AuthCallback {
+    private val usageAuthCallback = object : AuthCallback {
         override fun onAuthSuccess() {
             showUseGifticonDialog()
         }
@@ -90,7 +90,32 @@ class GifticonDetailActivity : AppCompatActivity() {
             if (stringId != null) {
                 Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
             } else {
-                authenticate()
+                usageAuthenticate()
+            }
+        }
+    }
+
+    private val editBiometricLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> editAuthCallback.onAuthSuccess()
+                else -> editAuthCallback.onAuthError()
+            }
+        }
+
+    private val editAuthCallback = object : AuthCallback {
+        override fun onAuthSuccess() {
+            gotoModifyGifticon(viewModel.gifticon.value?.id)
+        }
+
+        override fun onAuthCancel() {
+        }
+
+        override fun onAuthError(@StringRes stringId: Int?) {
+            if (stringId != null) {
+                Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
+            } else {
+                usageAuthenticate()
             }
         }
     }
@@ -180,11 +205,11 @@ class GifticonDetailActivity : AppCompatActivity() {
             }
 
             is GifticonDetailEvent.EditButtonClicked -> {
-                gotoModifyGifticon(viewModel.gifticon.value?.id)
+                editAuthenticate()
             }
 
             is GifticonDetailEvent.UseGifticonButtonClicked -> {
-                authenticate()
+                usageAuthenticate()
             }
 
             is GifticonDetailEvent.ShowAllUsedInfoButtonClicked -> {
@@ -253,8 +278,12 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun authenticate() {
-        authManager.auth(this, biometricLauncher, authCallback)
+    private fun usageAuthenticate() {
+        authManager.auth(this, usageBiometricLauncher, usageAuthCallback)
+    }
+
+    private fun editAuthenticate() {
+        authManager.auth(this, editBiometricLauncher, editAuthCallback)
     }
 
     private fun showOriginGifticonDialog(path: String) {

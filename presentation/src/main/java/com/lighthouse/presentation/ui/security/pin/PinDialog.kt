@@ -45,8 +45,8 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
                     PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> {
+                        delay(500L)
                         authCallback.onAuthSuccess()
-                        delay(1000L)
                         dismiss()
                     }
                     else -> {}
