@@ -222,6 +222,8 @@ class GifticonDetailViewModel @Inject constructor(
                 if (amountToBeUsed.value > 0) { // 0원 이상인 경우만 사용 처리
                     useCashCardGifticonUseCase(gifticonId, amountToBeUsed.value, hasLocationPermission.value)
                     editBalance(0)
+                } else {
+                    event(GifticonDetailEvent.InvalidCashCardUsage)
                 }
                 event(GifticonDetailEvent.UseGifticonComplete)
             } else {

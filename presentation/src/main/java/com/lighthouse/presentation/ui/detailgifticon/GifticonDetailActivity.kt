@@ -232,6 +232,14 @@ class GifticonDetailActivity : AppCompatActivity() {
                 showLargeBarcodeDialog(event.barcode)
             }
 
+            GifticonDetailEvent.InvalidCashCardUsage -> {
+                Toast.makeText(
+                    this,
+                    getString(R.string.gifticon_detail_invalid_cashcard_message),
+                    Toast.LENGTH_SHORT,
+                ).show()
+            }
+
             GifticonDetailEvent.ShareButtonClicked -> {
                 // TODO 공유 기능
             }
