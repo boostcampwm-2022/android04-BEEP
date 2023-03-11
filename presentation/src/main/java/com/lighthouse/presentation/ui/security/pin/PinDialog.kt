@@ -49,6 +49,7 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
                         authCallback.onAuthSuccess()
                         dismiss()
                     }
+
                     else -> {}
                 }
             }
@@ -56,8 +57,10 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     }
 
     private fun initBottomSheetDialog(view: View) {
-        val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        BottomSheetBehavior.from(view.parent as View).apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
         binding.clPin.minHeight = (screenHeight * 0.9).toInt()
     }
 
