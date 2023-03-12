@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.lighthouse.presentation.R
 import com.lighthouse.presentation.databinding.ActivityGifticonDetailBinding
 import com.lighthouse.presentation.extension.isOnScreen
@@ -70,15 +71,15 @@ class GifticonDetailActivity : AppCompatActivity() {
 
     @Inject
     lateinit var authManager: AuthManager
-    private val biometricLauncher: ActivityResultLauncher<Intent> =
+    private val usageBiometricLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
-                Activity.RESULT_OK -> authenticate()
-                else -> authCallback.onAuthError()
+                Activity.RESULT_OK -> usageAuthCallback.onAuthSuccess()
+                else -> usageAuthCallback.onAuthError()
             }
         }
 
-    private val authCallback = object : AuthCallback {
+    private val usageAuthCallback = object : AuthCallback {
         override fun onAuthSuccess() {
             showUseGifticonDialog()
         }
@@ -90,7 +91,32 @@ class GifticonDetailActivity : AppCompatActivity() {
             if (stringId != null) {
                 Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
             } else {
-                authenticate()
+                usageAuthenticate()
+            }
+        }
+    }
+
+    private val editBiometricLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> editAuthCallback.onAuthSuccess()
+                else -> editAuthCallback.onAuthError()
+            }
+        }
+
+    private val editAuthCallback = object : AuthCallback {
+        override fun onAuthSuccess() {
+            gotoModifyGifticon(viewModel.gifticon.value?.id)
+        }
+
+        override fun onAuthCancel() {
+        }
+
+        override fun onAuthError(@StringRes stringId: Int?) {
+            if (stringId != null) {
+                Toast.makeText(this@GifticonDetailActivity, getString(stringId), Toast.LENGTH_SHORT).show()
+            } else {
+                usageAuthenticate()
             }
         }
     }
@@ -180,11 +206,11 @@ class GifticonDetailActivity : AppCompatActivity() {
             }
 
             is GifticonDetailEvent.EditButtonClicked -> {
-                gotoModifyGifticon(viewModel.gifticon.value?.id)
+                editAuthenticate()
             }
 
             is GifticonDetailEvent.UseGifticonButtonClicked -> {
-                authenticate()
+                usageAuthenticate()
             }
 
             is GifticonDetailEvent.ShowAllUsedInfoButtonClicked -> {
@@ -195,6 +221,7 @@ class GifticonDetailActivity : AppCompatActivity() {
                 if (::useGifticonDialog.isInitialized && useGifticonDialog.isAdded) {
                     useGifticonDialog.dismiss()
                 }
+                showCancelUsageSnackBar()
             }
 
             is GifticonDetailEvent.ShowOriginalImage -> {
@@ -203,6 +230,14 @@ class GifticonDetailActivity : AppCompatActivity() {
 
             is GifticonDetailEvent.ShowLargeBarcode -> {
                 showLargeBarcodeDialog(event.barcode)
+            }
+
+            GifticonDetailEvent.InvalidCashCardUsage -> {
+                Toast.makeText(
+                    this,
+                    getString(R.string.gifticon_detail_invalid_cashcard_message),
+                    Toast.LENGTH_SHORT,
+                ).show()
             }
 
             GifticonDetailEvent.ShareButtonClicked -> {
@@ -253,8 +288,12 @@ class GifticonDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun authenticate() {
-        authManager.auth(this, biometricLauncher, authCallback)
+    private fun usageAuthenticate() {
+        authManager.auth(this, usageBiometricLauncher, usageAuthCallback)
+    }
+
+    private fun editAuthenticate() {
+        authManager.auth(this, editBiometricLauncher, editAuthCallback)
     }
 
     private fun showOriginGifticonDialog(path: String) {
@@ -264,6 +303,19 @@ class GifticonDetailActivity : AppCompatActivity() {
                 putParcelable(Extras.KEY_ORIGIN_IMAGE, uri)
             }
         }.show(supportFragmentManager)
+    }
+
+    private fun showCancelUsageSnackBar() {
+        Snackbar.make(
+            binding.root,
+            getString(R.string.gifticon_detail_after_usage_message),
+            5000,
+        ).apply {
+            setAction(R.string.gifticon_detail_used_mode_button_text) {
+                viewModel.cancelUsage()
+                dismiss()
+            }
+        }.show()
     }
 
     private fun showLargeBarcodeDialog(barcode: String) {

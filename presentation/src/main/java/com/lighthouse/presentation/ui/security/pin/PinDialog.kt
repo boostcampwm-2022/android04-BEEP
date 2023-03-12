@@ -45,10 +45,11 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
                     PinSettingType.CONFIRM -> binding.tvPinDescription.text = getString(R.string.pin_input_description)
                     PinSettingType.WRONG -> binding.tvPinDescription.text = getString(R.string.pin_wrong_description)
                     PinSettingType.COMPLETE -> {
+                        delay(500L)
                         authCallback.onAuthSuccess()
-                        delay(1000L)
                         dismiss()
                     }
+
                     else -> {}
                 }
             }
@@ -56,8 +57,10 @@ class PinDialog(private val authCallback: AuthCallback) : BottomSheetDialogFragm
     }
 
     private fun initBottomSheetDialog(view: View) {
-        val bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        BottomSheetBehavior.from(view.parent as View).apply {
+            state = BottomSheetBehavior.STATE_EXPANDED
+            skipCollapsed = true
+        }
         binding.clPin.minHeight = (screenHeight * 0.9).toInt()
     }
 

@@ -312,4 +312,6 @@
     <string name="gifticon_detail_scroll_down_chip_unused">사용하기</string>
     <string name="gifticon_detail_scroll_down_chip_used">사용취소</string>
     <string name="gifticon_detail_scroll_down_chip_edit">수정완료</string>
+    <string name="gifticon_detail_after_usage_message">기프티콘을 사용했습니다</string>
+    <string name="gifticon_detail_invalid_cashcard_message">사용할 금액이 지정되지 않아 사용 처리되지 않았습니다</string>
 </resources>

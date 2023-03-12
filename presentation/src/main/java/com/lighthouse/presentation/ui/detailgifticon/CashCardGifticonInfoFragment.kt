@@ -25,8 +25,5 @@ class CashCardGifticonInfoFragment : Fragment(R.layout.fragment_cash_card_giftic
         binding.vm = viewModel
         binding.geo = geography
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.ctfBalance.addOnValueListener {
-            viewModel.editBalance(it)
-        }
     }
 }

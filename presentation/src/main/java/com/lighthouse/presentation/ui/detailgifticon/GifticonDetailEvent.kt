@@ -9,4 +9,5 @@ sealed class GifticonDetailEvent {
     object EditButtonClicked : GifticonDetailEvent()
     object UseGifticonButtonClicked : GifticonDetailEvent()
     object UseGifticonComplete : GifticonDetailEvent()
+    object InvalidCashCardUsage : GifticonDetailEvent()
 }

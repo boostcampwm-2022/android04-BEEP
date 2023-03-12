@@ -81,7 +81,7 @@
         <androidx.constraintlayout.widget.Group
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="tv_expire_at_label,tv_expire_at,tv_balance_label,ctf_balance"
+            app:constraint_referenced_ids="tv_expire_at_label,tv_expire_at,tv_balance_label,tv_balance"
             app:isVisible="@{!vm.gifticon.used}"
             tools:visibility="visible" />
 
@@ -119,18 +119,15 @@
             app:layout_constraintStart_toStartOf="@id/gl_center_horizontal"
             app:layout_constraintTop_toTopOf="@id/tv_expire_at_label" />
 
-        <com.lighthouse.presentation.ui.common.ConcurrencyTextField
-            android:id="@+id/ctf_balance"
+        <TextView
+            android:id="@+id/tv_balance"
+            style="@style/Theme.BEEP.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:minWidth="100dp"
-            android:paddingStart="0dp"
-            android:paddingEnd="16dp"
-            app:editable="false"
             app:layout_constraintStart_toStartOf="@id/gl_center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/tv_balance_label"
-            app:value="@{vm.gifticon.balance}"
+            app:setUIText="@{vm.balanceOriginUIText}"
             tools:text="3,620원" />
 
         <androidx.constraintlayout.widget.Group
