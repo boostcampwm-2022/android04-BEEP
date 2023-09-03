@@ -15,9 +15,11 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import androidx.core.view.doOnAttach
 import com.lighthouse.presentation.extension.getBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -28,7 +30,7 @@ class CropImageView(
     attrs: AttributeSet?,
 ) : View(context, attrs) {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private lateinit var viewScope: CoroutineScope
 
     private var originBitmap: Bitmap? = null
 
@@ -179,16 +181,18 @@ class CropImageView(
     }
 
     fun setCropInfo(info: CropImageInfo) {
-        coroutineScope.launch {
-            originBitmap = withContext(Dispatchers.IO) {
-                when (info.uri?.scheme) {
-                    SCHEME_CONTENT -> context.contentResolver.getBitmap(info.uri)
-                    SCHEME_FILE -> BitmapFactory.decodeFile(info.uri.path)
-                    else -> null
+        doOnAttach {
+            viewScope.launch {
+                originBitmap = withContext(Dispatchers.IO) {
+                    when (info.uri?.scheme) {
+                        SCHEME_CONTENT -> context.contentResolver.getBitmap(info.uri)
+                        SCHEME_FILE -> BitmapFactory.decodeFile(info.uri.path)
+                        else -> null
+                    }
                 }
+                initRect(info.croppedRect)
+                applyMatrix(false)
             }
-            initRect(info.croppedRect)
-            applyMatrix(false)
         }
     }
 
@@ -352,6 +356,18 @@ class CropImageView(
             CropImageMode.DRAW_PEN -> cropImagePen.onTouchEvent(event)
             CropImageMode.DRAG_WINDOW -> cropImageWindow.onTouchEvent(event)
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        viewScope = CoroutineScope(Dispatchers.Main.immediate)
+    }
+
+    override fun onDetachedFromWindow() {
+        viewScope.cancel()
+
+        super.onDetachedFromWindow()
     }
 
     companion object {
