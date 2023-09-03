@@ -3,6 +3,7 @@ package com.lighthouse.presentation.ui.cropgifticon.view
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PointF
 import android.graphics.RectF
 import android.view.MotionEvent
 import com.lighthouse.presentation.R
@@ -16,25 +17,37 @@ class CropImagePen(
 ) {
 
     companion object {
+        private val POINT_F_EMPTY = PointF()
+
         private val DEFAULT_PEN_SIZE = 36f.dp
+        private val DEFAULT_PEN_POINTER_WIDTH = 1f.dp
     }
 
-    private val penPaint by lazy {
-        Paint().apply {
-            isAntiAlias = true
-            strokeWidth = DEFAULT_PEN_SIZE
-            style = Paint.Style.STROKE
-            strokeJoin = Paint.Join.ROUND
-            strokeCap = Paint.Cap.ROUND
-            color = view.context.getColor(R.color.beep_pink_a20)
-        }
+    private val penPaint = Paint().apply {
+        isAntiAlias = true
+        strokeWidth = DEFAULT_PEN_SIZE
+        style = Paint.Style.STROKE
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+        color = view.context.getColor(R.color.beep_pink_a20)
+    }
+
+    private val penPointerPaint = Paint().apply {
+        isAntiAlias = true
+        strokeWidth = DEFAULT_PEN_POINTER_WIDTH
+        style = Paint.Style.STROKE
+        color = view.context.getColor(R.color.white)
     }
 
     private val drawPath = Path()
     private val drawRect = RectF()
+    private val pointerPos = PointF()
 
     fun onDraw(canvas: Canvas) {
         canvas.drawPath(drawPath, penPaint)
+        if (pointerPos != POINT_F_EMPTY) {
+            canvas.drawCircle(pointerPos.x, pointerPos.y, penPaint.strokeWidth / 2f, penPointerPaint)
+        }
     }
 
     fun onTouchEvent(event: MotionEvent): Boolean {
@@ -43,6 +56,7 @@ class CropImagePen(
         }
         val x = event.x
         val y = event.y
+        pointerPos.set(x, y)
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -61,6 +75,7 @@ class CropImagePen(
             -> {
                 drawPath.lineTo(x, y)
                 drawPath.close()
+                pointerPos.set(POINT_F_EMPTY)
 
                 calculateRect(x, y)
                 val boundRect = view.boundRect
@@ -83,10 +98,10 @@ class CropImagePen(
 
     private fun calculateRect(x: Float, y: Float) {
         drawRect.apply {
-            left = x.coerceAtMost(left)
-            top = y.coerceAtMost(top)
-            right = x.coerceAtLeast(right)
-            bottom = y.coerceAtLeast(bottom)
+            left = min(x, left)
+            top = min(y, top)
+            right = max(x, right)
+            bottom = max(y, bottom)
         }
     }
 
