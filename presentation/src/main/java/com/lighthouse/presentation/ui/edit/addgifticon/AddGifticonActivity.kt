@@ -30,6 +30,9 @@ import com.lighthouse.presentation.ui.common.dialog.OriginImageDialog
 import com.lighthouse.presentation.ui.common.dialog.ProgressDialog
 import com.lighthouse.presentation.ui.common.dialog.datepicker.SpinnerDatePicker
 import com.lighthouse.presentation.ui.cropgifticon.CropGifticonActivity
+import com.lighthouse.presentation.ui.cropgifticon.CropGifticonParams
+import com.lighthouse.presentation.ui.cropgifticon.view.CropImageInfo
+import com.lighthouse.presentation.ui.cropgifticon.view.CropImageMode
 import com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddGifticonAdapter
 import com.lighthouse.presentation.ui.edit.addgifticon.adapter.AddGifticonItemUIModel
 import com.lighthouse.presentation.ui.edit.addgifticon.event.AddGifticonCrop
@@ -63,22 +66,25 @@ class AddGifticonActivity : AppCompatActivity() {
         },
         onDeleteGifticon = { gifticon ->
             viewModel.showDeleteConfirmation(gifticon)
-        }
+        },
     )
 
-    private val gallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val list = result.data?.getParcelableArrayList(
-                Extras.KEY_SELECTED_GALLERY_ITEM,
-                GalleryUIModel.Gallery::class.java
-            ) ?: emptyList()
-            viewModel.loadGalleryImages(list)
+    private val gallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val list = result.data?.getParcelableArrayList(
+                    Extras.KEY_SELECTED_GALLERY_ITEM,
+                    GalleryUIModel.Gallery::class.java,
+                ) ?: emptyList()
+                viewModel.loadGalleryImages(list)
+            }
         }
-    }
 
     private fun getCropResult(result: ActivityResult): CroppedImage? {
-        val croppedUri = result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
-        val croppedRect = result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
+        val croppedUri =
+            result.data?.getParcelable(Extras.KEY_CROPPED_IMAGE, Uri::class.java) ?: return null
+        val croppedRect =
+            result.data?.getParcelable(Extras.KEY_CROPPED_RECT, RectF::class.java) ?: return null
         return CroppedImage(croppedUri, croppedRect)
     }
 
@@ -99,34 +105,39 @@ class AddGifticonActivity : AppCompatActivity() {
         }
     }
 
-    private val cropGifticon = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        lifecycleScope.launch {
-            val gifticon = viewModel.selectedGifticon.value ?: return@launch
-            val croppedImage = getCropResult(result, gifticon.id) ?: return@launch
-            viewModel.updateCroppedGifticonImage(croppedImage)
+    private val cropGifticon =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            lifecycleScope.launch {
+                val gifticon = viewModel.selectedGifticon.value ?: return@launch
+                val croppedImage = getCropResult(result, gifticon.id) ?: return@launch
+                viewModel.updateCroppedGifticonImage(croppedImage)
+            }
         }
-    }
 
     private val cropGifticonName =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             viewModel.recognizeGifticonName(getCropResult(result))
         }
 
-    private val cropBrandName = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeBrand(getCropResult(result))
-    }
+    private val cropBrandName =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeBrand(getCropResult(result))
+        }
 
-    private val cropBarcode = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeBarcode(getCropResult(result))
-    }
+    private val cropBarcode =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeBarcode(getCropResult(result))
+        }
 
-    private val cropBalance = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeBalance(getCropResult(result))
-    }
+    private val cropBalance =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeBalance(getCropResult(result))
+        }
 
-    private val cropExpired = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        viewModel.recognizeExpired(getCropResult(result))
-    }
+    private val cropExpired =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            viewModel.recognizeExpired(getCropResult(result))
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,7 +172,12 @@ class AddGifticonActivity : AppCompatActivity() {
                     is AddGifticonEvent.ShowCancelConfirmation -> showConfirmationCancelDialog()
                     is AddGifticonEvent.ShowDeleteConfirmation -> showConfirmationDeleteDialog(event.gifticon)
                     is AddGifticonEvent.NavigateToGallery -> gotoGallery(event.list)
-                    is AddGifticonEvent.NavigateToCrop -> gotoCrop(event.crop, event.origin, event.croppedRect)
+                    is AddGifticonEvent.NavigateToCrop -> gotoCrop(
+                        event.crop,
+                        event.origin,
+                        event.croppedRect,
+                    )
+
                     is AddGifticonEvent.ShowOriginGifticon -> showOriginGifticonDialog(event.origin)
                     is AddGifticonEvent.ShowExpiredAtDatePicker -> showExpiredAtDatePicker(event.date)
                     is AddGifticonEvent.RequestLoading -> requestLoading(event.loading)
@@ -190,7 +206,7 @@ class AddGifticonActivity : AppCompatActivity() {
                 Extras.KEY_SELECTED_GALLERY_ITEM,
                 ArrayList<GalleryUIModel.Gallery>().apply {
                     addAll(list)
-                }
+                },
             )
         }
         gallery.launch(intent)
@@ -205,12 +221,14 @@ class AddGifticonActivity : AppCompatActivity() {
             AddGifticonCrop.BALANCE -> cropBalance
             AddGifticonCrop.EXPIRED -> cropExpired
         }
+        val param = CropGifticonParams(
+            CropImageInfo(uri, croppedRect),
+            if (crop == AddGifticonCrop.GIFTICON_IMAGE) CropImageMode.DRAG_WINDOW else CropImageMode.DRAW_PEN,
+            crop == AddGifticonCrop.GIFTICON_IMAGE,
+        )
+
         val intent = Intent(this, CropGifticonActivity::class.java).apply {
-            putExtra(Extras.KEY_ORIGIN_IMAGE, uri)
-            putExtra(Extras.KEY_CROPPED_RECT, croppedRect)
-            if (crop != AddGifticonCrop.GIFTICON_IMAGE) {
-                putExtra(Extras.KEY_ENABLE_ASPECT_RATIO, false)
-            }
+            param.putExtra(this)
         }
         gotoCropLauncher.launch(intent)
     }
@@ -302,11 +320,15 @@ class AddGifticonActivity : AppCompatActivity() {
             else -> binding.clContainer
         }
         focusView.requestFocus()
-        val inputMethodService = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodService =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (tag.needKeyboard) {
             inputMethodService.showSoftInput(focusView, 0)
         } else {
-            inputMethodService.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            inputMethodService.hideSoftInputFromWindow(
+                currentFocus?.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS,
+            )
         }
     }
 
@@ -328,7 +350,8 @@ class AddGifticonActivity : AppCompatActivity() {
     }
 
     private fun showSnackBar(uiText: UIText) {
-        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, uiText.asString(applicationContext), Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     companion object {

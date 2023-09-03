@@ -12,6 +12,11 @@ import java.util.Locale
 val Int.dp
     get() = Resources.getSystem().displayMetrics?.let { dm ->
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), dm)
+    }?.toInt() ?: 0
+
+val Float.dp
+    get() = Resources.getSystem().displayMetrics?.let { dm ->
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, dm)
     } ?: 0f
 
 val Int.dpToPx

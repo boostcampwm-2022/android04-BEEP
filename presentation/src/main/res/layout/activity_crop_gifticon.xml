@@ -69,6 +69,7 @@
             android:id="@+id/crop_image_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:cropImageMode="@{vm.cropImageMode}"
             app:aspectRatio="@{vm.aspectRatio}"
             app:cropInfo="@{vm.cropInfo}"
             app:enableAspectRatio="@{vm.enableAspectRatio}"

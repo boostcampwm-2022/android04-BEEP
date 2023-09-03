@@ -71,24 +71,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val nearGifticonAdapter = NearGifticonAdapter { gifticon ->
         gotoGifticonDetail(gifticon.id)
     }
-    private val expireGifticonAdapter = GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
-        gotoGifticonDetail(gifticon.id)
-    }
+    private val expireGifticonAdapter =
+        GifticonAdapter(GifticonViewHolderType.VERTICAL) { gifticon ->
+            gotoGifticonDetail(gifticon.id)
+        }
 
     private fun gotoGifticonDetail(id: String) {
         startActivity(
             Intent(requireContext(), GifticonDetailActivity::class.java).apply {
                 putExtra(Extras.KEY_GIFTICON_ID, id)
-            }
+            },
         )
     }
 
     private val itemDecoration = ListSpaceItemDecoration(
-        space = 8.dp,
-        start = (screenWidth * 0.05).toFloat(),
-        top = 4.dp,
-        end = (screenWidth * 0.05).toFloat(),
-        bottom = 4.dp
+        space = 8f.dp,
+        start = screenWidth * 0.05f,
+        top = 4f.dp,
+        end = screenWidth * 0.05f,
+        bottom = 4f.dp,
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -142,7 +143,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun gotoMap(
-        nearBrandsInfo: List<BrandPlaceInfoUiModel> = emptyList()
+        nearBrandsInfo: List<BrandPlaceInfoUiModel> = emptyList(),
     ) {
         when (locationPermission.isGrant) {
             true -> startMapActivity(nearBrandsInfo)
@@ -156,6 +157,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 locationPermissionDialog
                     .show(parentFragmentManager, ConfirmationDialog::class.java.name)
             }
+
             else -> locationPermissionLauncher.launch(PERMISSIONS)
         }
     }
@@ -164,7 +166,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         startActivity(
             Intent(requireContext(), MapActivity::class.java).apply {
                 putExtra(Extras.KEY_NEAR_BRANDS, ArrayList(nearBrandsInfo))
-            }
+            },
         )
     }
 
@@ -178,6 +180,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     companion object {
-        val PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val PERMISSIONS = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        )
     }
 }
