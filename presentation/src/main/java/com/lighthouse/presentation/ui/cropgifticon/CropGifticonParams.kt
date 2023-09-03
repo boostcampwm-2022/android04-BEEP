@@ -26,8 +26,7 @@ data class CropGifticonParams(
         intent.apply {
             putExtra(KEY_ORIGIN_IMAGE, cropInfo.uri)
             putExtra(KEY_CROPPED_RECT, cropInfo.croppedRect)
-//            putExtra(KEY_CROP_IMAGE_MODE, cropImageMode.name)
-            putExtra(KEY_CROP_IMAGE_MODE, CropImageMode.DRAG_WINDOW.name)
+            putExtra(KEY_CROP_IMAGE_MODE, cropImageMode.name)
             putExtra(KEY_ENABLE_ASPECT_RATIO, enableAspectRatio)
             putExtra(KEY_ASPECT_RATIO, aspectRatio)
         }

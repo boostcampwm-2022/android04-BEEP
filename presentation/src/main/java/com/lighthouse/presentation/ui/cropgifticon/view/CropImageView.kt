@@ -61,7 +61,16 @@ class CropImageView(
 
     var cropImageMode = CropImageMode.DRAG_WINDOW
 
-    private val cropImagePen = CropImagePen()
+    private val cropImagePen = CropImagePen(
+        this,
+        object : OnCropImagePenListener {
+            override fun onPenTouchComplete(drawRect: RectF) {
+                cropImageMode = CropImageMode.DRAG_WINDOW
+                cropImageWindow.initRect(originBitmap, drawRect)
+                applyZoom(width, height)
+            }
+        },
+    )
     private val cropImageWindow = CropImageWindow(
         this,
         object : OnCropImageWindowListener {
@@ -92,8 +101,8 @@ class CropImageView(
                 applyZoom(width, height)
             }
 
-            override fun onWindowTouchComplete(curCropRectF: RectF) {
-                val croppedRect = RectF(curCropRectF)
+            override fun onWindowTouchComplete(curCropRect: RectF) {
+                val croppedRect = RectF(curCropRect)
                 mainMatrix.invert(mainInverseMatrix)
                 mainInverseMatrix.mapRect(croppedRect)
                 onChangeCropRectListener?.onChange(croppedRect)
@@ -331,7 +340,7 @@ class CropImageView(
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, mainMatrix, null)
             when (cropImageMode) {
-                CropImageMode.DRAW_PEN -> {}
+                CropImageMode.DRAW_PEN -> cropImagePen.onDraw(canvas)
                 CropImageMode.DRAG_WINDOW -> cropImageWindow.onDraw(canvas)
             }
         }
@@ -340,7 +349,7 @@ class CropImageView(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return when (cropImageMode) {
-            CropImageMode.DRAW_PEN -> true
+            CropImageMode.DRAW_PEN -> cropImagePen.onTouchEvent(event)
             CropImageMode.DRAG_WINDOW -> cropImageWindow.onTouchEvent(event)
         }
     }

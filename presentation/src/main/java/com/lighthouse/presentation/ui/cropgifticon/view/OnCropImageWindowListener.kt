@@ -8,5 +8,5 @@ interface OnCropImageWindowListener {
 
     fun onWindowResized()
 
-    fun onWindowTouchComplete(curCropRectF: RectF)
+    fun onWindowTouchComplete(curCropRect: RectF)
 }

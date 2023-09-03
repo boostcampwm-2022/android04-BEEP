@@ -15,7 +15,7 @@ import kotlin.math.min
 
 class CropImageWindow(
     private val view: CropImageView,
-    private val onCropImageWindowListener: OnCropImageWindowListener,
+    private val listener: OnCropImageWindowListener,
 ) {
 
     companion object {
@@ -755,7 +755,7 @@ class CropImageWindow(
         val unconsumedY = touchDiff.y - consumedY
 
         curCropRect.offset(consumedX, consumedY)
-        onCropImageWindowListener.onWindowMove(unconsumedX, unconsumedY, boundRect)
+        listener.onWindowMove(unconsumedX, unconsumedY, boundRect)
         view.invalidate()
     }
 
@@ -765,13 +765,13 @@ class CropImageWindow(
             MotionEvent.ACTION_UP,
             -> {
                 if (eventType == EventType.RESIZE) {
-                    onCropImageWindowListener.onWindowResized()
+                    listener.onWindowResized()
                 }
 
                 eventType = EventType.NONE
                 activePointerId = null
 
-                onCropImageWindowListener.onWindowTouchComplete(curCropRect)
+                listener.onWindowTouchComplete(curCropRect)
             }
         }
     }
